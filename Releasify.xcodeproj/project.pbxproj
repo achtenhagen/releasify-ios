@@ -64,11 +64,6 @@
 		51B988C31AF1674C00E1A796 /* AlbumView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumView.swift; sourceTree = "<group>"; };
 		51D776A91B29FC9300D252A5 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		51D776AD1B2A559600D252A5 /* SubscriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubscriptionCell.swift; path = ../SubscriptionCell.swift; sourceTree = "<group>"; };
-		51D776B31B2B5BB800D252A5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
-		51D776B41B2B5BB800D252A5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
-		51D776B61B2B5C3700D252A5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
-		51D776BE1B2B653700D252A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		51D776BF1B2B653700D252A5 /* Releasify_Tests_2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Releasify_Tests_2.swift; sourceTree = "<group>"; };
 		51D8753D1B1B264B00353347 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		51D8753F1B1B2AD900353347 /* Devices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Devices.swift; sourceTree = "<group>"; };
 		51F84DC51AB750A000D51E0C /* Releasify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Releasify.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,8 +72,6 @@
 		51F84DCC1AB750A000D51E0C /* SubscriptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
 		51F84DCF1AB750A100D51E0C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		51F84DD41AB750A100D51E0C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		51F84DDF1AB750A100D51E0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		51F84DE01AB750A100D51E0C /* ReleasifyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleasifyTests.swift; sourceTree = "<group>"; };
 		51F84DEC1AB7A91B00D51E0C /* ArtistsPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtistsPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -120,31 +113,12 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		51D776BC1B2B653700D252A5 /* Releasify Tests 2 */ = {
-			isa = PBXGroup;
-			children = (
-				51D776BF1B2B653700D252A5 /* Releasify_Tests_2.swift */,
-				51D776BD1B2B653700D252A5 /* Supporting Files */,
-			);
-			path = "Releasify Tests 2";
-			sourceTree = "<group>";
-		};
-		51D776BD1B2B653700D252A5 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				51D776BE1B2B653700D252A5 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		51F84DBC1AB750A000D51E0C = {
 			isa = PBXGroup;
 			children = (
 				51A830461AC2EB0A006BCF1B /* libsqlite3.dylib */,
 				51A830481AC2EB70006BCF1B /* Releasify.Bridging-Header.h */,
 				51F84DC71AB750A000D51E0C /* Releasify */,
-				51F84DDD1AB750A100D51E0C /* ReleasifyTests */,
-				51D776BC1B2B653700D252A5 /* Releasify Tests 2 */,
 				51F84DC61AB750A000D51E0C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -188,23 +162,6 @@
 			isa = PBXGroup;
 			children = (
 				51F84DC91AB750A000D51E0C /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		51F84DDD1AB750A100D51E0C /* ReleasifyTests */ = {
-			isa = PBXGroup;
-			children = (
-				51F84DE01AB750A100D51E0C /* ReleasifyTests.swift */,
-				51F84DDE1AB750A100D51E0C /* Supporting Files */,
-			);
-			path = ReleasifyTests;
-			sourceTree = "<group>";
-		};
-		51F84DDE1AB750A100D51E0C /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				51F84DDF1AB750A100D51E0C /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -317,8 +274,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				51F84DCF1AB750A100D51E0C /* Base */,
-				51D776B31B2B5BB800D252A5 /* de */,
-				51D776B61B2B5C3700D252A5 /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -327,7 +282,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				51F84DD41AB750A100D51E0C /* Base */,
-				51D776B41B2B5BB800D252A5 /* de */,
 			);
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";

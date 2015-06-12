@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        self.defaults.setValue("10.0.0", forKey: "testIdentifier")
+        self.defaults.setValue(NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"], forKey: "appVersion")
         
         if application.respondsToSelector("registerUserNotificationSettings:") {
             

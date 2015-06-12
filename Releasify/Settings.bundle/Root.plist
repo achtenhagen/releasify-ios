@@ -6,16 +6,6 @@
 	<array>
 		<dict>
 			<key>Type</key>
-			<string>PSTitleValueSpecifier</string>
-			<key>DefaultValue</key>
-			<string>testDefaultValue</string>
-			<key>Title</key>
-			<string>Blah</string>
-			<key>Key</key>
-			<string>testIdentifier</string>
-		</dict>
-		<dict>
-			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
 			<string>Allow Explicit Content</string>
@@ -33,6 +23,16 @@
 			<string>reset</string>
 			<key>DefaultValue</key>
 			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+			<key>DefaultValue</key>
+			<string>1.0.0</string>
+			<key>Title</key>
+			<string>Version</string>
+			<key>Key</key>
+			<string>appVersion</string>
 		</dict>
 	</array>
 	<key>StringsTable</key>
