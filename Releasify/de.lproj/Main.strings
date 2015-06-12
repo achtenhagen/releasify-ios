@@ -1,0 +1,72 @@
+
+/* Class = "UILabel"; text = "00"; ObjectID = "1V3-qP-JCp"; */
+"1V3-qP-JCp.text" = "00";
+
+/* Class = "UINavigationItem"; title = "My Artists"; ObjectID = "3k5-Ba-uwZ"; */
+"3k5-Ba-uwZ.title" = "My Artists";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "4H1-MX-Bve"; */
+"4H1-MX-Bve.text" = "Title";
+
+/* Class = "UIViewController"; title = "Artist Picker"; ObjectID = "5Wn-lw-nVy"; */
+"5Wn-lw-nVy.title" = "Artist Picker";
+
+/* Class = "UIBarButtonItem"; title = "Select All"; ObjectID = "BK4-g3-ui1"; */
+"BK4-g3-ui1.title" = "Select All";
+
+/* Class = "UILabel"; text = "weeks"; ObjectID = "Cok-XX-g4E"; */
+"Cok-XX-g4E.text" = "weeks";
+
+/* Class = "UILabel"; text = "00"; ObjectID = "Dhi-Y9-qXv"; */
+"Dhi-Y9-qXv.text" = "00";
+
+/* Class = "UILabel"; text = "dolor sit amet, consectetur adipiscing elit. Nam diam ipsum, sagittis nec imperdiet eu, hendrerit id ipsum"; ObjectID = "EZT-FJ-fEi"; */
+"EZT-FJ-fEi.text" = "dolor sit amet, consectetur adipiscing elit. Nam diam ipsum, sagittis nec imperdiet eu, hendrerit id ipsum";
+
+/* Class = "UINavigationItem"; title = "Subscriptions"; ObjectID = "K08-tG-33J"; */
+"K08-tG-33J.title" = "Subscriptions";
+
+/* Class = "UILabel"; text = "Later Today"; ObjectID = "LbA-CQ-pym"; */
+"LbA-CQ-pym.text" = "Later Today";
+
+/* Class = "UILabel"; text = "00"; ObjectID = "UyI-O7-Qlg"; */
+"UyI-O7-Qlg.text" = "00";
+
+/* Class = "UILabel"; text = "Artist"; ObjectID = "Zde-BL-fEy"; */
+"Zde-BL-fEy.text" = "Artist";
+
+/* Class = "UILabel"; text = "E"; ObjectID = "h2c-CN-9fz"; */
+"h2c-CN-9fz.text" = "E";
+
+/* Class = "UILabel"; text = "hours"; ObjectID = "jHi-gO-arw"; */
+"jHi-gO-arw.text" = "hours";
+
+/* Class = "UILabel"; text = "Artist Name"; ObjectID = "lh2-el-WN3"; */
+"lh2-el-WN3.text" = "Artist Name";
+
+/* Class = "UIBarButtonItem"; title = "Buy Album"; ObjectID = "qle-ia-zw9"; */
+"qle-ia-zw9.title" = "Buy Album";
+
+/* Class = "UILabel"; text = "Album Title"; ObjectID = "rd2-h7-NAo"; */
+"rd2-h7-NAo.text" = "Album Title";
+
+/* Class = "UIBarButtonItem"; title = "Buy Album"; ObjectID = "sg9-06-bje"; */
+"sg9-06-bje.title" = "Buy Album";
+
+/* Class = "UINavigationItem"; title = "Results"; ObjectID = "uZJ-JB-SkS"; */
+"uZJ-JB-SkS.title" = "Results";
+
+/* Class = "UILabel"; text = "Artist Title"; ObjectID = "vKx-Gw-3ic"; */
+"vKx-Gw-3ic.text" = "Artist Title";
+
+/* Class = "UIViewController"; title = "Subscriptions View"; ObjectID = "vXZ-lx-hvc"; */
+"vXZ-lx-hvc.title" = "Subscriptions View";
+
+/* Class = "UILabel"; text = "℗ 2015 Copyright"; ObjectID = "xZF-Te-Rk8"; */
+"xZF-Te-Rk8.text" = "℗ 2015 Copyright";
+
+/* Class = "UIViewController"; title = "Upcoming"; ObjectID = "xaU-2b-EcB"; */
+"xaU-2b-EcB.title" = "Upcoming";
+
+/* Class = "UILabel"; text = "days"; ObjectID = "yHK-lx-sNX"; */
+"yHK-lx-sNX.text" = "days";

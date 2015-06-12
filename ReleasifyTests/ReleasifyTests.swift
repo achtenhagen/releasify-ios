@@ -23,7 +23,8 @@ class ReleasifyTests: XCTestCase {
     
     func testExample() {
         // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
+        var test = 2
+        XCTAssert((test == 1), "Pass")
     }
     
     func testPerformanceExample() {
