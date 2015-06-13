@@ -199,6 +199,11 @@
 					51F84DC41AB750A000D51E0C = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = M48DDM3P94;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};

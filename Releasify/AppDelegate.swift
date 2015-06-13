@@ -205,11 +205,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler()
     }
     
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+        if identifier == "APP_ACTION" {
+            println("tapped")
+        }
+        completionHandler()
+    }
+    
     func delay(delay:Double, closure:()->()) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
     }
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         println("Received remote notification while the app was running.")
         NSNotificationCenter.defaultCenter().postNotificationName("refreshApp", object: nil)
     }
@@ -237,5 +244,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    
+    // Background fetch
+    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        
     }
 }
