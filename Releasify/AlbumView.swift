@@ -9,10 +9,10 @@ class AlbumView: UIViewController {
     var artist = String()
     var artwork = UIImage()
     var explicit = false
-    var timeDiff = Int()
+    var timeDiff = Double()
     var timer = NSTimer()
     var progress: Float = 0
-    var dateAdded = 0
+    var dateAdded: Double = 0
     
     @IBOutlet weak var navBar: UINavigationBar!
     @IBOutlet weak var albumArtwork: UIImageView!
@@ -45,7 +45,9 @@ class AlbumView: UIViewController {
         navBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
         navBar.shadowImage = UIImage()
         navBar.translucent = true
-        artwork = AppDB.sharedInstance.getArtwork(album.artwork)!
+        if let dbArtwork = AppDB.sharedInstance.getArtwork(album.artwork) {
+            artwork = dbArtwork
+        }
         backgroundView.image = artwork
         albumArtwork.image = artwork
         artist = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
@@ -53,10 +55,10 @@ class AlbumView: UIViewController {
         albumTitleLabel.text = album.title
         copyrightLabel.text = album.copyright
         if !explicit { explicitLabel.hidden = true }
-        timeDiff = album.releaseDate - Int(NSDate().timeIntervalSince1970)
+        timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
         if timeDiff > 0 {
             dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))
-            progress = Float((Double(NSDate().timeIntervalSince1970) - Double(dateAdded)) / (Double(album.releaseDate) - Double(dateAdded)))
+            progress = album.getProgress(dateAdded)
             progressBar.setProgress(progress, animated: false)
             timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
         } else {
@@ -74,12 +76,12 @@ class AlbumView: UIViewController {
     
     func shareAlbum () {
         let firstActivityItem = "\(album.title) by \(artist)  - \(album.iTunesURL)"
-        let activityViewController : UIActivityViewController = UIActivityViewController(activityItems: [firstActivityItem], applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: [firstActivityItem], applicationActivities: nil)
         self.presentViewController(activityViewController, animated: true, completion: nil)
     }
     
     func update () {
-        timeLeft(album.releaseDate - Int(NSDate().timeIntervalSince1970))
+        timeLeft(album.releaseDate - NSDate().timeIntervalSince1970)
     }
 
     override func didReceiveMemoryWarning() {
@@ -87,7 +89,7 @@ class AlbumView: UIViewController {
         timer.invalidate()
     }
     
-    func timeLeft(timeDiff: Int) {
+    func timeLeft(timeDiff: Double) {
         
         var weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
         var days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
@@ -131,8 +133,7 @@ class AlbumView: UIViewController {
             thirdDigitLabel.text = String(stringInterpolationSegment: formatNumber(seconds))
             thirdTimeLabel.text = "seconds"
         }
-        
-        progress = Float((Double(NSDate().timeIntervalSince1970) - Double(dateAdded)) / (Double(album.releaseDate) - Double(dateAdded)))
+        progress = album.getProgress(dateAdded)
         progressBar.setProgress(progress, animated: true)
     }
     

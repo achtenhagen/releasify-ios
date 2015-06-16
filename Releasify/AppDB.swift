@@ -59,7 +59,6 @@ final class AppDB {
     func addAlbum (albumItem: Album) -> Int {
         connect()
         var newAlbumID = 0
-        let albumReleaseDate = albumItem.releaseDate - NSTimeZone.localTimeZone().secondsFromGMT
         let albumExistsQuery = "SELECT COUNT(id) FROM albums WHERE id = ?"
         var statement:COpaquePointer = nil
         if sqlite3_prepare_v2(database, albumExistsQuery, -1, &statement, nil) == SQLITE_OK {
@@ -75,7 +74,7 @@ final class AppDB {
                 if sqlite3_prepare_v2(self.database, newAlbumQuery, -1, &statement, nil) == SQLITE_OK {
                     sqlite3_bind_int(statement, 1, Int32(albumItem.ID))
                     sqlite3_bind_text(statement, 2, NSString(string: albumItem.title).UTF8String, -1, nil)
-                    sqlite3_bind_int(statement, 3, Int32(albumReleaseDate))
+                    sqlite3_bind_int(statement, 3, Int32(albumItem.releaseDate))
                     sqlite3_bind_text(statement, 4, NSString(string: albumItem.artwork).UTF8String, -1, nil)
                     sqlite3_bind_int(statement, 5, Int32(albumItem.explicit))
                     sqlite3_bind_text(statement, 6, NSString(string: albumItem.copyright).UTF8String, -1, nil)
@@ -129,7 +128,7 @@ final class AppDB {
             while sqlite3_step(statement) == SQLITE_ROW {
                 let ID = Int(sqlite3_column_int(statement, 0))
                 let albumTitle = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 1)))
-                let releaseDate = Int(sqlite3_column_int(statement, 2))
+                let releaseDate = Double(sqlite3_column_int(statement, 2))
                 let created = Int(sqlite3_column_int(statement, 8))
                 let artwork = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 3)))
                 let explicit = Int(sqlite3_column_int(statement, 4))
@@ -155,7 +154,7 @@ final class AppDB {
         disconnect()
     }
     
-    func getAlbumDateAdded (albumID: Int32) -> Int {
+    func getAlbumDateAdded (albumID: Int32) -> Double {
         connect()
         var created:Int32 = 0
         let query = "SELECT created FROM albums WHERE id = ?"
@@ -168,7 +167,7 @@ final class AppDB {
             sqlite3_finalize(statement)
         }
         disconnect()
-        return Int(created)
+        return Double(created)
     }
     
     // -- Artists -- //

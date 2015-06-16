@@ -20,32 +20,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if application.respondsToSelector("registerUserNotificationSettings:") {
             
-            var appAction: UIMutableUserNotificationAction = UIMutableUserNotificationAction()
+            var appAction = UIMutableUserNotificationAction()
             appAction.identifier = "APP_ACTION"
             appAction.title = "Open in App"
             appAction.activationMode = .Foreground
             appAction.destructive = false
             appAction.authenticationRequired = false
             
-            var storeAction: UIMutableUserNotificationAction = UIMutableUserNotificationAction()
+            var storeAction = UIMutableUserNotificationAction()
             storeAction.identifier = "STORE_ACTION"
             storeAction.title = "Buy on iTunes"
-            
             storeAction.activationMode = .Foreground
             storeAction.destructive = false
             storeAction.authenticationRequired = false
             
-            var defaultCategory: UIMutableUserNotificationCategory = UIMutableUserNotificationCategory()
+            var preorderAction = UIMutableUserNotificationAction()
+            preorderAction.identifier = "PREORDER_ACTION"
+            preorderAction.title = "Pre-order on iTunes"
+            preorderAction.activationMode = .Foreground
+            preorderAction.destructive = false
+            preorderAction.authenticationRequired = false
+            
+            var defaultCategory = UIMutableUserNotificationCategory()
             defaultCategory.identifier = "DEFAULT_CATEGORY"
+            var remoteCategory = UIMutableUserNotificationCategory()
+            remoteCategory.identifier = "REMOTE_CATEGORY"
             
-            let defaultActions:NSArray = [appAction, storeAction]
+            let defaultActions = [appAction, storeAction]
+            let remoteActions  = [appAction, preorderAction]
             
-            defaultCategory.setActions(defaultActions as [AnyObject], forContext: .Default)
-            defaultCategory.setActions(defaultActions as [AnyObject], forContext: .Minimal)
+            defaultCategory.setActions(defaultActions, forContext: .Default)
+            defaultCategory.setActions(defaultActions, forContext: .Minimal)
+            remoteCategory.setActions(remoteActions, forContext: .Default)
+            remoteCategory.setActions(remoteActions, forContext: .Minimal)
             
-            let categories:NSSet = NSSet(objects: defaultCategory)
+            let categories = NSSet(objects: defaultCategory, remoteCategory)
             let types:UIUserNotificationType = (.Alert | .Badge | .Sound)
-            let settings:UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: categories as Set<NSObject>)
+            let settings = UIUserNotificationSettings(forTypes: types, categories: categories as Set<NSObject>)
             
             application.registerUserNotificationSettings(settings)
             application.registerForRemoteNotifications()
@@ -73,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let uuid = defaults.stringForKey("uuid") {
             userUUID = uuid
         }
-        if let explicit: Bool = defaults.valueForKey("allowExplicit") as? Bool {
+        if let explicit = defaults.valueForKey("allowExplicit") as? Bool {
             allowExplicitContent = explicit
             if allowExplicitContent {
                 println("User allows explicit content.")
@@ -109,7 +120,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             appVersion = version
         }
         let systemVersion = UIDevice.currentDevice().systemVersion
-        let deviceName : String = UIDevice().deviceType.rawValue
+        let deviceName = UIDevice().deviceType.rawValue
         let userAgent = "Releasify/\(appVersion) (iOS/\(systemVersion); \(deviceName))"
         let apiUrl = NSURL(string: APIURL.register.rawValue)
         var explicitValue = 1
@@ -157,12 +168,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        println("User allows notifications.")
         var deviceTokenString = deviceToken.description
         deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
         deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
         deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
         if userID == 0 {
-            println("User allows notifications.")
             register(deviceToken: deviceTokenString)
         }
     }
@@ -191,7 +202,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let userInfo = notification.userInfo {
                 localNotificationPayload = userInfo
             }
-        } else if identifier == "STORE_ACTION" {
+        } else {
             delay(0) {
                 if let userInfo = notification.userInfo {
                     let url = userInfo["url"]! as! String
@@ -201,13 +212,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
-        println("Handle action method called")
         completionHandler()
     }
     
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
         if identifier == "APP_ACTION" {
-            println("tapped")
+            
+        } else {
+            
         }
         completionHandler()
     }
@@ -219,6 +231,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         println("Received remote notification while the app was running.")
         NSNotificationCenter.defaultCenter().postNotificationName("refreshApp", object: nil)
+        completionHandler(UIBackgroundFetchResult.NoData)
+    }
+    
+    // Background fetch
+    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        completionHandler(UIBackgroundFetchResult.NoData)
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -244,10 +262,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-    
-    // Background fetch
-    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        
     }
 }

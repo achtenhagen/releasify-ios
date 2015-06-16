@@ -110,7 +110,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("albumCell", forIndexPath: indexPath) as! AlbumCell
         cell.artwork.image = UIImage()
         let hash: String = AppDB.sharedInstance.albums[indexPath.row].artwork as String
-        let timeLeft = AppDB.sharedInstance.albums[indexPath.row].releaseDate - Int(NSDate().timeIntervalSince1970)
+        let timeLeft = AppDB.sharedInstance.albums[indexPath.row].releaseDate - NSDate().timeIntervalSince1970
         let dbArtwork = AppDB.sharedInstance.checkArtwork(hash)
         if dbArtwork {
             artwork[hash] = AppDB.sharedInstance.getArtwork(hash)
@@ -223,7 +223,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
                                 return
                             }
                             for item in json {
-                                let releaseDate = (item["releaseDate"] as! Int) - 28800
+                                let releaseDate = (item["releaseDate"] as! Double)
                                 let albumItem = Album(
                                     ID: item["id"] as! Int,
                                     title: item["title"] as! String,
@@ -247,7 +247,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
                                         notification.timeZone = NSTimeZone.localTimeZone()
                                         notification.alertTitle = "New Album Released"
                                         notification.alertBody = "\(albumItem.title) is now available."
-                                        notification.fireDate = NSDate().dateByAddingTimeInterval(fireDate)
+                                        notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
                                         notification.applicationIconBadgeNumber++
                                         notification.soundName = UILocalNotificationDefaultSoundName
                                         notification.userInfo = ["ID": albumItem.ID, "url": albumItem.iTunesURL]
