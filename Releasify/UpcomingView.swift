@@ -144,7 +144,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
             }
         }
         if indexPath.row == AppDB.sharedInstance.albums.count-1 {
-            /* Reached bottom */
+            /* Reached bottom of table view */
         }
         return cell
     }
@@ -169,15 +169,14 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
                 let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
                     let albumID = AppDB.sharedInstance.albums[indexPath!.row].ID
                     let albumArtwork = AppDB.sharedInstance.albums[indexPath!.row].artwork
-                    var app:UIApplication = UIApplication.sharedApplication()
-                    for n in app.scheduledLocalNotifications {
+                    for n in UIApplication.sharedApplication().scheduledLocalNotifications {
                         var notification = n as! UILocalNotification
                         let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
                         let ID = userInfoCurrent["ID"]! as! Int
                         if ID == albumID {
                             println("Canceled location notification with ID: \(ID)")
-                            app.cancelLocalNotification(notification)
-                            break;
+                            UIApplication.sharedApplication().cancelLocalNotification(notification)
+                            break
                         }
                     }
                     UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: { self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0}, completion: {  (value: Bool) in
@@ -238,7 +237,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
                                 )
                                 // When scheduling a notification, be sure to use the ID local to the database.
                                 let newAlbumID = AppDB.sharedInstance.addAlbum(albumItem)
-                                if newAlbumID > 0 {
+                                if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications.count < 64 {
                                     let fireDate = Double(releaseDate) - Double(NSDate().timeIntervalSince1970)
                                     if fireDate > 0 {
                                         println("Notification will fire in \(fireDate) seconds.")

@@ -21,9 +21,9 @@ final class AppDB {
     }
     
     var database:COpaquePointer = nil
-    var result = Int32()
+    var result  = Int32()
     var artists = [Artist]()
-    var albums = [Album]()
+    var albums  = [Album]()
 
     func connect () -> Bool {
         return sqlite3_open(databasePath, &self.database) == SQLITE_OK
@@ -36,7 +36,6 @@ final class AppDB {
     
     func create () {
         connect()
-        
         let artistTableQuery = "CREATE TABLE IF NOT EXISTS artists (id INTEGER PRIMARY KEY, title VARCHAR(100) NOT NULL, iTunes_unique_id INTEGER, last_updated INTEGER, created INTEGER)"
         var errMsg:UnsafeMutablePointer<Int8> = nil
         sqlite3_exec(database, artistTableQuery, nil, nil, &errMsg)
@@ -50,7 +49,6 @@ final class AppDB {
         if !NSFileManager.defaultManager().fileExistsAtPath(artworkDirectoryPath) {
             NSFileManager.defaultManager().createDirectoryAtPath(artworkDirectoryPath, withIntermediateDirectories: false, attributes: nil, error: nil)
         }
-        
         disconnect()
     }
     
@@ -283,18 +281,18 @@ final class AppDB {
     
     func getArtistByUniqueID (uniqueID: Int32) -> Int {
         connect()
-        var numRows:Int32 = 0
-        let query = "SELECT COUNT(id) FROM artists WHERE iTunes_unique_id = ?"
+        var artistID:Int32 = 0
+        let query = "SELECT id FROM artists WHERE iTunes_unique_id = ?"
         var statement:COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, uniqueID)
             if sqlite3_step(statement) == SQLITE_ROW {
-                numRows = sqlite3_column_int(statement, 0)
+                artistID = sqlite3_column_int(statement, 0)
             }
             sqlite3_finalize(statement)
         }
         disconnect()
-        return Int(numRows)
+        return Int(artistID)
     }
     
     func getArtists () {

@@ -67,7 +67,6 @@ class AlbumView: UIViewController {
         let doubleTapGesture = UITapGestureRecognizer(target: self, action: Selector("shareAlbum"))
         doubleTapGesture.numberOfTapsRequired = 2
         albumArtwork.addGestureRecognizer(doubleTapGesture)
-        //UIView.animateWithDuration(0.4, delay: 1.0, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.buyLabel.alpha = 0 }, completion: nil)
     }
     
     override func viewDidDisappear(animated: Bool) {

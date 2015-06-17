@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.defaults.setValue(NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"], forKey: "appVersion")
         
+        // Notification settings & categories
         if application.respondsToSelector("registerUserNotificationSettings:") {
             
             var appAction = UIMutableUserNotificationAction()
@@ -109,7 +110,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
-        
         return true
     }
     
@@ -234,8 +234,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(UIBackgroundFetchResult.NoData)
     }
     
-    // Background fetch
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        // -- Background fetch -- //
         completionHandler(UIBackgroundFetchResult.NoData)
     }
 

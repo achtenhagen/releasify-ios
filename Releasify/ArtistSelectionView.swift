@@ -5,7 +5,7 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
 
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var artistAlbums = String()
-    var albums = [NSDictionary]()
+    var albums  = [NSDictionary]()
     var artists = [NSDictionary]()
     var artwork = [String:UIImage]()
     

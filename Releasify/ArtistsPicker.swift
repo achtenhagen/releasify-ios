@@ -20,7 +20,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
     var filteredCheckedStates = [Bool]()
     var hasSelectedAll = false
     var allowDuplicates = false
-    var searchController: UISearchController! = UISearchController()
+    var searchController = UISearchController()
     var collection = [AnyObject]()
     var responseArtists = [NSDictionary]()
     var activityView = UIView()
@@ -97,7 +97,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
         searchController.searchBar.keyboardAppearance = .Dark
         self.definesPresentationContext = true
         searchController.searchBar.sizeToFit()
-        artistsTable.tableHeaderView = searchController!.searchBar
+        artistsTable.tableHeaderView = searchController.searchBar
         var backgroundView = UIView(frame: self.view.bounds)
         backgroundView.backgroundColor = UIColor.clearColor()
         artistsTable.backgroundView = backgroundView
@@ -216,7 +216,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
                             }
                             batchesProcessed++
                             println("Processed batches: \(batchesProcessed)")
-                            let batchProgress: Float = Float(Double(batchesProcessed) / Double(batches.count))
+                            let batchProgress = Float(Double(batchesProcessed) / Double(batches.count))
                             self.progressBar.setProgress(batchProgress, animated: true)
                             if batchesProcessed == batches.count {
                                 println("Completed batch processing.")
