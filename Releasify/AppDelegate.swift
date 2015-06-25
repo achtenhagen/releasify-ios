@@ -141,7 +141,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if error == nil {
                 if let HTTPResponse = response as? NSHTTPURLResponse {
                     println("HTTP status code: \(HTTPResponse.statusCode)")
-                    if HTTPResponse.statusCode == 200 {
+                    if HTTPResponse.statusCode == 201 {
                         var error: NSError?
                         if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? NSDictionary {
                             if error != nil { return }

@@ -129,13 +129,13 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
     func handleBatchProcessing () {
         
         var responseData = []
-        var batches:[String] = [String]()
-        var uniqueIDs:[Int] = [Int]()
+        var batches = [String]()
+        var uniqueIDs = [Int]()
         var totalItems = 0
-        
+        let batchSize = 20
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
         var batchCount = 0
-        var currentBatch: String = String()
+        var currentBatch = String()
         progressBar.progress = 0
         for item in checkedStates {
             let section = item.0
@@ -146,7 +146,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
                     artist = artist.stringByAddingPercentEncodingForURLQueryValue()!
                     currentBatch = currentBatch.stringByAppendingString("&title[]=\(artist)")
                     batchCount++
-                    if batchCount == 20 {
+                    if batchCount == batchSize {
                         batches.append(postString.stringByAppendingString(currentBatch))
                         currentBatch = String()
                         batchCount = 0
@@ -195,7 +195,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
                 if error == nil {
                     if let HTTPResponse = response as? NSHTTPURLResponse {
                         println("HTTP status code: \(HTTPResponse.statusCode)")
-                        if HTTPResponse.statusCode == 200 {
+                        if HTTPResponse.statusCode == 202 {
                             if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
                                 if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
                                     for artist in awaitingArtists {
@@ -228,6 +228,10 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
                                     self.dismissViewControllerAnimated(true, completion: nil)
                                 }
                             }
+                        } else {
+                            // Invalid request
+                            self.activityView.removeFromSuperview()
+                            self.indicatorView.removeFromSuperview()
                         }
                     }
                 } else {

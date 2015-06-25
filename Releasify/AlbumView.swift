@@ -50,6 +50,8 @@ class AlbumView: UIViewController {
         }
         backgroundView.image = artwork
         albumArtwork.image = artwork
+        albumArtwork.layer.masksToBounds = true
+        albumArtwork.layer.cornerRadius = 2
         artist = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
         artistTitleLabel.text = artist
         albumTitleLabel.text = album.title

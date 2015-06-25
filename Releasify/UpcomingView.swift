@@ -37,7 +37,9 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
         layout.itemSize = CGSize(width: UIScreen.mainScreen().bounds.width / 2, height: UIScreen.mainScreen().bounds.width / 2)
         
         // iPhone 6 Plus support
-        if UIScreen.mainScreen().bounds.width > 375 { layout.itemSize = CGSize(width: 138, height: 138) }
+        if UIScreen.mainScreen().bounds.width > 375 {
+            layout.itemSize = CGSize(width: 138, height: 138)
+        }
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         albumCollectionView.collectionViewLayout = layout
@@ -119,7 +121,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
             cell.artwork.image = image
         } else {
             cell.artwork.alpha = 0
-            let albumURL = "https://releasify.me/static/artwork/music/\(hash)_large.jpg"
+            let albumURL = "https://releasify.me/static/artwork/music/\(hash)@2x.jpg"
             if let checkedURL = NSURL(string: albumURL) {
                 let request: NSURLRequest = NSURLRequest(URL: checkedURL)
                 let mainQueue = NSOperationQueue.mainQueue()
@@ -143,6 +145,8 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
                 })
             }
         }
+        cell.releaseContainer.layer.masksToBounds = true
+        cell.releaseContainer.layer.cornerRadius = 4.0
         if indexPath.row == AppDB.sharedInstance.albums.count-1 {
             /* Reached bottom of table view */
         }

@@ -103,7 +103,7 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
                     if error == nil {
                         if let HTTPResponse = response as? NSHTTPURLResponse {
                             println(HTTPResponse.statusCode)
-                            if HTTPResponse.statusCode == 200 {
+                            if HTTPResponse.statusCode == 202 {
                                 if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
                                     if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
                                         for artist in awaitingArtists {
@@ -164,7 +164,6 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            println(AppDB.sharedInstance.artists[indexPath.row].iTunesUniqueID)
             var failed = true
             let apiUrl = NSURL(string: APIURL.removeArtist.rawValue)
             let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(AppDB.sharedInstance.artists[indexPath.row].iTunesUniqueID)"
@@ -179,7 +178,7 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
                 if error == nil {
                     if let HTTPResponse = response as? NSHTTPURLResponse {
                         println(HTTPResponse.statusCode)
-                        if HTTPResponse.statusCode == 200 {
+                        if HTTPResponse.statusCode == 204 {
                             AppDB.sharedInstance.deleteArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
                             AppDB.sharedInstance.artists.removeAtIndex(indexPath.row)
                             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
