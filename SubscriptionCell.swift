@@ -10,7 +10,6 @@ class SubscriptionCell: UITableViewCell {
         super.awakeFromNib()
         artistImg.layer.masksToBounds = true
         artistImg.layer.cornerRadius = artistImg.bounds.width / 2.0
-
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

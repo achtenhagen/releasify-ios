@@ -14,7 +14,7 @@ class AlbumView: UIViewController {
     var progress: Float = 0
     var dateAdded: Double = 0
     
-    @IBOutlet weak var navBar: UINavigationBar!
+    @IBOutlet weak var closeBtn: UIButton!
     @IBOutlet weak var albumArtwork: UIImageView!
     @IBOutlet weak var albumTitleLabel: UILabel!
     @IBOutlet weak var artistTitleLabel: UILabel!
@@ -27,7 +27,6 @@ class AlbumView: UIViewController {
     @IBOutlet weak var thirdTimeLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
     @IBOutlet weak var explicitLabel: UILabel!
-    @IBOutlet weak var buyBtn: UIBarButtonItem!
     @IBOutlet weak var backgroundView: UIImageView!
     
     @IBAction func openiTunes(sender: AnyObject) {
@@ -42,16 +41,12 @@ class AlbumView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-        navBar.shadowImage = UIImage()
-        navBar.translucent = true
+        
         if let dbArtwork = AppDB.sharedInstance.getArtwork(album.artwork) {
             artwork = dbArtwork
         }
         backgroundView.image = artwork
         albumArtwork.image = artwork
-        albumArtwork.layer.masksToBounds = true
-        albumArtwork.layer.cornerRadius = 2
         artist = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
         artistTitleLabel.text = artist
         albumTitleLabel.text = album.title

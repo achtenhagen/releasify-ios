@@ -16,4 +16,5 @@ struct Album {
     func getProgress (dateAdded: Double) -> Float {
         return Float((Double(NSDate().timeIntervalSince1970) - Double(dateAdded)) / (Double(releaseDate) - Double(dateAdded)))
     }
+
 }

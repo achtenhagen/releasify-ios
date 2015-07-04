@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     let defaults = NSUserDefaults.standardUserDefaults()
     var userID = 0
-    var userDeviceToken = String()
+    var userDeviceToken: String?
     var userUUID = String()
     var allowExplicitContent = true
     var notificationAlbumID = Int()
@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var localNotificationPayload  = NSDictionary()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        
+
         self.defaults.setValue(NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"], forKey: "appVersion")
         
         // Notification settings & categories
@@ -157,7 +157,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                     println("Device token was set successfully.")
                                 }
                                 println("UUID was set successfully.")
-                                println("Received user ID: \(self.userID)")
+                                println("Received user ID: \(self.userID) from the server.")
                             }
                         }
                     }
@@ -188,7 +188,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         if let userInfo = notification.userInfo {
             notificationAlbumID = userInfo["ID"] as! Int
-            println("Received notification with ID: \(notificationAlbumID)")
+            println("Received notification with ID: \(notificationAlbumID) from the server.")
             // Called when the notification is tapped if the app is inactive or in the background
             if application.applicationState == .Inactive || application.applicationState == .Background {
                 NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: userInfo)
@@ -245,9 +245,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
-        
-        // -- Background App Refresh -- //
-        
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }

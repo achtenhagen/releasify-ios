@@ -4,9 +4,7 @@ import UIKit
 class ArtistSelectionView: UIViewController, UITableViewDataSource {
 
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    var artistAlbums = String()
-    var albums  = [NSDictionary]()
-    var artists = [NSDictionary]()
+    var artists:[NSDictionary]!
     var artwork = [String:UIImage]()
     
     @IBOutlet weak var artistsTable: UITableView!
@@ -17,33 +15,35 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        artistsTable.setEditing(true, animated: false)
+        self.artistsTable.registerNib(UINib(nibName: "TableViewHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return artists.count
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let albums = (artists[section]["albums"] as? [NSDictionary])!
+        return albums.count
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = self.artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! ArtistCell
-        cell.artistLabel?.text = artists[indexPath.row]["title"] as? String
-        albums = (artists[indexPath.row]["albums"] as? [NSDictionary])!
-        artistAlbums = String()
-        for var i = 0; i < albums.count; i++ {
-            artistAlbums = artistAlbums.stringByAppendingString((albums[i]["title"]! as! String))
-            if i < albums.count-1 {
-                artistAlbums = artistAlbums.stringByAppendingString(", ")
-            }
-        }
-        cell.albumsLabel.text = artistAlbums
+        let albums = (artists[indexPath.section]["albums"] as? [NSDictionary])!
         if albums.count > 0 {
-            let hash = albums[0]["artwork"]! as! String
+            cell.albumTitle.text = albums[indexPath.row]["title"] as? String
+            cell.releaseLabel.text = albums[indexPath.row]["releaseDate"] as? String
+            let hash = albums[indexPath.row]["artwork"]! as! String
             let albumURL = "https://releasify.me/static/artwork/music/\(hash).jpg"
             if let img = artwork[albumURL] {
                 cell.albumArtwork.image = img
             } else {
                 if let checkedURL = NSURL(string: albumURL) {
-                    let request: NSURLRequest = NSURLRequest(URL: checkedURL)
+                    let request = NSURLRequest(URL: checkedURL)
                     let mainQueue = NSOperationQueue.mainQueue()
                     NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) -> Void in
                         if error == nil {
@@ -72,9 +72,21 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let artistUniqueID = (artists[indexPath.row]["iTunesUniqueID"] as? Int)!
-        var failed = true
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = self.artistsTable.dequeueReusableHeaderFooterViewWithIdentifier("header") as! ArtistSelectionHeaderView
+        headerView.contentView.backgroundColor = UIColor.clearColor()
+        headerView.artistLabel.text = artists[section]["title"] as? String
+        headerView.confirmBtn.tag = section
+        headerView.confirmBtn.addTarget(self, action: "confirmArtist:", forControlEvents: .TouchUpInside)
+        return headerView
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
+    func confirmArtist (sender: UIButton) {
+        let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int)!
         let apiUrl = NSURL(string: APIURL.confirmArtist.rawValue)
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
         let request = NSMutableURLRequest(URL:apiUrl!)
@@ -89,6 +101,7 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
                 if let HTTPResponse = response as? NSHTTPURLResponse {
                     println("HTTP status code: \(HTTPResponse.statusCode)")
                     if HTTPResponse.statusCode == 200 {
+                        UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2}, completion: nil)
                         println("Successfully subscribed.")
                     }
                 }
@@ -102,9 +115,5 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
             }
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return artists.count
     }
 }

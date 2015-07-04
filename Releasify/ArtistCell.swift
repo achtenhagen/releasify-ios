@@ -3,9 +3,11 @@ import UIKit
 
 class ArtistCell: UITableViewCell {
 
-    @IBOutlet weak var artistLabel: UILabel!
+
+    @IBOutlet weak var albumTitle: UILabel!
     @IBOutlet weak var albumArtwork: UIImageView!
-    @IBOutlet weak var albumsLabel: UILabel!
+    @IBOutlet weak var releaseLabel: UILabel!
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()

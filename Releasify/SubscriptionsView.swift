@@ -78,7 +78,7 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func addSubscription () {
         responseArtists = [NSDictionary]()
-        let actionSheetController: UIAlertController = UIAlertController(title: "Artist Title", message: "We will verify this artist for you.", preferredStyle: .Alert)
+        let actionSheetController: UIAlertController = UIAlertController(title: "Artist Title", message: "The artist will be verified for you.", preferredStyle: .Alert)
         let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         actionSheetController.addAction(cancelAction)
         let addAction: UIAlertAction = UIAlertAction(title: "Add", style: .Default) { action -> Void in
@@ -164,7 +164,6 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            var failed = true
             let apiUrl = NSURL(string: APIURL.removeArtist.rawValue)
             let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(AppDB.sharedInstance.artists[indexPath.row].iTunesUniqueID)"
             let request = NSMutableURLRequest(URL:apiUrl!)

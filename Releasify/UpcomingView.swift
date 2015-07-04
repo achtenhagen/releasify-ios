@@ -33,7 +33,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
         AppDB.sharedInstance.getAlbums()
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         layout.itemSize = CGSize(width: UIScreen.mainScreen().bounds.width / 2, height: UIScreen.mainScreen().bounds.width / 2)
         
         // iPhone 6 Plus support
@@ -110,9 +110,10 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("albumCell", forIndexPath: indexPath) as! AlbumCell
+        let album = AppDB.sharedInstance.albums[indexPath.row]
         cell.artwork.image = UIImage()
-        let hash: String = AppDB.sharedInstance.albums[indexPath.row].artwork as String
-        let timeLeft = AppDB.sharedInstance.albums[indexPath.row].releaseDate - NSDate().timeIntervalSince1970
+        let hash = album.artwork as String
+        let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
         let dbArtwork = AppDB.sharedInstance.checkArtwork(hash)
         if dbArtwork {
             artwork[hash] = AppDB.sharedInstance.getArtwork(hash)
@@ -145,12 +146,56 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
                 })
             }
         }
+        
+        if timeDiff > 0 {
+            let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))
+            cell.releaseContainer.hidden = false
+            cell.releaseProgress.setProgress(album.getProgress(dateAdded), animated: false)
+        } else {
+            cell.releaseContainer.hidden = true
+        }
+        
+        var weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
+        var days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
+        var hours   = component(Double(timeDiff),      v: 60 * 60) % 24
+        var minutes = component(Double(timeDiff),           v: 60) % 60
+        var seconds = component(Double(timeDiff),            v: 1) % 60
+        
+        if Int(weeks) > 0 {
+            cell.releaseLabel.text = "\(Int(weeks)) wks"
+            if Int(weeks) == 1  {
+              cell.releaseLabel.text = "\(Int(weeks)) wk"
+            }
+        } else if Int(days) > 0 && Int(days) <= 7 {
+            cell.releaseLabel.text = "\(Int(days)) days"
+            if Int(days) == 1  {
+                cell.releaseLabel.text = "\(Int(days)) day"
+            }
+        } else if Int(hours) > 0 && Int(hours) <= 24 {
+            if Int(hours) >= 12 {
+                cell.releaseLabel.text = "Today"
+            } else {
+                cell.releaseLabel.text = "\(Int(hours)) hrs"
+                if Int(hours) == 1  {
+                    cell.releaseLabel.text = "\(Int(days)) hr"
+                }
+            }
+        } else if Int(minutes) > 0 && Int(minutes) <= 60 {
+            cell.releaseLabel.text = "\(Int(minutes)) min"
+        } else if Int(seconds) > 0 && Int(seconds) <= 60 {
+            cell.releaseLabel.text = "\(Int(seconds)) sec"
+        }
+        
         cell.releaseContainer.layer.masksToBounds = true
         cell.releaseContainer.layer.cornerRadius = 4.0
         if indexPath.row == AppDB.sharedInstance.albums.count-1 {
             /* Reached bottom of table view */
         }
         return cell
+    }
+    
+    func component (x: Double, v: Double) -> Double {
+        return floor(x / v)
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {

@@ -61,7 +61,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
             var representativeItem: MPMediaItem = item.representativeItem
             var artistName: AnyObject! = representativeItem.valueForProperty(MPMediaItemPropertyAlbumArtist)
             let name: String = artistName as! String
-            if (allowDuplicates || name != previousArtist) && name != "Various Artists" {
+            if (allowDuplicates || name != previousArtist) && name != "Various Artists" && name != "Verschiedene Interpreten" {
                 var section = keys[keys.count-1]
                 var sectionHasItems = false
                 var sectionIndex = 0

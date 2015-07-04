@@ -15,6 +15,7 @@ public enum DeviceTypes : String {
     iPadMini2      = "iPad Mini 2",
     iPadAir1       = "iPad Air 1",
     iPadAir2       = "iPad Air 2",
+    iPodTouch      = "iPod Touch",
     iPhone6        = "iPhone 6",
     iPhone6plus    = "iPhone 6 Plus",
     unrecognized   = "Unknown Device"
@@ -27,14 +28,14 @@ public extension UIDevice {
             (inout ptr: UnsafeMutableBufferPointer<CChar>) -> DeviceTypes in
             uname(UnsafeMutablePointer<utsname>(ptr.baseAddress))
             let machinePtr = advance(ptr.baseAddress, Int(_SYS_NAMELEN * 4))
-            var modelMap : [ String : DeviceTypes ] = [
+            var modelMap : [String : DeviceTypes] = [
                 "i386"      : .simulator,
                 "x86_64"    : .simulator,
-                "iPad2,1"   : .iPad2,          //
+                "iPad2,1"   : .iPad2,          // iPad (2nd Generation)
                 "iPad3,1"   : .iPad3,          // (3rd Generation)
-                "iPhone3,1" : .iPhone4,        //
-                "iPhone3,2" : .iPhone4,        //
-                "iPhone4,1" : .iPhone4S,       //
+                "iPhone3,1" : .iPhone4,        // iPhone 4
+                "iPhone3,2" : .iPhone4,        // iPhone 4
+                "iPhone4,1" : .iPhone4S,       // iPhone 4S
                 "iPhone5,1" : .iPhone5,        // (model A1428, AT&T/Canada)
                 "iPhone5,2" : .iPhone5,        // (model A1429, everything else)
                 "iPad3,4"   : .iPad4,          // (4th Generation)
@@ -48,6 +49,7 @@ public extension UIDevice {
                 "iPad4,4"   : .iPadMini2,      // (2nd Generation iPad Mini - Wifi)
                 "iPad4,5"   : .iPadMini2,      // (2nd Generation iPad Mini - Cellular)
                 "iPhone7,1" : .iPhone6plus,    // All iPhone 6 Plus's
+                "iPod5,1"   : .iPodTouch,      // 5th Generation iPod Touch
                 "iPhone7,2" : .iPhone6         // All iPhone 6's
             ]
             if let model = modelMap[String.fromCString(machinePtr)!] {
