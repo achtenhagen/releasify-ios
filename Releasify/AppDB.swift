@@ -113,7 +113,7 @@ final class AppDB {
         var timestamp: String = String(stringInterpolationSegment: Int(NSDate().timeIntervalSince1970))
         var query = "SELECT * FROM albums WHERE release_date - \(timestamp) > 0 ORDER BY release_date ASC LIMIT 64"
         getAlbumsComponent(query)
-        query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 AND release_date - \(timestamp) > -2592000 ORDER BY release_date DESC LIMIT 100"
+        query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 AND release_date - \(timestamp) > -2592000 ORDER BY release_date DESC LIMIT 10"
         getAlbumsComponent(query)
         println("Albums in db: \(albums.count)")
     }

@@ -27,7 +27,6 @@ class AlbumView: UIViewController {
     @IBOutlet weak var thirdTimeLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
     @IBOutlet weak var explicitLabel: UILabel!
-    @IBOutlet weak var backgroundView: UIImageView!
     
     @IBAction func openiTunes(sender: AnyObject) {
         if UIApplication.sharedApplication().canOpenURL(NSURL(string: album!.iTunesURL)!) {
@@ -45,7 +44,6 @@ class AlbumView: UIViewController {
         if let dbArtwork = AppDB.sharedInstance.getArtwork(album.artwork) {
             artwork = dbArtwork
         }
-        backgroundView.image = artwork
         albumArtwork.image = artwork
         artist = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
         artistTitleLabel.text = artist

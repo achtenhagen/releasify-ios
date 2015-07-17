@@ -36,7 +36,6 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     override func viewWillAppear(animated: Bool) {
-        refresh()
         if AppDB.sharedInstance.artists.count > 0 {
             tableView.hidden = false
         }
@@ -126,6 +125,8 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
                                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                                 if self.responseArtists.count > 0 {
                                     self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
+                                } else {
+                                    self.refresh()
                                 }
                             }
                         }

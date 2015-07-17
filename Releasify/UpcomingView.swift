@@ -33,7 +33,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
         AppDB.sharedInstance.getAlbums()
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         layout.itemSize = CGSize(width: UIScreen.mainScreen().bounds.width / 2, height: UIScreen.mainScreen().bounds.width / 2)
         
         // iPhone 6 Plus support
