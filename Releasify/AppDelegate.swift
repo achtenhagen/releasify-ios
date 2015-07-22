@@ -16,14 +16,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
-        self.defaults.setValue(NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"], forKey: "appVersion")
+        let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String)! + " (Clairvoyant)"
+        self.defaults.setValue(versionString, forKey: "appVersion")
         
         // Notification settings & categories
         if application.respondsToSelector("registerUserNotificationSettings:") {
             
             var appAction = UIMutableUserNotificationAction()
             appAction.identifier = "APP_ACTION"
-            appAction.title = "Open in App"
+            appAction.title = "View in App"
             appAction.activationMode = .Foreground
             appAction.destructive = false
             appAction.authenticationRequired = false
@@ -37,7 +38,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             var preorderAction = UIMutableUserNotificationAction()
             preorderAction.identifier = "PREORDER_ACTION"
-            preorderAction.title = "Pre-order on iTunes"
+            switch UIDevice.currentDevice().systemVersion.compare("8.4.0", options: NSStringCompareOptions.NumericSearch) {
+                case .OrderedSame, .OrderedDescending:
+                    preorderAction.title = " MUSIC"
+                case .OrderedAscending:
+					preorderAction.title = "Pre-order on iTunes"
+            }
             preorderAction.activationMode = .Foreground
             preorderAction.destructive = false
             preorderAction.authenticationRequired = false
@@ -56,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             remoteCategory.setActions(remoteActions, forContext: .Minimal)
             
             let categories = NSSet(objects: defaultCategory, remoteCategory)
-            let types:UIUserNotificationType = (.Alert | .Badge | .Sound)
+            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
             let settings = UIUserNotificationSettings(forTypes: types, categories: categories as Set<NSObject>)
             
             application.registerUserNotificationSettings(settings)
@@ -69,6 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             println("The application will be reset to default settings.")
             application.cancelAllLocalNotifications()
             AppDB.sharedInstance.truncate("artists")
+            AppDB.sharedInstance.truncate("pending_artists")
             AppDB.sharedInstance.truncate("albums")
             AppDB.sharedInstance.truncate("album_artists")
             defaults.setInteger(0, forKey: "ID")
@@ -97,7 +104,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // Initialize the database.
-        AppDB.sharedInstance.create()
+        AppDB.sharedInstance.inititalize()
         
         // Check for notification payload when app is launched.
         if let launchOpts = launchOptions {
@@ -224,19 +231,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler()
     }
     
-    func delay(delay:Double, closure:()->()) {
+    func delay(delay:Double, closure:() -> Void) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         println("Received remote notification while the app was running.")
-        NSNotificationCenter.defaultCenter().postNotificationName("refreshApp", object: nil)
-        completionHandler(UIBackgroundFetchResult.NoData)
+		API.sharedInstance.refreshContent(nil, errorHandler: {(error) -> Void in
+			completionHandler(UIBackgroundFetchResult.Failed)
+		})
+		completionHandler(UIBackgroundFetchResult.NewData)
     }
     
-    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        // -- Background fetch -- //
-        completionHandler(UIBackgroundFetchResult.NoData)
+	// -- Background fetch -- //
+	func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+		println("Starting background fetch.")
+		API.sharedInstance.refreshContent(nil, errorHandler: {(error) -> Void in
+			completionHandler(UIBackgroundFetchResult.Failed)
+		})
+		completionHandler(UIBackgroundFetchResult.NewData)
     }
 
     func applicationWillResignActive(application: UIApplication) {

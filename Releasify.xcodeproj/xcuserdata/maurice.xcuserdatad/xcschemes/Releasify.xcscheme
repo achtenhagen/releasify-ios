@@ -20,34 +20,6 @@
                ReferencedContainer = "container:Releasify.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51F84DD91AB750A100D51E0C"
-               BuildableName = "Releasify.xctest"
-               BlueprintName = "ReleasifyTests"
-               ReferencedContainer = "container:Releasify.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51D776BA1B2B653700D252A5"
-               BuildableName = "Releasify Tests 2.xctest"
-               BlueprintName = "Releasify Tests 2"
-               ReferencedContainer = "container:Releasify.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -56,26 +28,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51F84DD91AB750A100D51E0C"
-               BuildableName = "Releasify.xctest"
-               BlueprintName = "ReleasifyTests"
-               ReferencedContainer = "container:Releasify.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51D776BA1B2B653700D252A5"
-               BuildableName = "Releasify Tests 2.xctest"
-               BlueprintName = "Releasify Tests 2"
-               ReferencedContainer = "container:Releasify.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

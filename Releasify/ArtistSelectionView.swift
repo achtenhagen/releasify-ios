@@ -4,7 +4,7 @@ import UIKit
 class ArtistSelectionView: UIViewController, UITableViewDataSource {
 
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    var artists:[NSDictionary]!
+    var artists: [NSDictionary]!
     var artwork = [String:UIImage]()
     
     @IBOutlet weak var artistsTable: UITableView!
@@ -44,8 +44,7 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
             } else {
                 if let checkedURL = NSURL(string: albumURL) {
                     let request = NSURLRequest(URL: checkedURL)
-                    let mainQueue = NSOperationQueue.mainQueue()
-                    NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) -> Void in
+                    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) -> Void in
                         if error == nil {
                             if let HTTPResponse = response as? NSHTTPURLResponse {
                                 println("HTTP status code: \(HTTPResponse.statusCode)")
@@ -107,9 +106,6 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
                 }
             } else {
                 var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { action -> Void in
-                    UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-                }))
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
             }

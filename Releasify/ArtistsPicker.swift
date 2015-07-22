@@ -239,9 +239,6 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
                     self.activityView.removeFromSuperview()
                     self.indicatorView.removeFromSuperview()
                     var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { action -> Void in
-                        UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-                    }))
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { action -> Void in
                         self.dismissViewControllerAnimated(true, completion: nil)
                         return

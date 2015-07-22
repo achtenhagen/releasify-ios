@@ -4,7 +4,7 @@ import UIKit
 class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    var refreshControl:UIRefreshControl!
+    var refreshControl: UIRefreshControl!
     var selectedAlbum = Int()
     var artwork = [String:UIImage]()
     var notificationAlbumID = Int()
@@ -31,6 +31,9 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
         // Load data into database.
         AppDB.sharedInstance.getArtists()
         AppDB.sharedInstance.getAlbums()
+        
+        // Check for any pending artists waiting to be removed.
+        let pendingArtists = AppDB.sharedInstance.getPendingArtists()
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -70,21 +73,23 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
         notification.fireDate = NSDate().dateByAddingTimeInterval(5)
         notification.applicationIconBadgeNumber = 1
         notification.soundName = UILocalNotificationDefaultSoundName
-        notification.userInfo = ["ID": 339, "url" : "https://itunes.apple.com/us/album/no-line-on-horizon-deluxe/id305352554?uo=4"]
+        notification.userInfo = ["ID": 1104, "url" : "https://itunes.apple.com/us/album/relentless/id1009035435?uo=4"]
         UIApplication.sharedApplication().scheduleLocalNotification(notification)*/
     }
     
     override func viewWillAppear(animated: Bool) {
         if AppDB.sharedInstance.artists.count > 0 && AppDB.sharedInstance.albums.count == 0 {
-            println("First time refresh.")
+            println("Initial refresh.")
             refresh()
         }
     }
     
     func showAlbumFromNotification(notification:NSNotification) {
         notificationAlbumID = notification.userInfo!["ID"]! as! Int
-        println(notificationAlbumID)
-        self.performSegueWithIdentifier("NotificationAlbumSegue", sender: self)
+        if AppDB.sharedInstance.lookupAlbum(Int32(notificationAlbumID)) {
+            println("Album exists in the db.")
+            self.performSegueWithIdentifier("NotificationAlbumSegue", sender: self)
+        }
     }
     
     func openiTunes(notification:NSNotification) {
@@ -215,7 +220,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
                         UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
                     }
                 })
-                let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
+                let deleteAction = UIAlertAction(title: "Unsubscribe", style: .Destructive, handler: { action in
                     let albumID = AppDB.sharedInstance.albums[indexPath!.row].ID
                     let albumArtwork = AppDB.sharedInstance.albums[indexPath!.row].artwork
                     for n in UIApplication.sharedApplication().scheduledLocalNotifications {
@@ -246,86 +251,15 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
     }
     
     func refresh() {
-        let explicit = appDelegate.defaults.boolForKey("allowExplicit")
-        var failed = true
-        let apiUrl = NSURL(string: APIURL.updateContent.rawValue)
-        var explicitValue = 1
-        if !appDelegate.allowExplicitContent { explicitValue = 0 }
-        let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(explicitValue)"
-        let request = NSMutableURLRequest(URL:apiUrl!)
-        request.HTTPMethod = "POST"
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
-        request.timeoutInterval = 30
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) in
-            if error == nil {
-                if let HTTPResponse = response as? NSHTTPURLResponse {
-                    println("HTTP status code: \(HTTPResponse.statusCode)")
-                    if HTTPResponse.statusCode == 200 {
-                        var error: NSError?
-                        if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? [NSDictionary] {
-                            if error != nil {
-                                println(error)
-                                return
-                            }
-                            for item in json {
-                                let releaseDate = (item["releaseDate"] as! Double)
-                                let albumItem = Album(
-                                    ID: item["id"] as! Int,
-                                    title: item["title"] as! String,
-                                    artistID: item["artistId"] as! Int,
-                                    releaseDate: releaseDate,
-                                    artwork: (string: item["artwork"] as! String),
-                                    explicit: item["explicit"] as! Int,
-                                    copyright: item["copyright"] as! String,
-                                    iTunesUniqueID: item["iTunesUniqueId"] as! Int,
-                                    iTunesURL: item["iTunesUrl"] as! String,
-                                    created: Int(NSDate().timeIntervalSince1970)
-                                )
-                                // When scheduling a notification, be sure to use the ID local to the database.
-                                let newAlbumID = AppDB.sharedInstance.addAlbum(albumItem)
-                                if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications.count < 64 {
-                                    let fireDate = Double(releaseDate) - Double(NSDate().timeIntervalSince1970)
-                                    if fireDate > 0 {
-                                        println("Notification will fire in \(fireDate) seconds.")
-                                        var notification = UILocalNotification()
-                                        notification.category = "DEFAULT_CATEGORY"
-                                        notification.timeZone = NSTimeZone.localTimeZone()
-                                        notification.alertTitle = "New Album Released"
-                                        notification.alertBody = "\(albumItem.title) is now available."
-                                        notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
-                                        notification.applicationIconBadgeNumber++
-                                        notification.soundName = UILocalNotificationDefaultSoundName
-                                        notification.userInfo = ["ID": albumItem.ID, "url": albumItem.iTunesURL]
-                                        UIApplication.sharedApplication().scheduleLocalNotification(notification)
-                                    }
-                                    AppDB.sharedInstance.getAlbums()
-                                    self.albumCollectionView.reloadData()
-                                }
-                            }
-                            failed = false
-                        }
-                    }
-                }
-            } else {
-                var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { action -> Void in
-                    UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-                }))
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
-            }
-            if !failed {
-                self.albumCollectionView.reloadData()
-                self.appDelegate.defaults.setObject(NSDate().timeIntervalSince1970, forKey: "lastUpdated")
-            }
-            AppDB.sharedInstance.getAlbums()
-            AppDB.sharedInstance.getArtists()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        API.sharedInstance.refreshContent({() -> Void in
             self.refreshControl.endRefreshing()
-        }
+        },
+        errorHandler: {(error) -> Void in
+            self.refreshControl.endRefreshing()
+            var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        })
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -336,11 +270,11 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
             var detailController = segue.destinationViewController as! AlbumView
             var index = 0
             for album in AppDB.sharedInstance.albums {
-                index++
                 if album.ID == notificationAlbumID {
                     detailController.album = AppDB.sharedInstance.albums[index]
                     break
                 }
+                index++
             }
         }
     }

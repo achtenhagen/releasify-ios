@@ -27,10 +27,6 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
             subscriptionsIcon.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 60)
             self.view.addSubview(subscriptionsIcon)*/
         }
-        refreshDB()
-    }
-    
-    func refreshDB () {
         AppDB.sharedInstance.getArtists()
         tableView.reloadData()
     }
@@ -120,7 +116,8 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
                                         }
                                     }
                                 }
-                                self.refreshDB()
+                                AppDB.sharedInstance.getArtists()
+                                self.tableView.reloadData()
                                 println("Completed batch processing.")
                                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                                 if self.responseArtists.count > 0 {
@@ -179,21 +176,19 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
                     if let HTTPResponse = response as? NSHTTPURLResponse {
                         println(HTTPResponse.statusCode)
                         if HTTPResponse.statusCode == 204 {
-                            AppDB.sharedInstance.deleteArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
-                            AppDB.sharedInstance.artists.removeAtIndex(indexPath.row)
-                            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
                             println("Successfully unsubscribed.")
                         }
                     }
                 } else {
+                    AppDB.sharedInstance.addPendingArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
                     var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { action -> Void in
-                        UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-                    }))
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                AppDB.sharedInstance.deleteArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
+                AppDB.sharedInstance.artists.removeAtIndex(indexPath.row)
+                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
                 self.tableView.setEditing(false, animated: true)
             }
         }
@@ -215,56 +210,19 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     func refresh() {
-        var failed = true
-        let apiUrl = NSURL(string: APIURL.updateArtists.rawValue)
-        let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
-        let request = NSMutableURLRequest(URL:apiUrl!)
-        request.HTTPMethod = "POST"
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
-        request.timeoutInterval = 30
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
         self.editButtonItem().enabled = false
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) in
-            if error == nil {
-                if let HTTPResponse = response as? NSHTTPURLResponse {
-                    println("HTTP status code: \(HTTPResponse.statusCode)")
-                    if HTTPResponse.statusCode == 200 {
-                        var error: NSError?
-                        if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? [NSDictionary] {
-                            if error != nil {
-                                return
-                            }
-                            for item in json {
-                                let artistID: Int = item["artistId"] as! Int
-                                let artistTitle: String = String(stringInterpolationSegment: item["title"]!)
-                                let artistUniqueID: Int = item["iTunesUniqueID"] as! Int
-                                let newArtistID = AppDB.sharedInstance.addArtist(Int32(artistID), artistTitle: artistTitle, iTunesUniqueID: Int32(artistUniqueID))
-                            }
-                            self.refreshDB()
-                            failed = false
-                        }
-                    }
-                }
-            } else {
-                var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { action -> Void in
-                    UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-                }))
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
-            }
-            if failed {
-
-            } else {
-
-            }
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            if AppDB.sharedInstance.artists.count > 0 {
-                self.editButtonItem().enabled = true
-            }
+        API.sharedInstance.refreshSubscriptions({() -> Void in
+            self.tableView.reloadData()
             self.refreshControl.endRefreshing()
+        },
+        errorHandler: {(error) -> Void in
+            self.refreshControl.endRefreshing()
+            var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        })
+        if AppDB.sharedInstance.artists.count > 0 {
+            self.editButtonItem().enabled = true
         }
     }
     
