@@ -122,58 +122,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func register (deviceToken: String? = nil) {
         let uuid = NSUUID().UUIDString
-        var appVersion = "Unknown"
-        if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {
-            appVersion = version
-        }
-        let systemVersion = UIDevice.currentDevice().systemVersion
-        let deviceName = UIDevice().deviceType.rawValue
-        let userAgent = "Releasify/\(appVersion) (iOS/\(systemVersion); \(deviceName))"
-        let apiUrl = NSURL(string: APIURL.register.rawValue)
         var explicitValue = 1
         if !allowExplicitContent { explicitValue = 0 }
         var postString = "uuid=\(uuid)&explicit=\(explicitValue)"
         if deviceToken != nil {
             postString += "&deviceToken=\(deviceToken!)"
         }
-        let request = NSMutableURLRequest(URL:apiUrl!)
-        request.HTTPMethod = "POST"
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
-        request.timeoutInterval = 30
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) in
-            if error == nil {
-                if let HTTPResponse = response as? NSHTTPURLResponse {
-                    println("HTTP status code: \(HTTPResponse.statusCode)")
-                    if HTTPResponse.statusCode == 201 {
-                        var error: NSError?
-                        if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? NSDictionary {
-                            if error != nil { return }
-                            let receivedUserID = json["id"] as? Int
-                            if receivedUserID > 0 {
-                                self.userID = receivedUserID!
-                                self.userUUID = uuid
-                                self.defaults.setInteger(receivedUserID!, forKey: "ID")
-                                self.defaults.setValue(self.userUUID, forKey: "uuid")
-                                if deviceToken != nil {
-                                    self.userDeviceToken = deviceToken!
-                                    self.defaults.setValue(self.userDeviceToken, forKey: "deviceToken")
-                                    println("Device token was set successfully.")
-                                }
-                                println("UUID was set successfully.")
-                                println("Received user ID: \(self.userID) from the server.")
-                            }
-                        }
-                    }
-                }
-            }
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-        }
+		API.sharedInstance.sendRequest(APIURL.register.rawValue, postString: postString, successHandler: {(response, data) -> Void in
+			if let HTTPResponse = response as? NSHTTPURLResponse {
+				println("HTTP status code: \(HTTPResponse.statusCode)")
+				if HTTPResponse.statusCode == 201 {
+					var error: NSError?
+					if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? NSDictionary {
+						if error != nil { return }
+						let receivedUserID = json["id"] as? Int
+						if receivedUserID > 0 {
+							self.userID = receivedUserID!
+							self.userUUID = uuid
+							self.defaults.setInteger(receivedUserID!, forKey: "ID")
+							self.defaults.setValue(self.userUUID, forKey: "uuid")
+							if deviceToken != nil {
+								self.userDeviceToken = deviceToken!
+								self.defaults.setValue(self.userDeviceToken, forKey: "deviceToken")
+								println("Device token was set successfully.")
+							}
+							println("UUID was set successfully.")
+							println("Received user ID: \(self.userID) from the server.")
+						}
+					}
+				}
+			}
+		},
+		errorHandler: {(error) -> Void in
+			println(error.localizedDescription)
+		})
     }
-    
+	
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         println("User allows notifications.")
         var deviceTokenString = deviceToken.description
@@ -237,7 +221,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         println("Received remote notification while the app was running.")
-		API.sharedInstance.refreshContent(nil, errorHandler: {(error) -> Void in
+		API.sharedInstance.refreshContent(nil, errorHandler: {(error) in
 			completionHandler(UIBackgroundFetchResult.Failed)
 		})
 		completionHandler(UIBackgroundFetchResult.NewData)
@@ -246,7 +230,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// -- Background fetch -- //
 	func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
 		println("Starting background fetch.")
-		API.sharedInstance.refreshContent(nil, errorHandler: {(error) -> Void in
+		API.sharedInstance.refreshContent(nil, errorHandler: {(error) in
 			completionHandler(UIBackgroundFetchResult.Failed)
 		})
 		completionHandler(UIBackgroundFetchResult.NewData)

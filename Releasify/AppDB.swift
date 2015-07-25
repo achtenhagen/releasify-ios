@@ -63,10 +63,10 @@ final class AppDB {
         connect()
         var newAlbumID = 0
         let albumExistsQuery = "SELECT COUNT(id) FROM albums WHERE id = ?"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, albumExistsQuery, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, Int32(albumItem.ID))
-            var numRows:Int32 = 0
+            var numRows: Int32 = 0
             if sqlite3_step(statement) == SQLITE_ROW {
                 numRows = sqlite3_column_int(statement, 0)
             }
@@ -102,7 +102,7 @@ final class AppDB {
     func deleteAlbum (id: Int32) {
         connect()
         let delete = "DELETE FROM albums WHERE id = ?"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, delete, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, id)
         }
@@ -115,10 +115,10 @@ final class AppDB {
     
     func getAlbums () {
         albums = [Album]()
-        var timestamp: String = String(stringInterpolationSegment: Int(NSDate().timeIntervalSince1970))
+        var timestamp = String(stringInterpolationSegment: Int(NSDate().timeIntervalSince1970))
         var query = "SELECT * FROM albums WHERE release_date - \(timestamp) > 0 ORDER BY release_date ASC LIMIT 64"
         getAlbumsComponent(query)
-        query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 AND release_date - \(timestamp) > -2592000 ORDER BY release_date DESC LIMIT 10"
+        query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 AND release_date - \(timestamp) > -2592000 ORDER BY release_date DESC LIMIT 50"
         getAlbumsComponent(query)
         println("Albums in db: \(albums.count)")
     }
@@ -126,7 +126,7 @@ final class AppDB {
     func getAlbumsComponent(query: String) {
         connect()
         var count = 0
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             while sqlite3_step(statement) == SQLITE_ROW {
                 let ID = Int(sqlite3_column_int(statement, 0))
@@ -161,7 +161,7 @@ final class AppDB {
         connect()
         var created:Int32 = 0
         let query = "SELECT created FROM albums WHERE id = ?"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, albumID)
             if sqlite3_step(statement) == SQLITE_ROW {
@@ -175,9 +175,9 @@ final class AppDB {
     
     func lookupAlbum (albumID: Int32) -> Bool {
         connect()
-        var numRows:Int32 = 0
+        var numRows: Int32 = 0
         let query = "SELECT COUNT(id) FROM albums WHERE id = ?"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, albumID)
             if sqlite3_step(statement) == SQLITE_ROW {
@@ -196,10 +196,10 @@ final class AppDB {
         var newItemID = 0
         let timeStamp = Int32(NSDate().timeIntervalSince1970)
         let artistExistsQuery = "SELECT COUNT(id) FROM artists WHERE iTunes_unique_id = ?"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, artistExistsQuery, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, iTunesUniqueID)
-            var numRows:Int32 = 0
+            var numRows: Int32 = 0
             if sqlite3_step(statement) == SQLITE_ROW {
                 numRows = sqlite3_column_int(statement, 0)
             }
@@ -227,12 +227,12 @@ final class AppDB {
     func addContributingArtist (albumID: Int32, artistID: Int32) {
         connect()
         let timeStamp = Int32(NSDate().timeIntervalSince1970)
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         var query = "SELECT COUNT(artist_id) FROM album_artists WHERE album_id = ? AND artist_id = ?"
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, albumID)
             sqlite3_bind_int(statement, 2, artistID)
-            var numRows:Int32 = 0
+            var numRows: Int32 = 0
             if sqlite3_step(statement) == SQLITE_ROW {
                 numRows = sqlite3_column_int(statement, 0)
             }
@@ -257,10 +257,10 @@ final class AppDB {
         connect()
         let timeStamp = Int32(NSDate().timeIntervalSince1970)
         let artistExistsQuery = "SELECT COUNT(id) FROM pending_artists WHERE id = ?"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, artistExistsQuery, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, ID)
-            var numRows:Int32 = 0
+            var numRows: Int32 = 0
             if sqlite3_step(statement) == SQLITE_ROW {
                 numRows = sqlite3_column_int(statement, 0)
             }
@@ -285,7 +285,7 @@ final class AppDB {
     func deleteArtist (ID: Int32) {
         connect()
         var query = "DELETE FROM artists WHERE id = ?"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, ID)
         }
@@ -310,7 +310,7 @@ final class AppDB {
         connect()
         var artistTitle = String()
         let query = "SELECT title FROM artists WHERE id IN (SELECT artist_id FROM album_artists WHERE album_id = ?)"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, albumID)
             if sqlite3_step(statement) == SQLITE_ROW {
@@ -326,7 +326,7 @@ final class AppDB {
         connect()
         var artistID = 0
         let query = "SELECT artist_id FROM album_artists WHERE album_id = ?"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, albumID)
             if sqlite3_step(statement) == SQLITE_ROW {
@@ -342,7 +342,7 @@ final class AppDB {
         connect()
         var artistID:Int32 = 0
         let query = "SELECT id FROM artists WHERE iTunes_unique_id = ?"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_int(statement, 1, uniqueID)
             if sqlite3_step(statement) == SQLITE_ROW {
@@ -358,7 +358,7 @@ final class AppDB {
         connect()
         self.artists = [Artist]()
         let query = "SELECT id,title,iTunes_unique_id,last_updated FROM artists ORDER BY title COLLATE NOCASE"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             while sqlite3_step(statement) == SQLITE_ROW {
                 let IDRow = sqlite3_column_int(statement, 0)
@@ -377,7 +377,7 @@ final class AppDB {
         connect()
         var pendingArtists = [Int]()
         let query = "SELECT id FROM pending_artists"
-        var statement:COpaquePointer = nil
+        var statement: COpaquePointer = nil
         if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
             while sqlite3_step(statement) == SQLITE_ROW {
                 let IDRow = sqlite3_column_int(statement, 0)
@@ -425,7 +425,7 @@ final class AppDB {
     func truncate (table: String) {
         connect()
         let truncateTablequery = "DELETE FROM \(table)"
-        var errMsg:UnsafeMutablePointer<Int8> = nil
+        var errMsg: UnsafeMutablePointer<Int8> = nil
         if sqlite3_exec(database, truncateTablequery, nil, nil, &errMsg) != SQLITE_OK {
             println(String.fromCString(UnsafePointer<Int8>(errMsg)))
         }

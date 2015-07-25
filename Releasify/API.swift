@@ -1,4 +1,6 @@
 
+// -- Releasify API -- //
+
 import UIKit
 
 class API {
@@ -18,11 +20,7 @@ class API {
         var explicitValue = 1
         if !appDelegate.allowExplicitContent { explicitValue = 0 }
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(explicitValue)"
-        sendRequest(APIURL.updateContent.rawValue, postString: postString, successHandler: {(response, data, error) -> Void in
-            if error != nil {
-                errorHandler!(error: error)
-                return
-            }
+        sendRequest(APIURL.updateContent.rawValue, postString: postString, successHandler: {(response, data) in
             if let HTTPResponse = response as? NSHTTPURLResponse {
                 if HTTPResponse.statusCode == 200 {
                     println("HTTP status code: \(HTTPResponse.statusCode)")
@@ -77,13 +75,10 @@ class API {
         })
     }
     
+    // -- Main method to update the App's subscriptions -- //
     func refreshSubscriptions (successHandler: (() -> Void)?, errorHandler: ((error: NSError!) -> Void)?) {
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
-        sendRequest(APIURL.updateArtists.rawValue, postString: postString, successHandler: {(response, data, error) -> Void in
-            if error != nil {
-                errorHandler!(error: error)
-                return
-            }
+        sendRequest(APIURL.updateArtists.rawValue, postString: postString, successHandler: {(response, data) in
             if let HTTPResponse = response as? NSHTTPURLResponse {
                 println("HTTP status code: \(HTTPResponse.statusCode)")
                 if HTTPResponse.statusCode == 200 {
@@ -112,23 +107,32 @@ class API {
         })
     }
     
-    func sendRequest (url: String, postString: String, successHandler: ((response: NSURLResponse!, data: NSData!, error: NSError!) -> Void), errorHandler: ((error: NSError!) -> Void)) {
+    // -- Handles all network requests related to the Releasify API -- //
+    func sendRequest (url: String, postString: String, successHandler: ((response: NSURLResponse!, data: NSData!) -> Void), errorHandler: ((error: NSError!) -> Void)) {
         let apiUrl = NSURL(string: url)
+        var appVersion = "Unknown"
+        if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {
+            appVersion = version
+        }
+        let systemVersion = UIDevice.currentDevice().systemVersion
+        let deviceName = UIDevice().deviceType.rawValue
+        let userAgent = "Releasify/\(appVersion) (iOS/\(systemVersion); \(deviceName))"
         let request = NSMutableURLRequest(URL:apiUrl!)
         request.HTTPMethod = "POST"
         request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
         request.timeoutInterval = 30
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) -> Void in
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
             if error != nil {
                 errorHandler(error: error)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 return
             }
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            successHandler(response: response, data: data, error: error)
+            successHandler(response: response, data: data)
         })
     }
 }

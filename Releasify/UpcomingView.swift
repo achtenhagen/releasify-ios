@@ -57,11 +57,15 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
         }
         
         // Shadow overlay
-        var gradientLayerView: UIView = UIView(frame: CGRectMake(0, 0, view.bounds.width, 100))
+        var gradientLayerView: UIView = UIView(frame: CGRectMake(0, 0, view.bounds.width, 64))
         var gradient: CAGradientLayer = CAGradientLayer()
         gradient.frame = gradientLayerView.bounds
-        gradient.colors = [UIColor(red: 0, green: 0, blue: 0, alpha: 0.85).CGColor, UIColor.clearColor().CGColor]
+        gradient.colors = [
+            UIColor(red: 0, green: 0, blue: 0, alpha: 0.85).CGColor,
+            UIColor(red: 0, green: 0, blue: 0, alpha: 0.01).CGColor
+        ]
         gradientLayerView.layer.insertSublayer(gradient, atIndex: 0)
+        gradientLayerView.userInteractionEnabled = true
         self.view.addSubview(gradientLayerView)
         view.bringSubviewToFront(subscriptionsBtn)
         
@@ -92,7 +96,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
         }
     }
     
-    func openiTunes(notification:NSNotification) {
+    func openiTunes(notification: NSNotification) {
         let albumURL = notification.userInfo!["url"]! as! String
         delay(0) {
             if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
@@ -101,7 +105,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
         }
     }
     
-    func delay(delay:Double, closure:()->()) {
+    func delay(delay:Double, closure: ()->()) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
     }
     
@@ -131,7 +135,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
             if let checkedURL = NSURL(string: albumURL) {
                 let request: NSURLRequest = NSURLRequest(URL: checkedURL)
                 let mainQueue = NSOperationQueue.mainQueue()
-                NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) -> Void in
+                NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
                     if error == nil {
                         if let HTTPResponse = response as? NSHTTPURLResponse {
                             println("HTTP status code: \(HTTPResponse.statusCode)")
@@ -142,7 +146,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
                                     if let cellToUpdate = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
                                         AppDB.sharedInstance.addArtwork(hash, artwork: image!)
                                         cell.artwork.image = image
-                                        UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {cell.artwork.alpha = 1.0}, completion: nil)
+                                        UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { cell.artwork.alpha = 1.0 }, completion: nil)
                                     }
                                 })
                             }
@@ -205,7 +209,14 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         selectedAlbum = indexPath.row
-        self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+        let albumURL = AppDB.sharedInstance.albums[selectedAlbum].iTunesURL
+        if AppDB.sharedInstance.albums[selectedAlbum].releaseDate - NSDate().timeIntervalSince1970 > 0 {
+            self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+        } else {
+            if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
+                UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
+            }
+        }
     }
     
     func longPressGestureRecognized(gesture: UIGestureRecognizer) {
@@ -233,7 +244,7 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
                             break
                         }
                     }
-                    UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: { self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0}, completion: {  (value: Bool) in
+                    UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: { self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0 }, completion: {(value: Bool) in
                         AppDB.sharedInstance.deleteAlbum(Int32(albumID))
                         AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
                         AppDB.sharedInstance.getAlbums()
@@ -251,10 +262,10 @@ class UpcomingView: UIViewController, UICollectionViewDataSource, UICollectionVi
     }
     
     func refresh() {
-        API.sharedInstance.refreshContent({() -> Void in
+        API.sharedInstance.refreshContent({
             self.refreshControl.endRefreshing()
         },
-        errorHandler: {(error) -> Void in
+        errorHandler: {(error) in
             self.refreshControl.endRefreshing()
             var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))

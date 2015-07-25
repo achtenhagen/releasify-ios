@@ -19,14 +19,6 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
         tableView.addSubview(refreshControl)
-        if AppDB.sharedInstance.artists.count == 0 {
-            /*tableView.hidden = true
-            let subscriptionsIcon: UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 120, height: 120))
-            let imagePath = NSBundle.mainBundle().pathForResource("icon_empty_subscriptions", ofType: "png")
-            subscriptionsIcon.image = UIImage(named: imagePath!)
-            subscriptionsIcon.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 60)
-            self.view.addSubview(subscriptionsIcon)*/
-        }
         AppDB.sharedInstance.getArtists()
         tableView.reloadData()
     }
@@ -80,65 +72,49 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
             let textField = actionSheetController.textFields![0] as! UITextField
             if !textField.text.isEmpty {
                 let artist = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-                var responseData = []
-                var batches = [String]()
-                let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)"
-                var batchCount = 0
-                var currentBatch = postString.stringByAppendingString("&title[]=" + artist)
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                println("Processing batch: \(currentBatch)")
-                let apiUrl = NSURL(string: APIURL.submitArtist.rawValue)
-                let request = NSMutableURLRequest(URL:apiUrl!)
-                request.HTTPMethod = "POST"
-                request.HTTPBody = currentBatch.dataUsingEncoding(NSUTF8StringEncoding)
-                request.timeoutInterval = 300
-                request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-                request.addValue("application/json", forHTTPHeaderField: "Accept")
-                NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) in
-                    if error == nil {
-                        if let HTTPResponse = response as? NSHTTPURLResponse {
-                            println(HTTPResponse.statusCode)
-                            if HTTPResponse.statusCode == 202 {
-                                if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
-                                    if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
-                                        for artist in awaitingArtists {
-                                            if let uniqueID = artist["iTunesUniqueID"] as? Int {
-                                                if AppDB.sharedInstance.getArtistByUniqueID(Int32(uniqueID)) == 0 {
-                                                    self.responseArtists.append(artist)
-                                                }
-                                            }                                           
-                                        }
-                                    }
-                                    if let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] {
-                                        for artist in failedArtists {
-                                            let title = (artist["title"] as? String)!
-                                            println("Artist \(title) was not found on iTunes.")
+                let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&title[]=\(artist)"
+                API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: postString, successHandler: {(response, data) in
+                    if let HTTPResponse = response as? NSHTTPURLResponse {
+                        println(HTTPResponse.statusCode)
+                        if HTTPResponse.statusCode == 202 {
+                            if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
+                                if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
+                                    for artist in awaitingArtists {
+                                        if let uniqueID = artist["iTunesUniqueID"] as? Int {
+                                            if AppDB.sharedInstance.getArtistByUniqueID(Int32(uniqueID)) == 0 {
+                                                self.responseArtists.append(artist)
+                                            }
                                         }
                                     }
                                 }
-                                AppDB.sharedInstance.getArtists()
-                                self.tableView.reloadData()
-                                println("Completed batch processing.")
-                                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                                if self.responseArtists.count > 0 {
-                                    self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
-                                } else {
-                                    self.refresh()
+                                if let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] {
+                                    for artist in failedArtists {
+                                        let title = (artist["title"] as? String)!
+                                        println("Artist \(title) was not found on iTunes.")
+                                    }
                                 }
                             }
+                            AppDB.sharedInstance.getArtists()
+                            self.tableView.reloadData()
+                            if self.responseArtists.count > 0 {
+                                self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
+                            } else {
+                                self.refresh()
+                            }
                         }
-                    } else {
-                        var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                        alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { action -> Void in
-                            UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-                        }))
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { action -> Void in
-                            self.dismissViewControllerAnimated(true, completion: nil)
-                            return
-                        }))
-                        self.presentViewController(alert, animated: true, completion: nil)
                     }
-                }
+                },
+                errorHandler: {(error) in
+                    var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { action -> Void in
+                        UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+                    }))
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { action in
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                        return
+                    }))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                })
             }
         }
         actionSheetController.addAction(addAction)
@@ -162,35 +138,25 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            let apiUrl = NSURL(string: APIURL.removeArtist.rawValue)
             let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(AppDB.sharedInstance.artists[indexPath.row].iTunesUniqueID)"
-            let request = NSMutableURLRequest(URL:apiUrl!)
-            request.HTTPMethod = "POST"
-            request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
-            request.timeoutInterval = 30
-            request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            request.addValue("application/json", forHTTPHeaderField: "Accept")
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) in
-                if error == nil {
-                    if let HTTPResponse = response as? NSHTTPURLResponse {
-                        println(HTTPResponse.statusCode)
-                        if HTTPResponse.statusCode == 204 {
-                            println("Successfully unsubscribed.")
-                        }
+            API.sharedInstance.sendRequest(APIURL.removeArtist.rawValue, postString: postString, successHandler: {(response, data) in
+                if let HTTPResponse = response as? NSHTTPURLResponse {
+                    println(HTTPResponse.statusCode)
+                    if HTTPResponse.statusCode == 204 {
+                        println("Successfully unsubscribed.")
                     }
-                } else {
-                    AppDB.sharedInstance.addPendingArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
-                    var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                    self.presentViewController(alert, animated: true, completion: nil)
                 }
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                AppDB.sharedInstance.deleteArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
-                AppDB.sharedInstance.artists.removeAtIndex(indexPath.row)
-                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
-                self.tableView.setEditing(false, animated: true)
-            }
+            },
+            errorHandler: {(error) in
+                AppDB.sharedInstance.addPendingArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
+                var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            })
+            AppDB.sharedInstance.deleteArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
+            AppDB.sharedInstance.artists.removeAtIndex(indexPath.row)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
+            self.tableView.setEditing(false, animated: true)
         }
     }
     
@@ -211,11 +177,11 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func refresh() {
         self.editButtonItem().enabled = false
-        API.sharedInstance.refreshSubscriptions({() -> Void in
+        API.sharedInstance.refreshSubscriptions({
             self.tableView.reloadData()
             self.refreshControl.endRefreshing()
         },
-        errorHandler: {(error) -> Void in
+        errorHandler: {(error) in
             self.refreshControl.endRefreshing()
             var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))

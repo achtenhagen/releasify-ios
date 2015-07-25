@@ -44,7 +44,7 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
             } else {
                 if let checkedURL = NSURL(string: albumURL) {
                     let request = NSURLRequest(URL: checkedURL)
-                    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) -> Void in
+                    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {(response, data, error) in
                         if error == nil {
                             if let HTTPResponse = response as? NSHTTPURLResponse {
                                 println("HTTP status code: \(HTTPResponse.statusCode)")
@@ -55,7 +55,7 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
                                         if let cellToUpdate: ArtistCell = self.artistsTable.cellForRowAtIndexPath(indexPath) as? ArtistCell {
                                             cellToUpdate.albumArtwork.alpha = 0
                                             cellToUpdate.albumArtwork.image = image
-                                            UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {cellToUpdate.albumArtwork.alpha = 1.0}, completion: nil)
+                                            UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { cellToUpdate.albumArtwork.alpha = 1.0 }, completion: nil)
                                         }
                                     })
                                 }
@@ -95,12 +95,12 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) in
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) {(response, data, error) in
             if error == nil {
                 if let HTTPResponse = response as? NSHTTPURLResponse {
                     println("HTTP status code: \(HTTPResponse.statusCode)")
                     if HTTPResponse.statusCode == 200 {
-                        UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2}, completion: nil)
+                        UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2 }, completion: nil)
                         println("Successfully subscribed.")
                     }
                 }
