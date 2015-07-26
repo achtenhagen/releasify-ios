@@ -5,7 +5,7 @@ import UIKit
 
 class API {
     
-    class var sharedInstance : API {
+    class var sharedInstance: API {
         struct Static {
             static let instance = API()
         }
@@ -78,7 +78,7 @@ class API {
     // -- Main method to update the App's subscriptions -- //
     func refreshSubscriptions (successHandler: (() -> Void)?, errorHandler: ((error: NSError!) -> Void)?) {
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
-        sendRequest(APIURL.updateArtists.rawValue, postString: postString, successHandler: {(response, data) in
+        sendRequest(APIURL.updateArtists.rawValue, postString: postString, successHandler: { (response, data) in
             if let HTTPResponse = response as? NSHTTPURLResponse {
                 println("HTTP status code: \(HTTPResponse.statusCode)")
                 if HTTPResponse.statusCode == 200 {
@@ -102,7 +102,7 @@ class API {
                 }
             }
         },
-        errorHandler: {(error) -> Void in
+        errorHandler: { (error) in
             errorHandler!(error: error)
         })
     }
@@ -126,12 +126,11 @@ class API {
         request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
-            if error != nil {
+			UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+			if error != nil {
                 errorHandler(error: error)
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 return
             }
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             successHandler(response: response, data: data)
         })
     }

@@ -22,14 +22,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Notification settings & categories
         if application.respondsToSelector("registerUserNotificationSettings:") {
             
-            var appAction = UIMutableUserNotificationAction()
+			var appAction = UIMutableUserNotificationAction()
             appAction.identifier = "APP_ACTION"
             appAction.title = "View in App"
             appAction.activationMode = .Foreground
             appAction.destructive = false
             appAction.authenticationRequired = false
             
-            var storeAction = UIMutableUserNotificationAction()
+			var storeAction = UIMutableUserNotificationAction()
             storeAction.identifier = "STORE_ACTION"
             storeAction.title = "Buy on iTunes"
             storeAction.activationMode = .Foreground
@@ -128,7 +128,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if deviceToken != nil {
             postString += "&deviceToken=\(deviceToken!)"
         }
-		API.sharedInstance.sendRequest(APIURL.register.rawValue, postString: postString, successHandler: {(response, data) -> Void in
+		API.sharedInstance.sendRequest(APIURL.register.rawValue, postString: postString, successHandler: { (response, data) in
 			if let HTTPResponse = response as? NSHTTPURLResponse {
 				println("HTTP status code: \(HTTPResponse.statusCode)")
 				if HTTPResponse.statusCode == 201 {
@@ -153,7 +153,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				}
 			}
 		},
-		errorHandler: {(error) -> Void in
+		errorHandler: { (error) in
 			println(error.localizedDescription)
 		})
     }
@@ -170,7 +170,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-        println(error.localizedDescription)
+		println(error.localizedDescription)
         if userID == 0 {
             register()
         }
@@ -221,7 +221,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         println("Received remote notification while the app was running.")
-		API.sharedInstance.refreshContent(nil, errorHandler: {(error) in
+		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
 			completionHandler(UIBackgroundFetchResult.Failed)
 		})
 		completionHandler(UIBackgroundFetchResult.NewData)
@@ -230,7 +230,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// -- Background fetch -- //
 	func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
 		println("Starting background fetch.")
-		API.sharedInstance.refreshContent(nil, errorHandler: {(error) in
+		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
 			completionHandler(UIBackgroundFetchResult.Failed)
 		})
 		completionHandler(UIBackgroundFetchResult.NewData)

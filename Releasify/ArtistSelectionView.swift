@@ -44,7 +44,7 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
             } else {
                 if let checkedURL = NSURL(string: albumURL) {
                     let request = NSURLRequest(URL: checkedURL)
-                    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {(response, data, error) in
+                    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
                         if error == nil {
                             if let HTTPResponse = response as? NSHTTPURLResponse {
                                 println("HTTP status code: \(HTTPResponse.statusCode)")
@@ -86,30 +86,19 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
     
     func confirmArtist (sender: UIButton) {
         let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int)!
-        let apiUrl = NSURL(string: APIURL.confirmArtist.rawValue)
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
-        let request = NSMutableURLRequest(URL:apiUrl!)
-        request.HTTPMethod = "POST"
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
-        request.timeoutInterval = 30
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) {(response, data, error) in
-            if error == nil {
-                if let HTTPResponse = response as? NSHTTPURLResponse {
-                    println("HTTP status code: \(HTTPResponse.statusCode)")
-                    if HTTPResponse.statusCode == 200 {
-                        UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2 }, completion: nil)
-                        println("Successfully subscribed.")
-                    }
+        API.sharedInstance.sendRequest(APIURL.confirmArtist.rawValue, postString: postString, successHandler: { (response, data) in
+            if let HTTPResponse = response as? NSHTTPURLResponse {
+                println("HTTP status code: \(HTTPResponse.statusCode)")
+                if HTTPResponse.statusCode == 200 {
+                    UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2 }, completion: nil)
+                    println("Successfully subscribed.")
                 }
-            } else {
-                var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
             }
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-        }
+        }, errorHandler: { (error) in
+            var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        })
     }
 }

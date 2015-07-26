@@ -63,17 +63,34 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
         }
     }
     
+    func refresh() {
+        self.editButtonItem().enabled = false
+        API.sharedInstance.refreshSubscriptions({
+            self.tableView.reloadData()
+            self.refreshControl.endRefreshing()
+        },
+        errorHandler: { (error) in
+            self.refreshControl.endRefreshing()
+            var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        })
+        if AppDB.sharedInstance.artists.count > 0 {
+            self.editButtonItem().enabled = true
+        }
+    }
+    
     func addSubscription () {
         responseArtists = [NSDictionary]()
         let actionSheetController: UIAlertController = UIAlertController(title: "Artist Title", message: "The artist will be verified for you.", preferredStyle: .Alert)
         let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         actionSheetController.addAction(cancelAction)
-        let addAction: UIAlertAction = UIAlertAction(title: "Add", style: .Default) { action -> Void in
+        let addAction: UIAlertAction = UIAlertAction(title: "Add", style: .Default) { action in
             let textField = actionSheetController.textFields![0] as! UITextField
             if !textField.text.isEmpty {
                 let artist = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
                 let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&title[]=\(artist)"
-                API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: postString, successHandler: {(response, data) in
+                API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: postString, successHandler: { (response, data) in
                     if let HTTPResponse = response as? NSHTTPURLResponse {
                         println(HTTPResponse.statusCode)
                         if HTTPResponse.statusCode == 202 {
@@ -104,9 +121,9 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
                         }
                     }
                 },
-                errorHandler: {(error) in
+                errorHandler: { (error) in
                     var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { action -> Void in
+                    alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { action in
                         UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
                     }))
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { action in
@@ -118,7 +135,7 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
             }
         }
         actionSheetController.addAction(addAction)
-        actionSheetController.addTextFieldWithConfigurationHandler { textField -> Void in
+        actionSheetController.addTextFieldWithConfigurationHandler { textField in
             textField.keyboardAppearance = .Dark
             textField.autocapitalizationType = .Words
             textField.placeholder = "e.g., Armin van Buuren"
@@ -139,7 +156,7 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
             let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(AppDB.sharedInstance.artists[indexPath.row].iTunesUniqueID)"
-            API.sharedInstance.sendRequest(APIURL.removeArtist.rawValue, postString: postString, successHandler: {(response, data) in
+            API.sharedInstance.sendRequest(APIURL.removeArtist.rawValue, postString: postString, successHandler: { (response, data) in
                 if let HTTPResponse = response as? NSHTTPURLResponse {
                     println(HTTPResponse.statusCode)
                     if HTTPResponse.statusCode == 204 {
@@ -147,7 +164,7 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
                     }
                 }
             },
-            errorHandler: {(error) in
+            errorHandler: { (error) in
                 AppDB.sharedInstance.addPendingArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
                 var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
@@ -172,23 +189,6 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
         } else {
             self.editButtonItem().title = "Edit"
             self.editButtonItem().style = UIBarButtonItemStyle.Plain
-        }
-    }
-    
-    func refresh() {
-        self.editButtonItem().enabled = false
-        API.sharedInstance.refreshSubscriptions({
-            self.tableView.reloadData()
-            self.refreshControl.endRefreshing()
-        },
-        errorHandler: {(error) in
-            self.refreshControl.endRefreshing()
-            var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-        })
-        if AppDB.sharedInstance.artists.count > 0 {
-            self.editButtonItem().enabled = true
         }
     }
     

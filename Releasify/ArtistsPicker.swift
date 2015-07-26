@@ -181,74 +181,69 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
         indicatorView.startAnimating()
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
-        var batchesProcessed = 0
+		// HTTP Request Timeout - 300sec
+		var batchesProcessed = 0
         for batch in batches {
             println("Processing batch: \(batch)")
             let apiUrl = NSURL(string: APIURL.submitArtist.rawValue)
-            let request = NSMutableURLRequest(URL:apiUrl!)
-            request.HTTPMethod = "POST"
-            request.HTTPBody = batch.dataUsingEncoding(NSUTF8StringEncoding)
-            request.timeoutInterval = 300
-            request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            request.addValue("application/json", forHTTPHeaderField: "Accept")
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) in
-                if error == nil {
-                    if let HTTPResponse = response as? NSHTTPURLResponse {
-                        println("HTTP status code: \(HTTPResponse.statusCode)")
-                        if HTTPResponse.statusCode == 202 {
-                            if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
-                                if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
-                                    for artist in awaitingArtists {
-                                        if let uniqueID = artist["iTunesUniqueID"] as? Int {
-                                            if !contains(uniqueIDs, uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(Int32(uniqueID)) == 0 {
-                                                uniqueIDs.append(uniqueID)
-                                                self.responseArtists.append(artist)
-                                            }
-                                        }
-                                    }
-                                }
-                                if let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] {
-                                    for artist in failedArtists {
-                                        let title = (artist["title"] as? String)!
-                                        println("Artist \(title) was not found on iTunes.")
-                                    }
-                                }
-                            }
-                            batchesProcessed++
-                            println("Processed batches: \(batchesProcessed)")
-                            let batchProgress = Float(Double(batchesProcessed) / Double(batches.count))
-                            self.progressBar.setProgress(batchProgress, animated: true)
-                            if batchesProcessed == batches.count {
-                                println("Completed batch processing.")
-                                self.progressBar.setProgress(1.0, animated: true)
-                                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                                if self.responseArtists.count > 0 {
-                                    self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
-                                } else {
-                                    self.dismissViewControllerAnimated(true, completion: nil)
-                                }
-                            }
-                        } else {
-                            // Invalid request
-                            self.activityView.removeFromSuperview()
-                            self.indicatorView.removeFromSuperview()
-                        }
-                    }
-                } else {
-                    self.progressBar.progressTintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
-                    self.activityView.removeFromSuperview()
-                    self.indicatorView.removeFromSuperview()
-                    var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { action -> Void in
-                        self.dismissViewControllerAnimated(true, completion: nil)
-                        return
-                    }))
-                    self.presentViewController(alert, animated: true, completion: nil)
-                }
-            }
+			
+			API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: batch, successHandler: { (response, data) in
+				if let HTTPResponse = response as? NSHTTPURLResponse {
+					println("HTTP status code: \(HTTPResponse.statusCode)")
+					if HTTPResponse.statusCode == 202 {
+						if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
+							if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
+								for artist in awaitingArtists {
+									if let uniqueID = artist["iTunesUniqueID"] as? Int {
+										if !contains(uniqueIDs, uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(Int32(uniqueID)) == 0 {
+											uniqueIDs.append(uniqueID)
+											self.responseArtists.append(artist)
+										}
+									}
+								}
+							}
+							if let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] {
+								for artist in failedArtists {
+									let title = (artist["title"] as? String)!
+									println("Artist \(title) was not found on iTunes.")
+								}
+							}
+						}
+						batchesProcessed++
+						println("Processed batches: \(batchesProcessed)")
+						let batchProgress = Float(Double(batchesProcessed) / Double(batches.count))
+						self.progressBar.setProgress(batchProgress, animated: true)
+						if batchesProcessed == batches.count {
+							println("Completed batch processing.")
+							self.progressBar.setProgress(1.0, animated: true)
+							UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+							if self.responseArtists.count > 0 {
+								self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
+							} else {
+								self.dismissViewControllerAnimated(true, completion: nil)
+							}
+						}
+					} else {
+						// Invalid request
+						self.activityView.removeFromSuperview()
+						self.indicatorView.removeFromSuperview()
+					}
+				}
+			},
+			errorHandler: { (error) in
+				self.progressBar.progressTintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
+				self.activityView.removeFromSuperview()
+				self.indicatorView.removeFromSuperview()
+				var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+				alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { action in
+					self.dismissViewControllerAnimated(true, completion: nil)
+					return
+				}))
+				self.presentViewController(alert, animated: true, completion: nil)
+			})
         }
     }
-    
+	
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if self.searchController.active {
             return filteredArtists.count
