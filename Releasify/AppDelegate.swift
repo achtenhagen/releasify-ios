@@ -10,11 +10,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var userDeviceToken: String?
     var userUUID = String()
     var allowExplicitContent = true
-    var notificationAlbumID = Int()
+	var notificationAlbumID: Int!
     var remoteNotificationPayload = NSDictionary()
     var localNotificationPayload  = NSDictionary()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+		
+		/*
+			Releasify Version Names:
+			-----------------------
+			1.x - Clairvoyant
+			2.x - Takumi
+			3.x - Mirage
+		*/
 
         let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String)! + " (Clairvoyant)"
         self.defaults.setValue(versionString, forKey: "appVersion")
@@ -144,7 +152,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 							if deviceToken != nil {
 								self.userDeviceToken = deviceToken!
 								self.defaults.setValue(self.userDeviceToken, forKey: "deviceToken")
-								println("Device token was set successfully.")
+								println("APNS Device token was set successfully.")
 							}
 							println("UUID was set successfully.")
 							println("Received user ID: \(self.userID) from the server.")
@@ -176,10 +184,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+	// Local Notification - Receiver
+	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         if let userInfo = notification.userInfo {
-            notificationAlbumID = userInfo["ID"] as! Int
-            println("Received notification with ID: \(notificationAlbumID) from the server.")
+            notificationAlbumID = userInfo["AlbumID"] as! Int
+            println("Received a local notification with ID: \(notificationAlbumID).")
             // Called when the notification is tapped if the app is inactive or in the background
             if application.applicationState == .Inactive || application.applicationState == .Background {
                 NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: userInfo)
@@ -187,7 +196,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+	// Local Notification - Handler
+	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
         if identifier == "APP_ACTION" {
             NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: notification.userInfo)
             if let userInfo = notification.userInfo {
@@ -196,17 +206,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             delay(0) {
                 if let userInfo = notification.userInfo {
-                    let url = userInfo["url"]! as! String
-                    if UIApplication.sharedApplication().canOpenURL(NSURL(string: url)!) {
-                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                    let iTunesURL = userInfo["iTunesURL"]! as! String
+                    if UIApplication.sharedApplication().canOpenURL(NSURL(string: iTunesURL)!) {
+                        UIApplication.sharedApplication().openURL(NSURL(string: iTunesURL)!)
                     }
                 }
             }
         }
         completionHandler()
     }
-    
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+	
+	// Remote Notification - Receiver
+	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+		println("Received remote notification")
+	}
+	
+	// Remote Notification - Receiver + Backgroud fetch
+	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+		println("Received remote call to refresh")
+		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
+			completionHandler(UIBackgroundFetchResult.Failed)
+		})
+		completionHandler(UIBackgroundFetchResult.NewData)
+	}
+	
+	// Remote Notification - Handler
+	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
         if identifier == "APP_ACTION" {
             
         } else {
@@ -215,19 +240,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler()
     }
     
-    func delay(delay:Double, closure:() -> Void) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
-    }
-    
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        println("Received remote notification while the app was running.")
-		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
-			completionHandler(UIBackgroundFetchResult.Failed)
-		})
-		completionHandler(UIBackgroundFetchResult.NewData)
-    }
-    
-	// -- Background fetch -- //
+	// -- Background App Refresh -- //
 	func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
 		println("Starting background fetch.")
 		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
@@ -257,4 +270,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+	
+	func delay(delay:Double, closure:() -> Void) {
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
+	}
 }

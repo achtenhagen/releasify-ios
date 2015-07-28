@@ -90,11 +90,11 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
         searchController.searchBar.searchBarStyle = .Minimal
         searchController.searchBar.placeholder = "Search Artists"
         searchController.searchBar.tintColor = self.view.tintColor
-        searchController.searchBar.barStyle = UIBarStyle.Black
+        searchController.searchBar.barStyle = UIBarStyle.Default
         searchController.searchBar.translucent = false
         searchController.searchBar.backgroundColor = self.view.backgroundColor
         searchController.searchBar.autocapitalizationType = .Words
-        searchController.searchBar.keyboardAppearance = .Dark
+        searchController.searchBar.keyboardAppearance = .Light
         self.definesPresentationContext = true
         searchController.searchBar.sizeToFit()
         artistsTable.tableHeaderView = searchController.searchBar
@@ -127,7 +127,6 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
     }
     
     func handleBatchProcessing () {
-        
         var responseData = []
         var batches = [String]()
         var uniqueIDs = [Int]()
@@ -136,6 +135,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
         var batchCount = 0
         var currentBatch = String()
+		progressBar.hidden = false
         progressBar.progress = 0
         for item in checkedStates {
             let section = item.0
@@ -309,10 +309,10 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView(frame: CGRectMake(0, 0, self.view.bounds.size.width, 30.0))
-        view.backgroundColor = UIColor(red: 26/255, green: 26/255, blue: 26/255, alpha: 1.0)
+		view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 244/255, alpha: 1.0)
         let lbl = UILabel(frame: CGRectMake(15, 1, 150, 20))
         lbl.font = UIFont(name: lbl.font.fontName, size: 16)
-        lbl.textColor = UIColor(red: 255/255, green: 0/255, blue: 162/255, alpha: 1.0)
+		//lbl.textColor = UIColor(red: 255/255, green: 0/255, blue: 162/255, alpha: 1.0)
         view.addSubview(lbl)
         lbl.text = keys[section]
         if self.searchController.active {

@@ -23,7 +23,7 @@ final class AppDB {
     var database: COpaquePointer = nil
     var result = Int32()
     var artists = [Artist]()
-    var albums  = [Album]()
+	var albums  = [Int:[Album]]()
 
     func connect () -> Bool {
         return sqlite3_open(databasePath, &self.database) == SQLITE_OK
@@ -115,16 +115,17 @@ final class AppDB {
     }
     
     func getAlbums () {
-        albums = [Album]()
+		albums = [Int:[Album]]()
         var timestamp = String(stringInterpolationSegment: Int(NSDate().timeIntervalSince1970))
         var query = "SELECT * FROM albums WHERE release_date - \(timestamp) > 0 ORDER BY release_date ASC LIMIT 64"
-        getAlbumsComponent(query)
+		getAlbumsComponent(0, query: query)
         query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 AND release_date - \(timestamp) > -2592000 ORDER BY release_date DESC LIMIT 50"
-        getAlbumsComponent(query)
-        println("Albums in db: \(albums.count)")
+        getAlbumsComponent(1, query: query)
+        println("Albums in db: \(albums[0]!.count + albums[1]!.count)")
     }
     
-    func getAlbumsComponent(query: String) {
+	func getAlbumsComponent(index: Int, query: String) {
+		albums[index] = [Album]()
         if connect() {
             var count = 0
             var statement: COpaquePointer = nil
@@ -139,7 +140,7 @@ final class AppDB {
                     let copyright = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 5)))
                     let iTunesUniqueID = Int(sqlite3_column_int(statement, 6))
                     let iTunesURL = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 7)))
-                    albums.append(Album(
+                    albums[index]!.append(Album(
                         ID: ID,
                         title: albumTitle!,
                         artistID: getAlbumArtistId(Int32(ID)),

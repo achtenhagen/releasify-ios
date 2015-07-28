@@ -5,19 +5,24 @@ class StreamView: UITableViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var streamRefresh: UIRefreshControl!
-	var selectedAlbum = Int()
+	var selectedAlbum: Album!
 	var artwork = [String:UIImage]()
-	var notificationAlbumID = Int()
+	var notificationAlbumID: Int!
 	
 	@IBOutlet var streamTable: UITableView!
 	@IBOutlet weak var subscriptionsButton: UIBarButtonItem!
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.clearsSelectionOnViewWillAppear = false
+		
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "appActionPressed", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"openiTunes:", name: "storeActionPressed", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
+		
 		streamTable.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "streamCell")
 		
+		// Pull-to-refresh Control
 		streamRefresh = UIRefreshControl()
 		streamRefresh.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
 		streamTable.addSubview(streamRefresh)
@@ -26,7 +31,7 @@ class StreamView: UITableViewController {
 		longPressGesture.minimumPressDuration = 0.5
 		streamTable.addGestureRecognizer(longPressGesture)
 		
-		// Load data into database.
+		// Load data from database.
 		AppDB.sharedInstance.getArtists()
 		AppDB.sharedInstance.getAlbums()
 		
@@ -34,15 +39,18 @@ class StreamView: UITableViewController {
 		let pendingArtists = AppDB.sharedInstance.getPendingArtists()
 		
 		// Notification payload processing
+		// The remote notification payload will return 'content-available: 1' is there is new content.
 		if let remoteContent = appDelegate.remoteNotificationPayload["aps"]?["content-available"] as? Int {
 			refresh()
 		}
-		if let localContent = appDelegate.localNotificationPayload["ID"] as? Int {
-			notificationAlbumID = appDelegate.localNotificationPayload["ID"]! as! Int
+		if let localContent = appDelegate.localNotificationPayload["AlbumID"] as? Int {
+			notificationAlbumID = localContent
 			self.performSegueWithIdentifier("NotificationAlbumSegue", sender: self)
 		}
 		
-		/*var notification = UILocalNotification()
+		/*
+		// For Notifications Test
+		var notification = UILocalNotification()
 		notification.category = "DEFAULT_CATEGORY"
 		notification.timeZone = NSTimeZone.localTimeZone()
 		notification.alertTitle = "New Album Released"
@@ -50,14 +58,16 @@ class StreamView: UITableViewController {
 		notification.fireDate = NSDate().dateByAddingTimeInterval(5)
 		notification.applicationIconBadgeNumber = 1
 		notification.soundName = UILocalNotificationDefaultSoundName
-		notification.userInfo = ["ID": 1104, "url" : "https://itunes.apple.com/us/album/relentless/id1009035435?uo=4"]
-		UIApplication.sharedApplication().scheduleLocalNotification(notification)*/
+		notification.userInfo = ["AlbumID": 3127, "iTunesURL": "https://itunes.apple.com/us/album/long-walk-to-freedom-fuego/id1015003602?uo=4"]
+		UIApplication.sharedApplication().scheduleLocalNotification(notification)
+		*/
 		
+		// Re-enable for production
+		//refresh()
     }
 	
 	override func viewWillAppear(animated: Bool) {
-		if AppDB.sharedInstance.artists.count > 0 && AppDB.sharedInstance.albums.count == 0 {
-			println("Initial refresh.")
+		if AppDB.sharedInstance.artists.count > 0 && AppDB.sharedInstance.albums[0]!.count == 0 && AppDB.sharedInstance.albums[1]!.count == 0 {
 			refresh()
 		}
 	}
@@ -67,31 +77,37 @@ class StreamView: UITableViewController {
     }
 	
 	func refresh() {
+		self.navigationItem.title = "Please wait..."
+		if AppDB.sharedInstance.artists.count == 0 {
+			API.sharedInstance.refreshSubscriptions(nil, errorHandler: nil)
+		}
 		API.sharedInstance.refreshContent({
 			self.streamTable.reloadData()
 			self.streamRefresh.endRefreshing()
+			self.navigationItem.title = "Stream"
 		},
 		errorHandler: { (error) in
 			self.streamRefresh.endRefreshing()
 			var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
 			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
 			self.presentViewController(alert, animated: true, completion: nil)
+			self.navigationItem.title = "Stream"
 		})
 	}
 	
-	func showAlbumFromNotification(notification:NSNotification) {
-		notificationAlbumID = notification.userInfo!["ID"]! as! Int
-		if AppDB.sharedInstance.lookupAlbum(Int32(notificationAlbumID)) {
-			println("Album exists in the db.")
+	func showAlbumFromNotification(notification: NSNotification) {
+		if let AlbumID = notification.userInfo!["AlbumID"]! as? Int {
+			notificationAlbumID = AlbumID
 			self.performSegueWithIdentifier("NotificationAlbumSegue", sender: self)
 		}
 	}
 	
 	func openiTunes(notification: NSNotification) {
-		let albumURL = notification.userInfo!["url"]! as! String
-		delay(0) {
-			if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
-				UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
+		if let iTunesURL = notification.userInfo!["iTunesURL"]! as? String {
+			delay(0) {
+				if UIApplication.sharedApplication().canOpenURL(NSURL(string: iTunesURL)!) {
+					UIApplication.sharedApplication().openURL(NSURL(string: iTunesURL)!)
+				}
 			}
 		}
 	}
@@ -101,16 +117,17 @@ class StreamView: UITableViewController {
 	}
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return AppDB.sharedInstance.albums.count
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return AppDB.sharedInstance.albums.count
+        return AppDB.sharedInstance.albums[section]!.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("streamCell", forIndexPath: indexPath) as! StreamCell
-		let album = AppDB.sharedInstance.albums[indexPath.row]
+		cell.preservesSuperviewLayoutMargins = false
+		let album = AppDB.sharedInstance.albums[indexPath.section]![indexPath.row]
 		cell.albumArtwork.image = UIImage()
 		let hash = album.artwork as String
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
@@ -149,15 +166,20 @@ class StreamView: UITableViewController {
 			}
 		}
 		
-		cell.albumLabel.text = album.title
 		cell.artistLabel.text = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
+		cell.albumTitle.text = album.title
+		cell.albumTitle.userInteractionEnabled = false
+		cell.albumTitle.textContainerInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 0);
+		cell.albumTitle.textContainer.lineFragmentPadding = 0;
 		
 		if timeDiff > 0 {
 			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))
+			cell.artistLabel.font = UIFont (name: "SourceSansPro-Semibold", size: 16)
 			cell.timeRemainingLabel.hidden = false
 			cell.progressBar.hidden = false
 			cell.progressBar.setProgress(album.getProgress(dateAdded), animated: false)
 		} else {
+			cell.artistLabel.font = UIFont (name: "SourceSansPro-Regular", size: 16)
 			cell.timeRemainingLabel.hidden = true
 			cell.progressBar.hidden = true
 		}
@@ -200,10 +222,17 @@ class StreamView: UITableViewController {
 		return floor(x / v)
 	}
 	
-	override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-		selectedAlbum = indexPath.row
-		let albumURL = AppDB.sharedInstance.albums[selectedAlbum].iTunesURL
-		self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String {
+		if (section == 0) {
+			return "Upcoming Music"
+		}
+		return "Recently Released"
+	}
+	
+	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		selectedAlbum = AppDB.sharedInstance.albums[indexPath.section]![indexPath.row]
+		streamTable.deselectRowAtIndexPath(indexPath, animated: true)
+		performSegueWithIdentifier("AlbumViewSegue", sender: self)
 	}
 	
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
@@ -213,14 +242,14 @@ class StreamView: UITableViewController {
 			if gesture.state == UIGestureRecognizerState.Began {
 				let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
 				let buyAction = UIAlertAction(title: "Open in iTunes Store", style: .Default, handler: { action in
-					let albumURL = AppDB.sharedInstance.albums[indexPath!.row].iTunesURL
+					let albumURL = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].iTunesURL
 					if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
 						UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
 					}
 				})
 				let deleteAction = UIAlertAction(title: "Unsubscribe", style: .Destructive, handler: { action in
-					let albumID = AppDB.sharedInstance.albums[indexPath!.row].ID
-					let albumArtwork = AppDB.sharedInstance.albums[indexPath!.row].artwork
+					let albumID = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].ID
+					let albumArtwork = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].artwork
 					for n in UIApplication.sharedApplication().scheduledLocalNotifications {
 						var notification = n as! UILocalNotification
 						let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
@@ -253,16 +282,14 @@ class StreamView: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "AlbumViewSegue" {
 			var detailController = segue.destinationViewController as! AlbumView
-			detailController.album = AppDB.sharedInstance.albums[selectedAlbum]
+			detailController.album = selectedAlbum
 		} else if segue.identifier == "NotificationAlbumSegue" {
 			var detailController = segue.destinationViewController as! AlbumView
-			var index = 0
-			for album in AppDB.sharedInstance.albums {
+			for album in AppDB.sharedInstance.albums[1] as[Album]! {
 				if album.ID == notificationAlbumID {
-					detailController.album = AppDB.sharedInstance.albums[index]
+					detailController.album = album
 					break
 				}
-				index++
 			}
 		}
     }

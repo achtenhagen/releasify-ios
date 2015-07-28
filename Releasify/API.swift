@@ -20,7 +20,7 @@ class API {
         var explicitValue = 1
         if !appDelegate.allowExplicitContent { explicitValue = 0 }
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(explicitValue)"
-        sendRequest(APIURL.updateContent.rawValue, postString: postString, successHandler: {(response, data) in
+        sendRequest(APIURL.updateContent.rawValue, postString: postString, successHandler: { (response, data) in
             if let HTTPResponse = response as? NSHTTPURLResponse {
                 if HTTPResponse.statusCode == 200 {
                     println("HTTP status code: \(HTTPResponse.statusCode)")
@@ -32,7 +32,7 @@ class API {
                         }
                         for item in json {
                             let releaseDate = (item["releaseDate"] as! Double)
-                            let albumItem = Album(
+							let albumItem = Album(
                                 ID: item["id"] as! Int,
                                 title: item["title"] as! String,
                                 artistID: item["artistId"] as! Int,
@@ -46,9 +46,9 @@ class API {
                             )
                             let newAlbumID = AppDB.sharedInstance.addAlbum(albumItem)
                             if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications.count < 64 {
-                                let fireDate = Double(releaseDate) - Double(NSDate().timeIntervalSince1970)
-                                if fireDate > 0 {
-                                    println("Notification will fire in \(fireDate) seconds.")
+                                let remaining = Double(releaseDate) - Double(NSDate().timeIntervalSince1970)
+                                if remaining > 0 {
+                                    println("Notification will fire in \(remaining) seconds.")
                                     var notification = UILocalNotification()
                                     notification.category = "DEFAULT_CATEGORY"
                                     notification.timeZone = NSTimeZone.localTimeZone()
@@ -57,7 +57,7 @@ class API {
                                     notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
                                     notification.applicationIconBadgeNumber++
                                     notification.soundName = UILocalNotificationDefaultSoundName
-                                    notification.userInfo = ["ID": albumItem.ID, "url": albumItem.iTunesURL]
+                                    notification.userInfo = ["AlbumID": albumItem.ID, "iTunesURL": albumItem.iTunesURL]
                                     UIApplication.sharedApplication().scheduleLocalNotification(notification)
                                 }
                             }
@@ -70,7 +70,7 @@ class API {
                 }
             }
         },
-        errorHandler: {(error) -> Void in
+        errorHandler: { (error) -> Void in
             errorHandler!(error: error)
         })
     }

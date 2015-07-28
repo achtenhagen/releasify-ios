@@ -14,7 +14,7 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     @IBOutlet weak var artistLabel: UILabel!
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()		
         self.navigationItem.leftBarButtonItem = self.editButtonItem()
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
@@ -136,7 +136,7 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
         }
         actionSheetController.addAction(addAction)
         actionSheetController.addTextFieldWithConfigurationHandler { textField in
-            textField.keyboardAppearance = .Dark
+            textField.keyboardAppearance = .Light
             textField.autocapitalizationType = .Words
             textField.placeholder = "e.g., Armin van Buuren"
         }

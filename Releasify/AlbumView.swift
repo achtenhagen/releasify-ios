@@ -28,6 +28,10 @@ class AlbumView: UIViewController {
     @IBOutlet weak var progressBar: UIProgressView!
     @IBOutlet weak var explicitLabel: UILabel!
     
+	@IBAction func shareAlbum(sender: AnyObject) {
+		shareAlbum()
+	}
+	
     @IBAction func openiTunes(sender: AnyObject) {
         if UIApplication.sharedApplication().canOpenURL(NSURL(string: album!.iTunesURL)!) {
             UIApplication.sharedApplication().openURL(NSURL(string: album!.iTunesURL)!)
@@ -45,6 +49,8 @@ class AlbumView: UIViewController {
             artwork = dbArtwork
         }
         albumArtwork.image = artwork
+		albumArtwork.layer.masksToBounds = true
+		albumArtwork.layer.cornerRadius = 2.0
         artist = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
         artistTitleLabel.text = artist
         albumTitleLabel.text = album.title
