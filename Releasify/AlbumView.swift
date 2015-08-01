@@ -8,7 +8,6 @@ class AlbumView: UIViewController {
     var album: Album!
     var artist = String()
     var artwork = UIImage()
-    var explicit = false
     var timeDiff = Double()
     var timer = NSTimer()
     var progress: Float = 0
@@ -44,8 +43,8 @@ class AlbumView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if let dbArtwork = AppDB.sharedInstance.getArtwork(album.artwork) {
+		
+		if let dbArtwork = AppDB.sharedInstance.getArtwork(album.artwork) {
             artwork = dbArtwork
         }
         albumArtwork.image = artwork
@@ -55,7 +54,9 @@ class AlbumView: UIViewController {
         artistTitleLabel.text = artist
         albumTitleLabel.text = album.title
         copyrightLabel.text = album.copyright
-        if !explicit { explicitLabel.hidden = true }
+		if album.explicit == 0 {
+			explicitLabel.hidden = true
+		}
         timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
         if timeDiff > 0 {
             dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))

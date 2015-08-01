@@ -16,7 +16,7 @@ class API {
     
     // -- Main method to update the App's content -- //
     func refreshContent (successHandler: (() -> Void)?, errorHandler: ((error: NSError!) -> Void)?) {
-        let explicit = appDelegate.defaults.boolForKey("allowExplicit")
+        let explicit = NSUserDefaults.standardUserDefaults().boolForKey("allowExplicit")
         var explicitValue = 1
         if !appDelegate.allowExplicitContent { explicitValue = 0 }
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(explicitValue)"
@@ -63,6 +63,7 @@ class API {
                             }
                         }
                         AppDB.sharedInstance.getAlbums()
+						NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
                         if let handler: Void = successHandler?() {
                             handler
                         }

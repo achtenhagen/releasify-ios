@@ -124,8 +124,8 @@ final class AppDB {
         println("Albums in db: \(albums[0]!.count + albums[1]!.count)")
     }
     
-	func getAlbumsComponent(index: Int, query: String) {
-		albums[index] = [Album]()
+	func getAlbumsComponent(section: Int, query: String) {
+		albums[section] = [Album]()
         if connect() {
             var count = 0
             var statement: COpaquePointer = nil
@@ -140,7 +140,7 @@ final class AppDB {
                     let copyright = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 5)))
                     let iTunesUniqueID = Int(sqlite3_column_int(statement, 6))
                     let iTunesURL = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 7)))
-                    albums[index]!.append(Album(
+                    albums[section]!.append(Album(
                         ID: ID,
                         title: albumTitle!,
                         artistID: getAlbumArtistId(Int32(ID)),
@@ -262,7 +262,7 @@ final class AppDB {
     
     func addPendingArtist (ID: Int32) {
         if connect() {
-            let timeStamp = Int32(NSDate().timeIntervalSince1970)
+            let timestamp = Int32(NSDate().timeIntervalSince1970)
             let artistExistsQuery = "SELECT COUNT(id) FROM pending_artists WHERE id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, artistExistsQuery, -1, &statement, nil) == SQLITE_OK {
@@ -277,7 +277,7 @@ final class AppDB {
                     statement = nil
                     if sqlite3_prepare_v2(self.database, query, -1, &statement, nil) == SQLITE_OK {
                         sqlite3_bind_int(statement, 1, ID)
-                        sqlite3_bind_int(statement, 2, timeStamp)
+                        sqlite3_bind_int(statement, 2, timestamp)
                         if sqlite3_step(statement) != SQLITE_DONE {
                             println("Failed to insert pending artist.")
                         }

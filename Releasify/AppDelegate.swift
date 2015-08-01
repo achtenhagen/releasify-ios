@@ -5,11 +5,11 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    let defaults = NSUserDefaults.standardUserDefaults()
     var userID = 0
     var userDeviceToken: String?
     var userUUID = String()
     var allowExplicitContent = true
+	var lastUpdated = 0
 	var notificationAlbumID: Int!
     var remoteNotificationPayload = NSDictionary()
     var localNotificationPayload  = NSDictionary()
@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		
 		/*
-			Releasify Version Names:
+			Releasify Version Names
 			-----------------------
 			1.x - Clairvoyant
 			2.x - Takumi
@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		*/
 
         let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String)! + " (Clairvoyant)"
-        self.defaults.setValue(versionString, forKey: "appVersion")
+        NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")
         
         // Notification settings & categories
         if application.respondsToSelector("registerUserNotificationSettings:") {
@@ -78,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // In case the user has chosen to reset the app.
-        let reset = defaults.boolForKey("reset")
+        let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
         if reset {
             println("The application will be reset to default settings.")
             application.cancelAllLocalNotifications()
@@ -86,21 +86,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppDB.sharedInstance.truncate("pending_artists")
             AppDB.sharedInstance.truncate("albums")
             AppDB.sharedInstance.truncate("album_artists")
-            defaults.setInteger(0, forKey: "ID")
-            defaults.setBool(false, forKey: "reset")
-            defaults.setBool(true, forKey: "allowExplicit")
-            defaults.setInteger(0, forKey: "lastUpdated")
+            NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
+            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "reset")
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
+            NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
         }
         
         // Read in user settings.
-        userID = defaults.integerForKey("ID")
-        if let token = defaults.stringForKey("deviceToken") {
+        userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
+        if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") {
             userDeviceToken = token
         }
-        if let uuid = defaults.stringForKey("uuid") {
+        if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("uuid") {
             userUUID = uuid
         }
-        if let explicit = defaults.valueForKey("allowExplicit") as? Bool {
+        if let explicit = NSUserDefaults.standardUserDefaults().valueForKey("allowExplicit") as? Bool {
             allowExplicitContent = explicit
             if allowExplicitContent {
                 println("User allows explicit content.")
@@ -108,8 +108,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 println("User does not allow explicit content.")
             }
         } else {
-            defaults.setBool(true, forKey: "allowExplicit")
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
         }
+		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
         
         // Initialize the database.
         AppDB.sharedInstance.inititalize()
@@ -131,7 +132,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func register (deviceToken: String? = nil) {
         let uuid = NSUUID().UUIDString
         var explicitValue = 1
-        if !allowExplicitContent { explicitValue = 0 }
+        if !allowExplicitContent {
+			explicitValue = 0
+		}
         var postString = "uuid=\(uuid)&explicit=\(explicitValue)"
         if deviceToken != nil {
             postString += "&deviceToken=\(deviceToken!)"
@@ -142,16 +145,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				if HTTPResponse.statusCode == 201 {
 					var error: NSError?
 					if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? NSDictionary {
-						if error != nil { return }
+						if error != nil {
+							return
+						}
 						let receivedUserID = json["id"] as? Int
 						if receivedUserID > 0 {
 							self.userID = receivedUserID!
 							self.userUUID = uuid
-							self.defaults.setInteger(receivedUserID!, forKey: "ID")
-							self.defaults.setValue(self.userUUID, forKey: "uuid")
+							NSUserDefaults.standardUserDefaults().setInteger(receivedUserID!, forKey: "ID")
+							NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
 							if deviceToken != nil {
 								self.userDeviceToken = deviceToken!
-								self.defaults.setValue(self.userDeviceToken, forKey: "deviceToken")
+								NSUserDefaults.standardUserDefaults().setValue(self.userDeviceToken, forKey: "deviceToken")
 								println("APNS Device token was set successfully.")
 							}
 							println("UUID was set successfully.")
@@ -184,25 +189,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-	// Local Notification - Receiver
+	// Local Notification - Receiver (Called when app is in the foreground or the notification itself is tapped)
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         if let userInfo = notification.userInfo {
             notificationAlbumID = userInfo["AlbumID"] as! Int
             println("Received a local notification with ID: \(notificationAlbumID).")
-            // Called when the notification is tapped if the app is inactive or in the background
+            // Called when the notification is tapped if the app is inactive or in the background.
             if application.applicationState == .Inactive || application.applicationState == .Background {
                 NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: userInfo)
-            }
+			} else {
+				// If the app is active, refresh the contents.
+				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: userInfo)
+			}
         }
     }
     
 	// Local Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        if identifier == "APP_ACTION" {
-            NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: notification.userInfo)
-            if let userInfo = notification.userInfo {
-                localNotificationPayload = userInfo
-            }
+		if identifier == "APP_ACTION" {
+			delay(0) {
+				NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: notification.userInfo)
+			}
         } else {
             delay(0) {
                 if let userInfo = notification.userInfo {
@@ -216,14 +223,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler()
     }
 	
-	// Remote Notification - Receiver
-	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-		println("Received remote notification")
-	}
-	
-	// Remote Notification - Receiver + Backgroud fetch
+	// Remote Notification - Receiver + Background fetch
 	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-		println("Received remote call to refresh")
+		println("Received remote call to refresh.")
 		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
 			completionHandler(UIBackgroundFetchResult.Failed)
 		})
@@ -232,21 +234,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	// Remote Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
-        if identifier == "APP_ACTION" {
-            
+		if identifier == "APP_ACTION" {
+			println("app action pressed.")
+			delay(0) {
+				NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
+			}
+			
         } else {
-            
+			delay(0) {
+				if let iTunesURL = userInfo["aps"]?["iTunesURL"]! as? String {
+					if UIApplication.sharedApplication().canOpenURL(NSURL(string: iTunesURL)!) {
+						UIApplication.sharedApplication().openURL(NSURL(string: iTunesURL)!)
+					}
+				}
+			}
+
         }
         completionHandler()
-    }
-    
-	// -- Background App Refresh -- //
-	func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-		println("Starting background fetch.")
-		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
-			completionHandler(UIBackgroundFetchResult.Failed)
-		})
-		completionHandler(UIBackgroundFetchResult.NewData)
     }
 
     func applicationWillResignActive(application: UIApplication) {
