@@ -7,12 +7,7 @@ let artworkDirectoryPath = documents.stringByAppendingPathComponent("artwork")
 
 final class AppDB {
     
-    class var sharedInstance : AppDB {
-        struct Static {
-            static let instance = AppDB()
-        }
-        return Static.instance
-    }
+    static let sharedInstance = AppDB()
     
     struct Artist {
         var ID: Int32
@@ -25,42 +20,43 @@ final class AppDB {
     var artists = [Artist]()
 	var albums  = [Int:[Album]]()
 
-    func connect () -> Bool {
+    private func connected () -> Bool {
         return sqlite3_open(databasePath, &self.database) == SQLITE_OK
     }
     
-    func disconnect () {
+    private func disconnect () {
         sqlite3_close(self.database)
         self.database = nil
     }
-    
-    func inititalize () {
-        if connect() {
-            let artistTableQuery = "CREATE TABLE IF NOT EXISTS artists (id INTEGER PRIMARY KEY, title VARCHAR(100) NOT NULL, iTunes_unique_id INTEGER, last_updated INTEGER, created INTEGER)"
-            var errMsg: UnsafeMutablePointer<Int8> = nil
-            sqlite3_exec(database, artistTableQuery, nil, nil, &errMsg)
-            
-            let albumTableQuery = "CREATE TABLE IF NOT EXISTS albums (id INTEGER PRIMARY KEY, title varchar(100) NOT NULL, release_date int(11) DEFAULT NULL, artwork varchar(250) DEFAULT NULL, explicit tinyint(1) NOT NULL DEFAULT '0', copyright varchar(250) DEFAULT NULL, iTunes_unique_id int(11) DEFAULT NULL, iTunes_url varchar(250) DEFAULT NULL, created int(11) NOT NULL)"
-            sqlite3_exec(database, albumTableQuery, nil, nil, &errMsg)
-            
-            let albumArtistTableQuery = "CREATE TABLE IF NOT EXISTS album_artists (id INTEGER PRIMARY KEY AUTOINCREMENT, album_id int(11) NOT NULL, artist_id int(11) NOT NULL, created int(11) NOT NULL)"
-            sqlite3_exec(database, albumArtistTableQuery, nil, nil, &errMsg)
-            
-            let pendingArtistsTableQuery = "CREATE TABLE IF NOT EXISTS pending_artists (id INTEGER PRIMARY KEY, created int(11) NOT NULL)"
-            sqlite3_exec(database, pendingArtistsTableQuery, nil, nil, &errMsg)
-            
-            if !NSFileManager.defaultManager().fileExistsAtPath(artworkDirectoryPath) {
-                NSFileManager.defaultManager().createDirectoryAtPath(artworkDirectoryPath, withIntermediateDirectories: false, attributes: nil, error: nil)
-            }
-            disconnect()
-        }
-    }
-    
+	
+	init() {
+		if connected() {
+			var errMsg: UnsafeMutablePointer<Int8> = nil
+			let artistTableQuery = "CREATE TABLE IF NOT EXISTS artists (id INTEGER PRIMARY KEY, title VARCHAR(100) NOT NULL, iTunes_unique_id INTEGER, last_updated INTEGER, created INTEGER)"
+			sqlite3_exec(database, artistTableQuery, nil, nil, &errMsg)
+			
+			let albumTableQuery = "CREATE TABLE IF NOT EXISTS albums (id INTEGER PRIMARY KEY, title varchar(100) NOT NULL, release_date int(11) DEFAULT NULL, artwork varchar(250) DEFAULT NULL, explicit tinyint(1) NOT NULL DEFAULT '0', copyright varchar(250) DEFAULT NULL, iTunes_unique_id int(11) DEFAULT NULL, iTunes_url varchar(250) DEFAULT NULL, created int(11) NOT NULL)"
+			sqlite3_exec(database, albumTableQuery, nil, nil, &errMsg)
+			
+			let albumArtistTableQuery = "CREATE TABLE IF NOT EXISTS album_artists (id INTEGER PRIMARY KEY AUTOINCREMENT, album_id int(11) NOT NULL, artist_id int(11) NOT NULL, created int(11) NOT NULL)"
+			sqlite3_exec(database, albumArtistTableQuery, nil, nil, &errMsg)
+			
+			let pendingArtistsTableQuery = "CREATE TABLE IF NOT EXISTS pending_artists (id INTEGER PRIMARY KEY, created int(11) NOT NULL)"
+			sqlite3_exec(database, pendingArtistsTableQuery, nil, nil, &errMsg)
+			
+			if !NSFileManager.defaultManager().fileExistsAtPath(artworkDirectoryPath) {
+				NSFileManager.defaultManager().createDirectoryAtPath(artworkDirectoryPath, withIntermediateDirectories: false, attributes: nil, error: nil)
+			}
+			disconnect()
+			removeExpiredAlbums()
+		}
+	}
+	
     // -- Albums -- //
-    
+	
     func addAlbum (albumItem: Album) -> Int {
         var newAlbumID = 0
-        if connect() {
+        if connected() {
             let albumExistsQuery = "SELECT COUNT(id) FROM albums WHERE id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, albumExistsQuery, -1, &statement, nil) == SQLITE_OK {
@@ -99,12 +95,12 @@ final class AppDB {
         return newAlbumID
     }
     
-    func deleteAlbum (id: Int32) {
-        if connect() {
-            let delete = "DELETE FROM albums WHERE id = ?"
+    func deleteAlbum (albumID: Int32) {
+        if connected() {
+            let query = "DELETE FROM albums WHERE id = ?"
             var statement: COpaquePointer = nil
-            if sqlite3_prepare_v2(database, delete, -1, &statement, nil) == SQLITE_OK {
-                sqlite3_bind_int(statement, 1, id)
+            if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
+                sqlite3_bind_int(statement, 1, albumID)
             }
             if sqlite3_step(statement) != SQLITE_DONE {
                 println("Failed to delete from db.")
@@ -126,7 +122,7 @@ final class AppDB {
     
 	func getAlbumsComponent(section: Int, query: String) {
 		albums[section] = [Album]()
-        if connect() {
+        if connected() {
             var count = 0
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
@@ -162,7 +158,7 @@ final class AppDB {
     
     func getAlbumDateAdded (albumID: Int32) -> Double {
         var created: Int32 = 0
-        if connect() {
+        if connected() {
             let query = "SELECT created FROM albums WHERE id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
@@ -179,7 +175,7 @@ final class AppDB {
     
     func lookupAlbum (albumID: Int32) -> Bool {
         var numRows: Int32 = 0
-        if connect() {
+        if connected() {
             let query = "SELECT COUNT(id) FROM albums WHERE id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
@@ -193,12 +189,51 @@ final class AppDB {
         }
         return numRows == 1
     }
-    
+	
+	// Removes albums that are older than 4 weeks.
+	func removeExpiredAlbums () {
+		var expiredAlbums = [Int:String]()
+		if connected() {
+			let timestamp = String(stringInterpolationSegment: Int(NSDate().timeIntervalSince1970))
+			var query = "SELECT id,artwork FROM albums WHERE \(timestamp) - release_date > 2592000"
+			var statement: COpaquePointer = nil
+			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
+				while sqlite3_step(statement) == SQLITE_ROW {
+					let ID = Int(sqlite3_column_int(statement, 0))
+					let artwork = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 1)))
+					expiredAlbums[ID] = artwork!
+				}
+				sqlite3_finalize(statement)
+			}
+			var albumList = String()
+			var albumIndex = 0
+			for album in expiredAlbums {
+				albumIndex++
+				deleteArtwork(album.1)
+				albumList += String(album.0)
+				if albumIndex != expiredAlbums.count {
+					albumList += ", "
+				}
+			}
+			if expiredAlbums.count > 0 {
+				query = "DELETE FROM albums WHERE id IN (\(albumList))"
+				if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
+					if sqlite3_step(statement) != SQLITE_DONE {
+						println("Failed to remove expired albums.")
+						return
+					}
+					sqlite3_finalize(statement)
+				}
+			}
+			disconnect()
+		}
+	}
+	
     // -- Artists -- //
-    
+	
     func addArtist (ID: Int32, artistTitle: NSString, iTunesUniqueID: Int32) -> Int {
         var newItemID = 0
-        if connect() {
+        if connected() {
             let timeStamp = Int32(NSDate().timeIntervalSince1970)
             let artistExistsQuery = "SELECT COUNT(id) FROM artists WHERE iTunes_unique_id = ?"
             var statement: COpaquePointer = nil
@@ -231,7 +266,7 @@ final class AppDB {
     }
     
     func addContributingArtist (albumID: Int32, artistID: Int32) {
-        if connect() {
+        if connected() {
             let timeStamp = Int32(NSDate().timeIntervalSince1970)
             var statement: COpaquePointer = nil
             var query = "SELECT COUNT(artist_id) FROM album_artists WHERE album_id = ? AND artist_id = ?"
@@ -261,7 +296,7 @@ final class AppDB {
     }
     
     func addPendingArtist (ID: Int32) {
-        if connect() {
+        if connected() {
             let timestamp = Int32(NSDate().timeIntervalSince1970)
             let artistExistsQuery = "SELECT COUNT(id) FROM pending_artists WHERE id = ?"
             var statement: COpaquePointer = nil
@@ -291,7 +326,7 @@ final class AppDB {
     }
     
     func deleteArtist (ID: Int32) {
-        if connect() {
+        if connected() {
             var query = "DELETE FROM artists WHERE id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
@@ -317,7 +352,7 @@ final class AppDB {
     
     func getAlbumArtist (albumID: Int32) -> String {
         var artistTitle = String()
-        if connect() {
+        if connected() {
             let query = "SELECT title FROM artists WHERE id IN (SELECT artist_id FROM album_artists WHERE album_id = ?)"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
@@ -334,7 +369,7 @@ final class AppDB {
     
     func getAlbumArtistId (albumID: Int32) -> Int {
         var artistID = 0
-        if connect() {
+        if connected() {
             let query = "SELECT artist_id FROM album_artists WHERE album_id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
@@ -351,7 +386,7 @@ final class AppDB {
     
     func getArtistByUniqueID (uniqueID: Int32) -> Int {
         var artistID: Int32 = 0
-        if connect() {
+        if connected() {
             let query = "SELECT id FROM artists WHERE iTunes_unique_id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
@@ -367,7 +402,7 @@ final class AppDB {
     }
     
     func getArtists () {
-        if connect() {
+        if connected() {
             self.artists = [Artist]()
             let query = "SELECT id,title,iTunes_unique_id,last_updated FROM artists ORDER BY title COLLATE NOCASE"
             var statement: COpaquePointer = nil
@@ -388,7 +423,7 @@ final class AppDB {
     
     func getPendingArtists () -> [Int] {
         var pendingArtists = [Int]()
-        if connect() {
+        if connected() {
             let query = "SELECT id FROM pending_artists"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
@@ -420,12 +455,17 @@ final class AppDB {
     
     func deleteArtwork (hash: String) {
         let artworkPath = artworkDirectoryPath.stringByAppendingPathComponent("/\(hash).jpg")
+		let artworkPathHD = artworkDirectoryPath.stringByAppendingPathComponent("/\(hash)_large.jpg")
         if NSFileManager.defaultManager().fileExistsAtPath(artworkPath) {
             NSFileManager.defaultManager().removeItemAtPath(artworkPath, error: nil)
-            println("Successfully removed artwork.")
+            println("Successfully removed artwork: \(hash).")
         }
+		if NSFileManager.defaultManager().fileExistsAtPath(artworkPathHD) {
+			NSFileManager.defaultManager().removeItemAtPath(artworkPathHD, error: nil)
+			println("Successfully removed HD artwork: \(hash).")
+		}
     }
-    
+	
     func getArtwork (hash: String) -> UIImage? {
         let artworkPath = artworkDirectoryPath.stringByAppendingPathComponent("/\(hash).jpg")
         if NSFileManager.defaultManager().fileExistsAtPath(artworkPath) {
@@ -437,10 +477,10 @@ final class AppDB {
     // -- Table Operations -- //
     
     func truncate (table: String) {
-        if connect() {
-            let truncateTablequery = "DELETE FROM \(table)"
+        if connected() {
+            let query = "DELETE FROM \(table)"
             var errMsg: UnsafeMutablePointer<Int8> = nil
-            if sqlite3_exec(database, truncateTablequery, nil, nil, &errMsg) != SQLITE_OK {
+            if sqlite3_exec(database, query, nil, nil, &errMsg) != SQLITE_OK {
                 println(String.fromCString(UnsafePointer<Int8>(errMsg)))
             }
             disconnect()

@@ -2,12 +2,13 @@
 import UIKit
 
 class AppController: UINavigationController {
-
+	
+	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	
 	@IBOutlet weak var navBar: UINavigationBar!
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		// Todo: migrate initialization code from AppDelegate to AppController.
 		println("App Controller loaded.")
     }
 

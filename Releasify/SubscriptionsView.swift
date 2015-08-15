@@ -2,30 +2,28 @@
 import UIKit
 import MediaPlayer
 
-class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SubscriptionsView: UITableViewController {
 
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var responseArtists = [NSDictionary]()
-    var refreshControl: UIRefreshControl!
     var mediaQuery = MPMediaQuery.artistsQuery()
-    
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var artistImg: UIImageView!
-    @IBOutlet weak var artistLabel: UILabel!
-    
+
+	@IBOutlet var subscriptionsTable: UITableView!
+	
     override func viewDidLoad() {
-        super.viewDidLoad()		
-        self.navigationItem.leftBarButtonItem = self.editButtonItem()
-        refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
-        tableView.addSubview(refreshControl)
-        AppDB.sharedInstance.getArtists()
-        tableView.reloadData()
+        super.viewDidLoad()
+		navigationItem.leftBarButtonItem = self.editButtonItem()
+		
+        self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+		self.refreshControl?.tintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+		
+		AppDB.sharedInstance.getArtists()
+        subscriptionsTable.reloadData()
     }
     
     override func viewWillAppear(animated: Bool) {
         if AppDB.sharedInstance.artists.count > 0 {
-            tableView.hidden = false
+			// Show welcome screen?
         }
     }
 
@@ -33,15 +31,11 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
         super.didReceiveMemoryWarning()
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         self.editButtonItem().enabled = (AppDB.sharedInstance.artists.count > 0)
         return AppDB.sharedInstance.artists.count
     }
     
-    @IBAction func closeView(sender: AnyObject) {
-        tableView.setEditing(false, animated: true)
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
     
     @IBAction func addSubscription(sender: AnyObject) {
         let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
@@ -66,11 +60,11 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
     func refresh() {
         self.editButtonItem().enabled = false
         API.sharedInstance.refreshSubscriptions({
-            self.tableView.reloadData()
-            self.refreshControl.endRefreshing()
+            self.subscriptionsTable.reloadData()
+            self.refreshControl?.endRefreshing()
         },
         errorHandler: { (error) in
-            self.refreshControl.endRefreshing()
+            self.refreshControl?.endRefreshing()
             var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
@@ -112,7 +106,7 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
                                 }
                             }
                             AppDB.sharedInstance.getArtists()
-                            self.tableView.reloadData()
+                            self.subscriptionsTable.reloadData()
                             if self.responseArtists.count > 0 {
                                 self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
                             } else {
@@ -142,18 +136,19 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
         }
         self.presentViewController(actionSheetController, animated: true, completion: nil)
     }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = self.tableView.dequeueReusableCellWithIdentifier("subscriptionCell") as! SubscriptionCell
-        cell.artistLabel.text = AppDB.sharedInstance.artists[indexPath.row].title as String
+
+	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var cell = self.subscriptionsTable.dequeueReusableCellWithIdentifier("subscriptionCell") as! UITableViewCell
+        cell.textLabel?.text = AppDB.sharedInstance.artists[indexPath.row].title as String
+		cell.detailTextLabel?.text = "(" + String(arc4random() % 10) + ")"
         return cell
     }
-    
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+	
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
             let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(AppDB.sharedInstance.artists[indexPath.row].iTunesUniqueID)"
             API.sharedInstance.sendRequest(APIURL.removeArtist.rawValue, postString: postString, successHandler: { (response, data) in
@@ -173,17 +168,17 @@ class SubscriptionsView: UIViewController, UITableViewDelegate, UITableViewDataS
             AppDB.sharedInstance.deleteArtist(AppDB.sharedInstance.artists[indexPath.row].ID)
             AppDB.sharedInstance.artists.removeAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
-            self.tableView.setEditing(false, animated: true)
+            self.subscriptionsTable.setEditing(false, animated: true)
         }
     }
     
-    func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
         return "Unsubscribe"
     }
     
     override func setEditing(editing: Bool, animated: Bool) {
-        tableView.setEditing(!tableView.editing, animated: true)
-        if tableView.editing {
+        subscriptionsTable.setEditing(!subscriptionsTable.editing, animated: true)
+        if subscriptionsTable.editing {
             self.editButtonItem().title = "Done"
             self.editButtonItem().style = UIBarButtonItemStyle.Done
         } else {

@@ -4,7 +4,6 @@ import UIKit
 class AlbumView: UIViewController {
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    var backgroundImage = UIImageView()
     var album: Album!
     var artist = String()
     var artwork = UIImage()
@@ -12,11 +11,9 @@ class AlbumView: UIViewController {
     var timer = NSTimer()
     var progress: Float = 0
     var dateAdded: Double = 0
-    
-    @IBOutlet weak var closeBtn: UIButton!
+	
     @IBOutlet weak var albumArtwork: UIImageView!
-    @IBOutlet weak var albumTitleLabel: UILabel!
-    @IBOutlet weak var artistTitleLabel: UILabel!
+	@IBOutlet weak var albumTitle: UITextView!
     @IBOutlet weak var copyrightLabel: UILabel!
     @IBOutlet weak var firstDigitLabel: UILabel!
     @IBOutlet weak var secondDigitLabel: UILabel!
@@ -24,22 +21,10 @@ class AlbumView: UIViewController {
     @IBOutlet weak var firstTimeLabel: UILabel!
     @IBOutlet weak var secondTimeLabel: UILabel!
     @IBOutlet weak var thirdTimeLabel: UILabel!
-    @IBOutlet weak var progressBar: UIProgressView!
-    @IBOutlet weak var explicitLabel: UILabel!
     
 	@IBAction func shareAlbum(sender: AnyObject) {
 		shareAlbum()
 	}
-	
-    @IBAction func openiTunes(sender: AnyObject) {
-        if UIApplication.sharedApplication().canOpenURL(NSURL(string: album!.iTunesURL)!) {
-            UIApplication.sharedApplication().openURL(NSURL(string: album!.iTunesURL)!)
-        }
-    }
-    
-    @IBAction func closeView(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,28 +32,48 @@ class AlbumView: UIViewController {
 		if let dbArtwork = AppDB.sharedInstance.getArtwork(album.artwork) {
             artwork = dbArtwork
         }
+		
         albumArtwork.image = artwork
 		albumArtwork.layer.masksToBounds = true
 		albumArtwork.layer.cornerRadius = 2.0
         artist = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
-        artistTitleLabel.text = artist
-        albumTitleLabel.text = album.title
+		navigationItem.title = artist
+        albumTitle.text = album.title
+		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0);
+		albumTitle.textContainer.lineFragmentPadding = 0;
         copyrightLabel.text = album.copyright
-		if album.explicit == 0 {
-			explicitLabel.hidden = true
-		}
         timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
         if timeDiff > 0 {
             dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))
             progress = album.getProgress(dateAdded)
-            progressBar.setProgress(progress, animated: false)
             timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
-        } else {
-            progressBar.hidden = true
         }
         let doubleTapGesture = UITapGestureRecognizer(target: self, action: Selector("shareAlbum"))
         doubleTapGesture.numberOfTapsRequired = 2
         albumArtwork.addGestureRecognizer(doubleTapGesture)
+		
+		if AppDB.sharedInstance.getArtwork(album.artwork + "_large") == nil {
+			let albumURL = "https://releasify.me/static/artwork/music/\(album.artwork)_large.jpg"
+			if let checkedURL = NSURL(string: albumURL) {
+				let request = NSURLRequest(URL: checkedURL)
+				UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+				NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
+					if error == nil {
+						if let HTTPResponse = response as? NSHTTPURLResponse {
+							println("HTTP status code: \(HTTPResponse.statusCode)")
+							if HTTPResponse.statusCode == 200 {
+								let image = UIImage(data: data)
+								AppDB.sharedInstance.addArtwork(self.album.artwork + "_large", artwork: image!)
+								self.albumArtwork.image = image
+							}
+						}
+					}
+					UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+				})
+			}
+		} else {
+			albumArtwork.image = AppDB.sharedInstance.getArtwork(album.artwork + "_large")
+		}
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -135,7 +140,6 @@ class AlbumView: UIViewController {
             thirdTimeLabel.text = "seconds"
         }
         progress = album.getProgress(dateAdded)
-        progressBar.setProgress(progress, animated: true)
     }
     
     func component (x: Double, v: Double) -> Double {

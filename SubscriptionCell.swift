@@ -5,11 +5,12 @@ class SubscriptionCell: UITableViewCell {
 
     @IBOutlet weak var artistImg: UIImageView!
     @IBOutlet weak var artistLabel: UILabel!
-    
+	@IBOutlet weak var detailLabel: UILabel!
+	
     override func awakeFromNib() {
         super.awakeFromNib()
-        artistImg.layer.masksToBounds = true
-        artistImg.layer.cornerRadius = artistImg.bounds.width / 2.0
+		//artistImg.layer.masksToBounds = true
+		//artistImg.layer.cornerRadius = artistImg.bounds.width / 2.0
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

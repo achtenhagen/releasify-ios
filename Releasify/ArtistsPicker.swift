@@ -189,7 +189,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
 			
 			API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: batch, successHandler: { (response, data) in
 				if let HTTPResponse = response as? NSHTTPURLResponse {
-					println("HTTP status code: \(HTTPResponse.statusCode)")
+					println("Error: received HTTP status code \(HTTPResponse.statusCode) {handleBatchProcessing}")
 					if HTTPResponse.statusCode == 202 {
 						if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
 							if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {

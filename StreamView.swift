@@ -4,13 +4,15 @@ import UIKit
 class StreamView: UITableViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	var streamRefresh: UIRefreshControl!
 	var selectedAlbum: Album!
 	var artwork = [String:UIImage]()
 	var notificationAlbumID: Int!
 	
-	@IBOutlet var streamTable: UITableView!
-	@IBOutlet weak var subscriptionsButton: UIBarButtonItem!
+	@IBOutlet weak var streamTable: UITableView!
+	
+	@IBAction func OpenAppSettings(sender: AnyObject) {
+		UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+	}
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,12 +21,12 @@ class StreamView: UITableViewController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
 		
+		// Register Tableview cell nib.
 		streamTable.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "streamCell")
 		
 		// Pull-to-refresh Control
-		streamRefresh = UIRefreshControl()
-		streamRefresh.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
-		streamTable.addSubview(streamRefresh)
+		self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+		self.refreshControl?.tintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
 		
 		let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
 		longPressGesture.minimumPressDuration = 0.5
@@ -59,7 +61,7 @@ class StreamView: UITableViewController {
 		}
 		
 		// For Notifications Test
-		var notification = UILocalNotification()
+		/*var notification = UILocalNotification()
 		notification.category = "DEFAULT_CATEGORY"
 		notification.timeZone = NSTimeZone.localTimeZone()
 		notification.alertTitle = "New Album Released"
@@ -68,11 +70,12 @@ class StreamView: UITableViewController {
 		notification.applicationIconBadgeNumber = 1
 		notification.soundName = UILocalNotificationDefaultSoundName
 		notification.userInfo = ["AlbumID": 3127, "iTunesURL": "https://itunes.apple.com/us/album/long-walk-to-freedom-fuego/id1015003602?uo=4"]
-		UIApplication.sharedApplication().scheduleLocalNotification(notification)
+		UIApplication.sharedApplication().scheduleLocalNotification(notification)*/
 		
 		// Refresh the App's content only once per day.
-		if Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400 {
-			//refresh()
+		if appDelegate.userID > 0 && Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400 {
+			println("Starting daily refresh.")
+			refresh()
 		}
     }
 	
@@ -87,21 +90,22 @@ class StreamView: UITableViewController {
     }
 	
 	func refresh() {
-		self.navigationItem.title = "Please wait..."
 		if AppDB.sharedInstance.artists.count == 0 {
 			API.sharedInstance.refreshSubscriptions(nil, errorHandler: nil)
 		}
-		API.sharedInstance.refreshContent({
+		API.sharedInstance.refreshContent({ (newItems) in
 			self.streamTable.reloadData()
-			self.streamRefresh.endRefreshing()
-			self.navigationItem.title = "Stream"
+			self.refreshControl?.endRefreshing()
+			if newItems.count > 0 {
+				let albumsTabBarItem = self.tabBarController?.tabBar.items?[0] as! UITabBarItem
+				albumsTabBarItem.badgeValue = String(newItems.count)
+			}
 		},
-		errorHandler: { (error) in
-			self.streamRefresh.endRefreshing()
+			errorHandler: { (error) in
+			self.refreshControl?.endRefreshing()
 			var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
 			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
 			self.presentViewController(alert, animated: true, completion: nil)
-			self.navigationItem.title = "Stream"
 		})
 	}
 	
@@ -151,6 +155,11 @@ class StreamView: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("streamCell", forIndexPath: indexPath) as! StreamCell
 		cell.preservesSuperviewLayoutMargins = false
+		// For Dark Theme
+		/*var selectedView = UIView()
+		selectedView.backgroundColor = UIColor(red: 20/255, green: 20/255, blue: 20/255, alpha: 1.0)
+		cell.selectedBackgroundView = selectedView*/
+		
 		let album = AppDB.sharedInstance.albums[indexPath.section]![indexPath.row]
 		cell.albumArtwork.image = UIImage()
 		let hash = album.artwork as String
@@ -165,7 +174,7 @@ class StreamView: UITableViewController {
 			cell.albumArtwork.alpha = 0
 			let albumURL = "https://releasify.me/static/artwork/music/\(hash)@2x.jpg"
 			if let checkedURL = NSURL(string: albumURL) {
-				let request: NSURLRequest = NSURLRequest(URL: checkedURL)
+				let request = NSURLRequest(URL: checkedURL)
 				let mainQueue = NSOperationQueue.mainQueue()
 				NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
 					if error == nil {
@@ -198,12 +207,10 @@ class StreamView: UITableViewController {
 		
 		if timeDiff > 0 {
 			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))
-			cell.artistLabel.font = UIFont (name: "SourceSansPro-Semibold", size: 16)
 			cell.timeRemainingLabel.hidden = false
 			cell.progressBar.hidden = false
 			cell.progressBar.setProgress(album.getProgress(dateAdded), animated: false)
 		} else {
-			cell.artistLabel.font = UIFont (name: "SourceSansPro-Regular", size: 16)
 			cell.timeRemainingLabel.hidden = true
 			cell.progressBar.hidden = true
 		}
@@ -246,7 +253,7 @@ class StreamView: UITableViewController {
 		return floor(x / v)
 	}
 	
-	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String {
+	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		if (section == 0) {
 			return "Upcoming Music"
 		}
@@ -270,6 +277,9 @@ class StreamView: UITableViewController {
 					if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
 						UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
 					}
+				})
+				let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
+					// Implement...
 				})
 				let deleteAction = UIAlertAction(title: "Unsubscribe", style: .Destructive, handler: { action in
 					let albumID = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].ID
@@ -296,6 +306,7 @@ class StreamView: UITableViewController {
 				})
 				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 				controller.addAction(buyAction)
+				controller.addAction(reportAction)
 				controller.addAction(deleteAction)
 				controller.addAction(cancelAction)
 				self.presentViewController(controller, animated: true, completion: nil)

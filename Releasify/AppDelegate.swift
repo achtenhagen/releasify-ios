@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var userID = 0
     var userDeviceToken: String?
-    var userUUID = String()
+	var userUUID: String!
     var allowExplicitContent = true
 	var lastUpdated = 0
 	var notificationAlbumID: Int!
@@ -15,19 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var localNotificationPayload  = NSDictionary()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-		
-		/*
-			Releasify Version Names
-			-----------------------
-			1.x - Clairvoyant
-			2.x - Takumi
-			3.x - Mirage
-		*/
 
         let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String)! + " (Clairvoyant)"
         NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")
         
-        // Notification settings & categories
+        // Notification settings & categories (UPDATE: move to tutorial screen).
         if application.respondsToSelector("registerUserNotificationSettings:") {
             
 			var appAction = UIMutableUserNotificationAction()
@@ -39,22 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
 			var storeAction = UIMutableUserNotificationAction()
             storeAction.identifier = "STORE_ACTION"
-            storeAction.title = "Buy on iTunes"
+			switch UIDevice.currentDevice().systemVersion.compare("8.4.0", options: NSStringCompareOptions.NumericSearch) {
+			case .OrderedSame, .OrderedDescending:
+				storeAction.title = " MUSIC"
+			case .OrderedAscending:
+				storeAction.title = "Buy on iTunes"
+			}
             storeAction.activationMode = .Foreground
             storeAction.destructive = false
             storeAction.authenticationRequired = false
-            
-            var preorderAction = UIMutableUserNotificationAction()
-            preorderAction.identifier = "PREORDER_ACTION"
-            switch UIDevice.currentDevice().systemVersion.compare("8.4.0", options: NSStringCompareOptions.NumericSearch) {
-                case .OrderedSame, .OrderedDescending:
-                    preorderAction.title = " MUSIC"
-                case .OrderedAscending:
-					preorderAction.title = "Pre-order on iTunes"
-            }
-            preorderAction.activationMode = .Foreground
-            preorderAction.destructive = false
-            preorderAction.authenticationRequired = false
             
             var defaultCategory = UIMutableUserNotificationCategory()
             defaultCategory.identifier = "DEFAULT_CATEGORY"
@@ -62,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             remoteCategory.identifier = "REMOTE_CATEGORY"
             
             let defaultActions = [appAction, storeAction]
-            let remoteActions  = [appAction, preorderAction]
+            let remoteActions  = [appAction]
             
             defaultCategory.setActions(defaultActions, forContext: .Default)
             defaultCategory.setActions(defaultActions, forContext: .Minimal)
@@ -94,6 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Read in user settings.
         userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
+		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
         if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") {
             userDeviceToken = token
         }
@@ -110,10 +96,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
         }
-		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
-        
-        // Initialize the database.
-        AppDB.sharedInstance.inititalize()
         
         // Check for notification payload when app is launched.
         if let launchOpts = launchOptions {
@@ -128,48 +110,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         return true
     }
-    
-    private func register (deviceToken: String? = nil) {
-        let uuid = NSUUID().UUIDString
-        var explicitValue = 1
-        if !allowExplicitContent {
-			explicitValue = 0
-		}
-        var postString = "uuid=\(uuid)&explicit=\(explicitValue)"
-        if deviceToken != nil {
-            postString += "&deviceToken=\(deviceToken!)"
-        }
-		API.sharedInstance.sendRequest(APIURL.register.rawValue, postString: postString, successHandler: { (response, data) in
-			if let HTTPResponse = response as? NSHTTPURLResponse {
-				println("HTTP status code: \(HTTPResponse.statusCode)")
-				if HTTPResponse.statusCode == 201 {
-					var error: NSError?
-					if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? NSDictionary {
-						if error != nil {
-							return
-						}
-						let receivedUserID = json["id"] as? Int
-						if receivedUserID > 0 {
-							self.userID = receivedUserID!
-							self.userUUID = uuid
-							NSUserDefaults.standardUserDefaults().setInteger(receivedUserID!, forKey: "ID")
-							NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
-							if deviceToken != nil {
-								self.userDeviceToken = deviceToken!
-								NSUserDefaults.standardUserDefaults().setValue(self.userDeviceToken, forKey: "deviceToken")
-								println("APNS Device token was set successfully.")
-							}
-							println("UUID was set successfully.")
-							println("Received user ID: \(self.userID) from the server.")
-						}
-					}
-				}
-			}
-		},
-		errorHandler: { (error) in
-			println(error.localizedDescription)
-		})
-    }
 	
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         println("User allows notifications.")
@@ -177,15 +117,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
         deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
         deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+		self.userDeviceToken = deviceTokenString
+		NSUserDefaults.standardUserDefaults().setValue(self.userDeviceToken, forKey: "deviceToken")
+		println("APNS Device token was set successfully.")
         if userID == 0 {
-            register(deviceToken: deviceTokenString)
+			API.sharedInstance.register(deviceToken: deviceTokenString, allowExplicitContent: allowExplicitContent, successHandler: { (userID, userUUID) in
+				self.userID = userID!
+				self.userUUID = userUUID
+				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
+				NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
+				println("UUID was set successfully.")
+			},
+			errorHandler: { (error) in
+				println("Error: \(error.localizedDescription)")
+			})
         }
     }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-		println(error.localizedDescription)
+		println("Error: \(error.localizedDescription)")
         if userID == 0 {
-            register()
+			API.sharedInstance.register(allowExplicitContent: allowExplicitContent, successHandler: { (userID, userUUID) in
+				self.userID = userID!
+				self.userUUID = userUUID
+				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
+				NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
+				println("UUID was set successfully.")
+			},
+			errorHandler: { (error) in
+				println("Error: \(error.localizedDescription)")
+			})
         }
     }
     
@@ -240,15 +201,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
 			}
 			
-        } else {
-			delay(0) {
-				if let iTunesURL = userInfo["aps"]?["iTunesURL"]! as? String {
-					if UIApplication.sharedApplication().canOpenURL(NSURL(string: iTunesURL)!) {
-						UIApplication.sharedApplication().openURL(NSURL(string: iTunesURL)!)
-					}
-				}
-			}
-
         }
         completionHandler()
     }

@@ -16,12 +16,12 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_artist" translatesAutoresizingMaskIntoConstraints="NO" id="Dxt-7U-urn">
-                    <rect key="frame" x="10" y="7" width="35" height="35"/>
+                    <rect key="frame" x="15" y="10" width="30" height="30"/>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZCx-Z0-Gey">
-                    <rect key="frame" x="54" y="14" width="215" height="22"/>
+                    <rect key="frame" x="55" y="13" width="215" height="22"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="215" id="PDS-ae-i4c"/>
+                        <constraint firstAttribute="width" constant="215" id="iMm-LL-qQe"/>
                     </constraints>
                     <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                     <color key="textColor" red="0.45882352939999999" green="0.80392156859999997" blue="0.96470588239999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -37,11 +37,13 @@
             </subviews>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="cmI-bs-sbQ" secondAttribute="trailing" constant="12" id="1Zn-JA-cw7"/>
-                <constraint firstItem="Dxt-7U-urn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="10" id="3eb-84-CWq"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="top" secondItem="cmI-bs-sbQ" secondAttribute="top" id="5z6-es-O7M"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="9" id="ACl-Iy-GlV"/>
+                <constraint firstItem="Dxt-7U-urn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="3eb-84-CWq"/>
                 <constraint firstItem="cmI-bs-sbQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="14" id="Hvc-MS-K95"/>
-                <constraint firstItem="Dxt-7U-urn" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="7" id="dS2-CV-Ahi"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="10" id="NRj-8a-q9E"/>
+                <constraint firstItem="Dxt-7U-urn" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="dS2-CV-Ahi"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="centerY" secondItem="Dxt-7U-urn" secondAttribute="centerY" constant="-1" id="ruY-GQ-0Yl"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-1" id="uBd-Px-AxX"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="55" id="xN5-bk-Ccy"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>
