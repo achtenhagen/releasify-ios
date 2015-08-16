@@ -42,7 +42,6 @@ class StreamView: UITableViewController {
 		// Notification payload processing
 		// The remote notification payload will return 'content-available: 1' if there is new content.
 		if let remoteContent = appDelegate.remoteNotificationPayload["aps"]?["content-available"] as? Int {
-			println("ok")
 			if remoteContent == 1 {
 				refresh()
 			}

@@ -39,7 +39,7 @@ class AlbumView: UIViewController {
         artist = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
 		navigationItem.title = artist
         albumTitle.text = album.title
-		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0);
+		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
 		albumTitle.textContainer.lineFragmentPadding = 0;
         copyrightLabel.text = album.copyright
         timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
