@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="SourceSansPro-Semibold.otf">
+            <string>SourceSansPro-Semibold</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="subscriptionCell" id="gTV-IL-0wX" customClass="SubscriptionCell" customModule="Releasify" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="145" height="180"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="145" height="180"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="armin" translatesAutoresizingMaskIntoConstraints="NO" id="VJJ-OJ-vij">
+                        <rect key="frame" x="0.0" y="0.0" width="145" height="145"/>
+                        <variation key="widthClass=compact" fixedFrame="YES">
+                            <rect key="frame" x="0.0" y="0.0" width="140" height="140"/>
+                        </variation>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Yv-49-krO">
+                        <rect key="frame" x="8" y="150" width="100" height="21"/>
+                        <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="14"/>
+                        <color key="textColor" red="0.0" green="0.20392156859999999" blue="0.28235294119999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                        <variation key="widthClass=compact" fixedFrame="YES">
+                            <rect key="frame" x="8" y="142" width="124" height="21"/>
+                        </variation>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ege-gU-AOs">
+                        <rect key="frame" x="122" y="152" width="20" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="20" id="9Eb-sC-qJC"/>
+                            <constraint firstAttribute="height" constant="20" id="X2H-6Y-Ad1"/>
+                        </constraints>
+                        <state key="normal" backgroundImage="icon_more_options">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="9Eb-sC-qJC"/>
+                                <exclude reference="X2H-6Y-Ad1"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="9Eb-sC-qJC"/>
+                                <include reference="X2H-6Y-Ad1"/>
+                            </mask>
+                        </variation>
+                    </button>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            </view>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="VJJ-OJ-vij" secondAttribute="trailing" id="8HP-EC-TYm"/>
+                <constraint firstItem="9Yv-49-krO" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leadingMargin" id="Ebb-WI-cBh"/>
+                <constraint firstItem="ege-gU-AOs" firstAttribute="top" secondItem="VJJ-OJ-vij" secondAttribute="bottom" constant="7" id="Rr1-mm-94B"/>
+                <constraint firstAttribute="trailing" secondItem="ege-gU-AOs" secondAttribute="trailing" constant="3" id="ZjB-um-g79"/>
+                <constraint firstItem="VJJ-OJ-vij" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="gPf-am-tfK"/>
+                <constraint firstItem="ege-gU-AOs" firstAttribute="bottom" secondItem="gTV-IL-0wX" secondAttribute="bottomMargin" id="iXH-hk-mYV"/>
+                <constraint firstItem="VJJ-OJ-vij" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="oAb-bg-0e8"/>
+                <constraint firstAttribute="bottom" secondItem="9Yv-49-krO" secondAttribute="bottom" constant="9" id="qJp-lw-MeG"/>
+                <constraint firstItem="9Yv-49-krO" firstAttribute="top" secondItem="VJJ-OJ-vij" secondAttribute="bottom" constant="5" id="udv-HD-prE"/>
+                <constraint firstItem="ege-gU-AOs" firstAttribute="leading" secondItem="9Yv-49-krO" secondAttribute="trailing" constant="14" id="xpI-Nd-k62"/>
+            </constraints>
+            <connections>
+                <outlet property="subscriptionArtwork" destination="VJJ-OJ-vij" id="Nna-Ay-HHt"/>
+                <outlet property="subscriptionTitle" destination="9Yv-49-krO" id="lSD-6u-e8q"/>
+            </connections>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="armin" width="300" height="300"/>
+        <image name="icon_more_options" width="30" height="30"/>
+    </resources>
+</document>

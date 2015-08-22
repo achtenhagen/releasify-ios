@@ -1,43 +1,41 @@
 
 import UIKit
 
-class StreamView: UITableViewController {
+class UpcomingAlbumsView: UICollectionViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	let albumCellReuseIdentifier = "AlbumCell"
+	let albumCollectionHeaderViewReuseIdentifier = "albumCollectionHeader"
+	let albumCollectionFooterViewReuseIdentifier = "albumCollectionFooter"
 	var selectedAlbum: Album!
 	var artwork = [String:UIImage]()
 	var notificationAlbumID: Int!
+	var refreshControl: UIRefreshControl!
+
+	@IBOutlet var albumCollectionView: UICollectionView!
 	
-	@IBOutlet weak var streamTable: UITableView!
-	
-	@IBAction func OpenAppSettings(sender: AnyObject) {
-		UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-	}
-	
-	override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromRemoteNotification:", name: "appActionPressed", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
 		
-		// Register Tableview cell nib.
-		streamTable.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "streamCell")
+		// Register CollectionView Cell Nib.
+		albumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
 		
-		// Pull-to-refresh Control
-		self.refreshControl?.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
-		self.refreshControl?.tintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+		// Add Edge insets to compensate for navigation bar.
+		albumCollectionView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
+		
+		// Pull-to-refresh Control.
+		refreshControl = UIRefreshControl()
+		refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
+		albumCollectionView.addSubview(refreshControl)
 		
 		let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
 		longPressGesture.minimumPressDuration = 0.5
-		streamTable.addGestureRecognizer(longPressGesture)
-		
-		// Load data from database.
-		AppDB.sharedInstance.getArtists()
-		AppDB.sharedInstance.getAlbums()
-		
-		// Check for any pending artists waiting to be removed.
-		let pendingArtists = AppDB.sharedInstance.getPendingArtists()
+		albumCollectionView.addGestureRecognizer(longPressGesture)
 		
 		// Notification payload processing
 		// The remote notification payload will return 'content-available: 1' if there is new content.
@@ -59,7 +57,7 @@ class StreamView: UITableViewController {
 			}
 		}
 		
-		// For Notifications Test
+		// For local notification testing.
 		/*var notification = UILocalNotification()
 		notification.category = "DEFAULT_CATEGORY"
 		notification.timeZone = NSTimeZone.localTimeZone()
@@ -75,33 +73,31 @@ class StreamView: UITableViewController {
 		if appDelegate.userID > 0 && Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400 {
 			println("Starting daily refresh.")
 			refresh()
-		}
-    }
+		}		
+	}
 	
 	override func viewWillAppear(animated: Bool) {
+		albumCollectionView.scrollsToTop = true
 		if AppDB.sharedInstance.artists.count > 0 && AppDB.sharedInstance.albums[0]!.count == 0 && AppDB.sharedInstance.albums[1]!.count == 0 {
 			refresh()
 		}
 	}
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
+	
+	override func viewWillDisappear(animated: Bool) {
+		albumCollectionView.scrollsToTop = false
+	}
 	
 	func refresh() {
 		if AppDB.sharedInstance.artists.count == 0 {
 			API.sharedInstance.refreshSubscriptions(nil, errorHandler: nil)
 		}
 		API.sharedInstance.refreshContent({ (newItems) in
-			self.streamTable.reloadData()
-			self.refreshControl?.endRefreshing()
-			if newItems.count > 0 {
-				let albumsTabBarItem = self.tabBarController?.tabBar.items?[0] as! UITabBarItem
-				albumsTabBarItem.badgeValue = String(newItems.count)
-			}
+			self.albumCollectionView.reloadData()
+			self.refreshControl.endRefreshing()
+			if newItems.count > 0 {}
 		},
-			errorHandler: { (error) in
-			self.refreshControl?.endRefreshing()
+		errorHandler: { (error) in
+			self.refreshControl.endRefreshing()
 			var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
 			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
 			self.presentViewController(alert, animated: true, completion: nil)
@@ -138,23 +134,18 @@ class StreamView: UITableViewController {
 			}
 		}
 	}
-	
-	func delay(delay:Double, closure: ()->()) {
-		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
-	}
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return AppDB.sharedInstance.albums.count
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
+    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return AppDB.sharedInstance.albums[section]!.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("streamCell", forIndexPath: indexPath) as! StreamCell
-		cell.preservesSuperviewLayoutMargins = false
-		
+    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell
 		let album = AppDB.sharedInstance.albums[indexPath.section]![indexPath.row]
 		cell.albumArtwork.image = UIImage()
 		let hash = album.artwork as String
@@ -174,12 +165,12 @@ class StreamView: UITableViewController {
 				NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
 					if error == nil {
 						if let HTTPResponse = response as? NSHTTPURLResponse {
-							println("HTTP status code: \(HTTPResponse.statusCode)")
+							println("Error: HTTP status code: \(HTTPResponse.statusCode)")
 							if HTTPResponse.statusCode == 200 {
 								let image = UIImage(data: data)
 								self.artwork[hash] = image
 								dispatch_async(dispatch_get_main_queue(), {
-									if let cellToUpdate = self.streamTable.cellForRowAtIndexPath((indexPath)) as? StreamCell {
+									if let cellToUpdate = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
 										AppDB.sharedInstance.addArtwork(hash, artwork: image!)
 										cell.albumArtwork.image = image
 										UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
@@ -194,20 +185,27 @@ class StreamView: UITableViewController {
 			}
 		}
 		
-		cell.artistLabel.text = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
+		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
 		cell.albumTitle.text = album.title
 		cell.albumTitle.userInteractionEnabled = false
-		cell.albumTitle.textContainerInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 0);
-		cell.albumTitle.textContainer.lineFragmentPadding = 0;
 		
 		if timeDiff > 0 {
 			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))
-			cell.timeRemainingLabel.hidden = false
+			cell.timeLeft.hidden = false
 			cell.progressBar.hidden = false
 			cell.progressBar.setProgress(album.getProgress(dateAdded), animated: false)
+			cell.albumTitle.frame.size.height = 21
+			cell.albumTitle.numberOfLines = 1
+			cell.albumTitle.lineBreakMode = .ByTruncatingTail
+			//cell.albumTitle.setTranslatesAutoresizingMaskIntoConstraints(true)
 		} else {
-			cell.timeRemainingLabel.hidden = true
+			cell.timeLeft.hidden = true
 			cell.progressBar.hidden = true
+			cell.albumTitle.frame.size.height = 40
+			cell.albumTitle.numberOfLines = 2
+			cell.albumTitle.lineBreakMode = .ByWordWrapping
+			//cell.albumTitle.setTranslatesAutoresizingMaskIntoConstraints(true)
+			cell.albumTitle.sizeToFit()
 		}
 		
 		var weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
@@ -217,53 +215,60 @@ class StreamView: UITableViewController {
 		var seconds = component(Double(timeDiff),            v: 1) % 60
 		
 		if Int(weeks) > 0 {
-			cell.timeRemainingLabel.text = "\(Int(weeks)) wks"
+			cell.timeLeft.text = "\(Int(weeks)) weeks"
 			if Int(weeks) == 1  {
-				cell.timeRemainingLabel.text = "\(Int(weeks)) wk"
+				cell.timeLeft.text = "\(Int(weeks)) week"
 			}
 		} else if Int(days) > 0 && Int(days) <= 7 {
-			cell.timeRemainingLabel.text = "\(Int(days)) days"
+			cell.timeLeft.text = "\(Int(days)) days"
 			if Int(days) == 1  {
-				cell.timeRemainingLabel.text = "\(Int(days)) day"
+				cell.timeLeft.text = "\(Int(days)) day"
 			}
 		} else if Int(hours) > 0 && Int(hours) <= 24 {
 			if Int(hours) >= 12 {
-				cell.timeRemainingLabel.text = "Today"
+				cell.timeLeft.text = "Today"
 			} else {
-				cell.timeRemainingLabel.text = "\(Int(hours)) hrs"
+				cell.timeLeft.text = "\(Int(hours)) hours"
 				if Int(hours) == 1  {
-					cell.timeRemainingLabel.text = "\(Int(days)) hr"
+					cell.timeLeft.text = "\(Int(days)) hour"
 				}
 			}
 		} else if Int(minutes) > 0 && Int(minutes) <= 60 {
-			cell.timeRemainingLabel.text = "\(Int(minutes)) min"
+			cell.timeLeft.text = "\(Int(minutes)) minute"
 		} else if Int(seconds) > 0 && Int(seconds) <= 60 {
-			cell.timeRemainingLabel.text = "\(Int(seconds)) sec"
+			cell.timeLeft.text = "\(Int(seconds)) second"
 		}
 		
-        return cell
+		return cell
     }
 	
 	func component (x: Double, v: Double) -> Double {
 		return floor(x / v)
 	}
 	
-	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		if (section == 0) {
-			return "Upcoming Music"
+	override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
+		if kind == UICollectionElementKindSectionHeader {
+			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: albumCollectionHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeaderView
+			if indexPath.section == 0 {
+				headerView.headerLabel.text = "UPCOMING"
+			} else {
+				headerView.headerLabel.text = "RECENTLY RELEASED"
+			}
+			return headerView
 		}
-		return "Recently Released"
+		let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionFooter, withReuseIdentifier: albumCollectionFooterViewReuseIdentifier, forIndexPath: indexPath) as! UICollectionReusableView
+		return footerView
 	}
 	
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+	override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
 		selectedAlbum = AppDB.sharedInstance.albums[indexPath.section]![indexPath.row]
-		streamTable.deselectRowAtIndexPath(indexPath, animated: true)
 		performSegueWithIdentifier("AlbumViewSegue", sender: self)
+		return true
 	}
 	
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
-		var cellLocation = gesture.locationInView(streamTable)
-		let indexPath = streamTable.indexPathForRowAtPoint(cellLocation)
+		var cellLocation = gesture.locationInView(albumCollectionView)
+		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
 		if indexPath?.row != nil {
 			if gesture.state == UIGestureRecognizerState.Began {
 				let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
@@ -290,13 +295,13 @@ class StreamView: UITableViewController {
 						}
 					}
 					UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
-						self.streamTable.cellForRowAtIndexPath(indexPath!)?.alpha = 0
-					}, completion: { (value: Bool) in
-						AppDB.sharedInstance.deleteAlbum(Int32(albumID))
-						AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
-						AppDB.sharedInstance.getAlbums()
-						AppDB.sharedInstance.getArtists()
-						self.streamTable.reloadData()
+						self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+						}, completion: { (value: Bool) in
+							AppDB.sharedInstance.deleteAlbum(Int32(albumID))
+							AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
+							AppDB.sharedInstance.getAlbums()
+							AppDB.sharedInstance.getArtists()
+							self.albumCollectionView.reloadData()
 					})
 				})
 				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
@@ -308,11 +313,20 @@ class StreamView: UITableViewController {
 			}
 		}
 	}
-
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+	
+	override func didReceiveMemoryWarning() {
+		super.didReceiveMemoryWarning()
+	}
+	
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "AlbumViewSegue" {
 			var detailController = segue.destinationViewController as! AlbumView
 			detailController.album = selectedAlbum
 		}
-    }
+	}
+	
+	func delay(delay:Double, closure: ()->()) {
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
+	}
+
 }

@@ -15,7 +15,7 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.artistsTable.registerNib(UINib(nibName: "TableViewHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
+        artistsTable.registerNib(UINib(nibName: "TableViewHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
     }
 
     override func didReceiveMemoryWarning() {

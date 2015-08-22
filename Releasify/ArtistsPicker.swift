@@ -90,17 +90,26 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
         searchController.searchBar.searchBarStyle = .Minimal
         searchController.searchBar.placeholder = "Search Artists"
         searchController.searchBar.tintColor = self.view.tintColor
-        searchController.searchBar.barStyle = UIBarStyle.Default
+        searchController.searchBar.barStyle = .Black
         searchController.searchBar.translucent = false
         searchController.searchBar.backgroundColor = self.view.backgroundColor
         searchController.searchBar.autocapitalizationType = .Words
-        searchController.searchBar.keyboardAppearance = .Light
+        searchController.searchBar.keyboardAppearance = .Dark
         self.definesPresentationContext = true
         searchController.searchBar.sizeToFit()
         artistsTable.tableHeaderView = searchController.searchBar
         var backgroundView = UIView(frame: self.view.bounds)
         backgroundView.backgroundColor = UIColor.clearColor()
         artistsTable.backgroundView = backgroundView
+		
+		// Background gradient.
+		let gradient: CAGradientLayer = CAGradientLayer()
+		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
+		gradient.locations = [0.0 , 1.0]
+		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
+		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
+		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
+		self.view.layer.insertSublayer(gradient, atIndex: 0)
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -309,10 +318,10 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView(frame: CGRectMake(0, 0, self.view.bounds.size.width, 30.0))
-		view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 244/255, alpha: 1.0)
+		view.backgroundColor = UIColor(patternImage: UIImage(named: "navBar.png")!)
         let lbl = UILabel(frame: CGRectMake(15, 1, 150, 20))
         lbl.font = UIFont(name: lbl.font.fontName, size: 16)
-		//lbl.textColor = UIColor(red: 255/255, green: 0/255, blue: 162/255, alpha: 1.0)
+		lbl.textColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1.0)
         view.addSubview(lbl)
         lbl.text = keys[section]
         if self.searchController.active {

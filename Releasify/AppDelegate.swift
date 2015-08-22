@@ -107,7 +107,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     localNotificationPayload = userInfo
                 }
             }
-        }
+        }	
+		
         return true
     }
 	
