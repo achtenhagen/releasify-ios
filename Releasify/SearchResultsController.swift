@@ -1,12 +1,16 @@
 
 import UIKit
 
-class ArtistSelectionView: UIViewController, UITableViewDataSource {
+class SearchResultsController: UIViewController, UITableViewDataSource {
 
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var artists: [NSDictionary]!
     var artwork = [String:UIImage]()
+	var selectedArtists = NSMutableArray()
+	var keyword: String!
     
+	@IBOutlet weak var navBar: UINavigationBar!
+	@IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var artistsTable: UITableView!
     
     @IBAction func closeView(sender: AnyObject) {
@@ -15,7 +19,24 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        artistsTable.registerNib(UINib(nibName: "TableViewHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
+        artistsTable.registerNib(UINib(nibName: "SearchResultsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
+		
+		infoLabel.text = "Multiple results were found for \"\(keyword)\"."
+		
+		// Navigation bar customization.
+		let image = UIImage(named: "navBar.png")
+		navBar.setBackgroundImage(image, forBarMetrics: UIBarMetrics.Default)
+		navBar.shadowImage = UIImage()
+		navBar.translucent = true
+		
+		// Background gradient.
+		let gradient: CAGradientLayer = CAGradientLayer()
+		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
+		gradient.locations = [0.0 , 1.0]
+		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
+		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
+		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
+		self.view.layer.insertSublayer(gradient, atIndex: 0)
     }
 
     override func didReceiveMemoryWarning() {
@@ -72,11 +93,20 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = self.artistsTable.dequeueReusableHeaderFooterViewWithIdentifier("header") as! ArtistSelectionHeaderView
+        let headerView = artistsTable.dequeueReusableHeaderFooterViewWithIdentifier("header") as! SearchResultsHeader
+		let artistID = (artists[section]["iTunesUniqueID"] as? Int)!
         headerView.contentView.backgroundColor = UIColor.clearColor()
         headerView.artistLabel.text = artists[section]["title"] as? String
         headerView.confirmBtn.tag = section
         headerView.confirmBtn.addTarget(self, action: "confirmArtist:", forControlEvents: .TouchUpInside)
+		headerView.artistImg.alpha = 1.0
+		headerView.artistLabel.alpha = 1.0
+		headerView.confirmBtn.alpha = 1.0
+		if selectedArtists.containsObject(artistID) {
+			headerView.artistImg.alpha = 0.2
+			headerView.artistLabel.alpha = 0.2
+			headerView.confirmBtn.alpha = 0.2
+		}
         return headerView
     }
     
@@ -85,20 +115,36 @@ class ArtistSelectionView: UIViewController, UITableViewDataSource {
     }
     
     func confirmArtist (sender: UIButton) {
-        let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int)!
-        let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
-        API.sharedInstance.sendRequest(APIURL.confirmArtist.rawValue, postString: postString, successHandler: { (response, data) in
-            if let HTTPResponse = response as? NSHTTPURLResponse {
-                println("HTTP status code: \(HTTPResponse.statusCode)")
-                if HTTPResponse.statusCode == 200 {
-                    UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2 }, completion: nil)
-                    println("Successfully subscribed.")
-                }
-            }
-        }, errorHandler: { (error) in
-            var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-        })
+		var artistID = 0
+		if let id = (artists[sender.tag]["artistId"] as? Int) {
+			artistID = id
+		}
+		let artistTitle = (artists[sender.tag]["title"] as? String)!
+		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
+			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
+			API.sharedInstance.sendRequest(APIURL.confirmArtist.rawValue, postString: postString, successHandler: { (response, data) in
+				if let HTTPResponse = response as? NSHTTPURLResponse {
+					println("HTTP status code: \(HTTPResponse.statusCode)")
+					if HTTPResponse.statusCode == 200 {
+						UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2 }, completion: { (state) in
+							let newArtistID = AppDB.sharedInstance.addArtist(Int32(artistID), artistTitle: artistTitle, iTunesUniqueID: Int32(artistUniqueID))
+							AppDB.sharedInstance.getArtists()
+							self.selectedArtists.addObject(artistUniqueID)
+							if newArtistID > 0 {
+								println("Successfully subscribed.")
+							}
+							if self.artists.count == self.selectedArtists.count {
+								self.dismissViewControllerAnimated(true, completion: nil)
+							}
+						})
+					}
+				}
+			},
+			errorHandler: { (error) in
+				var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+				alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+				self.presentViewController(alert, animated: true, completion: nil)
+			})
+		}
     }
 }

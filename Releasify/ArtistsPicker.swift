@@ -25,8 +25,9 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
     var responseArtists = [NSDictionary]()
     var activityView = UIView()
     var indicatorView = UIActivityIndicatorView()
-
-    @IBOutlet weak var artistsTable: UITableView!
+	
+	@IBOutlet weak var navBar: UINavigationBar!
+	@IBOutlet weak var artistsTable: UITableView!
     @IBOutlet weak var selectAllBtn: UIBarButtonItem!
     @IBOutlet weak var progressBar: UIProgressView!
     
@@ -101,6 +102,12 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
         var backgroundView = UIView(frame: self.view.bounds)
         backgroundView.backgroundColor = UIColor.clearColor()
         artistsTable.backgroundView = backgroundView
+		
+		// Navigation bar customization.
+		let image = UIImage(named: "navBar.png")
+		navBar.setBackgroundImage(image, forBarMetrics: UIBarMetrics.Default)
+		navBar.shadowImage = UIImage()
+		navBar.translucent = true
 		
 		// Background gradient.
 		let gradient: CAGradientLayer = CAGradientLayer()
@@ -198,7 +205,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
 			
 			API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: batch, successHandler: { (response, data) in
 				if let HTTPResponse = response as? NSHTTPURLResponse {
-					println("Error: received HTTP status code \(HTTPResponse.statusCode) {handleBatchProcessing}")
+					println("Received HTTP status code \(HTTPResponse.statusCode) {handleBatchProcessing}")
 					if HTTPResponse.statusCode == 202 {
 						if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
 							if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
@@ -374,7 +381,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ArtistSelectionSegue" {
-            var selectionController = segue.destinationViewController as! ArtistSelectionView
+            var selectionController = segue.destinationViewController as! SearchResultsController
             selectionController.artists = responseArtists
         }
     }

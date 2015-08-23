@@ -1,7 +1,7 @@
 
 import UIKit
 
-class AlbumCollectionHeaderView: UICollectionReusableView {
+class AlbumCollectionHeader: UICollectionReusableView {
 	
 	@IBOutlet weak var headerLabel: UILabel!
 	

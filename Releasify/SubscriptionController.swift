@@ -1,7 +1,7 @@
 
 import UIKit
 
-class SubscriptionsView: UICollectionViewController {
+class SubscriptionController: UICollectionViewController {
 
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let subscriptionCellReuseIdentifier = "subscriptionCell"
@@ -29,6 +29,7 @@ class SubscriptionsView: UICollectionViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
+		artistsCollectionView.reloadData()
 		artistsCollectionView.scrollsToTop = true
         if AppDB.sharedInstance.artists.count > 0 {
 			// Show welcome screen?

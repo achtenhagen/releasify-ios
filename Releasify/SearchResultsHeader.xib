@@ -11,7 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="ArtistSelectionHeaderView" customModule="Releasify" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="SearchResultsHeader" customModule="Releasify" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -19,31 +19,30 @@
                     <rect key="frame" x="15" y="10" width="30" height="30"/>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZCx-Z0-Gey">
-                    <rect key="frame" x="55" y="13" width="215" height="22"/>
+                    <rect key="frame" x="55" y="14" width="215" height="20"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="215" id="iMm-LL-qQe"/>
+                        <constraint firstAttribute="width" constant="215" id="ceR-8y-rU5"/>
                     </constraints>
                     <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
-                    <color key="textColor" red="0.45882352939999999" green="0.80392156859999997" blue="0.96470588239999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="textColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cmI-bs-sbQ">
                     <rect key="frame" x="286" y="14" width="22" height="22"/>
-                    <color key="tintColor" red="0.45882352939999999" green="0.80392156859999997" blue="0.96470588239999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <state key="normal">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                 </button>
             </subviews>
+            <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="cmI-bs-sbQ" secondAttribute="trailing" constant="12" id="1Zn-JA-cw7"/>
                 <constraint firstItem="Dxt-7U-urn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="3eb-84-CWq"/>
+                <constraint firstAttribute="bottom" secondItem="ZCx-Z0-Gey" secondAttribute="bottom" constant="16" id="4Tw-WU-cUb"/>
                 <constraint firstItem="cmI-bs-sbQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="14" id="Hvc-MS-K95"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="10" id="NRj-8a-q9E"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="10" id="NZt-KK-Zfi"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="top" secondItem="cmI-bs-sbQ" secondAttribute="top" id="P2s-HL-gtQ"/>
                 <constraint firstItem="Dxt-7U-urn" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="dS2-CV-Ahi"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="centerY" secondItem="Dxt-7U-urn" secondAttribute="centerY" constant="-1" id="ruY-GQ-0Yl"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-1" id="uBd-Px-AxX"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="55" id="xN5-bk-Ccy"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>
@@ -58,7 +57,7 @@
         </view>
     </objects>
     <resources>
-        <image name="icon_artist" width="35" height="35"/>
+        <image name="icon_artist" width="30" height="30"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

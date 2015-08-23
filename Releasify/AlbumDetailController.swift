@@ -1,7 +1,7 @@
 
 import UIKit
 
-class AlbumView: UIViewController {
+class AlbumDetailController: UIViewController {
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var album: Album!
@@ -21,7 +21,9 @@ class AlbumView: UIViewController {
     @IBOutlet weak var firstTimeLabel: UILabel!
     @IBOutlet weak var secondTimeLabel: UILabel!
     @IBOutlet weak var thirdTimeLabel: UILabel!
-    
+	@IBOutlet weak var progressBar: UIProgressView!
+	@IBOutlet var detailContainer: UIView!
+	
 	@IBAction func shareAlbum(sender: AnyObject) {
 		shareAlbum()
 	}
@@ -45,9 +47,11 @@ class AlbumView: UIViewController {
         timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
         if timeDiff > 0 {
             dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))
-            progress = album.getProgress(dateAdded)
+			progressBar.progress = album.getProgress(dateAdded)
             timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
-        }
+		} else {
+			progressBar.hidden = true
+		}
         let doubleTapGesture = UITapGestureRecognizer(target: self, action: Selector("shareAlbum"))
         doubleTapGesture.numberOfTapsRequired = 2
         albumArtwork.addGestureRecognizer(doubleTapGesture)
@@ -149,6 +153,7 @@ class AlbumView: UIViewController {
             thirdTimeLabel.text = "seconds"
         }
         progress = album.getProgress(dateAdded)
+		progressBar.progress = progress
     }
     
     func component (x: Double, v: Double) -> Double {

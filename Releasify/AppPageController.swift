@@ -9,12 +9,13 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 	var mediaQuery = MPMediaQuery.artistsQuery()
 	var index = 0
 	var identifiers: NSArray = ["AlbumsController", "SubscriptionsController"]
+	var keyword: String!
 	
 	@IBAction func openSettings(sender: AnyObject) {
 		UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
 	}
 	
-	@IBAction func addSubscriptions(sender: AnyObject) {
+	@IBAction func addSubscription(sender: AnyObject) {
 		
 		let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
 		mediaQuery.groupingType = MPMediaGrouping.AlbumArtist
@@ -105,7 +106,7 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 	
 	func addSubscription () {
 		responseArtists = [NSDictionary]()
-		let actionSheetController: UIAlertController = UIAlertController(title: "Artist Title", message: "The artist will be verified for you.", preferredStyle: .Alert)
+		let actionSheetController: UIAlertController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
 		let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 		actionSheetController.addAction(cancelAction)
 		let addAction: UIAlertAction = UIAlertAction(title: "Add", style: .Default) { action in
@@ -113,6 +114,7 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 			if !textField.text.isEmpty {
 				let artist = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
 				let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&title[]=\(artist)"
+				self.keyword = artist
 				API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: postString, successHandler: { (response, data) in
 					if let HTTPResponse = response as? NSHTTPURLResponse {
 						println(HTTPResponse.statusCode)
@@ -168,8 +170,9 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 			var artistPickerController = segue.destinationViewController as! ArtistsPicker
 			artistPickerController.collection = mediaQuery.collections
 		} else if segue.identifier == "ArtistSelectionSegue" {
-			var selectionController = segue.destinationViewController as! ArtistSelectionView
+			var selectionController = segue.destinationViewController as! SearchResultsController
 			selectionController.artists = responseArtists
+			selectionController.keyword = keyword
 		}
 	}
 	

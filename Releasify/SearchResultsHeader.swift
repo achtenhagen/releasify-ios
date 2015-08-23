@@ -1,7 +1,7 @@
 
 import UIKit
 
-class ArtistSelectionHeaderView: UITableViewHeaderFooterView {
+class SearchResultsHeader: UITableViewHeaderFooterView {
 
     @IBOutlet weak var artistImg: UIImageView!
     @IBOutlet weak var artistLabel: UILabel!

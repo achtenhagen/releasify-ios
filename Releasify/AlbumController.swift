@@ -1,7 +1,7 @@
 
 import UIKit
 
-class UpcomingAlbumsView: UICollectionViewController {
+class AlbumController: UICollectionViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let albumCellReuseIdentifier = "AlbumCell"
@@ -26,6 +26,7 @@ class UpcomingAlbumsView: UICollectionViewController {
 		
 		// Add Edge insets to compensate for navigation bar.
 		albumCollectionView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
+
 		
 		// Pull-to-refresh Control.
 		refreshControl = UIRefreshControl()
@@ -57,17 +58,18 @@ class UpcomingAlbumsView: UICollectionViewController {
 			}
 		}
 		
-		// For local notification testing.
-		/*var notification = UILocalNotification()
-		notification.category = "DEFAULT_CATEGORY"
-		notification.timeZone = NSTimeZone.localTimeZone()
-		notification.alertTitle = "New Album Released"
-		notification.alertBody = "\"Album\" is now available!"
-		notification.fireDate = NSDate().dateByAddingTimeInterval(5)
-		notification.applicationIconBadgeNumber = 1
-		notification.soundName = UILocalNotificationDefaultSoundName
-		notification.userInfo = ["AlbumID": 3127, "iTunesURL": "https://itunes.apple.com/us/album/long-walk-to-freedom-fuego/id1015003602?uo=4"]
-		UIApplication.sharedApplication().scheduleLocalNotification(notification)*/
+		/*
+			var notification = UILocalNotification()
+			notification.category = "DEFAULT_CATEGORY"
+			notification.timeZone = NSTimeZone.localTimeZone()
+			notification.alertTitle = "New Album Released"
+			notification.alertBody = "\"Album\" is now available!"
+			notification.fireDate = NSDate().dateByAddingTimeInterval(5)
+			notification.applicationIconBadgeNumber = 1
+			notification.soundName = UILocalNotificationDefaultSoundName
+			notification.userInfo = ["AlbumID": 3127, "iTunesURL": "https://itunes.apple.com/us/album/long-walk-to-freedom-fuego/id1015003602?uo=4"]
+			UIApplication.sharedApplication().scheduleLocalNotification(notification)
+		*/
 		
 		// Refresh the App's content only once per day.
 		if appDelegate.userID > 0 && Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400 {
@@ -248,7 +250,7 @@ class UpcomingAlbumsView: UICollectionViewController {
 	
 	override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
 		if kind == UICollectionElementKindSectionHeader {
-			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: albumCollectionHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeaderView
+			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: albumCollectionHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeader
 			if indexPath.section == 0 {
 				headerView.headerLabel.text = "UPCOMING"
 			} else {
@@ -320,7 +322,7 @@ class UpcomingAlbumsView: UICollectionViewController {
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "AlbumViewSegue" {
-			var detailController = segue.destinationViewController as! AlbumView
+			var detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
 		}
 	}

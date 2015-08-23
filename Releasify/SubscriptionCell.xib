@@ -2,7 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <customFonts key="customFonts">
         <mutableArray key="SourceSansPro-Semibold.otf">
@@ -18,67 +18,67 @@
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                 <rect key="frame" x="0.0" y="0.0" width="145" height="180"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="armin" translatesAutoresizingMaskIntoConstraints="NO" id="VJJ-OJ-vij">
+                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_subscription" translatesAutoresizingMaskIntoConstraints="NO" id="VJJ-OJ-vij">
                         <rect key="frame" x="0.0" y="0.0" width="145" height="145"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="VJJ-OJ-vij" secondAttribute="height" multiplier="1:1" id="KZc-q9-V7C"/>
+                        </constraints>
                         <variation key="widthClass=compact" fixedFrame="YES">
                             <rect key="frame" x="0.0" y="0.0" width="140" height="140"/>
                         </variation>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Yv-49-krO">
-                        <rect key="frame" x="8" y="150" width="100" height="21"/>
-                        <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="14"/>
-                        <color key="textColor" red="0.0" green="0.20392156859999999" blue="0.28235294119999998" alpha="1" colorSpace="calibratedRGB"/>
-                        <nil key="highlightedColor"/>
-                        <variation key="widthClass=compact" fixedFrame="YES">
-                            <rect key="frame" x="8" y="142" width="124" height="21"/>
-                        </variation>
-                    </label>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ege-gU-AOs">
-                        <rect key="frame" x="122" y="152" width="20" height="20"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wNd-u0-Tha">
+                        <rect key="frame" x="0.0" y="145" width="145" height="35"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ege-gU-AOs">
+                                <rect key="frame" x="125" y="9" width="18" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="18" id="Bhr-dj-Wm0"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="icon_more_options">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bring me the horizon" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8d5-KB-ote">
+                                <rect key="frame" x="6" y="2" width="120" height="30"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="13"/>
+                                <color key="textColor" red="0.0" green="0.20392156859999999" blue="0.28235294119999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="20" id="9Eb-sC-qJC"/>
-                            <constraint firstAttribute="height" constant="20" id="X2H-6Y-Ad1"/>
+                            <constraint firstItem="8d5-KB-ote" firstAttribute="leading" secondItem="wNd-u0-Tha" secondAttribute="leading" constant="6" id="7wj-ay-skg"/>
+                            <constraint firstAttribute="trailing" secondItem="ege-gU-AOs" secondAttribute="trailing" constant="2" id="BiG-PG-4CJ"/>
+                            <constraint firstAttribute="bottom" secondItem="8d5-KB-ote" secondAttribute="bottom" constant="3" id="HDL-FN-YFe"/>
+                            <constraint firstItem="8d5-KB-ote" firstAttribute="top" secondItem="wNd-u0-Tha" secondAttribute="top" constant="2" id="ZR6-Zg-TzC"/>
+                            <constraint firstItem="ege-gU-AOs" firstAttribute="top" secondItem="wNd-u0-Tha" secondAttribute="top" constant="9" id="opP-kv-B0W"/>
+                            <constraint firstItem="ege-gU-AOs" firstAttribute="leading" secondItem="8d5-KB-ote" secondAttribute="trailing" constant="-1" id="say-mW-Imp"/>
+                            <constraint firstItem="ege-gU-AOs" firstAttribute="centerY" secondItem="wNd-u0-Tha" secondAttribute="centerY" constant="0.5" id="ub9-gf-2xD"/>
+                            <constraint firstAttribute="width" secondItem="wNd-u0-Tha" secondAttribute="height" multiplier="145:36" constant="4.0277777777777715" id="yVa-DJ-4TP"/>
                         </constraints>
-                        <state key="normal" backgroundImage="icon_more_options">
-                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                        </state>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="9Eb-sC-qJC"/>
-                                <exclude reference="X2H-6Y-Ad1"/>
-                            </mask>
-                        </variation>
-                        <variation key="widthClass=compact">
-                            <mask key="constraints">
-                                <include reference="9Eb-sC-qJC"/>
-                                <include reference="X2H-6Y-Ad1"/>
-                            </mask>
-                        </variation>
-                    </button>
+                    </view>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             </view>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.050000000000000003" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="VJJ-OJ-vij" secondAttribute="trailing" id="8HP-EC-TYm"/>
-                <constraint firstItem="9Yv-49-krO" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leadingMargin" id="Ebb-WI-cBh"/>
-                <constraint firstItem="ege-gU-AOs" firstAttribute="top" secondItem="VJJ-OJ-vij" secondAttribute="bottom" constant="7" id="Rr1-mm-94B"/>
-                <constraint firstAttribute="trailing" secondItem="ege-gU-AOs" secondAttribute="trailing" constant="3" id="ZjB-um-g79"/>
-                <constraint firstItem="VJJ-OJ-vij" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="gPf-am-tfK"/>
-                <constraint firstItem="ege-gU-AOs" firstAttribute="bottom" secondItem="gTV-IL-0wX" secondAttribute="bottomMargin" id="iXH-hk-mYV"/>
-                <constraint firstItem="VJJ-OJ-vij" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="oAb-bg-0e8"/>
-                <constraint firstAttribute="bottom" secondItem="9Yv-49-krO" secondAttribute="bottom" constant="9" id="qJp-lw-MeG"/>
-                <constraint firstItem="9Yv-49-krO" firstAttribute="top" secondItem="VJJ-OJ-vij" secondAttribute="bottom" constant="5" id="udv-HD-prE"/>
-                <constraint firstItem="ege-gU-AOs" firstAttribute="leading" secondItem="9Yv-49-krO" secondAttribute="trailing" constant="14" id="xpI-Nd-k62"/>
+                <constraint firstItem="wNd-u0-Tha" firstAttribute="leading" secondItem="VJJ-OJ-vij" secondAttribute="leading" id="MnI-gY-xee"/>
+                <constraint firstItem="VJJ-OJ-vij" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="bI2-Vd-n78"/>
+                <constraint firstAttribute="trailing" secondItem="VJJ-OJ-vij" secondAttribute="trailing" id="cCI-dO-brO"/>
+                <constraint firstItem="wNd-u0-Tha" firstAttribute="top" secondItem="VJJ-OJ-vij" secondAttribute="bottom" id="dM6-Ej-akn"/>
+                <constraint firstItem="wNd-u0-Tha" firstAttribute="trailing" secondItem="VJJ-OJ-vij" secondAttribute="trailing" id="h4D-Xf-IJo"/>
+                <constraint firstAttribute="bottom" secondItem="wNd-u0-Tha" secondAttribute="bottom" id="lpe-zK-oa2"/>
+                <constraint firstItem="VJJ-OJ-vij" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="nYq-us-Hho"/>
             </constraints>
             <connections>
                 <outlet property="subscriptionArtwork" destination="VJJ-OJ-vij" id="Nna-Ay-HHt"/>
-                <outlet property="subscriptionTitle" destination="9Yv-49-krO" id="lSD-6u-e8q"/>
+                <outlet property="subscriptionTitle" destination="8d5-KB-ote" id="uwQ-3Y-r06"/>
             </connections>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="armin" width="300" height="300"/>
         <image name="icon_more_options" width="30" height="30"/>
+        <image name="icon_subscription" width="100" height="100"/>
     </resources>
 </document>

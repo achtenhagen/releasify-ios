@@ -3,8 +3,8 @@ import UIKit
 
 class AppController: UINavigationController {
 	
-	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	
+	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate	
+
 	@IBOutlet weak var navBar: UINavigationBar!
 	
     override func viewDidLoad() {
@@ -17,12 +17,11 @@ class AppController: UINavigationController {
 		// Check for any pending artists waiting to be removed.
 		let pendingArtists = AppDB.sharedInstance.getPendingArtists()
 		
-		// Navigation bar background.
-		var navigationBar = UINavigationBar.appearance()
+		// Navigation bar customization.
 		let image = UIImage(named: "navBar.png")
-		navigationBar.setBackgroundImage(image, forBarMetrics: UIBarMetrics.Default)
-		navigationBar.shadowImage = UIImage()
-		navigationBar.translucent = true
+		navBar.setBackgroundImage(image, forBarMetrics: UIBarMetrics.Default)
+		navBar.shadowImage = UIImage()
+		navBar.translucent = true
 		
 		println("App Controller loaded.")
     }
@@ -30,5 +29,4 @@ class AppController: UINavigationController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-	
 }

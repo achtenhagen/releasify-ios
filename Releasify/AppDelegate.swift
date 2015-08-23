@@ -107,7 +107,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     localNotificationPayload = userInfo
                 }
             }
-        }	
+        }
 		
         return true
     }
@@ -119,15 +119,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
         deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
 		self.userDeviceToken = deviceTokenString
-		NSUserDefaults.standardUserDefaults().setValue(self.userDeviceToken, forKey: "deviceToken")
-		println("APNS Device token was set successfully.")
         if userID == 0 {
 			API.sharedInstance.register(deviceToken: deviceTokenString, allowExplicitContent: allowExplicitContent, successHandler: { (userID, userUUID) in
 				self.userID = userID!
 				self.userUUID = userUUID
 				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
 				NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
+				NSUserDefaults.standardUserDefaults().setValue(self.userDeviceToken, forKey: "deviceToken")
 				println("UUID was set successfully.")
+				println("APNS Device token was set successfully.")
 			},
 			errorHandler: { (error) in
 				println("Error: \(error.localizedDescription)")

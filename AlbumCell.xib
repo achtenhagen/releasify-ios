@@ -63,7 +63,7 @@
                     </label>
                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="8n0-fg-rJJ">
                         <rect key="frame" x="95" y="188" width="40" height="2"/>
-                        <color key="progressTintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="progressTintColor" red="0.0" green="0.94901960780000005" blue="0.75294117650000003" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="trackTintColor" red="0.0" green="0.20392156862745098" blue="0.28235294117647058" alpha="1" colorSpace="calibratedRGB"/>
                         <variation key="widthClass=compact" fixedFrame="YES">
                             <rect key="frame" x="44" y="186" width="50" height="2"/>
