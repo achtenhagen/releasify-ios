@@ -66,7 +66,10 @@ class API {
                             handler
                         }
                     }
-                }
+				} else {
+					errorHandler!(error: NSError(domain: "Unauthorized.", code: 403, userInfo: nil))
+					return
+				}
             }
         },
         errorHandler: { (error) -> Void in
@@ -85,7 +88,7 @@ class API {
                     if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? [NSDictionary] {
                         if error != nil {
                             errorHandler!(error: error)
-                            return
+							return
                         }
                         for item in json {
                             let artistID: Int = item["artistId"] as! Int
@@ -96,9 +99,13 @@ class API {
                         AppDB.sharedInstance.getArtists()
                         if let handler: Void = successHandler?() {
                             handler
+							return
                         }
                     }
-                }
+				} else {
+					errorHandler!(error: NSError(domain: "Unauthorized.", code: 403, userInfo: nil))
+					return
+				}
             }
         },
         errorHandler: { (error) in

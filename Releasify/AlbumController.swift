@@ -7,6 +7,7 @@ class AlbumController: UICollectionViewController {
 	let albumCellReuseIdentifier = "AlbumCell"
 	let albumCollectionHeaderViewReuseIdentifier = "albumCollectionHeader"
 	let albumCollectionFooterViewReuseIdentifier = "albumCollectionFooter"
+	var albumCollectionLayout: UICollectionViewFlowLayout!
 	var selectedAlbum: Album!
 	var artwork = [String:UIImage]()
 	var notificationAlbumID: Int!
@@ -26,7 +27,32 @@ class AlbumController: UICollectionViewController {
 		
 		// Add Edge insets to compensate for navigation bar.
 		albumCollectionView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
-
+		albumCollectionView.scrollIndicatorInsets = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
+		
+		// Collection view layout settings.
+		albumCollectionLayout = UICollectionViewFlowLayout()
+		albumCollectionLayout.headerReferenceSize = CGSize(width: 50, height: 50)
+		albumCollectionLayout.footerReferenceSize = CGSize(width: 50, height: 10)
+		albumCollectionLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+		albumCollectionLayout.itemSize = CGSize(width: 145, height: 200)
+		albumCollectionLayout.minimumLineSpacing = 10
+		albumCollectionLayout.minimumInteritemSpacing = 10
+		
+		switch UIScreen.mainScreen().bounds.width {
+			// iPhone 4S, 5, 5C & 5S
+		case 320:
+			albumCollectionLayout.itemSize = CGSize(width: 145, height: 200)
+			// iPhone 6
+		case 375:
+			albumCollectionLayout.itemSize = CGSize(width: 172, height: 225)
+			// iPhone 6 Plus
+		case 414:
+			albumCollectionLayout.itemSize = CGSize(width: 192, height: 247)
+		default:
+			albumCollectionLayout.itemSize = CGSize(width: 145, height: 200)
+		}
+		
+		albumCollectionView.collectionViewLayout = albumCollectionLayout
 		
 		// Pull-to-refresh Control.
 		refreshControl = UIRefreshControl()
@@ -72,6 +98,7 @@ class AlbumController: UICollectionViewController {
 		*/
 		
 		// Refresh the App's content only once per day.
+		println(appDelegate.lastUpdated)
 		if appDelegate.userID > 0 && Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400 {
 			println("Starting daily refresh.")
 			refresh()
@@ -100,7 +127,12 @@ class AlbumController: UICollectionViewController {
 		},
 		errorHandler: { (error) in
 			self.refreshControl.endRefreshing()
-			var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+			var alert = UIAlertController(title: "Oops! Something went wrong.", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+			if error.code == 403 {
+				alert.addAction(UIAlertAction(title: "Fix it!", style: UIAlertActionStyle.Default, handler: { action in
+					// Todo: implement...
+				}))
+			}
 			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
 			self.presentViewController(alert, animated: true, completion: nil)
 		})
@@ -251,10 +283,14 @@ class AlbumController: UICollectionViewController {
 	override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
 		if kind == UICollectionElementKindSectionHeader {
 			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: albumCollectionHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeader
+			headerView.hidden = false
 			if indexPath.section == 0 {
 				headerView.headerLabel.text = "UPCOMING"
 			} else {
 				headerView.headerLabel.text = "RECENTLY RELEASED"
+			}
+			if AppDB.sharedInstance.albums[indexPath.section]?.count == 0 {
+				headerView.hidden = true
 			}
 			return headerView
 		}

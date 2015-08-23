@@ -17,6 +17,7 @@ class SubscriptionController: UICollectionViewController {
 		
 		// Add Edge insets to compensate for navigation bar.
 		artistsCollectionView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
+		artistsCollectionView.scrollIndicatorInsets = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
 		
 		// Pull-to-refresh Control.
 		refreshControl = UIRefreshControl()
@@ -51,8 +52,13 @@ class SubscriptionController: UICollectionViewController {
         },
         errorHandler: { (error) in
 			self.refreshControl.endRefreshing()
-            var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            var alert = UIAlertController(title: "Oops! Something went wrong.", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+			if error.code == 403 {
+				alert.addAction(UIAlertAction(title: "Fix it!", style: UIAlertActionStyle.Default, handler: { action in
+					// Todo: implement...
+				}))
+			}
+			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         })
         if AppDB.sharedInstance.artists.count > 0 {
