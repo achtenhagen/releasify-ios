@@ -39,13 +39,13 @@ class AlbumController: UICollectionViewController {
 		albumCollectionLayout.minimumInteritemSpacing = 10
 		
 		switch UIScreen.mainScreen().bounds.width {
-			// iPhone 4S, 5, 5C & 5S
+		// iPhone 4S, 5, 5C & 5S
 		case 320:
 			albumCollectionLayout.itemSize = CGSize(width: 145, height: 200)
-			// iPhone 6
+		// iPhone 6
 		case 375:
 			albumCollectionLayout.itemSize = CGSize(width: 172, height: 225)
-			// iPhone 6 Plus
+		// iPhone 6 Plus
 		case 414:
 			albumCollectionLayout.itemSize = CGSize(width: 192, height: 247)
 		default:
@@ -66,12 +66,12 @@ class AlbumController: UICollectionViewController {
 		
 		// Notification payload processing
 		// The remote notification payload will return 'content-available: 1' if there is new content.
-		if let remoteContent = appDelegate.remoteNotificationPayload["aps"]?["content-available"] as? Int {
+		if let remoteContent = appDelegate.remoteNotificationPayload?["aps"]?["content-available"] as? Int {
 			if remoteContent == 1 {
 				refresh()
 			}
 		}
-		if let localContent = appDelegate.localNotificationPayload["AlbumID"] as? Int {
+		if let localContent = appDelegate.localNotificationPayload?["AlbumID"] as? Int {
 			notificationAlbumID = localContent
 			for album in AppDB.sharedInstance.albums[1] as[Album]! {
 				if album.ID == notificationAlbumID {
@@ -99,7 +99,7 @@ class AlbumController: UICollectionViewController {
 		
 		// Refresh the App's content only once per day.
 		println(appDelegate.lastUpdated)
-		if appDelegate.userID > 0 && Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400 {
+		if appDelegate.userID > 0 && (Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400) {
 			println("Starting daily refresh.")
 			refresh()
 		}		
@@ -168,9 +168,22 @@ class AlbumController: UICollectionViewController {
 			}
 		}
 	}
+	
+	// Determines current section ('upcoming' or 'recently released').
+	// This function is only called when there is one section.
+	func sectionAtIndex () -> Int {
+		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
+	}
 
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return AppDB.sharedInstance.albums.count
+		var sections = 0
+		if AppDB.sharedInstance.albums[0]!.count > 0 {
+			sections++
+		}
+		if AppDB.sharedInstance.albums[1]!.count > 0 {
+			sections++
+		}
+        return sections
     }
 
 
@@ -199,7 +212,7 @@ class AlbumController: UICollectionViewController {
 				NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
 					if error == nil {
 						if let HTTPResponse = response as? NSHTTPURLResponse {
-							println("Error: HTTP status code: \(HTTPResponse.statusCode)")
+							println("HTTP status code: \(HTTPResponse.statusCode)")
 							if HTTPResponse.statusCode == 200 {
 								let image = UIImage(data: data)
 								self.artwork[hash] = image
@@ -283,14 +296,10 @@ class AlbumController: UICollectionViewController {
 	override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
 		if kind == UICollectionElementKindSectionHeader {
 			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: albumCollectionHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeader
-			headerView.hidden = false
 			if indexPath.section == 0 {
 				headerView.headerLabel.text = "UPCOMING"
 			} else {
 				headerView.headerLabel.text = "RECENTLY RELEASED"
-			}
-			if AppDB.sharedInstance.albums[indexPath.section]?.count == 0 {
-				headerView.hidden = true
 			}
 			return headerView
 		}
@@ -317,7 +326,7 @@ class AlbumController: UICollectionViewController {
 					}
 				})
 				let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
-					// Implement...
+					// Todo: Implement...
 				})
 				let deleteAction = UIAlertAction(title: "Unsubscribe", style: .Destructive, handler: { action in
 					let albumID = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].ID

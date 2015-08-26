@@ -1,7 +1,7 @@
 
 import UIKit
 
-class SearchResultsController: UIViewController, UITableViewDataSource {
+class SearchResultsController: UIViewController {
 
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var artists: [NSDictionary]!
@@ -17,11 +17,12 @@ class SearchResultsController: UIViewController, UITableViewDataSource {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidLoad() {		
+		super.viewDidLoad()
+		
         artistsTable.registerNib(UINib(nibName: "SearchResultsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
 		
-		infoLabel.text = "Multiple results were found for \"\(keyword)\"."
+		infoLabel.text = "Search results for \"\(keyword)\"."
 		
 		// Navigation bar customization.
 		let image = UIImage(named: "navBar.png")
@@ -43,82 +44,13 @@ class SearchResultsController: UIViewController, UITableViewDataSource {
         super.didReceiveMemoryWarning()
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return artists.count
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let albums = (artists[section]["albums"] as? [NSDictionary])!
-        return albums.count
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = self.artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! ArtistCell
-        let albums = (artists[indexPath.section]["albums"] as? [NSDictionary])!
-        if albums.count > 0 {
-            cell.albumTitle.text = albums[indexPath.row]["title"] as? String
-            cell.releaseLabel.text = albums[indexPath.row]["releaseDate"] as? String
-            let hash = albums[indexPath.row]["artwork"]! as! String
-            let albumURL = "https://releasify.me/static/artwork/music/\(hash).jpg"
-            if let img = artwork[albumURL] {
-                cell.albumArtwork.image = img
-            } else {
-                if let checkedURL = NSURL(string: albumURL) {
-                    let request = NSURLRequest(URL: checkedURL)
-                    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
-                        if error == nil {
-                            if let HTTPResponse = response as? NSHTTPURLResponse {
-                                println("HTTP status code: \(HTTPResponse.statusCode)")
-                                if HTTPResponse.statusCode == 200 {
-                                    let image = UIImage(data: data)
-                                    self.artwork[albumURL] = image
-                                    dispatch_async(dispatch_get_main_queue(), {
-                                        if let cellToUpdate: ArtistCell = self.artistsTable.cellForRowAtIndexPath(indexPath) as? ArtistCell {
-                                            cellToUpdate.albumArtwork.alpha = 0
-                                            cellToUpdate.albumArtwork.image = image
-                                            UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { cellToUpdate.albumArtwork.alpha = 1.0 }, completion: nil)
-                                        }
-                                    })
-                                }
-                            }
-                        }
-                    })
-                }
-            }
-        }
-        var bgColorView = UIView()
-        bgColorView.backgroundColor = UIColor.clearColor()
-        cell.selectedBackgroundView = bgColorView
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = artistsTable.dequeueReusableHeaderFooterViewWithIdentifier("header") as! SearchResultsHeader
-		let artistID = (artists[section]["iTunesUniqueID"] as? Int)!
-        headerView.contentView.backgroundColor = UIColor.clearColor()
-        headerView.artistLabel.text = artists[section]["title"] as? String
-        headerView.confirmBtn.tag = section
-        headerView.confirmBtn.addTarget(self, action: "confirmArtist:", forControlEvents: .TouchUpInside)
-		headerView.artistImg.alpha = 1.0
-		headerView.artistLabel.alpha = 1.0
-		headerView.confirmBtn.alpha = 1.0
-		if selectedArtists.containsObject(artistID) {
-			headerView.artistImg.alpha = 0.2
-			headerView.artistLabel.alpha = 0.2
-			headerView.confirmBtn.alpha = 0.2
-		}
-        return headerView
-    }
-    
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50
-    }
-    
     func confirmArtist (sender: UIButton) {
 		var artistID = 0
+		
 		if let id = (artists[sender.tag]["artistId"] as? Int) {
 			artistID = id
 		}
+		
 		let artistTitle = (artists[sender.tag]["title"] as? String)!
 		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
 			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
@@ -147,4 +79,85 @@ class SearchResultsController: UIViewController, UITableViewDataSource {
 			})
 		}
     }
+}
+
+// MARK: - UITableViewDataSource
+extension SearchResultsController: UITableViewDataSource {	
+	
+	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		var cell = self.artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! ArtistCell
+		let albums = (artists[indexPath.section]["albums"] as? [NSDictionary])!
+		if albums.count > 0 {
+			cell.albumTitle.text = albums[indexPath.row]["title"] as? String
+			cell.releaseLabel.text = albums[indexPath.row]["releaseDate"] as? String
+			let hash = albums[indexPath.row]["artwork"]! as! String
+			let albumURL = "https://releasify.me/static/artwork/music/\(hash).jpg"
+			if let img = artwork[albumURL] {
+				cell.albumArtwork.image = img
+			} else {
+				if let checkedURL = NSURL(string: albumURL) {
+					let request = NSURLRequest(URL: checkedURL)
+					NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
+						if error != nil {
+							return
+						}
+						if let HTTPResponse = response as? NSHTTPURLResponse {
+							println("HTTP status code: \(HTTPResponse.statusCode)")
+							if HTTPResponse.statusCode == 200 {
+								let image = UIImage(data: data)
+								self.artwork[albumURL] = image
+								dispatch_async(dispatch_get_main_queue(), {
+									if let cellToUpdate: ArtistCell = self.artistsTable.cellForRowAtIndexPath(indexPath) as? ArtistCell {
+										cellToUpdate.albumArtwork.alpha = 0
+										cellToUpdate.albumArtwork.image = image
+										UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { cellToUpdate.albumArtwork.alpha = 1.0 }, completion: nil)
+									}
+								})
+							}
+						}
+						
+					})
+				}
+			}
+		}
+		var bgColorView = UIView()
+		bgColorView.backgroundColor = UIColor.clearColor()
+		cell.selectedBackgroundView = bgColorView
+		return cell
+	}
+	
+	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+		return artists.count
+	}
+	
+	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		let albums = (artists[section]["albums"] as? [NSDictionary])!
+		return albums.count
+	}
+}
+
+// MARK: - UITableViewDelegate
+extension SearchResultsController: UITableViewDelegate {
+	
+	func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return 50
+	}
+	
+	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let headerView = artistsTable.dequeueReusableHeaderFooterViewWithIdentifier("header") as! SearchResultsHeader
+		let artistID = (artists[section]["iTunesUniqueID"] as? Int)!
+		headerView.contentView.backgroundColor = UIColor.clearColor()
+		headerView.artistLabel.text = artists[section]["title"] as? String
+		headerView.confirmBtn.tag = section
+		headerView.confirmBtn.addTarget(self, action: "confirmArtist:", forControlEvents: .TouchUpInside)
+		headerView.artistImg.alpha = 1.0
+		headerView.artistLabel.alpha = 1.0
+		headerView.confirmBtn.alpha = 1.0
+		if selectedArtists.containsObject(artistID) {
+			headerView.artistImg.alpha = 0.2
+			headerView.artistLabel.alpha = 0.2
+			headerView.confirmBtn.alpha = 0.2
+		}
+		return headerView
+	}
 }

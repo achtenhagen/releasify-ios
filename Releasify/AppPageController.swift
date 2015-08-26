@@ -2,7 +2,7 @@
 import UIKit
 import MediaPlayer
 
-class AppPageController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+class AppPageController: UIPageViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var responseArtists = [NSDictionary]()
@@ -16,7 +16,6 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 	}
 	
 	@IBAction func addSubscription(sender: AnyObject) {
-		
 		let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
 		mediaQuery.groupingType = MPMediaGrouping.AlbumArtist
 		if mediaQuery.collections.count > 0 {
@@ -37,14 +36,11 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 	}
 	
 	override func viewDidLoad() {
-		
 		self.dataSource = self
 		self.delegate = self
-		
 		let startingViewController = self.viewControllerAtIndex(index)
 		let viewControllers: NSArray = [startingViewController]
-		self.setViewControllers(viewControllers as [AnyObject], direction: UIPageViewControllerNavigationDirection.Forward, animated: false, completion: nil)
-		
+		self.setViewControllers(viewControllers as [AnyObject], direction: UIPageViewControllerNavigationDirection.Forward, animated: false, completion: nil)		
 		// Background gradient.
 		let gradient: CAGradientLayer = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
@@ -56,52 +52,14 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 	}
 	
 	func viewControllerAtIndex(index: Int) -> UICollectionViewController! {
-		
 		let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-		
 		if index == 0 {
 			return storyBoard.instantiateViewControllerWithIdentifier("AlbumsController") as! UICollectionViewController
 		}
-		
 		if index == 1 {			
 			return storyBoard.instantiateViewControllerWithIdentifier("SubscriptionsController") as! UICollectionViewController
 		}
-		
 		return nil
-	}
-	
-	func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-		
-		let identifier = viewController.restorationIdentifier
-		let index = self.identifiers.indexOfObject(identifier!)
-		
-		if index == identifiers.count - 1 {
-			return nil
-		}
-		
-		self.index = self.index + 1
-		return self.viewControllerAtIndex(self.index)
-	}
-	
-	func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-		
-		let identifier = viewController.restorationIdentifier
-		let index = self.identifiers.indexOfObject(identifier!)
-		
-		if index == 0 {
-			return nil
-		}
-		
-		self.index = self.index - 1
-		return self.viewControllerAtIndex(self.index)
-	}
-	
-	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [AnyObject], transitionCompleted completed: Bool) {
-		if pageViewController.viewControllers[0].restorationIdentifier == "AlbumsController" {
-			self.navigationController?.navigationBar.topItem?.title = "Music"
-		} else {
-			self.navigationController?.navigationBar.topItem?.title = "Subscriptions"
-		}
 	}
 	
 	func addSubscription () {
@@ -117,15 +75,13 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 				self.keyword = artist
 				API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: postString, successHandler: { (response, data) in
 					if let HTTPResponse = response as? NSHTTPURLResponse {
-						println(HTTPResponse.statusCode)
+						println("HTTP status code: \(HTTPResponse.statusCode)")
 						if HTTPResponse.statusCode == 202 {
-							if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
-								if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
-									for artist in awaitingArtists {
-										if let uniqueID = artist["iTunesUniqueID"] as? Int {
-											if AppDB.sharedInstance.getArtistByUniqueID(Int32(uniqueID)) == 0 {
-												self.responseArtists.append(artist)
-											}
+							if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary, awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
+								for artist in awaitingArtists {
+									if let uniqueID = artist["iTunesUniqueID"] as? Int {
+										if AppDB.sharedInstance.getArtistByUniqueID(Int32(uniqueID)) == 0 {
+											self.responseArtists.append(artist)
 										}
 									}
 								}
@@ -142,17 +98,17 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 							}
 						}
 					}
-					},
-					errorHandler: { (error) in
-						var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: .Alert)
-						alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
-							UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-						}))
-						alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { action in
-							self.dismissViewControllerAnimated(true, completion: nil)
-							return
-						}))
-						self.presentViewController(alert, animated: true, completion: nil)
+				},
+				errorHandler: { (error) in
+					var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: .Alert)
+					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+						UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+					}))
+					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { action in
+						self.dismissViewControllerAnimated(true, completion: nil)
+						return
+					}))
+					self.presentViewController(alert, animated: true, completion: nil)
 				})
 			}
 		}
@@ -176,4 +132,38 @@ class AppPageController: UIPageViewController, UIPageViewControllerDataSource, U
 		}
 	}
 	
+}
+
+// MARK: - UIPageViewControllerDataSource
+extension AppPageController: UIPageViewControllerDataSource {
+	func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+		let identifier = viewController.restorationIdentifier
+		let index = self.identifiers.indexOfObject(identifier!)
+		if index == identifiers.count - 1 {
+			return nil
+		}
+		self.index = self.index + 1
+		return self.viewControllerAtIndex(self.index)
+	}
+	
+	func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+		let identifier = viewController.restorationIdentifier
+		let index = self.identifiers.indexOfObject(identifier!)
+		if index == 0 {
+			return nil
+		}
+		self.index = self.index - 1
+		return self.viewControllerAtIndex(self.index)
+	}
+}
+
+// MARK: - UIPageViewControllerDelegate
+extension AppPageController: UIPageViewControllerDelegate {
+	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [AnyObject], transitionCompleted completed: Bool) {
+		if pageViewController.viewControllers[0].restorationIdentifier == "AlbumsController" {
+			navigationController?.navigationBar.topItem?.title = "Music"
+		} else {
+			navigationController?.navigationBar.topItem?.title = "Subscriptions"
+		}
+	}
 }

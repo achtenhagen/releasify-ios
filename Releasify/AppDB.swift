@@ -21,12 +21,12 @@ final class AppDB {
 	var albums  = [Int:[Album]]()
 
     private func connected () -> Bool {
-        return sqlite3_open(databasePath, &self.database) == SQLITE_OK
+        return sqlite3_open(databasePath, &database) == SQLITE_OK
     }
     
     private func disconnect () {
         sqlite3_close(self.database)
-        self.database = nil
+       database = nil
     }
 	
 	init() {
@@ -329,23 +329,28 @@ final class AppDB {
         if connected() {
             var query = "DELETE FROM artists WHERE id = ?"
             var statement: COpaquePointer = nil
-            if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
+			
+			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
                 sqlite3_bind_int(statement, 1, ID)
             }
-            if sqlite3_step(statement) != SQLITE_DONE {
+			
+			if sqlite3_step(statement) != SQLITE_DONE {
                 println("Failed to delete from db.")
             }
             sqlite3_finalize(statement)
             
             query = "DELETE FROM albums WHERE id IN (SELECT album_id FROM album_artists WHERE artist_id = ?)"
             statement = nil
-            if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
+			
+			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
                 sqlite3_bind_int(statement, 1, ID)
             }
-            if sqlite3_step(statement) != SQLITE_DONE {
+			
+			if sqlite3_step(statement) != SQLITE_DONE {
                 println("Failed to delete from db.")
             }
-            sqlite3_finalize(statement)
+			
+			sqlite3_finalize(statement)
             disconnect()
         }
     }

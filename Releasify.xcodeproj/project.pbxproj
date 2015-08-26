@@ -39,8 +39,6 @@
 		51D776AA1B29FC9300D252A5 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D776A91B29FC9300D252A5 /* API.swift */; };
 		51D8753E1B1B264B00353347 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753D1B1B264B00353347 /* Album.swift */; };
 		51D875401B1B2AD900353347 /* Devices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753F1B1B2AD900353347 /* Devices.swift */; };
-		51E91D371B8A2BDC0078DEDA /* EmptySectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E91D351B8A2BDC0078DEDA /* EmptySectionHeader.swift */; };
-		51E91D381B8A2BDC0078DEDA /* EmptySectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51E91D361B8A2BDC0078DEDA /* EmptySectionHeader.xib */; };
 		51F84DCB1AB750A000D51E0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F84DCA1AB750A000D51E0C /* AppDelegate.swift */; };
 		51F84DCD1AB750A000D51E0C /* SubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F84DCC1AB750A000D51E0C /* SubscriptionController.swift */; };
 		51F84DD01AB750A100D51E0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51F84DCE1AB750A100D51E0C /* Main.storyboard */; };
@@ -82,8 +80,6 @@
 		51D776A91B29FC9300D252A5 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = API.swift; sourceTree = "<group>"; };
 		51D8753D1B1B264B00353347 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		51D8753F1B1B2AD900353347 /* Devices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Devices.swift; sourceTree = "<group>"; };
-		51E91D351B8A2BDC0078DEDA /* EmptySectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptySectionHeader.swift; sourceTree = "<group>"; };
-		51E91D361B8A2BDC0078DEDA /* EmptySectionHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EmptySectionHeader.xib; sourceTree = "<group>"; };
 		51F84DC51AB750A000D51E0C /* Releasify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Releasify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51F84DC91AB750A000D51E0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51F84DCA1AB750A000D51E0C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; usesTabs = 1; };
@@ -162,8 +158,6 @@
 				5142037A1B840517008891F9 /* AppPageController.swift */,
 				51D8753D1B1B264B00353347 /* Album.swift */,
 				517C23631B80DDE0002F1479 /* AlbumController.swift */,
-				51E91D351B8A2BDC0078DEDA /* EmptySectionHeader.swift */,
-				51E91D361B8A2BDC0078DEDA /* EmptySectionHeader.xib */,
 				514203761B83AE4A008891F9 /* AlbumCollectionHeader.swift */,
 				517C239D1B80F514002F1479 /* AlbumCell.swift */,
 				517C239E1B80F514002F1479 /* AlbumCell.xib */,
@@ -265,7 +259,6 @@
 				513434F81ADCA6EC00E5813B /* SourceSansPro-Light.otf in Resources */,
 				513434FA1ADCA6EC00E5813B /* SourceSansPro-Regular.otf in Resources */,
 				513434F71ADCA6EC00E5813B /* SourceSansPro-It.otf in Resources */,
-				51E91D381B8A2BDC0078DEDA /* EmptySectionHeader.xib in Resources */,
 				51F84DD01AB750A100D51E0C /* Main.storyboard in Resources */,
 				51B907DB1B8624E700688CFE /* SubscriptionCell.xib in Resources */,
 				513434F51ADCA6EC00E5813B /* SourceSansPro-ExtraLight.otf in Resources */,
@@ -297,7 +290,6 @@
 				51F84DCD1AB750A000D51E0C /* SubscriptionController.swift in Sources */,
 				51B09ED61B112D23007F871C /* ArtistCell.swift in Sources */,
 				51F84DCB1AB750A000D51E0C /* AppDelegate.swift in Sources */,
-				51E91D371B8A2BDC0078DEDA /* EmptySectionHeader.swift in Sources */,
 				51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */,
 				516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */,
 				51D8753E1B1B264B00353347 /* Album.swift in Sources */,

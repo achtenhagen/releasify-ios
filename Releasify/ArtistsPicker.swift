@@ -2,15 +2,7 @@
 import UIKit
 import MediaPlayer
 
-extension String {
-    func stringByAddingPercentEncodingForURLQueryValue() -> String? {
-        let characterSet = NSMutableCharacterSet.alphanumericCharacterSet()
-        characterSet.addCharactersInString("-._~")
-        return stringByAddingPercentEncodingWithAllowedCharacters(characterSet)?.stringByReplacingOccurrencesOfString(" ", withString: "+")
-    }
-}
-
-class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchResultsUpdating {
+class ArtistsPicker: UIViewController {
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var artists = [String: [String]]()
@@ -49,10 +41,12 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
     }
     
     @IBAction func closeArtistsPicker(sender: UIBarButtonItem) {
-        if self.searchController.active {
+		
+		if self.searchController.active {
             self.searchController.dismissViewControllerAnimated(true, completion: nil)
         }
-        handleBatchProcessing()
+		
+		handleBatchProcessing()
     }
     
     override func viewDidLoad() {
@@ -85,23 +79,8 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
                 previousArtist = name
             }
         }
-        searchController = UISearchController(searchResultsController: nil)
-        searchController.dimsBackgroundDuringPresentation = false
-        searchController.searchResultsUpdater = self
-        searchController.searchBar.searchBarStyle = .Minimal
-        searchController.searchBar.placeholder = "Search Artists"
-        searchController.searchBar.tintColor = self.view.tintColor
-        searchController.searchBar.barStyle = .Black
-        searchController.searchBar.translucent = false
-        searchController.searchBar.backgroundColor = self.view.backgroundColor
-        searchController.searchBar.autocapitalizationType = .Words
-        searchController.searchBar.keyboardAppearance = .Dark
-        self.definesPresentationContext = true
-        searchController.searchBar.sizeToFit()
-        artistsTable.tableHeaderView = searchController.searchBar
-        var backgroundView = UIView(frame: self.view.bounds)
-        backgroundView.backgroundColor = UIColor.clearColor()
-        artistsTable.backgroundView = backgroundView
+
+		setupSearchController()
 		
 		// Navigation bar customization.
 		let image = UIImage(named: "navBar.png")
@@ -118,7 +97,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
 		self.view.layer.insertSublayer(gradient, atIndex: 0)
     }
-    
+	
     override func viewDidDisappear(animated: Bool) {
         hasSelectedAll = false
         responseArtists.removeAll(keepCapacity: true)
@@ -153,7 +132,8 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
         var currentBatch = String()
 		progressBar.hidden = false
         progressBar.progress = 0
-        for item in checkedStates {
+		
+		for item in checkedStates {
             let section = item.0
             for i in item.1 {
                 if i.1 == true || hasSelectedAll {
@@ -183,7 +163,7 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
             return
         }
         
-        self.view.userInteractionEnabled = false
+        view.userInteractionEnabled = false
         activityView = UIView(frame: CGRectMake(0, 0, 90, 90))
         activityView.center = view.center
         activityView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
@@ -191,12 +171,12 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
         activityView.layer.masksToBounds = true
         activityView.userInteractionEnabled = false
         indicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
-        indicatorView.center = self.view.center
-        self.view.addSubview(activityView)
-        self.view.addSubview(indicatorView)
+        indicatorView.center = view.center
+        view.addSubview(activityView)
+        view.addSubview(indicatorView)
         indicatorView.startAnimating()
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        
+		
 		// HTTP Request Timeout - 300sec
 		var batchesProcessed = 0
         for batch in batches {
@@ -259,44 +239,6 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
 			})
         }
     }
-	
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if self.searchController.active {
-            return filteredArtists.count
-        }
-        return artists[keys[section]] == nil ? 0 : artists[keys[section]]!.count
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell:UITableViewCell = artistsTable.dequeueReusableCellWithIdentifier("artistCell") as! UITableViewCell
-        let section = keys[indexPath.section]
-        if self.searchController.active {
-            cell.textLabel?.text = filteredArtists[indexPath.row]
-        } else {
-            cell.textLabel?.text = artists[section]![indexPath.row]
-        }
-        cell.accessoryType = .None
-        if self.searchController.active {
-            if hasSelectedAll || filteredCheckedStates[indexPath.row] == true {
-                cell.accessoryType = .Checkmark
-            }
-        } else {
-            if hasSelectedAll || checkedStates[indexPath.section]?[indexPath.row] == true {
-                cell.accessoryType = .Checkmark
-            }
-        }
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if self.searchController.active {
-            filteredCheckedStates[indexPath.row] = !filteredCheckedStates[indexPath.row]
-            tableViewCellComponent(filteredArtists[indexPath.row], set: true)
-        } else {
-            checkedStates[indexPath.section]![indexPath.row]! = !checkedStates[indexPath.section]![indexPath.row]!
-        }
-        artistsTable.reloadData()
-    }
     
     func tableViewCellComponent (filteredCell: String, set: Bool) -> Bool {
         let artist = filteredCell
@@ -317,38 +259,6 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
             }
         }
         return false
-    }
-    
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return keys[section]
-    }
-    
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView(frame: CGRectMake(0, 0, self.view.bounds.size.width, 30.0))
-		view.backgroundColor = UIColor(patternImage: UIImage(named: "navBar.png")!)
-        let lbl = UILabel(frame: CGRectMake(15, 1, 150, 20))
-        lbl.font = UIFont(name: lbl.font.fontName, size: 16)
-		lbl.textColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1.0)
-        view.addSubview(lbl)
-        lbl.text = keys[section]
-        if self.searchController.active {
-            lbl.text = "Results (\(filteredArtists.count))"
-        }
-        return view
-    }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if self.searchController.active {
-            return 1
-        }
-        return keys.count
-    }
-    
-    func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
-        if self.searchController.active {
-            return nil
-        }
-        return keys
     }
     
     func updateSearchResultsForSearchController(searchController: UISearchController) {
@@ -385,4 +295,123 @@ class ArtistsPicker: UIViewController, UITableViewDataSource, UITableViewDelegat
             selectionController.artists = responseArtists
         }
     }
+	
+	func setupSearchController () {
+		searchController = UISearchController(searchResultsController: nil)
+		searchController.dimsBackgroundDuringPresentation = false
+		searchController.searchResultsUpdater = self
+		searchController.searchBar.searchBarStyle = .Minimal
+		searchController.searchBar.placeholder = "Search Artists"
+		searchController.searchBar.tintColor = self.view.tintColor
+		searchController.searchBar.barStyle = .Black
+		searchController.searchBar.translucent = false
+		searchController.searchBar.backgroundColor = self.view.backgroundColor
+		searchController.searchBar.autocapitalizationType = .Words
+		searchController.searchBar.keyboardAppearance = .Dark
+		definesPresentationContext = true
+		searchController.searchBar.sizeToFit()
+		artistsTable.tableHeaderView = searchController.searchBar
+		var backgroundView = UIView(frame: view.bounds)
+		backgroundView.backgroundColor = UIColor.clearColor()
+		artistsTable.backgroundView = backgroundView
+	}
+}
+
+// MARK: - UITableViewDataSource
+extension ArtistsPicker: UITableViewDataSource {
+	
+	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+		if self.searchController.active {
+			return 1
+		}
+		return keys.count
+	}
+	
+	func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		return keys[section]
+	}
+	
+	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		if self.searchController.active {
+			return filteredArtists.count
+		}
+		return artists[keys[section]] == nil ? 0 : artists[keys[section]]!.count
+	}
+	
+	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		var cell:UITableViewCell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! UITableViewCell
+		let section = keys[indexPath.section]
+		
+		if self.searchController.active {
+			cell.textLabel?.text = filteredArtists[indexPath.row]
+		} else {
+			cell.textLabel?.text = artists[section]![indexPath.row]
+		}
+		
+		cell.accessoryType = .None
+		
+		if self.searchController.active {
+			if hasSelectedAll || filteredCheckedStates[indexPath.row] == true {
+				cell.accessoryType = .Checkmark
+			}
+		} else {
+			if hasSelectedAll || checkedStates[indexPath.section]?[indexPath.row] == true {
+				cell.accessoryType = .Checkmark
+			}
+		}
+		return cell
+	}
+	
+	func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
+		if self.searchController.active {
+			return nil
+		}
+		return keys
+	}
+}
+
+// MARK: - UITableViewDelegate
+extension ArtistsPicker: UITableViewDelegate {
+	
+	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let view = UIView(frame: CGRectMake(0, 0, self.view.bounds.size.width, 30.0))
+		view.backgroundColor = UIColor(patternImage: UIImage(named: "navBar.png")!)
+		let lbl = UILabel(frame: CGRectMake(15, 1, 150, 20))
+		lbl.font = UIFont(name: lbl.font.fontName, size: 16)
+		lbl.textColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1.0)
+		view.addSubview(lbl)
+		lbl.text = keys[section]
+		if self.searchController.active {
+			lbl.text = "Results (\(filteredArtists.count))"
+		}
+		return view
+	}
+	
+	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		if self.searchController.active {
+			filteredCheckedStates[indexPath.row] = !filteredCheckedStates[indexPath.row]
+			tableViewCellComponent(filteredArtists[indexPath.row], set: true)
+		} else {
+			checkedStates[indexPath.section]![indexPath.row]! = !checkedStates[indexPath.section]![indexPath.row]!
+		}
+		artistsTable.reloadData()
+	}
+}
+
+// MARK: - UISearchControllerDelegate
+extension ArtistsPicker: UISearchControllerDelegate {
+	
+}
+
+// MARK: - UISearchResultsUpdating
+extension ArtistsPicker: UISearchResultsUpdating {
+	
+}
+
+extension String {
+	func stringByAddingPercentEncodingForURLQueryValue() -> String? {
+		let characterSet = NSMutableCharacterSet.alphanumericCharacterSet()
+		characterSet.addCharactersInString("-._~")
+		return stringByAddingPercentEncodingWithAllowedCharacters(characterSet)?.stringByReplacingOccurrencesOfString(" ", withString: "+")
+	}
 }

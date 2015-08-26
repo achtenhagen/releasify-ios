@@ -11,8 +11,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var allowExplicitContent = true
 	var lastUpdated = 0
 	var notificationAlbumID: Int!
-    var remoteNotificationPayload = NSDictionary()
-    var localNotificationPayload  = NSDictionary()
+	var remoteNotificationPayload: NSDictionary?
+	var localNotificationPayload: NSDictionary?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
