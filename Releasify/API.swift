@@ -10,12 +10,14 @@ class API {
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var newItems: [Int]!
     
-    // -- Main method to update the App's content -- //
+    // -- Main method to update the user's content -- //
 	func refreshContent (successHandler: ([Int] -> Void)?, errorHandler: ((error: NSError!) -> Void)?) {
 		newItems = [Int]()
         let explicit = NSUserDefaults.standardUserDefaults().boolForKey("allowExplicit")
         var explicitValue = 1
-        if !appDelegate.allowExplicitContent { explicitValue = 0 }
+        if !appDelegate.allowExplicitContent {
+			explicitValue = 0
+		}
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(explicitValue)"
         sendRequest(APIURL.updateContent.rawValue, postString: postString, successHandler: { (response, data) in
             if let HTTPResponse = response as? NSHTTPURLResponse {
@@ -68,7 +70,6 @@ class API {
                     }
 				} else {
 					errorHandler!(error: NSError(domain: "Unauthorized.", code: 403, userInfo: nil))
-					return
 				}
             }
         },
@@ -77,7 +78,7 @@ class API {
         })
     }
     
-    // -- Main method to update the App's subscriptions -- //
+    // -- Main method to update the user's subscriptions -- //
     func refreshSubscriptions (successHandler: (() -> Void)?, errorHandler: ((error: NSError!) -> Void)?) {
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
         sendRequest(APIURL.updateArtists.rawValue, postString: postString, successHandler: { (response, data) in
@@ -91,10 +92,10 @@ class API {
 							return
                         }
                         for item in json {
-                            let artistID: Int = item["artistId"] as! Int
-                            let artistTitle: String = String(stringInterpolationSegment: item["title"]!)
-                            let artistUniqueID: Int = item["iTunesUniqueID"] as! Int
-                            let newArtistID = AppDB.sharedInstance.addArtist(Int32(artistID), artistTitle: artistTitle, iTunesUniqueID: Int32(artistUniqueID))
+                            let artistID = item["artistId"] as! Int
+                            let artistTitle = String(stringInterpolationSegment: item["title"]!)
+                            let artistUniqueID = item["iTunesUniqueID"] as! Int
+                            let newArtistID = AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
                         }
                         AppDB.sharedInstance.getArtists()
                         if let handler: Void = successHandler?() {
@@ -104,7 +105,6 @@ class API {
                     }
 				} else {
 					errorHandler!(error: NSError(domain: "Unauthorized.", code: 403, userInfo: nil))
-					return
 				}
             }
         },

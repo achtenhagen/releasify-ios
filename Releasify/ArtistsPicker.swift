@@ -5,8 +5,8 @@ import MediaPlayer
 class ArtistsPicker: UIViewController {
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	let keys = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"]
     var artists = [String: [String]]()
-    let keys = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"]
     var checkedStates = [Int: [Int: Bool]]()
     var filteredArtists = [String]()
     var filteredCheckedStates = [Bool]()
@@ -42,8 +42,8 @@ class ArtistsPicker: UIViewController {
     
     @IBAction func closeArtistsPicker(sender: UIBarButtonItem) {
 		
-		if self.searchController.active {
-            self.searchController.dismissViewControllerAnimated(true, completion: nil)
+		if searchController.active {
+            searchController.dismissViewControllerAnimated(true, completion: nil)
         }
 		
 		handleBatchProcessing()
@@ -94,8 +94,8 @@ class ArtistsPicker: UIViewController {
 		gradient.locations = [0.0 , 1.0]
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
+		view.layer.insertSublayer(gradient, atIndex: 0)
     }
 	
     override func viewDidDisappear(animated: Bool) {
@@ -113,8 +113,8 @@ class ArtistsPicker: UIViewController {
         activityView.removeFromSuperview()
         indicatorView.removeFromSuperview()
         selectAllBtn.title = "Select All"
-        self.progressBar.setProgress(0, animated: false)
-        self.view.userInteractionEnabled = true
+        progressBar.setProgress(0, animated: false)
+        view.userInteractionEnabled = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -177,7 +177,6 @@ class ArtistsPicker: UIViewController {
         indicatorView.startAnimating()
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
 		
-		// HTTP Request Timeout - 300sec
 		var batchesProcessed = 0
         for batch in batches {
             println("Processing batch: \(batch)")
@@ -191,7 +190,7 @@ class ArtistsPicker: UIViewController {
 							if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
 								for artist in awaitingArtists {
 									if let uniqueID = artist["iTunesUniqueID"] as? Int {
-										if !contains(uniqueIDs, uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(Int32(uniqueID)) == 0 {
+										if !contains(uniqueIDs, uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
 											uniqueIDs.append(uniqueID)
 											self.responseArtists.append(artist)
 										}
@@ -261,12 +260,6 @@ class ArtistsPicker: UIViewController {
         return false
     }
     
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
-        let searchString = self.searchController.searchBar.text
-        filterContentForSearchText(searchString)
-        self.artistsTable.reloadData()
-    }
-    
     func filterContentForSearchText(searchText: String) {
         filteredArtists.removeAll(keepCapacity: true)
         filteredCheckedStates.removeAll(keepCapacity: true)
@@ -302,7 +295,7 @@ class ArtistsPicker: UIViewController {
 		searchController.searchResultsUpdater = self
 		searchController.searchBar.searchBarStyle = .Minimal
 		searchController.searchBar.placeholder = "Search Artists"
-		searchController.searchBar.tintColor = self.view.tintColor
+		searchController.searchBar.tintColor = view.tintColor
 		searchController.searchBar.barStyle = .Black
 		searchController.searchBar.translucent = false
 		searchController.searchBar.backgroundColor = self.view.backgroundColor
@@ -319,9 +312,8 @@ class ArtistsPicker: UIViewController {
 
 // MARK: - UITableViewDataSource
 extension ArtistsPicker: UITableViewDataSource {
-	
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		if self.searchController.active {
+		if searchController.active {
 			return 1
 		}
 		return keys.count
@@ -332,7 +324,7 @@ extension ArtistsPicker: UITableViewDataSource {
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if self.searchController.active {
+		if searchController.active {
 			return filteredArtists.count
 		}
 		return artists[keys[section]] == nil ? 0 : artists[keys[section]]!.count
@@ -342,7 +334,7 @@ extension ArtistsPicker: UITableViewDataSource {
 		var cell:UITableViewCell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! UITableViewCell
 		let section = keys[indexPath.section]
 		
-		if self.searchController.active {
+		if searchController.active {
 			cell.textLabel?.text = filteredArtists[indexPath.row]
 		} else {
 			cell.textLabel?.text = artists[section]![indexPath.row]
@@ -350,7 +342,7 @@ extension ArtistsPicker: UITableViewDataSource {
 		
 		cell.accessoryType = .None
 		
-		if self.searchController.active {
+		if searchController.active {
 			if hasSelectedAll || filteredCheckedStates[indexPath.row] == true {
 				cell.accessoryType = .Checkmark
 			}
@@ -363,7 +355,7 @@ extension ArtistsPicker: UITableViewDataSource {
 	}
 	
 	func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
-		if self.searchController.active {
+		if searchController.active {
 			return nil
 		}
 		return keys
@@ -372,23 +364,22 @@ extension ArtistsPicker: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 extension ArtistsPicker: UITableViewDelegate {
-	
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		let view = UIView(frame: CGRectMake(0, 0, self.view.bounds.size.width, 30.0))
-		view.backgroundColor = UIColor(patternImage: UIImage(named: "navBar.png")!)
+		var headerView = UIView(frame: CGRectMake(0, 0, view.bounds.size.width, 30.0))
+		headerView.backgroundColor = UIColor(patternImage: UIImage(named: "navBar.png")!)
 		let lbl = UILabel(frame: CGRectMake(15, 1, 150, 20))
 		lbl.font = UIFont(name: lbl.font.fontName, size: 16)
 		lbl.textColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1.0)
-		view.addSubview(lbl)
+		headerView.addSubview(lbl)
 		lbl.text = keys[section]
-		if self.searchController.active {
+		if searchController.active {
 			lbl.text = "Results (\(filteredArtists.count))"
 		}
-		return view
+		return headerView
 	}
 	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		if self.searchController.active {
+		if searchController.active {
 			filteredCheckedStates[indexPath.row] = !filteredCheckedStates[indexPath.row]
 			tableViewCellComponent(filteredArtists[indexPath.row], set: true)
 		} else {
@@ -400,7 +391,10 @@ extension ArtistsPicker: UITableViewDelegate {
 
 // MARK: - UISearchControllerDelegate
 extension ArtistsPicker: UISearchControllerDelegate {
-	
+	func updateSearchResultsForSearchController(searchController: UISearchController) {
+		filterContentForSearchText(searchController.searchBar.text)
+		artistsTable.reloadData()
+	}
 }
 
 // MARK: - UISearchResultsUpdating
@@ -408,6 +402,7 @@ extension ArtistsPicker: UISearchResultsUpdating {
 	
 }
 
+// MARK: - String
 extension String {
 	func stringByAddingPercentEncodingForURLQueryValue() -> String? {
 		let characterSet = NSMutableCharacterSet.alphanumericCharacterSet()

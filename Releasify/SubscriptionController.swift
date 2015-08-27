@@ -101,8 +101,4 @@ class SubscriptionController: UICollectionViewController {
 		tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
 		self.subscriptionsTable.setEditing(false, animated: true)
 	}*/
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
-    }
 }

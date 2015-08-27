@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var localNotificationPayload: NSDictionary?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-
         let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String)! + " (Clairvoyant)"
         NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")
         

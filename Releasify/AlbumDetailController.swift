@@ -38,7 +38,7 @@ class AlbumDetailController: UIViewController {
         albumArtwork.image = artwork
 		albumArtwork.layer.masksToBounds = true
 		albumArtwork.layer.cornerRadius = 2.0
-        artist = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
+        artist = AppDB.sharedInstance.getAlbumArtist(album.ID)
 		navigationItem.title = artist
         albumTitle.text = album.title
 		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
@@ -46,7 +46,7 @@ class AlbumDetailController: UIViewController {
         copyrightLabel.text = album.copyright
         timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
         if timeDiff > 0 {
-            dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))
+            dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)
 			progressBar.progress = album.getProgress(dateAdded)
             timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
 		} else {
@@ -85,18 +85,18 @@ class AlbumDetailController: UIViewController {
 		gradient.locations = [0.0 , 1.0]
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
+		view.layer.insertSublayer(gradient, atIndex: 0)
     }
     
     override func viewDidDisappear(animated: Bool) {
-        self.timer.invalidate()
+        timer.invalidate()
     }
     
     func shareAlbum () {
         let firstActivityItem = "\(album.title) by \(artist)  - \(album.iTunesURL)"
         let activityViewController = UIActivityViewController(activityItems: [firstActivityItem], applicationActivities: nil)
-        self.presentViewController(activityViewController, animated: true, completion: nil)
+        presentViewController(activityViewController, animated: true, completion: nil)
     }
     
     func update () {

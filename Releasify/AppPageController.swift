@@ -80,7 +80,7 @@ class AppPageController: UIPageViewController {
 							if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary, awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
 								for artist in awaitingArtists {
 									if let uniqueID = artist["iTunesUniqueID"] as? Int {
-										if AppDB.sharedInstance.getArtistByUniqueID(Int32(uniqueID)) == 0 {
+										if AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
 											self.responseArtists.append(artist)
 										}
 									}

@@ -14,7 +14,7 @@ class SearchResultsController: UIViewController {
     @IBOutlet weak var artistsTable: UITableView!
     
     @IBAction func closeView(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     override func viewDidLoad() {		
@@ -36,8 +36,8 @@ class SearchResultsController: UIViewController {
 		gradient.locations = [0.0 , 1.0]
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
+		view.layer.insertSublayer(gradient, atIndex: 0)
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,8 +58,10 @@ class SearchResultsController: UIViewController {
 				if let HTTPResponse = response as? NSHTTPURLResponse {
 					println("HTTP status code: \(HTTPResponse.statusCode)")
 					if HTTPResponse.statusCode == 200 {
-						UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2 }, completion: { (state) in
-							let newArtistID = AppDB.sharedInstance.addArtist(Int32(artistID), artistTitle: artistTitle, iTunesUniqueID: Int32(artistUniqueID))
+						UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+							artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2
+						}, completion: { (state) in
+							let newArtistID = AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 							AppDB.sharedInstance.getArtists()
 							self.selectedArtists.addObject(artistUniqueID)
 							if newArtistID > 0 {
@@ -85,7 +87,7 @@ class SearchResultsController: UIViewController {
 extension SearchResultsController: UITableViewDataSource {	
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		var cell = self.artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! ArtistCell
+		var cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! ArtistCell
 		let albums = (artists[indexPath.section]["albums"] as? [NSDictionary])!
 		if albums.count > 0 {
 			cell.albumTitle.text = albums[indexPath.row]["title"] as? String
@@ -137,8 +139,7 @@ extension SearchResultsController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-extension SearchResultsController: UITableViewDelegate {
-	
+extension SearchResultsController: UITableViewDelegate {	
 	func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		return 50
 	}

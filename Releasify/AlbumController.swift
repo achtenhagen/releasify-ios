@@ -71,6 +71,7 @@ class AlbumController: UICollectionViewController {
 				refresh()
 			}
 		}
+		
 		if let localContent = appDelegate.localNotificationPayload?["AlbumID"] as? Int {
 			notificationAlbumID = localContent
 			for album in AppDB.sharedInstance.albums[1] as[Album]! {
@@ -210,34 +211,36 @@ class AlbumController: UICollectionViewController {
 				let request = NSURLRequest(URL: checkedURL)
 				let mainQueue = NSOperationQueue.mainQueue()
 				NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
-					if error == nil {
-						if let HTTPResponse = response as? NSHTTPURLResponse {
-							println("HTTP status code: \(HTTPResponse.statusCode)")
-							if HTTPResponse.statusCode == 200 {
-								let image = UIImage(data: data)
-								self.artwork[hash] = image
-								dispatch_async(dispatch_get_main_queue(), {
-									if let cellToUpdate = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
-										AppDB.sharedInstance.addArtwork(hash, artwork: image!)
-										cell.albumArtwork.image = image
-										UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-											cell.albumArtwork.alpha = 1.0
-										}, completion: nil)
-									}
-								})
-							}
+					if error != nil {
+						return
+					}
+					if let HTTPResponse = response as? NSHTTPURLResponse {
+						println("HTTP status code: \(HTTPResponse.statusCode)")
+						if HTTPResponse.statusCode == 200 {
+							let image = UIImage(data: data)
+							self.artwork[hash] = image
+							dispatch_async(dispatch_get_main_queue(), {
+								if let cellToUpdate = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
+									AppDB.sharedInstance.addArtwork(hash, artwork: image!)
+									cell.albumArtwork.image = image
+									UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+										cell.albumArtwork.alpha = 1.0
+									}, completion: nil)
+								}
+							})
 						}
 					}
+					
 				})
 			}
 		}
 		
-		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(Int32(album.ID))
+		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(album.ID)
 		cell.albumTitle.text = album.title
 		cell.albumTitle.userInteractionEnabled = false
 		
 		if timeDiff > 0 {
-			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(Int32(album.ID))
+			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)
 			cell.timeLeft.hidden = false
 			cell.progressBar.hidden = false
 			cell.progressBar.setProgress(album.getProgress(dateAdded), animated: false)
@@ -326,7 +329,7 @@ class AlbumController: UICollectionViewController {
 					}
 				})
 				let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
-					// Todo: Implement...
+					// Todo: implement...
 				})
 				let deleteAction = UIAlertAction(title: "Unsubscribe", style: .Destructive, handler: { action in
 					let albumID = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].ID
@@ -342,9 +345,9 @@ class AlbumController: UICollectionViewController {
 						}
 					}
 					UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
-						self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+						albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
 						}, completion: { (value: Bool) in
-							AppDB.sharedInstance.deleteAlbum(Int32(albumID))
+							AppDB.sharedInstance.deleteAlbum(albumID)
 							AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
 							AppDB.sharedInstance.getAlbums()
 							AppDB.sharedInstance.getArtists()
@@ -356,7 +359,7 @@ class AlbumController: UICollectionViewController {
 				controller.addAction(reportAction)
 				controller.addAction(deleteAction)
 				controller.addAction(cancelAction)
-				self.presentViewController(controller, animated: true, completion: nil)
+				presentViewController(controller, animated: true, completion: nil)
 			}
 		}
 	}
@@ -375,5 +378,4 @@ class AlbumController: UICollectionViewController {
 	func delay(delay:Double, closure: ()->()) {
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
 	}
-
 }
