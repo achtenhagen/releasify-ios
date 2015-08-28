@@ -32,9 +32,6 @@ class SubscriptionController: UICollectionViewController {
     override func viewWillAppear(animated: Bool) {
 		artistsCollectionView.reloadData()
 		artistsCollectionView.scrollsToTop = true
-        if AppDB.sharedInstance.artists.count > 0 {
-			// Show welcome screen?
-        }
     }
 	
 	override func viewWillDisappear(animated: Bool) {
@@ -61,9 +58,6 @@ class SubscriptionController: UICollectionViewController {
 			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         })
-        if AppDB.sharedInstance.artists.count > 0 {
-			
-        }
     }
 
 	override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {

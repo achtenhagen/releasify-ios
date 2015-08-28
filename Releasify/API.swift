@@ -135,6 +135,7 @@ class API {
 			UIApplication.sharedApplication().networkActivityIndicatorVisible = false
 			if error != nil {
                 errorHandler(error: error)
+				return
             }
             successHandler(response: response, data: data)
         })

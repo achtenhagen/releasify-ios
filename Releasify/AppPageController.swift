@@ -7,7 +7,6 @@ class AppPageController: UIPageViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var responseArtists = [NSDictionary]()
 	var mediaQuery = MPMediaQuery.artistsQuery()
-	var index = 0
 	var identifiers: NSArray = ["AlbumsController", "SubscriptionsController"]
 	var keyword: String!
 	
@@ -38,17 +37,18 @@ class AppPageController: UIPageViewController {
 	override func viewDidLoad() {
 		self.dataSource = self
 		self.delegate = self
-		let startingViewController = self.viewControllerAtIndex(index)
+		let startingViewController = viewControllerAtIndex(0)
 		let viewControllers: NSArray = [startingViewController]
 		self.setViewControllers(viewControllers as [AnyObject], direction: UIPageViewControllerNavigationDirection.Forward, animated: false, completion: nil)		
+		
 		// Background gradient.
 		let gradient: CAGradientLayer = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
 		gradient.locations = [0.0 , 1.0]
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
+		view.layer.insertSublayer(gradient, atIndex: 0)
 	}
 	
 	func viewControllerAtIndex(index: Int) -> UICollectionViewController! {
@@ -138,22 +138,22 @@ class AppPageController: UIPageViewController {
 extension AppPageController: UIPageViewControllerDataSource {
 	func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
 		let identifier = viewController.restorationIdentifier
-		let index = self.identifiers.indexOfObject(identifier!)
+		var index = identifiers.indexOfObject(identifier!)
 		if index == identifiers.count - 1 {
 			return nil
 		}
-		self.index = self.index + 1
-		return self.viewControllerAtIndex(self.index)
+		index++
+		return viewControllerAtIndex(index)
 	}
 	
 	func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
 		let identifier = viewController.restorationIdentifier
-		let index = self.identifiers.indexOfObject(identifier!)
+		var index = identifiers.indexOfObject(identifier!)
 		if index == 0 {
 			return nil
 		}
-		self.index = self.index - 1
-		return self.viewControllerAtIndex(self.index)
+		index--
+		return self.viewControllerAtIndex(index)
 	}
 }
 
