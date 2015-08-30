@@ -16,7 +16,6 @@ final class AppDB {
     }
     
     var database: COpaquePointer = nil
-    var result = Int32()
     var artists = [Artist]()
 	var albums  = [Int:[Album]]()
 
@@ -61,9 +60,9 @@ final class AppDB {
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, albumExistsQuery, -1, &statement, nil) == SQLITE_OK {
                 sqlite3_bind_int(statement, 1, Int32(albumItem.ID))
-                var numRows: Int32 = 0
+                var numRows = 0
                 if sqlite3_step(statement) == SQLITE_ROW {
-                    numRows = sqlite3_column_int(statement, 0)
+                    numRows = Int(sqlite3_column_int(statement, 0))
                 }
                 sqlite3_finalize(statement)
                 if numRows == 0 {
@@ -95,16 +94,21 @@ final class AppDB {
         return newAlbumID
     }
     
-    func deleteAlbum (albumID: Int) {
+    func deleteAlbum (albumID: Int, section: Int? = nil, index: Int? = nil) {
         if connected() {
             let query = "DELETE FROM albums WHERE id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
                 sqlite3_bind_int(statement, 1, Int32(albumID))
             }
-            if sqlite3_step(statement) != SQLITE_DONE {
-                println("Failed to delete from db.")
-            }
+            if sqlite3_step(statement) == SQLITE_DONE {
+				if let s = section, i = index {
+					albums[s]?.removeAtIndex(i)
+					println("Successfully removed album.")
+				}
+			} else {
+				println("SQLite: Failed to delete from `albums`.")
+			}
             sqlite3_finalize(statement)
             disconnect()
         }
@@ -155,14 +159,14 @@ final class AppDB {
     }
     
     func getAlbumDateAdded (albumID: Int) -> Double {
-        var created: Int32 = 0
+        var created = 0
         if connected() {
             let query = "SELECT created FROM albums WHERE id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
                 sqlite3_bind_int(statement, 1, Int32(albumID))
                 if sqlite3_step(statement) == SQLITE_ROW {
-                    created = sqlite3_column_int(statement, 0)
+                    created = Int(sqlite3_column_int(statement, 0))
                 }
                 sqlite3_finalize(statement)
             }
@@ -170,16 +174,20 @@ final class AppDB {
         }
         return Double(created)
     }
+	
+	func hideAlbum (albumID: Int) {
+		// Todo: implement...
+	}
     
     func lookupAlbum (albumID: Int) -> Bool {
-        var numRows: Int32 = 0
+        var numRows = 0
         if connected() {
             let query = "SELECT COUNT(id) FROM albums WHERE id = ?"
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
                 sqlite3_bind_int(statement, 1, Int32(albumID))
                 if sqlite3_step(statement) == SQLITE_ROW {
-                    numRows = sqlite3_column_int(statement, 0)
+                    numRows = Int(sqlite3_column_int(statement, 0))
                 }
                 sqlite3_finalize(statement)
             }
@@ -217,7 +225,7 @@ final class AppDB {
 				query = "DELETE FROM albums WHERE id IN (\(albumList))"
 				if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 					if sqlite3_step(statement) != SQLITE_DONE {
-						println("Failed to remove expired albums.")
+						println("SQLite: Failed to delete from `albums`.")
 						return
 					}
 					sqlite3_finalize(statement)
@@ -237,9 +245,9 @@ final class AppDB {
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, artistExistsQuery, -1, &statement, nil) == SQLITE_OK {
                 sqlite3_bind_int(statement, 1, Int32(iTunesUniqueID))
-                var numRows: Int32 = 0
+                var numRows = 0
                 if sqlite3_step(statement) == SQLITE_ROW {
-                    numRows = sqlite3_column_int(statement, 0)
+                    numRows = Int(sqlite3_column_int(statement, 0))
                 }
                 sqlite3_finalize(statement)
                 if numRows == 0 {
@@ -271,9 +279,9 @@ final class AppDB {
             if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
                 sqlite3_bind_int(statement, 1, Int32(albumID))
                 sqlite3_bind_int(statement, 2, Int32(artistID))
-                var numRows: Int32 = 0
+                var numRows = 0
                 if sqlite3_step(statement) == SQLITE_ROW {
-                    numRows = sqlite3_column_int(statement, 0)
+                    numRows = Int(sqlite3_column_int(statement, 0))
                 }
                 sqlite3_finalize(statement)
                 if numRows == 0 {
@@ -300,9 +308,9 @@ final class AppDB {
             var statement: COpaquePointer = nil
             if sqlite3_prepare_v2(database, artistExistsQuery, -1, &statement, nil) == SQLITE_OK {
                 sqlite3_bind_int(statement, 1, Int32(ID))
-                var numRows: Int32 = 0
+                var numRows = 0
                 if sqlite3_step(statement) == SQLITE_ROW {
-                    numRows = sqlite3_column_int(statement, 0)
+                    numRows = Int(sqlite3_column_int(statement, 0))
                 }
                 sqlite3_finalize(statement)
                 if numRows == 0 {
@@ -323,32 +331,56 @@ final class AppDB {
         println("Successfully added a pending artist.")
     }
     
-    func deleteArtist (ID: Int) {
-        if connected() {
-            var query = "DELETE FROM artists WHERE id = ?"
-            var statement: COpaquePointer = nil
+	// Todo: implement completion handler.
+	func deleteArtist (ID: Int, index: Int? = nil) {
+		if connected() {
+			var query = "SELECT artwork FROM albums WHERE id IN (SELECT album_id FROM album_artists WHERE artist_id = ?)"
+			var statement: COpaquePointer = nil
+			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
+				sqlite3_bind_int(statement, 1, Int32(ID))
+				while sqlite3_step(statement) == SQLITE_ROW {
+					let artwork = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 0)))
+					deleteArtwork(artwork!)
+				}
+				sqlite3_finalize(statement)
+			}
+			
+			query = "DELETE FROM albums WHERE id IN (SELECT album_id FROM album_artists WHERE artist_id = ?)"
+			statement = nil
 			
 			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
-                sqlite3_bind_int(statement, 1, Int32(ID))
-            }
+				sqlite3_bind_int(statement, 1, Int32(ID))
+				if sqlite3_step(statement) == SQLITE_DONE {
+					if let i = index {
+						artists.removeAtIndex(i)
+					}
+				} else {
+					println("SQLite: Failed to delete from `albums`.")
+				}
+				sqlite3_finalize(statement)
+			}
 			
-			if sqlite3_step(statement) != SQLITE_DONE {
-                println("Failed to delete from db.")
-            }
-            sqlite3_finalize(statement)
-            
-            query = "DELETE FROM albums WHERE id IN (SELECT album_id FROM album_artists WHERE artist_id = ?)"
-            statement = nil
+			query = "DELETE FROM album_artists WHERE artist_id = ?"
+			statement = nil
 			
 			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
-                sqlite3_bind_int(statement, 1, Int32(ID))
-            }
+				sqlite3_bind_int(statement, 1, Int32(ID))
+				if sqlite3_step(statement) != SQLITE_DONE {
+					println("SQLite: Failed to delete from `album_artists`.")
+				}
+				sqlite3_finalize(statement)
+			}
 			
-			if sqlite3_step(statement) != SQLITE_DONE {
-                println("Failed to delete from db.")
-            }
+			query = "DELETE FROM artists WHERE id = ?"
+			statement = nil
 			
-			sqlite3_finalize(statement)
+			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
+				sqlite3_bind_int(statement, 1, Int32(ID))
+				if sqlite3_step(statement) != SQLITE_DONE {
+					println("SQLite: Failed to delete from `artists`.")
+				}
+				sqlite3_finalize(statement)
+			}
             disconnect()
         }
     }

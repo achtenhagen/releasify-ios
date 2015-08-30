@@ -30,29 +30,30 @@ class AlbumController: UICollectionViewController {
 		albumCollectionView.scrollIndicatorInsets = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
 		
 		// Collection view layout settings.
+		let defaultItemSize = CGSize(width: 145, height: 190)
 		albumCollectionLayout = UICollectionViewFlowLayout()
 		albumCollectionLayout.headerReferenceSize = CGSize(width: 50, height: 50)
 		albumCollectionLayout.footerReferenceSize = CGSize(width: 50, height: 10)
 		albumCollectionLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-		albumCollectionLayout.itemSize = CGSize(width: 145, height: 200)
+		albumCollectionLayout.itemSize = defaultItemSize
 		albumCollectionLayout.minimumLineSpacing = 10
 		albumCollectionLayout.minimumInteritemSpacing = 10
 		
 		switch UIScreen.mainScreen().bounds.width {
 		// iPhone 4S, 5, 5C & 5S
 		case 320:
-			albumCollectionLayout.itemSize = CGSize(width: 145, height: 200)
+			albumCollectionLayout.itemSize = defaultItemSize
 		// iPhone 6
 		case 375:
-			albumCollectionLayout.itemSize = CGSize(width: 172, height: 225)
+			albumCollectionLayout.itemSize = CGSize(width: 172, height: 217)
 		// iPhone 6 Plus
 		case 414:
-			albumCollectionLayout.itemSize = CGSize(width: 192, height: 247)
+			albumCollectionLayout.itemSize = CGSize(width: 192, height: 147)
 		default:
-			albumCollectionLayout.itemSize = CGSize(width: 145, height: 200)
+			albumCollectionLayout.itemSize = defaultItemSize
 		}
 		
-		albumCollectionView.collectionViewLayout = albumCollectionLayout
+		albumCollectionView.setCollectionViewLayout(albumCollectionLayout, animated: false)
 		
 		// Pull-to-refresh Control.
 		refreshControl = UIRefreshControl()
@@ -99,7 +100,7 @@ class AlbumController: UICollectionViewController {
 		*/
 		
 		// Refresh the App's content only once per day.
-		println(appDelegate.lastUpdated)
+		// println(appDelegate.lastUpdated)
 		if appDelegate.userID > 0 && (Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400) {
 			println("Starting daily refresh.")
 			refresh()
@@ -107,6 +108,8 @@ class AlbumController: UICollectionViewController {
 	}
 	
 	override func viewWillAppear(animated: Bool) {
+		// AppDB.sharedInstance.getAlbums() -> move to different location !!!
+		albumCollectionView.reloadData()
 		albumCollectionView.scrollsToTop = true
 		if AppDB.sharedInstance.artists.count > 0 && AppDB.sharedInstance.albums[0]!.count == 0 && AppDB.sharedInstance.albums[1]!.count == 0 {
 			refresh()
@@ -124,7 +127,9 @@ class AlbumController: UICollectionViewController {
 		API.sharedInstance.refreshContent({ (newItems) in
 			self.albumCollectionView.reloadData()
 			self.refreshControl.endRefreshing()
-			if newItems.count > 0 {}
+			if newItems.count > 0 {
+				// Show updates...
+			}
 		},
 		errorHandler: { (error) in
 			self.refreshControl.endRefreshing()
@@ -241,21 +246,10 @@ class AlbumController: UICollectionViewController {
 		
 		if timeDiff > 0 {
 			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)
-			cell.timeLeft.hidden = false
-			cell.progressBar.hidden = false
+			cell.containerView.hidden = false
 			cell.progressBar.setProgress(album.getProgress(dateAdded), animated: false)
-			cell.albumTitle.frame.size.height = 21
-			cell.albumTitle.numberOfLines = 1
-			cell.albumTitle.lineBreakMode = .ByTruncatingTail
-			//cell.albumTitle.setTranslatesAutoresizingMaskIntoConstraints(true)
 		} else {
-			cell.timeLeft.hidden = true
-			cell.progressBar.hidden = true
-			cell.albumTitle.frame.size.height = 40
-			cell.albumTitle.numberOfLines = 2
-			cell.albumTitle.lineBreakMode = .ByWordWrapping
-			//cell.albumTitle.setTranslatesAutoresizingMaskIntoConstraints(true)
-			cell.albumTitle.sizeToFit()
+			cell.containerView.hidden = true
 		}
 		
 		var weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
@@ -319,6 +313,7 @@ class AlbumController: UICollectionViewController {
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
 		var cellLocation = gesture.locationInView(albumCollectionView)
 		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
+		
 		if indexPath?.row != nil {
 			if gesture.state == UIGestureRecognizerState.Began {
 				let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
@@ -328,36 +323,49 @@ class AlbumController: UICollectionViewController {
 						UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
 					}
 				})
+				controller.addAction(buyAction)
+				
 				let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
 					// Todo: implement...
 				})
-				let deleteAction = UIAlertAction(title: "Unsubscribe", style: .Destructive, handler: { action in
-					let albumID = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].ID
-					let albumArtwork = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].artwork
-					for n in UIApplication.sharedApplication().scheduledLocalNotifications {
-						var notification = n as! UILocalNotification
-						let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-						let ID = userInfoCurrent["ID"]! as! Int
-						if ID == albumID {
-							println("Canceled location notification with ID: \(ID)")
-							UIApplication.sharedApplication().cancelLocalNotification(notification)
-							break
-						}
-					}
-					UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
-						albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
-						}, completion: { (value: Bool) in
-							AppDB.sharedInstance.deleteAlbum(albumID)
-							AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
-							AppDB.sharedInstance.getAlbums()
-							AppDB.sharedInstance.getArtists()
-							self.albumCollectionView.reloadData()
-					})
-				})
-				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-				controller.addAction(buyAction)
 				controller.addAction(reportAction)
-				controller.addAction(deleteAction)
+				
+				if AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
+					let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
+						let albumID = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].ID
+						let albumArtwork = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].artwork
+						for n in UIApplication.sharedApplication().scheduledLocalNotifications {
+							var notification = n as! UILocalNotification
+							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+							let ID = userInfoCurrent["AlbumID"]! as! Int
+							if ID == albumID {
+								println("Canceled location notification with ID: \(ID)")
+								UIApplication.sharedApplication().cancelLocalNotification(notification)
+								break
+							}
+						}
+						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+							}, completion: { (value: Bool) in
+								AppDB.sharedInstance.deleteAlbum(albumID, section: indexPath!.section, index: indexPath!.row)
+								AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
+								self.albumCollectionView.reloadData()
+						})
+					})
+					controller.addAction(deleteAction)
+				} else {
+					let hideAction = UIAlertAction(title: "Hide Album", style: .Destructive, handler: { action in
+						let albumID = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].ID
+						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+							}, completion: { (value: Bool) in
+								// Todo: implement...
+						})
+					})
+					controller.addAction(hideAction)
+				}
+				
+				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 				controller.addAction(cancelAction)
 				presentViewController(controller, animated: true, completion: nil)
 			}

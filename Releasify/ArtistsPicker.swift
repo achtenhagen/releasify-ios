@@ -41,11 +41,9 @@ class ArtistsPicker: UIViewController {
     }
     
     @IBAction func closeArtistsPicker(sender: UIBarButtonItem) {
-		
 		if searchController.active {
             searchController.dismissViewControllerAnimated(true, completion: nil)
         }
-		
 		handleBatchProcessing()
     }
     
@@ -130,8 +128,6 @@ class ArtistsPicker: UIViewController {
         let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
         var batchCount = 0
         var currentBatch = String()
-		progressBar.hidden = false
-        progressBar.progress = 0
 		
 		for item in checkedStates {
             let section = item.0
@@ -150,18 +146,21 @@ class ArtistsPicker: UIViewController {
                 }
             }
         }
-        
+		
+		if totalItems == 0 {
+			self.dismissViewControllerAnimated(true, completion: nil)
+			return
+		}
+		
+		progressBar.hidden = false
+		progressBar.progress = 0
+		
         if !currentBatch.isEmpty {
             batches.append(postString.stringByAppendingString(currentBatch))
         }
         
         println("Total items: \(totalItems)")
         println("Total batches: \(batches.count)")
-        
-        if totalItems == 0 {
-            self.dismissViewControllerAnimated(true, completion: nil)
-            return
-        }
         
         view.userInteractionEnabled = false
         activityView = UIView(frame: CGRectMake(0, 0, 90, 90))

@@ -28,18 +28,18 @@ class AppPageController: UIPageViewController {
 			controller.addAction(importAction)
 			controller.addAction(addAction)
 			controller.addAction(cancelAction)
-			self.presentViewController(controller, animated: true, completion: nil)
+			presentViewController(controller, animated: true, completion: nil)
 		} else {
-			self.addSubscription()
+			addSubscription()
 		}
 	}
 	
 	override func viewDidLoad() {
-		self.dataSource = self
-		self.delegate = self
+		dataSource = self
+		delegate = self
 		let startingViewController = viewControllerAtIndex(0)
 		let viewControllers: NSArray = [startingViewController]
-		self.setViewControllers(viewControllers as [AnyObject], direction: UIPageViewControllerNavigationDirection.Forward, animated: false, completion: nil)		
+		setViewControllers(viewControllers as [AnyObject], direction: UIPageViewControllerNavigationDirection.Forward, animated: false, completion: nil)
 		
 		// Background gradient.
 		let gradient: CAGradientLayer = CAGradientLayer()
@@ -67,7 +67,7 @@ class AppPageController: UIPageViewController {
 		let actionSheetController: UIAlertController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
 		let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 		actionSheetController.addAction(cancelAction)
-		let addAction: UIAlertAction = UIAlertAction(title: "Add", style: .Default) { action in
+		let addAction: UIAlertAction = UIAlertAction(title: "Confirm", style: .Default) { action in
 			let textField = actionSheetController.textFields![0] as! UITextField
 			if !textField.text.isEmpty {
 				let artist = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
@@ -118,7 +118,7 @@ class AppPageController: UIPageViewController {
 			textField.autocapitalizationType = .Words
 			textField.placeholder = "e.g., Armin van Buuren"
 		}
-		self.presentViewController(actionSheetController, animated: true, completion: nil)
+		presentViewController(actionSheetController, animated: true, completion: nil)
 	}
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

@@ -84,8 +84,7 @@ class SearchResultsController: UIViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension SearchResultsController: UITableViewDataSource {	
-	
+extension SearchResultsController: UITableViewDataSource {		
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		var cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! ArtistCell
 		let albums = (artists[indexPath.section]["albums"] as? [NSDictionary])!

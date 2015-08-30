@@ -72,6 +72,7 @@
                 <constraint firstItem="VJJ-OJ-vij" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="nYq-us-Hho"/>
             </constraints>
             <connections>
+                <outlet property="optionsBtn" destination="ege-gU-AOs" id="W0v-VA-ZSE"/>
                 <outlet property="subscriptionArtwork" destination="VJJ-OJ-vij" id="Nna-Ay-HHt"/>
                 <outlet property="subscriptionTitle" destination="8d5-KB-ote" id="uwQ-3Y-r06"/>
             </connections>
