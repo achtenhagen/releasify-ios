@@ -16,7 +16,7 @@ class AppPageController: UIPageViewController {
 	
 	@IBAction func addSubscription(sender: AnyObject) {
 		let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-		mediaQuery.groupingType = MPMediaGrouping.AlbumArtist
+		mediaQuery.groupingType = .AlbumArtist
 		if mediaQuery.collections.count > 0 {
 			let importAction = UIAlertAction(title: "Music Library", style: .Default, handler: { action in
 				self.performSegueWithIdentifier("ArtistPickerSegue", sender: self)
@@ -38,8 +38,7 @@ class AppPageController: UIPageViewController {
 		dataSource = self
 		delegate = self
 		let startingViewController = viewControllerAtIndex(0)
-		let viewControllers: NSArray = [startingViewController]
-		setViewControllers(viewControllers as [AnyObject], direction: UIPageViewControllerNavigationDirection.Forward, animated: false, completion: nil)
+		setViewControllers([startingViewController], direction: .Forward, animated: false, completion: nil)
 		
 		// Background gradient.
 		let gradient: CAGradientLayer = CAGradientLayer()
@@ -64,24 +63,45 @@ class AppPageController: UIPageViewController {
 	
 	func addSubscription () {
 		responseArtists = [NSDictionary]()
-		let actionSheetController: UIAlertController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
-		let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+		let actionSheetController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
+		let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 		actionSheetController.addAction(cancelAction)
-		let addAction: UIAlertAction = UIAlertAction(title: "Confirm", style: .Default) { action in
+		let addAction = UIAlertAction(title: "Confirm", style: .Default) { action in
 			let textField = actionSheetController.textFields![0] as! UITextField
 			if !textField.text.isEmpty {
-				let artist = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+				let artist = textField.text.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
 				let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&title[]=\(artist)"
 				self.keyword = artist
 				API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: postString, successHandler: { (response, data) in
 					if let HTTPResponse = response as? NSHTTPURLResponse {
 						println("HTTP status code: \(HTTPResponse.statusCode)")
 						if HTTPResponse.statusCode == 202 {
-							if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary, awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
-								for artist in awaitingArtists {
-									if let uniqueID = artist["iTunesUniqueID"] as? Int {
-										if AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
-											self.responseArtists.append(artist)
+							if let json = NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers, error: nil) as? NSDictionary {
+								if let pendingArtists: [NSDictionary] = json["pending"] as? [NSDictionary] {
+									for artist in pendingArtists {
+										if let uniqueID = artist["iTunesUniqueID"] as? Int {
+											if AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
+												self.responseArtists.append(artist)
+											}
+										}
+									}
+								}
+								if let successArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
+									for artist in successArtists {
+										let artistID = artist["artistId"] as! Int
+										let artistTitle = (artist["title"] as? String)!
+										let artistUniqueID = artist["iTunesUniqueID"] as! Int
+										if AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID) > 0 {
+											AppDB.sharedInstance.getArtists()
+											let startingViewController = self.viewControllerAtIndex(0)
+											if startingViewController.restorationIdentifier != "AlbumsController" {
+												self.setViewControllers([startingViewController], direction: .Reverse, animated: true, completion: { bool in
+													NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+												})
+											} else {
+												NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+											}
+											println("You've successfully subscribed to \(artistTitle).")
 										}
 									}
 								}
@@ -104,10 +124,7 @@ class AppPageController: UIPageViewController {
 					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
 						UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
 					}))
-					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { action in
-						self.dismissViewControllerAnimated(true, completion: nil)
-						return
-					}))
+					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 					self.presentViewController(alert, animated: true, completion: nil)
 				})
 			}
@@ -160,9 +177,8 @@ extension AppPageController: UIPageViewControllerDataSource {
 // MARK: - UIPageViewControllerDelegate
 extension AppPageController: UIPageViewControllerDelegate {
 	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [AnyObject], transitionCompleted completed: Bool) {
-		if pageViewController.viewControllers[0].restorationIdentifier == "AlbumsController" {
-			navigationController?.navigationBar.topItem?.title = "Music"
-		} else {
+		navigationController?.navigationBar.topItem?.title = "Music"
+		if pageViewController.viewControllers[0].restorationIdentifier == "SubscriptionsController" {
 			navigationController?.navigationBar.topItem?.title = "Subscriptions"
 		}
 	}

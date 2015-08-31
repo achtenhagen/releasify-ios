@@ -1,5 +1,5 @@
 
-// -- Releasify API -- //
+// -- Releasify API (v1.2) -- //
 
 import UIKit
 
@@ -24,7 +24,7 @@ class API {
                 if HTTPResponse.statusCode == 200 {
                     println("HTTP status code: \(HTTPResponse.statusCode)")
                     var error: NSError?
-                    if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? [NSDictionary] {
+                    if let json = NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers, error: &error) as? [NSDictionary] {
                         if error != nil {
                             errorHandler!(error: error)
                             return
@@ -62,7 +62,7 @@ class API {
                                 }
                             }
                         }
-                        AppDB.sharedInstance.getAlbums()
+                        AppDB.sharedInstance.getAlbums()						
 						NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
                         if let handler: Void = successHandler?(self.newItems) {
                             handler
@@ -86,14 +86,14 @@ class API {
                 println("HTTP status code: \(HTTPResponse.statusCode)")
                 if HTTPResponse.statusCode == 200 {
                     var error: NSError?
-                    if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? [NSDictionary] {
+                    if let json = NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers, error: &error) as? [NSDictionary] {
                         if error != nil {
                             errorHandler!(error: error)
 							return
                         }
                         for item in json {
                             let artistID = item["artistId"] as! Int
-                            let artistTitle = String(stringInterpolationSegment: item["title"]!)
+                            let artistTitle = (item["title"] as? String)!
                             let artistUniqueID = item["iTunesUniqueID"] as! Int
                             let newArtistID = AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
                         }
@@ -112,40 +112,14 @@ class API {
             errorHandler!(error: error)
         })
     }
-    
-    // -- Handles all network requests related to the Releasify API -- //
-    func sendRequest (url: String, postString: String, successHandler: ((response: NSURLResponse!, data: NSData!) -> Void), errorHandler: ((error: NSError!) -> Void)) {
-        let apiUrl = NSURL(string: url)
-        var appVersion = "Unknown"
-        if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {
-            appVersion = version
-        }
-        let systemVersion = UIDevice.currentDevice().systemVersion
-        let deviceName = UIDevice().deviceType.rawValue
-        let userAgent = "Releasify/\(appVersion) (iOS/\(systemVersion); \(deviceName))"
-        let request = NSMutableURLRequest(URL:apiUrl!)
-        request.HTTPMethod = "POST"
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
-        request.timeoutInterval = 300
-        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
-			UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-			if error != nil {
-                errorHandler(error: error)
-				return
-            }
-            successHandler(response: response, data: data)
-        })
-    }
 	
 	// -- Registers a new user with Releasify -- //
 	func register (allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void), errorHandler: ((error: NSError!) -> Void)) {
 		let UUID = NSUUID().UUIDString
 		var explicitValue = 1
-		if !allowExplicitContent { explicitValue = 0 }
+		if !allowExplicitContent {
+			explicitValue = 0
+		}
 		var postString = "uuid=\(UUID)&explicit=\(explicitValue)"
 		if deviceToken != nil {
 			postString += "&deviceToken=\(deviceToken!)"
@@ -156,7 +130,7 @@ class API {
 					errorHandler(error: NSError(domain: "Error: received HTTP status code \(HTTPResponse.statusCode) {sendRequest}", code: HTTPResponse.statusCode, userInfo: nil))
 				}
 				var error: NSError?
-				if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &error) as? NSDictionary {
+				if let json = NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers, error: &error) as? NSDictionary {
 					if error != nil {
 						errorHandler(error: error)
 					}
@@ -172,13 +146,42 @@ class API {
 			errorHandler(error: error)
 		})
 	}
+	
+	// -- Handles all network requests related to the Releasify API -- //
+	func sendRequest (url: String, postString: String, successHandler: ((response: NSURLResponse!, data: NSData!) -> Void), errorHandler: ((error: NSError!) -> Void)) {
+		let apiUrl = NSURL(string: url)
+		var appVersion = "Unknown"
+		if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {
+			appVersion = version
+		}
+		let systemVersion = UIDevice.currentDevice().systemVersion
+		let deviceName = UIDevice().deviceType.rawValue
+		let userAgent = "Releasify/\(appVersion) (iOS/\(systemVersion); \(deviceName))"
+		let request = NSMutableURLRequest(URL:apiUrl!)
+		request.HTTPMethod = "POST"
+		request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
+		request.timeoutInterval = 300
+		request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+		request.addValue("application/json", forHTTPHeaderField: "Accept")
+		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
+		UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+		NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
+			UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+			if error != nil {
+				errorHandler(error: error)
+				return
+			}
+			successHandler(response: response, data: data)
+		})
+	}
 }
 
 public enum APIURL: String {
-    case register = "https://releasify.me/api/ios/v1.1/register.php",
-    updateContent = "https://releasify.me/api/ios/v1.1/update_content.php",
-    confirmArtist = "https://releasify.me/api/ios/v1.1/confirm_artist.php",
-    submitArtist  = "https://releasify.me/api/ios/v1.1/submit_artist.php",
-    removeArtist  = "https://releasify.me/api/ios/v1.1/unsubscribe_artist.php",
-    updateArtists = "https://releasify.me/api/ios/v1.1/update_artists.php"
+    case register = "https://releasify.me/api/ios/v1.2/register.php",
+    updateContent = "https://releasify.me/api/ios/v1.2/update_content.php",
+    confirmArtist = "https://releasify.me/api/ios/v1.2/confirm_artist.php",
+    submitArtist  = "https://releasify.me/api/ios/v1.2/submit_artist.php",
+    removeArtist  = "https://releasify.me/api/ios/v1.2/unsubscribe_artist.php",
+    updateArtists = "https://releasify.me/api/ios/v1.2/update_artists.php",
+	lookupItem    = "https://releasify.me/api/ios/v1.2/item.php"
 }

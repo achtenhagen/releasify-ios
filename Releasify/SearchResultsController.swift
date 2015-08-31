@@ -14,15 +14,25 @@ class SearchResultsController: UIViewController {
     @IBOutlet weak var artistsTable: UITableView!
     
     @IBAction func closeView(sender: AnyObject) {
-        dismissViewControllerAnimated(true, completion: nil)
+		closeView()
     }
-    
-    override func viewDidLoad() {		
+	
+	func closeView () {
+		dismissViewControllerAnimated(true, completion: { bool in
+			NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+		})
+	}
+	
+    override func viewDidLoad() {
 		super.viewDidLoad()
 		
         artistsTable.registerNib(UINib(nibName: "SearchResultsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
+		if keyword == nil {
+			infoLabel.text = "Please choose from the list below."
+		} else {
+			infoLabel.text = "Search results for \"\(keyword)\"."
+		}
 		
-		infoLabel.text = "Search results for \"\(keyword)\"."
 		
 		// Navigation bar customization.
 		let image = UIImage(named: "navBar.png")
@@ -58,7 +68,7 @@ class SearchResultsController: UIViewController {
 				if let HTTPResponse = response as? NSHTTPURLResponse {
 					println("HTTP status code: \(HTTPResponse.statusCode)")
 					if HTTPResponse.statusCode == 200 {
-						UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
 							artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2
 						}, completion: { (state) in
 							let newArtistID = AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
@@ -68,15 +78,15 @@ class SearchResultsController: UIViewController {
 								println("Successfully subscribed.")
 							}
 							if self.artists.count == self.selectedArtists.count {
-								self.dismissViewControllerAnimated(true, completion: nil)
+								self.closeView()
 							}
 						})
 					}
 				}
 			},
 			errorHandler: { (error) in
-				var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-				alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+				var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: .Alert)
+				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
 			})
 		}
@@ -111,7 +121,9 @@ extension SearchResultsController: UITableViewDataSource {
 									if let cellToUpdate: ArtistCell = self.artistsTable.cellForRowAtIndexPath(indexPath) as? ArtistCell {
 										cellToUpdate.albumArtwork.alpha = 0
 										cellToUpdate.albumArtwork.image = image
-										UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { cellToUpdate.albumArtwork.alpha = 1.0 }, completion: nil)
+										UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
+											cellToUpdate.albumArtwork.alpha = 1.0
+										}, completion: nil)
 									}
 								})
 							}

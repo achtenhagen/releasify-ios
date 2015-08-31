@@ -5,8 +5,8 @@ class AlbumController: UICollectionViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let albumCellReuseIdentifier = "AlbumCell"
-	let albumCollectionHeaderViewReuseIdentifier = "albumCollectionHeader"
-	let albumCollectionFooterViewReuseIdentifier = "albumCollectionFooter"
+	let albumHeaderViewReuseIdentifier = "albumCollectionHeader"
+	let albumFooterViewReuseIdentifier = "albumCollectionFooter"
 	var albumCollectionLayout: UICollectionViewFlowLayout!
 	var selectedAlbum: Album!
 	var artwork = [String:UIImage]()
@@ -22,7 +22,7 @@ class AlbumController: UICollectionViewController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
 		
-		// Register CollectionView Cell Nib.
+		// Register CollectionView cell xib.
 		albumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
 		
 		// Add Edge insets to compensate for navigation bar.
@@ -48,7 +48,7 @@ class AlbumController: UICollectionViewController {
 			albumCollectionLayout.itemSize = CGSize(width: 172, height: 217)
 		// iPhone 6 Plus
 		case 414:
-			albumCollectionLayout.itemSize = CGSize(width: 192, height: 147)
+			albumCollectionLayout.itemSize = CGSize(width: 192, height: 237)
 		default:
 			albumCollectionLayout.itemSize = defaultItemSize
 		}
@@ -57,7 +57,7 @@ class AlbumController: UICollectionViewController {
 		
 		// Pull-to-refresh Control.
 		refreshControl = UIRefreshControl()
-		refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 		albumCollectionView.addSubview(refreshControl)
 		
@@ -108,7 +108,6 @@ class AlbumController: UICollectionViewController {
 	}
 	
 	override func viewWillAppear(animated: Bool) {
-		// AppDB.sharedInstance.getAlbums() -> move to different location !!!
 		albumCollectionView.reloadData()
 		albumCollectionView.scrollsToTop = true
 		if AppDB.sharedInstance.artists.count > 0 && AppDB.sharedInstance.albums[0]!.count == 0 && AppDB.sharedInstance.albums[1]!.count == 0 {
@@ -121,6 +120,7 @@ class AlbumController: UICollectionViewController {
 	}
 	
 	func refresh() {
+		self.refreshControl.beginRefreshing()
 		if AppDB.sharedInstance.artists.count == 0 {
 			API.sharedInstance.refreshSubscriptions(nil, errorHandler: nil)
 		}
@@ -133,13 +133,17 @@ class AlbumController: UICollectionViewController {
 		},
 		errorHandler: { (error) in
 			self.refreshControl.endRefreshing()
-			var alert = UIAlertController(title: "Oops! Something went wrong.", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+			var alert = UIAlertController(title: "Oops! Something went wrong.", message: error.localizedDescription, preferredStyle: .Alert)
 			if error.code == 403 {
-				alert.addAction(UIAlertAction(title: "Fix it!", style: UIAlertActionStyle.Default, handler: { action in
+				alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
 					// Todo: implement...
 				}))
+			} else {
+				alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+					UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+				}))
 			}
-			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+			alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 			self.presentViewController(alert, animated: true, completion: nil)
 		})
 	}
@@ -161,21 +165,30 @@ class AlbumController: UICollectionViewController {
 	
 	// Search the array in reverse for better performance.
 	func showAlbumFromRemoteNotification(notification: NSNotification) {
-		if let AlbumID = notification.userInfo?["aps"]?["AlbumID"]! as? Int {
+		UIApplication.sharedApplication().applicationIconBadgeNumber--
+		if let AlbumID = notification.userInfo?["aps"]?["AlbumID"] as? Int {
 			notificationAlbumID = AlbumID
 			for album in AppDB.sharedInstance.albums[0] as[Album]! {
 				if album.ID == notificationAlbumID {
 					selectedAlbum = album
 					break
 				}
-			}
-			if selectedAlbum.ID == notificationAlbumID {
+			}			
+			if selectedAlbum == nil {
+				refresh()
+				for album in AppDB.sharedInstance.albums[0] as[Album]! {
+					if album.ID == notificationAlbumID {
+						selectedAlbum = album
+						break
+					}
+				}
+			} else if selectedAlbum.ID == notificationAlbumID {
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
 		}
 	}
 	
-	// Determines current section ('upcoming' or 'recently released').
+	// Determines current section (`upcoming` or `recently released`).
 	// This function is only called when there is one section.
 	func sectionAtIndex () -> Int {
 		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
@@ -194,14 +207,21 @@ class AlbumController: UICollectionViewController {
 
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
+			return AppDB.sharedInstance.albums[sectionAtIndex()]!.count
+		}
         return AppDB.sharedInstance.albums[section]!.count
     }
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell
-		let album = AppDB.sharedInstance.albums[indexPath.section]![indexPath.row]
+		var section = indexPath.section
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
+			section = sectionAtIndex()
+		}
+		let album = AppDB.sharedInstance.albums[section]![indexPath.row]
 		cell.albumArtwork.image = UIImage()
-		let hash = album.artwork as String
+		let hash = album.artwork
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
 		let dbArtwork = AppDB.sharedInstance.checkArtwork(hash)
 		if dbArtwork {
@@ -243,15 +263,12 @@ class AlbumController: UICollectionViewController {
 		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(album.ID)
 		cell.albumTitle.text = album.title
 		cell.albumTitle.userInteractionEnabled = false
-		
+		cell.containerView.hidden = true
 		if timeDiff > 0 {
 			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)
 			cell.containerView.hidden = false
 			cell.progressBar.setProgress(album.getProgress(dateAdded), animated: false)
-		} else {
-			cell.containerView.hidden = true
 		}
-		
 		var weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
 		var days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
 		var hours   = component(Double(timeDiff),      v: 60 * 60) % 24
@@ -292,20 +309,28 @@ class AlbumController: UICollectionViewController {
 	
 	override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
 		if kind == UICollectionElementKindSectionHeader {
-			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: albumCollectionHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeader
-			if indexPath.section == 0 {
+			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: albumHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeader
+			var section = indexPath.section
+			if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
+				section = sectionAtIndex()
+			}
+			if section == 0 {
 				headerView.headerLabel.text = "UPCOMING"
 			} else {
 				headerView.headerLabel.text = "RECENTLY RELEASED"
 			}
 			return headerView
 		}
-		let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionFooter, withReuseIdentifier: albumCollectionFooterViewReuseIdentifier, forIndexPath: indexPath) as! UICollectionReusableView
+		let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionFooter, withReuseIdentifier: albumFooterViewReuseIdentifier, forIndexPath: indexPath) as! UICollectionReusableView
 		return footerView
 	}
 	
 	override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-		selectedAlbum = AppDB.sharedInstance.albums[indexPath.section]![indexPath.row]
+		var section = indexPath.section
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
+			section = sectionAtIndex()
+		}
+		selectedAlbum = AppDB.sharedInstance.albums[section]![indexPath.row]
 		performSegueWithIdentifier("AlbumViewSegue", sender: self)
 		return true
 	}
@@ -313,27 +338,32 @@ class AlbumController: UICollectionViewController {
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
 		var cellLocation = gesture.locationInView(albumCollectionView)
 		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
+		var section = indexPath!.section
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
+			section = sectionAtIndex()
+		}
 		
 		if indexPath?.row != nil {
 			if gesture.state == UIGestureRecognizerState.Began {
 				let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
 				let buyAction = UIAlertAction(title: "Open in iTunes Store", style: .Default, handler: { action in
-					let albumURL = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].iTunesURL
+					let albumURL = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesURL
 					if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
 						UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
 					}
 				})
 				controller.addAction(buyAction)
 				
-				let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
+				// Implement for final release.
+				/*let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
 					// Todo: implement...
 				})
-				controller.addAction(reportAction)
+				controller.addAction(reportAction)*/
 				
-				if AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
+				if AppDB.sharedInstance.albums[section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
 					let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
-						let albumID = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].ID
-						let albumArtwork = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].artwork
+						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
+						let albumArtwork = AppDB.sharedInstance.albums[section]![indexPath!.row].artwork
 						for n in UIApplication.sharedApplication().scheduledLocalNotifications {
 							var notification = n as! UILocalNotification
 							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
@@ -347,7 +377,7 @@ class AlbumController: UICollectionViewController {
 						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
 							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
 							}, completion: { (value: Bool) in
-								AppDB.sharedInstance.deleteAlbum(albumID, section: indexPath!.section, index: indexPath!.row)
+								AppDB.sharedInstance.deleteAlbum(albumID, section: section, index: indexPath!.row)
 								AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
 								self.albumCollectionView.reloadData()
 						})
@@ -355,7 +385,7 @@ class AlbumController: UICollectionViewController {
 					controller.addAction(deleteAction)
 				} else {
 					let hideAction = UIAlertAction(title: "Hide Album", style: .Destructive, handler: { action in
-						let albumID = AppDB.sharedInstance.albums[indexPath!.section]![indexPath!.row].ID
+						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
 						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
 							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
 							}, completion: { (value: Bool) in
@@ -381,9 +411,5 @@ class AlbumController: UICollectionViewController {
 			var detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
 		}
-	}
-	
-	func delay(delay:Double, closure: ()->()) {
-		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
 	}
 }

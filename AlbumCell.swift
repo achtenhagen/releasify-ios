@@ -13,8 +13,23 @@ class AlbumCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 		
+		var gradientLayerView: UIView!
+		
+		switch UIScreen.mainScreen().bounds.width {
+			// iPhone 4S, 5, 5C & 5S
+		case 320:
+			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
+			// iPhone 6
+		case 375:
+			gradientLayerView = UIView(frame: CGRectMake(0, 27, 172, containerView.frame.height))
+			// iPhone 6 Plus
+		case 414:
+			gradientLayerView = UIView(frame: CGRectMake(0, 47, 192, containerView.frame.height))
+		default:
+			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
+		}
+		
 		// Shadow overlay
-		var gradientLayerView: UIView = UIView(frame: CGRectMake(0, 0, containerView.bounds.width, containerView.bounds.height))
 		var gradient: CAGradientLayer = CAGradientLayer()
 		gradient.frame = gradientLayerView.bounds
 		gradient.colors = [AnyObject]()

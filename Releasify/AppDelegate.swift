@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
 			var storeAction = UIMutableUserNotificationAction()
             storeAction.identifier = "STORE_ACTION"
-			switch UIDevice.currentDevice().systemVersion.compare("8.4.0", options: NSStringCompareOptions.NumericSearch) {
+			switch UIDevice.currentDevice().systemVersion.compare("8.4.0", options: .NumericSearch) {
 			case .OrderedSame, .OrderedDescending:
 				storeAction.title = " MUSIC"
 			case .OrderedAscending:
@@ -114,9 +114,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         println("User allows notifications.")
         var deviceTokenString = deviceToken.description
-        deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-        deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-        deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+        deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: .LiteralSearch, range: nil)
+        deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: .LiteralSearch, range: nil)
+        deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: .LiteralSearch, range: nil)
 		self.userDeviceToken = deviceTokenString
         if userID == 0 {
 			API.sharedInstance.register(deviceToken: deviceTokenString, allowExplicitContent: allowExplicitContent, successHandler: { (userID, userUUID) in
@@ -188,9 +188,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
 		println("Received remote call to refresh.")
 		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
-			completionHandler(UIBackgroundFetchResult.Failed)
+			completionHandler(.Failed)
 		})
-		completionHandler(UIBackgroundFetchResult.NewData)
+		completionHandler(.NewData)
 	}
 	
 	// Remote Notification - Handler

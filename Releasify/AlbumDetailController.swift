@@ -23,6 +23,7 @@ class AlbumDetailController: UIViewController {
     @IBOutlet weak var thirdTimeLabel: UILabel!
 	@IBOutlet weak var progressBar: UIProgressView!
 	@IBOutlet var detailContainer: UIView!
+	@IBOutlet weak var detailContainerTopConstraint: NSLayoutConstraint!
 	
 	@IBAction func shareAlbum(sender: AnyObject) {
 		shareAlbum()
@@ -56,6 +57,17 @@ class AlbumDetailController: UIViewController {
         doubleTapGesture.numberOfTapsRequired = 2
         albumArtwork.addGestureRecognizer(doubleTapGesture)
 		
+		switch UIScreen.mainScreen().bounds.width {
+			// iPhone 6
+		case 375:
+			detailContainerTopConstraint.constant = 45
+			// iPhone 6 Plus
+		case 414:
+			detailContainerTopConstraint.constant = 60
+		default:
+			detailContainerTopConstraint.constant = 15
+		}
+		
 		if AppDB.sharedInstance.getArtwork(album.artwork + "_large") == nil {
 			let albumURL = "https://releasify.me/static/artwork/music/\(album.artwork)_large.jpg"
 			if let checkedURL = NSURL(string: albumURL) {
@@ -69,6 +81,7 @@ class AlbumDetailController: UIViewController {
 								let image = UIImage(data: data)
 								AppDB.sharedInstance.addArtwork(self.album.artwork + "_large", artwork: image!)
 								self.albumArtwork.image = image
+								println("Successfully downloaded HD artwork.")
 							}
 						}
 					}

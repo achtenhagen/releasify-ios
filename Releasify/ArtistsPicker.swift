@@ -82,7 +82,7 @@ class ArtistsPicker: UIViewController {
 		
 		// Navigation bar customization.
 		let image = UIImage(named: "navBar.png")
-		navBar.setBackgroundImage(image, forBarMetrics: UIBarMetrics.Default)
+		navBar.setBackgroundImage(image, forBarMetrics: .Default)
 		navBar.shadowImage = UIImage()
 		navBar.translucent = true
 		
@@ -169,7 +169,7 @@ class ArtistsPicker: UIViewController {
         activityView.layer.cornerRadius = 14
         activityView.layer.masksToBounds = true
         activityView.userInteractionEnabled = false
-        indicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
+        indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
         indicatorView.center = view.center
         view.addSubview(activityView)
         view.addSubview(indicatorView)
@@ -178,15 +178,14 @@ class ArtistsPicker: UIViewController {
 		
 		var batchesProcessed = 0
         for batch in batches {
-            println("Processing batch: \(batch)")
+			// println("Processing batch: \(batch)")
             let apiUrl = NSURL(string: APIURL.submitArtist.rawValue)
-			
 			API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: batch, successHandler: { (response, data) in
 				if let HTTPResponse = response as? NSHTTPURLResponse {
-					println("Received HTTP status code \(HTTPResponse.statusCode) {handleBatchProcessing}")
+					println("HTTP status code: \(HTTPResponse.statusCode)")
 					if HTTPResponse.statusCode == 202 {
-						if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as? NSDictionary {
-							if let awaitingArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
+						if let json = NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers, error: nil) as? NSDictionary {
+							if let awaitingArtists: [NSDictionary] = json["pending"] as? [NSDictionary] {
 								for artist in awaitingArtists {
 									if let uniqueID = artist["iTunesUniqueID"] as? Int {
 										if !contains(uniqueIDs, uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
@@ -212,13 +211,13 @@ class ArtistsPicker: UIViewController {
 							self.progressBar.setProgress(1.0, animated: true)
 							UIApplication.sharedApplication().networkActivityIndicatorVisible = false
 							if self.responseArtists.count > 0 {
+								self.progressBar.hidden = true
 								self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
 							} else {
 								self.dismissViewControllerAnimated(true, completion: nil)
 							}
 						}
 					} else {
-						// Invalid request
 						self.activityView.removeFromSuperview()
 						self.indicatorView.removeFromSuperview()
 					}
@@ -228,11 +227,8 @@ class ArtistsPicker: UIViewController {
 				self.progressBar.progressTintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
 				self.activityView.removeFromSuperview()
 				self.indicatorView.removeFromSuperview()
-				var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-				alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { action in
-					self.dismissViewControllerAnimated(true, completion: nil)
-					return
-				}))
+				var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: .Alert)
+				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
 			})
         }
@@ -264,7 +260,7 @@ class ArtistsPicker: UIViewController {
         filteredCheckedStates.removeAll(keepCapacity: true)
         if !searchText.isEmpty {
             let filter: String -> Bool = { artist in
-                let range = artist.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch)
+                let range = artist.rangeOfString(searchText, options: .CaseInsensitiveSearch)
                 return range != nil
             }
             for key in keys {

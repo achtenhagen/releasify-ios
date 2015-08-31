@@ -1,7 +1,7 @@
 
 import UIKit
 
-let documents = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as! NSString
+let documents = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, .UserDomainMask, true)[0] as! NSString
 let databasePath = documents.stringByAppendingPathComponent("db.sqlite")
 let artworkDirectoryPath = documents.stringByAppendingPathComponent("artwork")
 
@@ -31,17 +31,18 @@ final class AppDB {
 	init() {
 		if connected() {
 			var errMsg: UnsafeMutablePointer<Int8> = nil
-			let artistTableQuery = "CREATE TABLE IF NOT EXISTS artists (id INTEGER PRIMARY KEY, title VARCHAR(100) NOT NULL, iTunes_unique_id INTEGER, last_updated INTEGER, created INTEGER)"
-			sqlite3_exec(database, artistTableQuery, nil, nil, &errMsg)
 			
-			let albumTableQuery = "CREATE TABLE IF NOT EXISTS albums (id INTEGER PRIMARY KEY, title varchar(100) NOT NULL, release_date int(11) DEFAULT NULL, artwork varchar(250) DEFAULT NULL, explicit tinyint(1) NOT NULL DEFAULT '0', copyright varchar(250) DEFAULT NULL, iTunes_unique_id int(11) DEFAULT NULL, iTunes_url varchar(250) DEFAULT NULL, created int(11) NOT NULL)"
-			sqlite3_exec(database, albumTableQuery, nil, nil, &errMsg)
+			var query = "CREATE TABLE IF NOT EXISTS artists (id INTEGER PRIMARY KEY, title VARCHAR(100) NOT NULL, iTunes_unique_id INTEGER, last_updated INTEGER, created INTEGER)"
+			sqlite3_exec(database, query, nil, nil, &errMsg)
 			
-			let albumArtistTableQuery = "CREATE TABLE IF NOT EXISTS album_artists (id INTEGER PRIMARY KEY AUTOINCREMENT, album_id int(11) NOT NULL, artist_id int(11) NOT NULL, created int(11) NOT NULL)"
-			sqlite3_exec(database, albumArtistTableQuery, nil, nil, &errMsg)
+			query = "CREATE TABLE IF NOT EXISTS albums (id INTEGER PRIMARY KEY, title varchar(100) NOT NULL, release_date int(11) DEFAULT NULL, artwork varchar(250) DEFAULT NULL, explicit tinyint(1) NOT NULL DEFAULT '0', copyright varchar(250) DEFAULT NULL, iTunes_unique_id int(11) DEFAULT NULL, iTunes_url varchar(250) DEFAULT NULL, created int(11) NOT NULL)"
+			sqlite3_exec(database, query, nil, nil, &errMsg)
 			
-			let pendingArtistsTableQuery = "CREATE TABLE IF NOT EXISTS pending_artists (id INTEGER PRIMARY KEY, created int(11) NOT NULL)"
-			sqlite3_exec(database, pendingArtistsTableQuery, nil, nil, &errMsg)
+			query = "CREATE TABLE IF NOT EXISTS album_artists (id INTEGER PRIMARY KEY AUTOINCREMENT, album_id int(11) NOT NULL, artist_id int(11) NOT NULL, created int(11) NOT NULL)"
+			sqlite3_exec(database, query, nil, nil, &errMsg)
+			
+			query = "CREATE TABLE IF NOT EXISTS pending_artists (id INTEGER PRIMARY KEY, created int(11) NOT NULL)"
+			sqlite3_exec(database, query, nil, nil, &errMsg)
 			
 			if !NSFileManager.defaultManager().fileExistsAtPath(artworkDirectoryPath) {
 				NSFileManager.defaultManager().createDirectoryAtPath(artworkDirectoryPath, withIntermediateDirectories: false, attributes: nil, error: nil)
@@ -332,15 +333,19 @@ final class AppDB {
     }
     
 	// Todo: implement completion handler.
-	func deleteArtist (ID: Int, index: Int? = nil) {
+	func deleteArtist (ID: Int, index: Int? = nil, completion: ((albumIDs: [Int]) -> Void)) {
+		var albumIDs = [Int]()
 		if connected() {
-			var query = "SELECT artwork FROM albums WHERE id IN (SELECT album_id FROM album_artists WHERE artist_id = ?)"
+			var query = "SELECT id,artwork FROM albums WHERE id IN (SELECT album_id FROM album_artists WHERE artist_id = ?)"
 			var statement: COpaquePointer = nil
 			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 				sqlite3_bind_int(statement, 1, Int32(ID))
 				while sqlite3_step(statement) == SQLITE_ROW {
-					let artwork = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 0)))
+					let albumID = Int(sqlite3_column_int(statement, 0))
+					let artwork = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 1)))
+					albumIDs.append(albumID)
 					deleteArtwork(artwork!)
+					completion(albumIDs: albumIDs)
 				}
 				sqlite3_finalize(statement)
 			}

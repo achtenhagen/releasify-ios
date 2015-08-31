@@ -46,7 +46,7 @@ class SubscriptionController: UICollectionViewController {
 		
 		// Pull-to-refresh Control.
 		refreshControl = UIRefreshControl()
-		refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 		artistsCollectionView.addSubview(refreshControl)
 		
@@ -74,10 +74,14 @@ class SubscriptionController: UICollectionViewController {
         },
         errorHandler: { (error) in
 			self.refreshControl.endRefreshing()
-            var alert = UIAlertController(title: "Oops! Something went wrong.", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            var alert = UIAlertController(title: "Oops! Something went wrong.", message: error.localizedDescription, preferredStyle: .Alert)
 			if error.code == 403 {
-				alert.addAction(UIAlertAction(title: "Fix it!", style: UIAlertActionStyle.Default, handler: { action in
+				alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
 					// Todo: implement...
+				}))
+			} else {
+				alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+					UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
 				}))
 			}
 			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
@@ -103,7 +107,7 @@ class SubscriptionController: UICollectionViewController {
     
 	func deleteArtist (sender: UIButton) {
 		let rowIndex = sender.tag
-		var alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: UIAlertControllerStyle.Alert)
+		var alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
 		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
 		alert.addAction(UIAlertAction(title: "Confirm", style: .Destructive, handler: { action in
 			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(AppDB.sharedInstance.artists[rowIndex].iTunesUniqueID)"
@@ -111,17 +115,33 @@ class SubscriptionController: UICollectionViewController {
 				if let HTTPResponse = response as? NSHTTPURLResponse {
 					println("HTTP status code: \(HTTPResponse.statusCode)")
 					if HTTPResponse.statusCode == 204 {
+						AppDB.sharedInstance.getAlbums()
 						println("Successfully unsubscribed.")
 					}
 				}
 			},
 			errorHandler: { (error) in
 				AppDB.sharedInstance.addPendingArtist(AppDB.sharedInstance.artists[rowIndex].ID)
-				var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-				alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+				var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: .Alert)
+				alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+					UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+				}))
+				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
 			})
-			AppDB.sharedInstance.deleteArtist(AppDB.sharedInstance.artists[rowIndex].ID, index: rowIndex)
+			AppDB.sharedInstance.deleteArtist(AppDB.sharedInstance.artists[rowIndex].ID, index: rowIndex, completion: { (albumIDs) in
+				for ID in albumIDs {
+					for n in UIApplication.sharedApplication().scheduledLocalNotifications {
+						var notification = n as! UILocalNotification
+						let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+						let notificationID = userInfoCurrent["AlbumID"]! as! Int
+						if ID == notificationID {
+							println("Canceled location notification with ID: \(ID)")
+							UIApplication.sharedApplication().cancelLocalNotification(notification)
+						}
+					}
+				}
+			})
 			self.artistsCollectionView.reloadData()
 		}))
 		presentViewController(alert, animated: true, completion: nil)
