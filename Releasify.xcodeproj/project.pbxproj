@@ -62,7 +62,7 @@
 		514203761B83AE4A008891F9 /* AlbumCollectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AlbumCollectionHeader.swift; path = ../AlbumCollectionHeader.swift; sourceTree = "<group>"; };
 		5142037A1B840517008891F9 /* AppPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppPageController.swift; sourceTree = "<group>"; };
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		516AEE581ACAD61D0065B567 /* AppDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = AppDB.swift; sourceTree = "<group>"; tabWidth = 4; wrapsLines = 0; };
+		516AEE581ACAD61D0065B567 /* AppDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = AppDB.swift; sourceTree = "<group>"; tabWidth = 2; usesTabs = 0; wrapsLines = 0; };
 		517C23631B80DDE0002F1479 /* AlbumController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumController.swift; sourceTree = "<group>"; };
 		517C239D1B80F514002F1479 /* AlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AlbumCell.swift; path = ../AlbumCell.swift; sourceTree = "<group>"; };
 		517C239E1B80F514002F1479 /* AlbumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AlbumCell.xib; path = ../AlbumCell.xib; sourceTree = "<group>"; };
@@ -197,6 +197,7 @@
 				51F84DC11AB750A000D51E0C /* Sources */,
 				51F84DC21AB750A000D51E0C /* Frameworks */,
 				51F84DC31AB750A000D51E0C /* Resources */,
+				511CBD7B1B95DC30004E4A7F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -274,6 +275,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		511CBD7B1B95DC30004E4A7F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		51F84DC11AB750A000D51E0C /* Sources */ = {

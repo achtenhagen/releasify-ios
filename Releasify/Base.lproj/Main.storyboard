@@ -678,17 +678,22 @@
                         <constraints>
                             <constraint firstItem="7bC-V9-fkI" firstAttribute="top" secondItem="JAd-qz-y0g" secondAttribute="bottom" id="3K6-2X-QOf"/>
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="centerX" secondItem="4Kr-FR-TdC" secondAttribute="centerX" id="4Vn-T9-UWh"/>
-                            <constraint firstAttribute="centerX" secondItem="xZF-Te-Rk8" secondAttribute="centerX" id="6eL-7I-vhY"/>
                             <constraint firstItem="9Sx-F0-V6m" firstAttribute="centerX" secondItem="JAd-qz-y0g" secondAttribute="centerX" id="DCv-Xb-6zz"/>
+                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="19" id="NgA-c4-JUK"/>
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="top" secondItem="7bC-V9-fkI" secondAttribute="bottom" constant="15" id="P3B-gh-RQI"/>
-                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="19" id="QEo-a4-nph"/>
-                            <constraint firstItem="eTW-6L-1ZX" firstAttribute="top" secondItem="xZF-Te-Rk8" secondAttribute="bottom" constant="2" id="V1v-bf-qwu"/>
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="-1" id="Wqa-z8-z4K"/>
                             <constraint firstItem="9Sx-F0-V6m" firstAttribute="top" secondItem="MNM-1i-xyu" secondAttribute="bottom" id="aOf-vM-tGo"/>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="top" secondItem="MNM-1i-xyu" secondAttribute="bottom" constant="20" id="hJG-2n-Sdg"/>
+                            <constraint firstItem="eTW-6L-1ZX" firstAttribute="top" secondItem="xZF-Te-Rk8" secondAttribute="bottom" constant="2" id="ihk-ra-wQG">
+                                <variation key="heightClass=regular-widthClass=compact" constant="7"/>
+                            </constraint>
                             <constraint firstItem="7bC-V9-fkI" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="14" id="kiP-bn-5fC"/>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="centerX" secondItem="7bC-V9-fkI" secondAttribute="centerX" id="ln6-4X-KqE"/>
+                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="top" secondItem="QMI-Ez-bcW" secondAttribute="bottom" constant="60" id="oAi-3W-2S3">
+                                <variation key="heightClass=regular-widthClass=compact" constant="55"/>
+                            </constraint>
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="centerX" secondItem="7bC-V9-fkI" secondAttribute="centerX" id="q4n-dE-2Mh"/>
+                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="centerX" secondItem="QMI-Ez-bcW" secondAttribute="centerX" id="rcP-TQ-Lw0"/>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="4" id="wWL-9G-Fr7"/>
                             <constraint firstItem="9Sx-F0-V6m" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leading" id="zTh-Pp-cxE"/>
                         </constraints>
@@ -712,9 +717,10 @@
                                 <exclude reference="P3B-gh-RQI"/>
                                 <exclude reference="Wqa-z8-z4K"/>
                                 <exclude reference="q4n-dE-2Mh"/>
-                                <exclude reference="6eL-7I-vhY"/>
-                                <exclude reference="QEo-a4-nph"/>
-                                <exclude reference="V1v-bf-qwu"/>
+                                <exclude reference="NgA-c4-JUK"/>
+                                <exclude reference="oAi-3W-2S3"/>
+                                <exclude reference="rcP-TQ-Lw0"/>
+                                <exclude reference="ihk-ra-wQG"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -741,9 +747,10 @@
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="constraints">
                                 <include reference="P3B-gh-RQI"/>
-                                <include reference="6eL-7I-vhY"/>
-                                <include reference="QEo-a4-nph"/>
-                                <include reference="V1v-bf-qwu"/>
+                                <include reference="NgA-c4-JUK"/>
+                                <include reference="oAi-3W-2S3"/>
+                                <include reference="rcP-TQ-Lw0"/>
+                                <include reference="ihk-ra-wQG"/>
                             </mask>
                         </variation>
                     </view>
