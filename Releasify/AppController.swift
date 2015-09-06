@@ -1,34 +1,40 @@
+//
+//  AppController.swift
+//  Releasify
+//
+//  Created by Maurice Achtenhagen on 7/26/15.
+//  Copyright (c) 2015 Fioware Studios, LLC. All rights reserved.
+//
 
 import UIKit
 
 class AppController: UINavigationController {
-  
-  let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-  
-  @IBOutlet weak var navBar: UINavigationBar!
-  
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    
-    // Load data from database.
-    AppDB.sharedInstance.getArtists()
-    AppDB.sharedInstance.getAlbums()
-    
-    // Check for any pending artists waiting to be removed.
-    let pendingArtists = AppDB.sharedInstance.getPendingArtists()
-    
-    // Navigation bar customization.
-    let image = UIImage(named: "navBar.png")
-    navBar.setBackgroundImage(image, forBarMetrics: .Default)
-    navBar.shadowImage = UIImage()
-    navBar.translucent = true
-    
-    println("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications.count)")
-    println("App Controller loaded.")
-  }
-  
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-  }
-  
+	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	
+	@IBOutlet weak var navBar: UINavigationBar!
+	
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		
+		// Load data from database.
+		AppDB.sharedInstance.getArtists()
+		AppDB.sharedInstance.getAlbums()
+		
+		// Check for any pending artists waiting to be removed.
+		let pendingArtists = AppDB.sharedInstance.getPendingArtists()
+		
+		// Global UINavigationBar style.
+		var navBarAppearance = UINavigationBar.appearance()
+		let image = UIImage(named: "navBar.png")
+		navBarAppearance.setBackgroundImage(image, forBarMetrics: .Default)
+		navBarAppearance.shadowImage = UIImage()
+		navBarAppearance.translucent = true
+		
+		println("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications.count)")
+		println("App Controller loaded.")
+	}
+	
+	override func didReceiveMemoryWarning() {
+		super.didReceiveMemoryWarning()
+	}
 }

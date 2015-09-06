@@ -1,9 +1,15 @@
+//
+//  AppDelegate.swift
+//  Releasify
+//
+//  Created by Maurice Achtenhagen on 3/16/15.
+//  Copyright (c) 2015 Fioware Studios, LLC. All rights reserved.
+//
 
 import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-	
 	var window: UIWindow?
 	var userID = 0
 	var userDeviceToken: String?
@@ -15,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var localNotificationPayload: NSDictionary?
 	
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String)! + " (Clairvoyant)"
+		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String) + " (" + (NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as! String) + ")"
 		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")
 		
 		// Notification settings & categories (UPDATE: move to tutorial screen).
@@ -108,9 +114,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			}
 		}
 		
+		window = UIWindow(frame: UIScreen.mainScreen().bounds)
+		var storyboard = UIStoryboard(name: "Main", bundle: nil)
+		var initialViewController = storyboard.instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
+		window?.rootViewController = initialViewController
+		window?.makeKeyAndVisible()
+		
 		return true
 	}
-	
+
 	func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
 		println("User allows notifications.")
 		var deviceTokenString = deviceToken.description
@@ -150,7 +162,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	// Local Notification - Receiver (Called when app is in the foreground or the notification itself is tapped)
+	// MARK: - Local Notification - Receiver (Called when app is in the foreground or the notification itself is tapped)
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["AlbumID"] as! Int
@@ -165,7 +177,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	// Local Notification - Handler
+	// MARK: - Local Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
 			delay(0) {
@@ -184,7 +196,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		completionHandler()
 	}
 	
-	// Remote Notification - Receiver + Background fetch
+	// MARK: - Remote Notification - Receiver + Background fetch
 	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
 		println("Received remote call to refresh.")
 		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
@@ -193,14 +205,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		completionHandler(.NewData)
 	}
 	
-	// Remote Notification - Handler
+	// MARK: - Remote Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
 			println("app action pressed.")
 			delay(0) {
 				NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
 			}
-			
 		}
 		completionHandler()
 	}
@@ -230,5 +241,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func delay(delay:Double, closure:() -> Void) {
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
 	}
-	
 }
