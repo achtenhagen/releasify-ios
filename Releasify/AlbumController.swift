@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AlbumController: UICollectionViewController {
+class AlbumController: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let albumCellReuseIdentifier = "AlbumCell"
 	let albumHeaderViewReuseIdentifier = "albumCollectionHeader"
@@ -19,7 +19,7 @@ class AlbumController: UICollectionViewController {
 	var notificationAlbumID: Int!
 	var refreshControl: UIRefreshControl!
 	
-	@IBOutlet var albumCollectionView: UICollectionView!
+	@IBOutlet weak var albumCollectionView: UICollectionView!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -30,10 +30,6 @@ class AlbumController: UICollectionViewController {
 		
 		// Register CollectionView cell xib.
 		albumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
-		
-		// Add Edge insets to compensate for navigation bar.
-		albumCollectionView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
-		albumCollectionView.scrollIndicatorInsets = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
 		
 		// Collection view layout settings.
 		let defaultItemSize = CGSize(width: 145, height: 190)
@@ -126,7 +122,6 @@ class AlbumController: UICollectionViewController {
 	}
 	
 	func refresh() {
-		//self.refreshControl.beginRefreshing()
 		if AppDB.sharedInstance.artists.count == 0 {
 			API.sharedInstance.refreshSubscriptions(nil, errorHandler: nil)
 		}
@@ -200,7 +195,95 @@ class AlbumController: UICollectionViewController {
 		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}
 	
-	override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+	func component (x: Double, v: Double) -> Double {
+		return floor(x / v)
+	}
+	
+	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
+		var cellLocation = gesture.locationInView(albumCollectionView)
+		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
+		if indexPath == nil {
+			return
+		}
+		var section = indexPath!.section
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
+			section = sectionAtIndex()
+		}
+		
+		if indexPath?.row != nil {
+			if gesture.state == UIGestureRecognizerState.Began {
+				let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+				let buyAction = UIAlertAction(title: "Open in iTunes Store", style: .Default, handler: { action in
+					let albumURL = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesURL
+					if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
+						UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
+					}
+				})
+				controller.addAction(buyAction)
+				
+				// Implement for final release.
+				/*let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
+				// Todo: implement...
+				})
+				controller.addAction(reportAction)*/
+				
+				if AppDB.sharedInstance.albums[section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
+					let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
+						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
+						let albumArtwork = AppDB.sharedInstance.albums[section]![indexPath!.row].artwork
+						for n in UIApplication.sharedApplication().scheduledLocalNotifications {
+							var notification = n as! UILocalNotification
+							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+							let ID = userInfoCurrent["AlbumID"]! as! Int
+							if ID == albumID {
+								println("Canceled location notification with ID: \(ID)")
+								UIApplication.sharedApplication().cancelLocalNotification(notification)
+								break
+							}
+						}
+						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+							}, completion: { (value: Bool) in
+								AppDB.sharedInstance.deleteAlbum(albumID, section: section, index: indexPath!.row)
+								AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
+								self.albumCollectionView.reloadData()
+						})
+					})
+					controller.addAction(deleteAction)
+				} else {
+					let hideAction = UIAlertAction(title: "Hide Album", style: .Destructive, handler: { action in
+						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
+						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+							}, completion: { (value: Bool) in
+								// Todo: implement...
+						})
+					})
+					controller.addAction(hideAction)
+				}
+				
+				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+				controller.addAction(cancelAction)
+				presentViewController(controller, animated: true, completion: nil)
+			}
+		}
+	}
+	
+	override func didReceiveMemoryWarning() {
+		super.didReceiveMemoryWarning()
+	}
+	
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		if segue.identifier == "AlbumViewSegue" {
+			var detailController = segue.destinationViewController as! AlbumDetailController
+			detailController.album = selectedAlbum
+		}
+	}
+}
+
+// MARK: - UICollectionViewDataSource
+extension AlbumController: UICollectionViewDataSource {
+	func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
 		var sections = 0
 		if AppDB.sharedInstance.albums[0]!.count > 0 {
 			sections++
@@ -211,14 +294,14 @@ class AlbumController: UICollectionViewController {
 		return sections
 	}
 	
-	override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+	func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
 			return AppDB.sharedInstance.albums[sectionAtIndex()]!.count
 		}
 		return AppDB.sharedInstance.albums[section]!.count
 	}
 	
-	override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell
 		var section = indexPath.section
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
@@ -306,11 +389,7 @@ class AlbumController: UICollectionViewController {
 		return cell
 	}
 	
-	func component (x: Double, v: Double) -> Double {
-		return floor(x / v)
-	}
-	
-	override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
+	func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
 		if kind == UICollectionElementKindSectionHeader {
 			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: albumHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeader
 			var section = indexPath.section
@@ -327,8 +406,11 @@ class AlbumController: UICollectionViewController {
 		let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionFooter, withReuseIdentifier: albumFooterViewReuseIdentifier, forIndexPath: indexPath) as! UICollectionReusableView
 		return footerView
 	}
-	
-	override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+}
+
+// MARK: - UICollectionViewDelegate
+extension AlbumController: UICollectionViewDelegate {
+	func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
 		var section = indexPath.section
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
 			section = sectionAtIndex()
@@ -338,84 +420,11 @@ class AlbumController: UICollectionViewController {
 		return true
 	}
 	
-	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
-		var cellLocation = gesture.locationInView(albumCollectionView)
-		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
-		if indexPath == nil {
-			return
-		}
-		var section = indexPath!.section
-		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
-			section = sectionAtIndex()
-		}
-		
-		if indexPath?.row != nil {
-			if gesture.state == UIGestureRecognizerState.Began {
-				let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-				let buyAction = UIAlertAction(title: "Open in iTunes Store", style: .Default, handler: { action in
-					let albumURL = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesURL
-					if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
-						UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
-					}
-				})
-				controller.addAction(buyAction)
-				
-				// Implement for final release.
-				/*let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
-				// Todo: implement...
-				})
-				controller.addAction(reportAction)*/
-				
-				if AppDB.sharedInstance.albums[section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
-					let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
-						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
-						let albumArtwork = AppDB.sharedInstance.albums[section]![indexPath!.row].artwork
-						for n in UIApplication.sharedApplication().scheduledLocalNotifications {
-							var notification = n as! UILocalNotification
-							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-							let ID = userInfoCurrent["AlbumID"]! as! Int
-							if ID == albumID {
-								println("Canceled location notification with ID: \(ID)")
-								UIApplication.sharedApplication().cancelLocalNotification(notification)
-								break
-							}
-						}
-						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
-							}, completion: { (value: Bool) in
-								AppDB.sharedInstance.deleteAlbum(albumID, section: section, index: indexPath!.row)
-								AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
-								self.albumCollectionView.reloadData()
-						})
-					})
-					controller.addAction(deleteAction)
-				} else {
-					let hideAction = UIAlertAction(title: "Hide Album", style: .Destructive, handler: { action in
-						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
-						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
-							}, completion: { (value: Bool) in
-								// Todo: implement...
-						})
-					})
-					controller.addAction(hideAction)
-				}
-				
-				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-				controller.addAction(cancelAction)
-				presentViewController(controller, animated: true, completion: nil)
-			}
-		}
+	func collectionView(collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
+		albumCollectionView.cellForItemAtIndexPath(indexPath)?.alpha = 0.8
 	}
 	
-	override func didReceiveMemoryWarning() {
-		super.didReceiveMemoryWarning()
-	}
-	
-	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-		if segue.identifier == "AlbumViewSegue" {
-			var detailController = segue.destinationViewController as! AlbumDetailController
-			detailController.album = selectedAlbum
-		}
+	func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
+		albumCollectionView.cellForItemAtIndexPath(indexPath)?.alpha = 1.0
 	}
 }

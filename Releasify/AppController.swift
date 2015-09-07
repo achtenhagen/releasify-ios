@@ -26,9 +26,10 @@ class AppController: UINavigationController {
 		// Global UINavigationBar style.
 		var navBarAppearance = UINavigationBar.appearance()
 		let image = UIImage(named: "navBar.png")
-		navBarAppearance.setBackgroundImage(image, forBarMetrics: .Default)
+		navBarAppearance.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
+		navBarAppearance.setBackgroundImage(UIImage(named: "navBar.png"), forBarMetrics: .Default)
 		navBarAppearance.shadowImage = UIImage()
-		navBarAppearance.translucent = true
+		navBarAppearance.translucent = false
 		
 		println("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications.count)")
 		println("App Controller loaded.")

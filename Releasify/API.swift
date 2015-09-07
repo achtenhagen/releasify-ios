@@ -13,7 +13,7 @@ final class API {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var newItems: [Int]!
 	
-	// MARK: - Main method to update the user's content
+	// MARK: - Refresh Content
 	func refreshContent (successHandler: ([Int] -> Void)?, errorHandler: ((error: NSError!) -> Void)?) {
 		newItems = [Int]()
 		let explicit = NSUserDefaults.standardUserDefaults().boolForKey("allowExplicit")
@@ -81,7 +81,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Main method to update the user's subscriptions
+	// MARK: - Refresh Subscriptions
 	func refreshSubscriptions (successHandler: (() -> Void)?, errorHandler: ((error: NSError!) -> Void)?) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
 		sendRequest(APIURL.updateArtists.rawValue, postString: postString, successHandler: { (response, data) in
@@ -116,7 +116,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Registers a new user with Releasify
+	// MARK: - Device Registration
 	func register (allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void), errorHandler: ((error: NSError!) -> Void)) {
 		let UUID = NSUUID().UUIDString
 		var explicitValue = 1
@@ -150,7 +150,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Handles all network requests related to the Releasify API
+	// MARK: - Network Requests
 	func sendRequest (url: String, postString: String, successHandler: ((response: NSURLResponse!, data: NSData!) -> Void), errorHandler: ((error: NSError!) -> Void)) {
 		let apiUrl = NSURL(string: url)
 		var appVersion = "Unknown"

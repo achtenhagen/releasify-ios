@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AlbumDetailController: UIViewController {
+class AlbumDetailController: UIViewController {	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var album: Album!
 	var artist = String()

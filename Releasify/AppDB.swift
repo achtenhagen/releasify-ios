@@ -14,11 +14,6 @@ let artworkDirectoryPath = documents.stringByAppendingPathComponent("artwork")
 
 final class AppDB {
 	static let sharedInstance = AppDB()
-	struct Artist {
-		var ID: Int
-		var title: String
-		var iTunesUniqueID: Int
-	}
 	
 	var database: COpaquePointer = nil
 	var artists = [Artist]()
@@ -384,7 +379,6 @@ final class AppDB {
 					let artwork = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 1)))
 					albumIDs.append(albumID)
 					deleteArtwork(artwork!)
-					completion(albumIDs: albumIDs)
 				}
 				sqlite3_finalize(statement)
 			}
@@ -426,6 +420,7 @@ final class AppDB {
 				sqlite3_finalize(statement)
 			}
 			disconnect()
+			completion(albumIDs: albumIDs)
 		}
 	}
 	
@@ -491,7 +486,8 @@ final class AppDB {
 					let artistRow = sqlite3_column_text(statement, 1)
 					let artistTitle = String.fromCString(UnsafePointer<CChar>(artistRow))
 					let uniqueID = Int(sqlite3_column_int(statement, 2))
-					artists.append(Artist(ID: IDRow, title: artistTitle!, iTunesUniqueID: uniqueID))
+					let avatar = "artist_0" + String(arc4random_uniform(5) + 1)
+					artists.append(Artist(ID: IDRow, title: artistTitle!, iTunesUniqueID: uniqueID, avatar: avatar))
 				}
 				sqlite3_finalize(statement)
 			}

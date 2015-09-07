@@ -76,7 +76,6 @@ class ArtistsPicker: UIViewController {
 		if artists.count < keys.count {
 			for (index, section) in enumerate(keys) {
 				if artists.indexForKey(section as! String) == nil {
-					println("Empty section found: \(section)")
 					keys.removeObject(section)
 				}
 			}
@@ -285,12 +284,13 @@ class ArtistsPicker: UIViewController {
 		searchController = UISearchController(searchResultsController: nil)
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.searchResultsUpdater = self
-		searchController.searchBar.searchBarStyle = .Minimal
 		searchController.searchBar.placeholder = "Search Artists"
-		searchController.searchBar.tintColor = view.tintColor
+		searchController.searchBar.searchBarStyle = .Default
 		searchController.searchBar.barStyle = .Black
+		searchController.searchBar.tintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
 		searchController.searchBar.translucent = false
-		searchController.searchBar.backgroundColor = self.view.backgroundColor
+		searchController.searchBar.backgroundColor = UIColor.clearColor()
+		searchController.searchBar.backgroundImage = UIImage(named: "navBar")
 		searchController.searchBar.autocapitalizationType = .Words
 		searchController.searchBar.keyboardAppearance = .Dark
 		definesPresentationContext = true
@@ -304,7 +304,6 @@ class ArtistsPicker: UIViewController {
 
 // MARK: - UITableViewDataSource
 extension ArtistsPicker: UITableViewDataSource {
-	
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
 		if searchController.active {
 			return 1
@@ -383,17 +382,12 @@ extension ArtistsPicker: UITableViewDelegate {
 	}
 }
 
-// MARK: - UISearchControllerDelegate
-extension ArtistsPicker: UISearchControllerDelegate {
+// MARK: - UISearchResultsUpdating
+extension ArtistsPicker: UISearchResultsUpdating {
 	func updateSearchResultsForSearchController(searchController: UISearchController) {
 		filterContentForSearchText(searchController.searchBar.text)
 		artistsTable.reloadData()
 	}
-}
-
-// MARK: - UISearchResultsUpdating
-extension ArtistsPicker: UISearchResultsUpdating {
-	
 }
 
 // MARK: - String

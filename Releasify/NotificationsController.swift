@@ -9,6 +9,7 @@
 import UIKit
 
 class NotificationsController: UIViewController {
+	let notificationCellReuseIdentifier = "NotificationCell"
 	
 	@IBOutlet weak var clearBtn: UIBarButtonItem!
 	@IBOutlet weak var notificationsTable: UITableView!
@@ -20,7 +21,7 @@ class NotificationsController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		notificationsTable.registerNib(UINib(nibName: "NotificationCell", bundle: nil), forCellReuseIdentifier: "NotificationCell")
+		notificationsTable.registerNib(UINib(nibName: "NotificationCell", bundle: nil), forCellReuseIdentifier: notificationCellReuseIdentifier)
 		
 		// Background gradient.
 		let gradient: CAGradientLayer = CAGradientLayer()
@@ -47,7 +48,7 @@ extension NotificationsController: UITableViewDataSource {
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		var cell = notificationsTable.dequeueReusableCellWithIdentifier("NotificationCell") as! NotificationCell
+		var cell = notificationsTable.dequeueReusableCellWithIdentifier(notificationCellReuseIdentifier) as! NotificationCell
 		let notifications = UIApplication.sharedApplication().scheduledLocalNotifications
 		var notification = notifications[indexPath.row] as! UILocalNotification
 		let userInfoCurrent = notification.userInfo! as! [String:AnyObject]

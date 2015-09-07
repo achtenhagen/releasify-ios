@@ -22,6 +22,7 @@
 		513434FC1ADCA6EC00E5813B /* SourceSansPro-SemiboldIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 513434F01ADCA6EC00E5813B /* SourceSansPro-SemiboldIt.otf */; };
 		5142037B1B840517008891F9 /* AppPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5142037A1B840517008891F9 /* AppPageController.swift */; };
 		514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 514BCA761AED68CE00A1A18C /* Settings.bundle */; };
+		51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51557C591B9E073C00D980F9 /* Artist.swift */; };
 		516126581B9A7B6E00171A93 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516126561B9A7B6E00171A93 /* NotificationCell.swift */; };
 		516126591B9A7B6E00171A93 /* NotificationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 516126571B9A7B6E00171A93 /* NotificationCell.xib */; };
 		5161265C1B9A7D3000171A93 /* AlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5161265A1B9A7D3000171A93 /* AlbumCell.swift */; };
@@ -66,6 +67,7 @@
 		513434F01ADCA6EC00E5813B /* SourceSansPro-SemiboldIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-SemiboldIt.otf"; sourceTree = "<group>"; };
 		5142037A1B840517008891F9 /* AppPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppPageController.swift; sourceTree = "<group>"; };
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		51557C591B9E073C00D980F9 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		516126561B9A7B6E00171A93 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		516126571B9A7B6E00171A93 /* NotificationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationCell.xib; sourceTree = "<group>"; };
 		5161265A1B9A7D3000171A93 /* AlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCell.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				51F84DCA1AB750A000D51E0C /* AppDelegate.swift */,
 				517D6E0C1B6585DC002EC864 /* AppController.swift */,
 				5142037A1B840517008891F9 /* AppPageController.swift */,
+				51557C591B9E073C00D980F9 /* Artist.swift */,
 				51D8753D1B1B264B00353347 /* Album.swift */,
 				517C23631B80DDE0002F1479 /* AlbumController.swift */,
 				5161265B1B9A7D3000171A93 /* AlbumCollectionHeader.swift */,
@@ -316,6 +319,7 @@
 				517D6E0D1B6585DC002EC864 /* AppController.swift in Sources */,
 				511CBD7D1B960341004E4A7F /* ActivityView.swift in Sources */,
 				517C23641B80DDE0002F1479 /* AlbumController.swift in Sources */,
+				51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */,
 				516126581B9A7B6E00171A93 /* NotificationCell.swift in Sources */,
 				51F84DCD1AB750A000D51E0C /* SubscriptionController.swift in Sources */,
 				51B09ED61B112D23007F871C /* SearchResultCell.swift in Sources */,

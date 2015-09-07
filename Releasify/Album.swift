@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Fioware Studios, LLC. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 struct Album {
 	var ID: Int

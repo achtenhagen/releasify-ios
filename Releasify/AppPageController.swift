@@ -60,13 +60,13 @@ class AppPageController: UIPageViewController {
 		notificationsBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications.count > 0 ? true : false)
 	}
 	
-	func viewControllerAtIndex(index: Int) -> UICollectionViewController! {
+	func viewControllerAtIndex(index: Int) -> UIViewController! {
 		let storyBoard = UIStoryboard(name: "Main", bundle: nil)
 		if index == 0 {
-			return storyBoard.instantiateViewControllerWithIdentifier("AlbumsController") as! UICollectionViewController
+			return storyBoard.instantiateViewControllerWithIdentifier("AlbumsController") as! UIViewController
 		}
 		if index == 1 {
-			return storyBoard.instantiateViewControllerWithIdentifier("SubscriptionsController") as! UICollectionViewController
+			return storyBoard.instantiateViewControllerWithIdentifier("SubscriptionsController") as! UIViewController
 		}
 		return nil
 	}
