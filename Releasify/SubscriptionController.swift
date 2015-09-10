@@ -19,7 +19,6 @@ class SubscriptionController: UIViewController {
 	@IBOutlet weak var artistsCollectionView: UICollectionView!
 	@IBOutlet weak var searchBar: UISearchBar!
 
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -29,7 +28,6 @@ class SubscriptionController: UIViewController {
 		
 		filteredData = AppDB.sharedInstance.artists
 		
-		// Register CollectionView Cell Nib.
 		artistsCollectionView.registerNib(UINib(nibName: "SubscriptionCell", bundle: nil), forCellWithReuseIdentifier: subscriptionCellReuseIdentifier)
 		
 		// Collection view layout settings.
@@ -56,7 +54,6 @@ class SubscriptionController: UIViewController {
 		
 		artistsCollectionView.setCollectionViewLayout(artistCollectionLayout, animated: false)			
 		
-		// Pull-to-refresh Control.
 		refreshControl = UIRefreshControl()
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
@@ -111,31 +108,32 @@ class SubscriptionController: UIViewController {
 			API.sharedInstance.sendRequest(APIURL.removeArtist.rawValue, postString: postString, successHandler: { (response, data) in
 				if let HTTPResponse = response as? NSHTTPURLResponse {
 					println("HTTP status code: \(HTTPResponse.statusCode)")
-					if HTTPResponse.statusCode == 204 {					
-						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-							artistsCollectionView.cellForItemAtIndexPath(selectedIndexPath!)?.alpha = 0
-							}, completion: { (value: Bool) in
-								AppDB.sharedInstance.deleteArtist(self.filteredData[rowIndex].ID, index: rowIndex, completion: { (albumIDs) in
-									for ID in albumIDs {
-										for n in UIApplication.sharedApplication().scheduledLocalNotifications {
-											var notification = n as! UILocalNotification
-											let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-											let notificationID = userInfoCurrent["AlbumID"]! as! Int
-											if ID == notificationID {
-												println("Canceled location notification with ID: \(ID)")
-												UIApplication.sharedApplication().cancelLocalNotification(notification)
-											}
-										}
+					if HTTPResponse.statusCode == 204 {
+						AppDB.sharedInstance.deleteArtist(self.filteredData[rowIndex].ID, index: rowIndex, completion: { (albumIDs) in
+							for ID in albumIDs {
+								for n in UIApplication.sharedApplication().scheduledLocalNotifications {
+									var notification = n as! UILocalNotification
+									let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+									let notificationID = userInfoCurrent["AlbumID"]! as! Int
+									if ID == notificationID {
+										println("Canceled location notification with ID: \(ID)")
+										UIApplication.sharedApplication().cancelLocalNotification(notification)
 									}
-									AppDB.sharedInstance.getArtists()
-									AppDB.sharedInstance.getAlbums()
-									self.filteredData = AppDB.sharedInstance.artists
-									self.artistsCollectionView.reloadData()
-									self.searchBar.text = ""
-									self.searchBar.resignFirstResponder()
-									println("Successfully unsubscribed.")
-								})
+								}
+							}
+							AppDB.sharedInstance.getArtists()
+							AppDB.sharedInstance.getAlbums()
+							self.filteredData = AppDB.sharedInstance.artists
+							self.artistsCollectionView.reloadData()
+							self.searchBar.text = ""
+							self.searchBar.resignFirstResponder()
+							println("Successfully unsubscribed.")
 						})
+//						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+//							artistsCollectionView.cellForItemAtIndexPath(selectedIndexPath!)?.alpha = 0
+//							}, completion: { (value: Bool) in
+//								
+//						})
 					}
 				}
 				},
@@ -169,7 +167,7 @@ extension SubscriptionController: UICollectionViewDataSource {
 	}
 }
 
-//MARK: - UISearchBarDelegate
+// MARK: - UISearchBarDelegate
 extension SubscriptionController: UISearchBarDelegate {
 	func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
 		searchBar.showsCancelButton = true
@@ -187,13 +185,15 @@ extension SubscriptionController: UISearchBarDelegate {
 	}
 	
 	func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+		filteredData = AppDB.sharedInstance.artists
+		artistsCollectionView.reloadData()
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
 		searchBar.showsCancelButton = false
 	}
 }
 
-//MARK: - UICollectionViewDelegate
+// MARK: - UICollectionViewDelegate
 extension SubscriptionController: UICollectionViewDelegate {
 	func collectionView(collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
 		selectedIndexPath = indexPath

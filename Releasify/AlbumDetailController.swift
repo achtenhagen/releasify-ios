@@ -98,7 +98,6 @@ class AlbumDetailController: UIViewController {
 			albumArtwork.image = AppDB.sharedInstance.getArtwork(album.artwork + "_large")
 		}
 		
-		// Background gradient
 		let gradient: CAGradientLayer = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
 		gradient.locations = [0.0 , 1.0]

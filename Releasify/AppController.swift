@@ -25,7 +25,6 @@ class AppController: UINavigationController {
 		
 		// Global UINavigationBar style.
 		var navBarAppearance = UINavigationBar.appearance()
-		let image = UIImage(named: "navBar.png")
 		navBarAppearance.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
 		navBarAppearance.setBackgroundImage(UIImage(named: "navBar.png"), forBarMetrics: .Default)
 		navBarAppearance.shadowImage = UIImage()

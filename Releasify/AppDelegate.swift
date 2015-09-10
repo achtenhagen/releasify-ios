@@ -24,7 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String) + " (" + (NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as! String) + ")"
 		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")
 		
-		// Notification settings & categories (UPDATE: move to tutorial screen).
+		// MARK: - Notification settings
+		// Move to tutorial screen.
 		if application.respondsToSelector("registerUserNotificationSettings:") {
 			
 			var appAction = UIMutableUserNotificationAction()
@@ -67,6 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			application.registerForRemoteNotifications()
 		}
 		
+		// MARK: - App Reset
 		// In case the user has chosen to reset the app.
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
 		if reset {
@@ -82,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
 		}
 		
-		// Read in user settings.
+		// MARK: - App settings
 		userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") {
@@ -115,9 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		var storyboard = UIStoryboard(name: "Main", bundle: nil)
-		var initialViewController = storyboard.instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
-		window?.rootViewController = initialViewController
+		window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
 		window?.makeKeyAndVisible()
 		
 		return true
@@ -162,7 +162,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	// MARK: - Local Notification - Receiver (Called when app is in the foreground or the notification itself is tapped)
+	// MARK: - Local Notification - Receiver
+	// Called when app is in the foreground or the notification itself is tapped.
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["AlbumID"] as! Int

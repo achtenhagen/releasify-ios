@@ -180,11 +180,11 @@ final class API {
 }
 
 public enum APIURL: String {
-	case register = "https://releasify.me/api/ios/v1.2/register.php",
-	updateContent = "https://releasify.me/api/ios/v1.2/update_content.php",
-	confirmArtist = "https://releasify.me/api/ios/v1.2/confirm_artist.php",
-	submitArtist  = "https://releasify.me/api/ios/v1.2/submit_artist.php",
-	removeArtist  = "https://releasify.me/api/ios/v1.2/unsubscribe_artist.php",
-	updateArtists = "https://releasify.me/api/ios/v1.2/update_artists.php",
-	lookupItem    = "https://releasify.me/api/ios/v1.2/item.php"
+	case register = "https://releasify.me/api/ios/v2.0/register.php",
+	updateContent = "https://releasify.me/api/ios/v2.0/update_content.php",
+	confirmArtist = "https://releasify.me/api/ios/v2.0/confirm_artist.php",
+	submitArtist  = "https://releasify.me/api/ios/v2.0/submit_artist.php",
+	removeArtist  = "https://releasify.me/api/ios/v2.0/unsubscribe_artist.php",
+	updateArtists = "https://releasify.me/api/ios/v2.0/update_artists.php",
+	lookupItem    = "https://releasify.me/api/ios/v2.0/item.php"
 }

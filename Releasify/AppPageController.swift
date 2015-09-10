@@ -48,7 +48,6 @@ class AppPageController: UIPageViewController {
 		let startingViewController = viewControllerAtIndex(0)
 		setViewControllers([startingViewController], direction: .Forward, animated: false, completion: nil)
 		
-		// Background gradient.
 		let gradient: CAGradientLayer = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
 		gradient.locations = [0.0 , 1.0]
@@ -73,7 +72,8 @@ class AppPageController: UIPageViewController {
 	
 	func addSubscription () {
 		responseArtists = [NSDictionary]()
-		let actionSheetController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
+		var prompt = "Please enter the name of the artist you would like to be subscribed to."
+		let actionSheetController = UIAlertController(title: "New Subscription", message: prompt, preferredStyle: .Alert)
 		let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 		actionSheetController.addAction(cancelAction)
 		let addAction = UIAlertAction(title: "Confirm", style: .Default) { action in

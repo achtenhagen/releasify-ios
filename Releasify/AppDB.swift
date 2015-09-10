@@ -31,7 +31,6 @@ final class AppDB {
 	init() {
 		if connected() {
 			var errMsg: UnsafeMutablePointer<Int8> = nil
-			
 			var query = "CREATE TABLE IF NOT EXISTS artists (id INTEGER PRIMARY KEY, title VARCHAR(100) NOT NULL, iTunes_unique_id INTEGER, last_updated INTEGER, created INTEGER)"
 			sqlite3_exec(database, query, nil, nil, &errMsg)
 			
@@ -101,8 +100,8 @@ final class AppDB {
 			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 				sqlite3_bind_int(statement, 1, Int32(albumID))
 				if sqlite3_step(statement) == SQLITE_DONE {
-					if let s = section, i = index {
-						albums[s]?.removeAtIndex(i)
+					if let section = section, i = index {
+						albums[section]?.removeAtIndex(i)
 						println("Successfully removed album.")
 					}
 				} else {

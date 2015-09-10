@@ -28,7 +28,6 @@ class AlbumController: UIViewController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
 		
-		// Register CollectionView cell xib.
 		albumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
 		
 		// Collection view layout settings.
@@ -57,7 +56,6 @@ class AlbumController: UIViewController {
 		
 		albumCollectionView.setCollectionViewLayout(albumCollectionLayout, animated: false)
 		
-		// Pull-to-refresh Control.
 		refreshControl = UIRefreshControl()
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
@@ -190,7 +188,7 @@ class AlbumController: UIViewController {
 	}
 	
 	// Determines current section (`upcoming` or `recently released`).
-	// This function is only called when there is one section.
+	// This function is called when there is only one section.
 	func sectionAtIndex () -> Int {
 		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}

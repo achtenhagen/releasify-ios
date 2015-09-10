@@ -12,7 +12,6 @@ class NotificationCell: UITableViewCell {
 	
 	@IBOutlet weak var artwork: UIImageView!
 	@IBOutlet weak var notificationBody: UILabel!
-
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
@@ -24,5 +23,4 @@ class NotificationCell: UITableViewCell {
 		super.setSelected(selected, animated: animated)
 		
 	}
-	
 }
