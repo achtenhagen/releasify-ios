@@ -37,12 +37,12 @@ class AlbumCell: UICollectionViewCell {
 		}
 		
 		// Shadow overlay
-		var gradient: CAGradientLayer = CAGradientLayer()
+		let gradient = CAGradientLayer()
 		gradient.frame = gradientLayerView.bounds
 		gradient.colors = [AnyObject]()
-		gradient.colors.append(UIColor.clearColor().CGColor)
+		gradient.colors!.append(UIColor.clearColor().CGColor)
 		for var i = 0.0; i < 0.85; i += 0.05 {
-			gradient.colors.append(UIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(i)).CGColor)
+			gradient.colors!.append(UIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(i)).CGColor)
 		}
 		gradientLayerView.layer.insertSublayer(gradient, atIndex: 0)
 		containerView.addSubview(gradientLayerView)

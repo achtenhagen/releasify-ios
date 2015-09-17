@@ -63,28 +63,42 @@ class SearchResultsController: UIViewController {
 		let artistTitle = (artists[sender.tag]["title"] as? String)!
 		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
 			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
-			API.sharedInstance.sendRequest(APIURL.confirmArtist.rawValue, postString: postString, successHandler: { (response, data) in
-				if let HTTPResponse = response as? NSHTTPURLResponse {
-					println("HTTP status code: \(HTTPResponse.statusCode)")
-					if HTTPResponse.statusCode == 200 {
-						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
-							artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2
-							}, completion: { (state) in
-								let newArtistID = AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
-								AppDB.sharedInstance.getArtists()
-								self.selectedArtists.addObject(artistUniqueID)
-								if newArtistID > 0 {
-									println("Successfully subscribed.")
-								}
-								if self.artists.count == self.selectedArtists.count {
-									self.closeView()
-								}
-						})
-					}
+			API.sharedInstance.sendRequest(API.URL.confirmArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
+				if statusCode == 200 {
+					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
+						artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2
+						}, completion: { (state) in
+							let newArtistID = AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
+							AppDB.sharedInstance.getArtists()
+							self.selectedArtists.addObject(artistUniqueID)
+							if newArtistID > 0 {
+								print("Successfully subscribed.")
+							}
+							if self.artists.count == self.selectedArtists.count {
+								self.closeView()
+							}
+					})
 				}
 				},
 				errorHandler: { (error) in
-					var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: .Alert)
+					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+					switch (error) {
+					case API.Error.BadRequest:
+						alert.title = "400 Bad Request"
+						alert.message = "Missing Parameter."
+					case API.Error.Unauthorized:
+						alert.title = "403 Forbidden"
+						alert.message = "Invalid Credentials."
+						alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
+							// Request new ID from server.
+						}))
+					case API.Error.InternalServerError:
+						alert.title = "500 Internal Server Error"
+						alert.message = "An error on our end occured."
+					default:
+						alert.title = "Oops! Something went wrong."
+						alert.message = "An unknown error occured."
+					}
 					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 					self.presentViewController(alert, animated: true, completion: nil)
 			})
@@ -95,7 +109,7 @@ class SearchResultsController: UIViewController {
 // MARK: - UITableViewDataSource
 extension SearchResultsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		var cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! SearchResultCell
+		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! SearchResultCell
 		let albums = (artists[indexPath.section]["albums"] as? [NSDictionary])!
 		if albums.count > 0 {
 			cell.albumTitle.text = albums[indexPath.row]["title"] as? String
@@ -112,9 +126,9 @@ extension SearchResultsController: UITableViewDataSource {
 							return
 						}
 						if let HTTPResponse = response as? NSHTTPURLResponse {
-							println("HTTP status code: \(HTTPResponse.statusCode)")
+							print("HTTP status code: \(HTTPResponse.statusCode)")
 							if HTTPResponse.statusCode == 200 {
-								let image = UIImage(data: data)
+								let image = UIImage(data: data!)
 								self.artwork[albumURL] = image
 								dispatch_async(dispatch_get_main_queue(), {
 									if let cellToUpdate = self.artistsTable.cellForRowAtIndexPath(indexPath) as? SearchResultCell {
@@ -132,7 +146,7 @@ extension SearchResultsController: UITableViewDataSource {
 				}
 			}
 		}
-		var bgColorView = UIView()
+		let bgColorView = UIView()
 		bgColorView.backgroundColor = UIColor.clearColor()
 		cell.selectedBackgroundView = bgColorView
 		return cell

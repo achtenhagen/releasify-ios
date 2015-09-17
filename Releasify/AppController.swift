@@ -21,17 +21,17 @@ class AppController: UINavigationController {
 		AppDB.sharedInstance.getAlbums()
 		
 		// Check for any pending artists waiting to be removed.
-		let pendingArtists = AppDB.sharedInstance.getPendingArtists()
+		// let pendingArtists = AppDB.sharedInstance.getPendingArtists()
 		
 		// Global UINavigationBar style.
-		var navBarAppearance = UINavigationBar.appearance()
+		let navBarAppearance = UINavigationBar.appearance()
 		navBarAppearance.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
 		navBarAppearance.setBackgroundImage(UIImage(named: "navBar.png"), forBarMetrics: .Default)
 		navBarAppearance.shadowImage = UIImage()
 		navBarAppearance.translucent = false
 		
-		println("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications.count)")
-		println("App Controller loaded.")
+		print("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications!.count)")
+		print("App Controller loaded.")
 	}
 	
 	override func didReceiveMemoryWarning() {

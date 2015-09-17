@@ -100,9 +100,9 @@ class AlbumController: UIViewController {
 		*/
 		
 		// Refresh the App's content only once per day.
-		// println(appDelegate.lastUpdated)
+		// print(appDelegate.lastUpdated)
 		if appDelegate.userID > 0 && (Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400) {
-			println("Starting daily refresh.")
+			print("Starting daily refresh.")
 			refresh()
 		}
 	}
@@ -121,26 +121,35 @@ class AlbumController: UIViewController {
 	
 	func refresh() {
 		if AppDB.sharedInstance.artists.count == 0 {
-			API.sharedInstance.refreshSubscriptions(nil, errorHandler: nil)
+			// API.sharedInstance.refreshSubscriptions(nil, errorHandler: nil)
 		}
 		API.sharedInstance.refreshContent({ (newItems) in
 			self.albumCollectionView.reloadData()
 			self.refreshControl.endRefreshing()
 			if newItems.count > 0 {
-				// Show updates...
+				// Todo: Show updates...
+				self.navigationItem.leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications?.count > 0 ? true : false
 			}
 			},
 			errorHandler: { (error) in
 				self.refreshControl.endRefreshing()
-				var alert = UIAlertController(title: "Oops! Something went wrong.", message: error.localizedDescription, preferredStyle: .Alert)
-				if error.code == 403 {
+				let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+				switch (error) {
+				case API.Error.BadRequest:
+					alert.title = "400 Bad Request"
+					alert.message = "Missing Parameter."
+				case API.Error.Unauthorized:
+					alert.title = "403 Forbidden"
+					alert.message = "Invalid Credentials."
 					alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
-						// Todo: implement...
+						// Request new ID from server.
 					}))
-				} else {
-					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
-						UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-					}))
+				case API.Error.InternalServerError:
+					alert.title = "500 Internal Server Error"
+					alert.message = "An error on our end occured."
+				default:
+					alert.title = "Oops! Something went wrong."
+					alert.message = "An unknown error occured."
 				}
 				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
@@ -198,7 +207,7 @@ class AlbumController: UIViewController {
 	}
 	
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
-		var cellLocation = gesture.locationInView(albumCollectionView)
+		let cellLocation = gesture.locationInView(albumCollectionView)
 		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
 		if indexPath == nil {
 			return
@@ -229,12 +238,11 @@ class AlbumController: UIViewController {
 					let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
 						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
 						let albumArtwork = AppDB.sharedInstance.albums[section]![indexPath!.row].artwork
-						for n in UIApplication.sharedApplication().scheduledLocalNotifications {
-							var notification = n as! UILocalNotification
+						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
 							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
 							let ID = userInfoCurrent["AlbumID"]! as! Int
 							if ID == albumID {
-								println("Canceled location notification with ID: \(ID)")
+								print("Canceled location notification with ID: \(ID)")
 								UIApplication.sharedApplication().cancelLocalNotification(notification)
 								break
 							}
@@ -250,7 +258,7 @@ class AlbumController: UIViewController {
 					controller.addAction(deleteAction)
 				} else {
 					let hideAction = UIAlertAction(title: "Hide Album", style: .Destructive, handler: { action in
-						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
+						// let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
 						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
 							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
 							}, completion: { (value: Bool) in
@@ -273,7 +281,7 @@ class AlbumController: UIViewController {
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "AlbumViewSegue" {
-			var detailController = segue.destinationViewController as! AlbumDetailController
+			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
 		}
 	}
@@ -326,17 +334,17 @@ extension AlbumController: UICollectionViewDataSource {
 						return
 					}
 					if let HTTPResponse = response as? NSHTTPURLResponse {
-						println("HTTP status code: \(HTTPResponse.statusCode)")
+						print("HTTP status code: \(HTTPResponse.statusCode)")
 						if HTTPResponse.statusCode == 200 {
-							let image = UIImage(data: data)
+							let image = UIImage(data: data!)
 							self.artwork[hash] = image
 							dispatch_async(dispatch_get_main_queue(), {
-								if let cellToUpdate = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
+								if let cell = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
 									AppDB.sharedInstance.addArtwork(hash, artwork: image!)
 									cell.albumArtwork.image = image
 									UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
 										cell.albumArtwork.alpha = 1.0
-										}, completion: nil)
+									}, completion: nil)
 								}
 							})
 						}
@@ -354,11 +362,11 @@ extension AlbumController: UICollectionViewDataSource {
 			cell.containerView.hidden = false
 			cell.progressBar.setProgress(album.getProgress(dateAdded), animated: false)
 		}
-		var weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
-		var days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
-		var hours   = component(Double(timeDiff),      v: 60 * 60) % 24
-		var minutes = component(Double(timeDiff),           v: 60) % 60
-		var seconds = component(Double(timeDiff),            v: 1) % 60
+		let weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
+		let days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
+		let hours   = component(Double(timeDiff),      v: 60 * 60) % 24
+		let minutes = component(Double(timeDiff),           v: 60) % 60
+		let seconds = component(Double(timeDiff),            v: 1) % 60
 		
 		if Int(weeks) > 0 {
 			cell.timeLeft.text = "\(Int(weeks)) weeks"
@@ -401,7 +409,7 @@ extension AlbumController: UICollectionViewDataSource {
 			}
 			return headerView
 		}
-		let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionFooter, withReuseIdentifier: albumFooterViewReuseIdentifier, forIndexPath: indexPath) as! UICollectionReusableView
+		let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionFooter, withReuseIdentifier: albumFooterViewReuseIdentifier, forIndexPath: indexPath) 
 		return footerView
 	}
 }
@@ -410,9 +418,7 @@ extension AlbumController: UICollectionViewDataSource {
 extension AlbumController: UICollectionViewDelegate {
 	func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
 		var section = indexPath.section
-		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
-			section = sectionAtIndex()
-		}
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
 		selectedAlbum = AppDB.sharedInstance.albums[section]![indexPath.row]
 		performSegueWithIdentifier("AlbumViewSegue", sender: self)
 		return true

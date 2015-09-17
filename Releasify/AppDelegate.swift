@@ -28,14 +28,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Move to tutorial screen.
 		if application.respondsToSelector("registerUserNotificationSettings:") {
 			
-			var appAction = UIMutableUserNotificationAction()
+			let appAction = UIMutableUserNotificationAction()
 			appAction.identifier = "APP_ACTION"
 			appAction.title = "View in App"
 			appAction.activationMode = .Foreground
 			appAction.destructive = false
 			appAction.authenticationRequired = false
 			
-			var storeAction = UIMutableUserNotificationAction()
+			let storeAction = UIMutableUserNotificationAction()
 			storeAction.identifier = "STORE_ACTION"
 			switch UIDevice.currentDevice().systemVersion.compare("8.4.0", options: .NumericSearch) {
 			case .OrderedSame, .OrderedDescending:
@@ -47,9 +47,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			storeAction.destructive = false
 			storeAction.authenticationRequired = false
 			
-			var defaultCategory = UIMutableUserNotificationCategory()
+			let defaultCategory = UIMutableUserNotificationCategory()
 			defaultCategory.identifier = "DEFAULT_CATEGORY"
-			var remoteCategory = UIMutableUserNotificationCategory()
+			let remoteCategory = UIMutableUserNotificationCategory()
 			remoteCategory.identifier = "REMOTE_CATEGORY"
 			
 			let defaultActions = [appAction, storeAction]
@@ -61,18 +61,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			remoteCategory.setActions(remoteActions, forContext: .Minimal)
 			
 			let categories = NSSet(objects: defaultCategory, remoteCategory)
-			let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
-			let settings = UIUserNotificationSettings(forTypes: types, categories: categories as Set<NSObject>)
+			let types: UIUserNotificationType = ([.Alert, .Badge, .Sound])
+			let settings = UIUserNotificationSettings(forTypes: types, categories: categories as? Set<UIUserNotificationCategory>)
 			
 			application.registerUserNotificationSettings(settings)
 			application.registerForRemoteNotifications()
 		}
 		
-		// MARK: - App Reset
-		// In case the user has chosen to reset the app.
+		// MARK: - App reset setting
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
 		if reset {
-			println("The application will be reset to default settings.")
+			print("The application will be reset to default settings.")
 			application.cancelAllLocalNotifications()
 			AppDB.sharedInstance.truncate("artists")
 			AppDB.sharedInstance.truncate("pending_artists")
@@ -87,18 +86,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// MARK: - App settings
 		userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
-		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") {
-			userDeviceToken = token
-		}
-		if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("uuid") {
-			userUUID = uuid
-		}
+		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
+		if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("uuid") { userUUID = uuid }
 		if let explicit = NSUserDefaults.standardUserDefaults().valueForKey("allowExplicit") as? Bool {
 			allowExplicitContent = explicit
 			if allowExplicitContent {
-				println("User allows explicit content.")
+				print("User allows explicit content.")
 			} else {
-				println("User does not allow explicit content.")
+				print("User does not allow explicit content.")
 			}
 		} else {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
@@ -106,13 +101,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		// Check for notification payload when app is launched.
 		if let launchOpts = launchOptions {
-			if let remotePayload = launchOpts[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
-				remoteNotificationPayload = remotePayload
-			}
+			if let remotePayload = launchOpts[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary { remoteNotificationPayload = remotePayload }
 			if let localNotification = launchOpts[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
-				if let userInfo = localNotification.userInfo {
-					localNotificationPayload = userInfo
-				}
+				if let userInfo = localNotification.userInfo { localNotificationPayload = userInfo }
 			}
 		}
 		
@@ -124,40 +115,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 
 	func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-		println("User allows notifications.")
+		print("User allows notifications.")
 		var deviceTokenString = deviceToken.description
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: .LiteralSearch, range: nil)
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: .LiteralSearch, range: nil)
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: .LiteralSearch, range: nil)
 		self.userDeviceToken = deviceTokenString
 		if userID == 0 {
-			API.sharedInstance.register(deviceToken: deviceTokenString, allowExplicitContent: allowExplicitContent, successHandler: { (userID, userUUID) in
+			API.sharedInstance.register(deviceToken: deviceTokenString, allowExplicitContent, successHandler: { (userID, userUUID) in
 				self.userID = userID!
 				self.userUUID = userUUID
 				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
 				NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
 				NSUserDefaults.standardUserDefaults().setValue(self.userDeviceToken, forKey: "deviceToken")
-				println("UUID was set successfully.")
-				println("APNS Device token was set successfully.")
+				print("UUID was set successfully.")
+				print("APNS Device token was set successfully.")
 				},
 				errorHandler: { (error) in
-					println("Error: \(error.localizedDescription)")
+					// print("Error: \(error.localizedDescription)")
 			})
 		}
 	}
 	
 	func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-		println("Error: \(error.localizedDescription)")
+		print("Error: \(error.localizedDescription)")
 		if userID == 0 {
-			API.sharedInstance.register(allowExplicitContent: allowExplicitContent, successHandler: { (userID, userUUID) in
+			API.sharedInstance.register(allowExplicitContent, successHandler: { (userID, userUUID) in
 				self.userID = userID!
 				self.userUUID = userUUID
 				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
 				NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
-				println("UUID was set successfully.")
+				print("UUID was set successfully.")
 				},
 				errorHandler: { (error) in
-					println("Error: \(error.localizedDescription)")
+					// print("Error: \(error.localizedDescription)")
 			})
 		}
 	}
@@ -167,12 +158,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["AlbumID"] as! Int
-			println("Received a local notification with ID: \(notificationAlbumID).")
+			print("Received a local notification with ID: \(notificationAlbumID).")
 			// Called when the notification is tapped if the app is inactive or in the background.
 			if application.applicationState == .Inactive || application.applicationState == .Background {
 				NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: userInfo)
 			} else {
-				// If the app is active, refresh the contents.
+				// If the app is active, refresh its content.
 				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: userInfo)
 			}
 		}
@@ -199,7 +190,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	// MARK: - Remote Notification - Receiver + Background fetch
 	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-		println("Received remote call to refresh.")
+		print("Received remote call to refresh.")
 		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
 			completionHandler(.Failed)
 		})
@@ -209,7 +200,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// MARK: - Remote Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
-			println("app action pressed.")
+			print("app action pressed.")
 			delay(0) {
 				NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
 			}
@@ -232,6 +223,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	func applicationDidBecomeActive(application: UIApplication) {
+		// Move to Album Controller
 		application.applicationIconBadgeNumber = 0
 	}
 	

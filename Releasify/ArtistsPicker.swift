@@ -36,7 +36,7 @@ class ArtistsPicker: UIViewController {
 		} else {
 			filteredCheckedStates.removeAll(keepCapacity: true)
 			for (key, values) in checkedStates {
-				for (section, state) in values {
+				for (section, _) in values {
 					checkedStates[key]?.updateValue(false, forKey: section)
 				}
 			}
@@ -57,8 +57,8 @@ class ArtistsPicker: UIViewController {
 		
 		var previousArtist = ""
 		for artist in collection {
-			let representativeItem: MPMediaItem = artist.representativeItem
-			let artistName = (representativeItem.valueForProperty(MPMediaItemPropertyAlbumArtist) as AnyObject) as! String
+			//let representativeItem: MPMediaItem = artist.representativeItem as MPMediaItem
+			let artistName = (artist.representativeItem!!.valueForProperty(MPMediaItemPropertyAlbumArtist)) as! String
 			if artistName != previousArtist && !blacklist.containsObject(artistName) {
 				let currentSection = getSectionForArtistName(artistName)
 				if artists[currentSection.section] == nil {
@@ -74,7 +74,7 @@ class ArtistsPicker: UIViewController {
 		}
 		
 		if artists.count < keys.count {
-			for (index, section) in enumerate(keys) {
+			for (_, section) in keys.enumerate() {
 				if artists.indexForKey(section as! String) == nil {
 					keys.removeObject(section)
 				}
@@ -99,7 +99,7 @@ class ArtistsPicker: UIViewController {
 		filteredArtists.removeAll(keepCapacity: true)
 		filteredCheckedStates.removeAll(keepCapacity: true)
 		for (section, values) in checkedStates {
-			for (artist, state) in values {
+			for (artist, _) in values {
 				checkedStates[section]?.updateValue(false, forKey: artist)
 			}
 		}
@@ -116,7 +116,6 @@ class ArtistsPicker: UIViewController {
 	}
 	
 	func handleBatchProcessing () {
-		var responseData = []
 		var batches = [String]()
 		var uniqueIDs = [Int]()
 		var totalItems = 0
@@ -150,12 +149,10 @@ class ArtistsPicker: UIViewController {
 		progressBar.hidden = false
 		progressBar.progress = 0
 		
-		if !currentBatch.isEmpty {
-			batches.append(postString.stringByAppendingString(currentBatch))
-		}
+		if !currentBatch.isEmpty { batches.append(postString.stringByAppendingString(currentBatch)) }
 		
-		println("Total items: \(totalItems)")
-		println("Total batches: \(batches.count)")
+		print("Total items: \(totalItems)")
+		print("Total batches: \(batches.count)")
 		
 		view.userInteractionEnabled = false
 		activityView = UIView(frame: CGRectMake(0, 0, 90, 90))
@@ -173,55 +170,71 @@ class ArtistsPicker: UIViewController {
 		
 		var batchesProcessed = 0
 		for batch in batches {
-			let apiUrl = NSURL(string: APIURL.submitArtist.rawValue)
-			API.sharedInstance.sendRequest(APIURL.submitArtist.rawValue, postString: batch, successHandler: { (response, data) in
-				if let HTTPResponse = response as? NSHTTPURLResponse {
-					println("HTTP status code: \(HTTPResponse.statusCode)")
-					if HTTPResponse.statusCode == 202 {
-						if let json = NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers, error: nil) as? NSDictionary {
-							if let awaitingArtists: [NSDictionary] = json["pending"] as? [NSDictionary] {
-								for artist in awaitingArtists {
-									if let uniqueID = artist["iTunesUniqueID"] as? Int {
-										if !contains(uniqueIDs, uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
-											uniqueIDs.append(uniqueID)
-											self.responseArtists.append(artist)
-										}
+			API.sharedInstance.sendRequest(API.URL.submitArtist.rawValue, postString: batch, successHandler: { (statusCode, data) in
+				if statusCode == 202 {
+					if let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary {
+						if let awaitingArtists: [NSDictionary] = json["pending"] as? [NSDictionary] {
+							for artist in awaitingArtists {
+								if let uniqueID = artist["iTunesUniqueID"] as? Int {
+									if !uniqueIDs.contains(uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
+										uniqueIDs.append(uniqueID)
+										self.responseArtists.append(artist)
 									}
 								}
 							}
-							if let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] {
-								for artist in failedArtists {
-									let title = (artist["title"] as? String)!
-									println("Artist \(title) was not found on iTunes.")
-								}
+						}
+						if let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] {
+							for artist in failedArtists {
+								let title = (artist["title"] as? String)!
+								print("Artist \(title) was not found on iTunes.")
 							}
 						}
-						batchesProcessed++
-						println("Processed batches: \(batchesProcessed)")
-						let batchProgress = Float(Double(batchesProcessed) / Double(batches.count))
-						self.progressBar.setProgress(batchProgress, animated: true)
-						if batchesProcessed == batches.count {
-							println("Completed batch processing.")
-							self.progressBar.setProgress(1.0, animated: true)
-							UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-							if self.responseArtists.count > 0 {
-								self.progressBar.hidden = true
-								self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
-							} else {
-								self.dismissViewControllerAnimated(true, completion: nil)
-							}
-						}
-					} else {
-						self.activityView.removeFromSuperview()
-						self.indicatorView.removeFromSuperview()
 					}
+					batchesProcessed++
+					print("Processed batches: \(batchesProcessed)")
+					let batchProgress = Float(Double(batchesProcessed) / Double(batches.count))
+					self.progressBar.setProgress(batchProgress, animated: true)
+					if batchesProcessed == batches.count {
+						print("Completed batch processing.")
+						self.progressBar.setProgress(1.0, animated: true)
+						UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+						if self.responseArtists.count > 0 {
+							self.progressBar.hidden = true
+							self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
+						} else {
+							self.dismissViewControllerAnimated(true, completion: nil)
+						}
+					}
+				} else {
+					self.activityView.removeFromSuperview()
+					self.indicatorView.removeFromSuperview()
 				}
 				},
 				errorHandler: { (error) in
 					self.progressBar.progressTintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
 					self.activityView.removeFromSuperview()
 					self.indicatorView.removeFromSuperview()
-					var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: .Alert)
+					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+					switch (error) {
+					case API.Error.BadRequest:
+						alert.title = "400 Bad Request"
+						alert.message = "Missing Parameter."
+					case API.Error.Unauthorized:
+						alert.title = "403 Forbidden"
+						alert.message = "Invalid Credentials."
+						alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
+							// Request new ID from server.
+						}))
+					case API.Error.RequestEntityTooLarge:
+						alert.title = "413 Request Entity Too Large"
+						alert.message = "Received batch is too large."
+					case API.Error.InternalServerError:
+						alert.title = "500 Internal Server Error"
+						alert.message = "An error on our end occured."
+					default:
+						alert.title = "Oops! Something went wrong."
+						alert.message = "An unknown error occured."
+					}
 					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 					self.presentViewController(alert, animated: true, completion: nil)
 			})
@@ -230,7 +243,7 @@ class ArtistsPicker: UIViewController {
 	
 	// MARK: - Helper function to get the section a given artist is contained in.
 	func getSectionForArtistName (artistName: String) -> (index: Int, section: String) {
-		for (index, value) in enumerate(keys) {
+		for (index, value) in keys.enumerate() {
 			if artistName.uppercaseString.hasPrefix(value as! String) || index == keys.count - 1 {
 				return (index, value as! String)
 			}
@@ -240,7 +253,7 @@ class ArtistsPicker: UIViewController {
 	
 	func tableViewCellComponent (filteredCell: String, set: Bool) -> Bool {
 		let currentSection = getSectionForArtistName(filteredCell)
-		for (key, value) in enumerate(artists[currentSection.section]!) {
+		for (key, _) in (artists[currentSection.section]!).enumerate() {
 			if artists[currentSection.section]![key] == filteredCell {
 				if set {
 					checkedStates[currentSection.section]![key]! = !checkedStates[currentSection.section]![key]!
@@ -275,7 +288,7 @@ class ArtistsPicker: UIViewController {
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "ArtistSelectionSegue" {
-			var selectionController = segue.destinationViewController as! SearchResultsController
+			let selectionController = segue.destinationViewController as! SearchResultsController
 			selectionController.artists = responseArtists
 		}
 	}
@@ -296,7 +309,7 @@ class ArtistsPicker: UIViewController {
 		definesPresentationContext = true
 		searchController.searchBar.sizeToFit()
 		artistsTable.tableHeaderView = searchController.searchBar
-		var backgroundView = UIView(frame: view.bounds)
+		let backgroundView = UIView(frame: view.bounds)
 		backgroundView.backgroundColor = UIColor.clearColor()
 		artistsTable.backgroundView = backgroundView
 	}
@@ -323,7 +336,7 @@ extension ArtistsPicker: UITableViewDataSource {
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		var cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! UITableViewCell
+		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as UITableViewCell!
 		let section = keys[indexPath.section] as! String
 		
 		if searchController.active {
@@ -335,38 +348,30 @@ extension ArtistsPicker: UITableViewDataSource {
 		cell.accessoryType = .None
 		
 		if searchController.active {
-			if hasSelectedAll || filteredCheckedStates[indexPath.row] == true {
-				cell.accessoryType = .Checkmark
-			}
+			if hasSelectedAll || filteredCheckedStates[indexPath.row] == true { cell.accessoryType = .Checkmark }
 		} else {
-			if hasSelectedAll || checkedStates[section]?[indexPath.row]! == true {
-				cell.accessoryType = .Checkmark
-			}
+			if hasSelectedAll || checkedStates[section]?[indexPath.row]! == true { cell.accessoryType = .Checkmark }
 		}
 		return cell
 	}
 	
-	func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
-		if searchController.active {
-			return nil
-		}
-		return keys as [AnyObject]
+	func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
+		if searchController.active { return nil }
+		return keys as NSArray as? [String]
 	}
 }
 
 // MARK: - UITableViewDelegate
 extension ArtistsPicker: UITableViewDelegate {
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		var headerView = UIView(frame: CGRectMake(0, 0, view.bounds.size.width, 30.0))
+		let headerView = UIView(frame: CGRectMake(0, 0, view.bounds.size.width, 30.0))
 		headerView.backgroundColor = UIColor(patternImage: UIImage(named: "navBar.png")!)
 		let lbl = UILabel(frame: CGRectMake(15, 1, 150, 20))
 		lbl.font = UIFont(name: lbl.font.fontName, size: 16)
 		lbl.textColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1.0)
 		headerView.addSubview(lbl)
 		lbl.text = keys[section] as? String
-		if searchController.active {
-			lbl.text = "Results (\(filteredArtists.count))"
-		}
+		if searchController.active { lbl.text = "Results (\(filteredArtists.count))" }
 		return headerView
 	}
 	
@@ -385,7 +390,7 @@ extension ArtistsPicker: UITableViewDelegate {
 // MARK: - UISearchResultsUpdating
 extension ArtistsPicker: UISearchResultsUpdating {
 	func updateSearchResultsForSearchController(searchController: UISearchController) {
-		filterContentForSearchText(searchController.searchBar.text)
+		filterContentForSearchText(searchController.searchBar.text!)
 		artistsTable.reloadData()
 	}
 }

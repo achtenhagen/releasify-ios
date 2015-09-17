@@ -31,7 +31,7 @@ class NotificationsController: UIViewController {
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
 		view.layer.insertSublayer(gradient, atIndex: 0)
 		
-		clearBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications.count > 0 ? true : false)
+		clearBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -41,32 +41,34 @@ class NotificationsController: UIViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension NotificationsController: UITableViewDataSource { 
+extension NotificationsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return UIApplication.sharedApplication().scheduledLocalNotifications.count
+		return UIApplication.sharedApplication().scheduledLocalNotifications!.count
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		var cell = notificationsTable.dequeueReusableCellWithIdentifier(notificationCellReuseIdentifier) as! NotificationCell
-		let notifications = UIApplication.sharedApplication().scheduledLocalNotifications
-		var notification = notifications[indexPath.row] as! UILocalNotification
-		let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-		let notificationID = userInfoCurrent["AlbumID"]! as! Int
-		cell.notificationBody.text = "\(notification.alertTitle) - \(notification.alertBody!)"
+		let cell = notificationsTable.dequeueReusableCellWithIdentifier(notificationCellReuseIdentifier) as! NotificationCell
+		let notifications = UIApplication.sharedApplication().scheduledLocalNotifications!
+		let notification = notifications[indexPath.row]
+		if #available(iOS 8.2, *) {
+			cell.notificationBody.text = "\(notification.alertTitle!) - \(notification.alertBody!)"
+		} else {
+			cell.notificationBody.text = "Notification - \(notification.alertBody!)"
+		}
 		return cell
 	}
 	
 	func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
 		if editingStyle == .Delete {
 			// UIApplication.sharedApplication().cancelLocalNotification(notification)
-			clearBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications.count > 0 ? true : false)
+			clearBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
 		}
 	}
 }
 
 // MARK: - UITableViewDelegate
 extension NotificationsController: UITableViewDelegate {
-	func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+	func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String? {
 		return "Don't notify"
 	}
 }

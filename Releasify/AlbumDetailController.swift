@@ -82,12 +82,12 @@ class AlbumDetailController: UIViewController {
 				NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
 					if error == nil {
 						if let HTTPResponse = response as? NSHTTPURLResponse {
-							println("HTTP status code: \(HTTPResponse.statusCode)")
+							print("HTTP status code: \(HTTPResponse.statusCode)")
 							if HTTPResponse.statusCode == 200 {
-								let image = UIImage(data: data)
+								let image = UIImage(data: data!)
 								AppDB.sharedInstance.addArtwork(self.album.artwork + "_large", artwork: image!)
 								self.albumArtwork.image = image
-								println("Successfully downloaded HD artwork.")
+								print("Successfully downloaded HD artwork.")
 							}
 						}
 					}
@@ -127,47 +127,46 @@ class AlbumDetailController: UIViewController {
 	}
 	
 	func timeLeft(timeDiff: Double) {
-		
-		var weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
-		var days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
-		var hours   = component(Double(timeDiff),      v: 60 * 60) % 24
-		var minutes = component(Double(timeDiff),           v: 60) % 60
-		var seconds = component(Double(timeDiff),            v: 1) % 60
+		let weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
+		let days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
+		let hours   = component(Double(timeDiff),      v: 60 * 60) % 24
+		let minutes = component(Double(timeDiff),           v: 60) % 60
+		let seconds = component(Double(timeDiff),            v: 1) % 60
 		
 		if Int(weeks) > 0 {
-			firstDigitLabel.text = String(stringInterpolationSegment: formatNumber(weeks))
+			firstDigitLabel.text = formatNumber(weeks)
 			firstTimeLabel.text = "weeks"
-			secondDigitLabel.text = String(stringInterpolationSegment: formatNumber(days))
+			secondDigitLabel.text = formatNumber(days)
 			secondTimeLabel.text = "days"
-			thirdDigitLabel.text = String(stringInterpolationSegment: formatNumber(hours))
+			thirdDigitLabel.text = formatNumber(hours)
 			thirdTimeLabel.text = "hours"
 		} else if Int(days) > 0 && Int(days) <= 7 {
-			firstDigitLabel.text = String(stringInterpolationSegment: formatNumber(days))
+			firstDigitLabel.text = formatNumber(days)
 			firstTimeLabel.text = "days"
-			secondDigitLabel.text = String(stringInterpolationSegment: formatNumber(hours))
+			secondDigitLabel.text = formatNumber(hours)
 			secondTimeLabel.text = "hours"
-			thirdDigitLabel.text = String(stringInterpolationSegment: formatNumber(minutes))
+			thirdDigitLabel.text = formatNumber(minutes)
 			thirdTimeLabel.text = "minutes"
 		} else if Int(hours) > 0 && Int(hours) <= 24 {
-			firstDigitLabel.text = String(stringInterpolationSegment: formatNumber(hours))
+			firstDigitLabel.text = formatNumber(hours)
 			firstTimeLabel.text = "hours"
-			secondDigitLabel.text = String(stringInterpolationSegment: formatNumber(minutes))
+			secondDigitLabel.text = formatNumber(minutes)
 			secondTimeLabel.text = "minutes"
-			thirdDigitLabel.text = String(stringInterpolationSegment: formatNumber(seconds))
+			thirdDigitLabel.text = formatNumber(seconds)
 			thirdTimeLabel.text = "seconds"
 		} else if Int(minutes) > 0 && Int(minutes) <= 60 {
 			firstDigitLabel.text = String("00")
 			firstTimeLabel.text = "hours"
-			secondDigitLabel.text = String(stringInterpolationSegment: formatNumber(minutes))
+			secondDigitLabel.text = formatNumber(minutes)
 			secondTimeLabel.text = "minutes"
-			thirdDigitLabel.text = String(stringInterpolationSegment: formatNumber(seconds))
+			thirdDigitLabel.text = formatNumber(seconds)
 			thirdTimeLabel.text = "seconds"
 		} else if Int(seconds) > 0 && Int(seconds) <= 60 {
 			firstDigitLabel.text = String("00")
 			firstTimeLabel.text = "hours"
 			secondDigitLabel.text = "00"
 			secondTimeLabel.text = "minutes"
-			thirdDigitLabel.text = String(stringInterpolationSegment: formatNumber(seconds))
+			thirdDigitLabel.text = formatNumber(seconds)
 			thirdTimeLabel.text = "seconds"
 		}
 		progress = album.getProgress(dateAdded)
@@ -179,7 +178,7 @@ class AlbumDetailController: UIViewController {
 	}
 	
 	func formatNumber (n: Double) -> String {
-		let stringNumber = String(stringInterpolationSegment: Int(n))
+		let stringNumber = String(Int(n))
 		return n < 10 ? ("0\(stringNumber)") : stringNumber
 	}
 }

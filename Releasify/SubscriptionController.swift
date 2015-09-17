@@ -84,65 +84,83 @@ class SubscriptionController: UIViewController {
 			},
 			errorHandler: { (error) in
 				self.refreshControl.endRefreshing()
-				var alert = UIAlertController(title: "Oops! Something went wrong.", message: error.localizedDescription, preferredStyle: .Alert)
-				if error.code == 403 {
+				let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+				switch (error) {
+				case API.Error.BadRequest:
+					alert.title = "400 Bad Request"
+					alert.message = "Missing Parameter."
+				case API.Error.Unauthorized:
+					alert.title = "403 Forbidden"
+					alert.message = "Invalid Credentials."
 					alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
-						// Todo: implement...
+						// Request new ID from server.
 					}))
-				} else {
-					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
-						UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-					}))
+				case API.Error.InternalServerError:
+					alert.title = "500 Internal Server Error"
+					alert.message = "An error on our end occured."
+				default:
+					alert.title = "Oops! Something went wrong."
+					alert.message = "An unknown error occured."
 				}
-				alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
 		})
 	}
 	
 	func deleteArtist (sender: UIButton) {
 		let rowIndex = sender.tag
-		var alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
+		let alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
 		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
 		alert.addAction(UIAlertAction(title: "Confirm", style: .Destructive, handler: { action in
 			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(self.filteredData[rowIndex].iTunesUniqueID)"
-			API.sharedInstance.sendRequest(APIURL.removeArtist.rawValue, postString: postString, successHandler: { (response, data) in
-				if let HTTPResponse = response as? NSHTTPURLResponse {
-					println("HTTP status code: \(HTTPResponse.statusCode)")
-					if HTTPResponse.statusCode == 204 {
-						AppDB.sharedInstance.deleteArtist(self.filteredData[rowIndex].ID, index: rowIndex, completion: { (albumIDs) in
-							for ID in albumIDs {
-								for n in UIApplication.sharedApplication().scheduledLocalNotifications {
-									var notification = n as! UILocalNotification
-									let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-									let notificationID = userInfoCurrent["AlbumID"]! as! Int
-									if ID == notificationID {
-										println("Canceled location notification with ID: \(ID)")
-										UIApplication.sharedApplication().cancelLocalNotification(notification)
-									}
+			API.sharedInstance.sendRequest(API.URL.removeArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
+				if statusCode == 204 {
+					AppDB.sharedInstance.deleteArtist(self.filteredData[rowIndex].ID, index: rowIndex, completion: { (albumIDs) in
+						for ID in albumIDs {
+							for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
+								let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+								let notificationID = userInfoCurrent["AlbumID"]! as! Int
+								if ID == notificationID {
+									print("Canceled location notification with ID: \(ID)")
+									UIApplication.sharedApplication().cancelLocalNotification(notification)
 								}
 							}
-							AppDB.sharedInstance.getArtists()
-							AppDB.sharedInstance.getAlbums()
-							self.filteredData = AppDB.sharedInstance.artists
-							self.artistsCollectionView.reloadData()
-							self.searchBar.text = ""
-							self.searchBar.resignFirstResponder()
-							println("Successfully unsubscribed.")
-						})
-//						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-//							artistsCollectionView.cellForItemAtIndexPath(selectedIndexPath!)?.alpha = 0
-//							}, completion: { (value: Bool) in
-//								
-//						})
-					}
+						}
+						AppDB.sharedInstance.getArtists()
+						AppDB.sharedInstance.getAlbums()
+						self.filteredData = AppDB.sharedInstance.artists
+						self.artistsCollectionView.reloadData()
+						self.searchBar.text = ""
+						self.searchBar.resignFirstResponder()
+						print("Successfully unsubscribed.")
+					})
+//					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+//						artistsCollectionView.cellForItemAtIndexPath(selectedIndexPath!)?.alpha = 0
+//						}, completion: { (value: Bool) in
+//							
+//					})
 				}
 				},
 				errorHandler: { (error) in
 					AppDB.sharedInstance.addPendingArtist(self.filteredData[rowIndex].ID)
-					var alert = UIAlertController(title: "Network Error", message: error.localizedDescription, preferredStyle: .Alert)
-					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
-						UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-					}))
+					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+					switch (error) {
+					case API.Error.BadRequest:
+						alert.title = "400 Bad Request"
+						alert.message = "Missing Parameter."
+					case API.Error.Unauthorized:
+						alert.title = "403 Forbidden"
+						alert.message = "Invalid Credentials."
+						alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
+							// Request new ID from server.
+						}))
+					case API.Error.InternalServerError:
+						alert.title = "500 Internal Server Error"
+						alert.message = "An error on our end occured."
+					default:
+						alert.title = "Oops! Something went wrong."
+						alert.message = "An unknown error occured."
+					}
 					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 					self.presentViewController(alert, animated: true, completion: nil)
 			})

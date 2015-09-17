@@ -35,7 +35,6 @@
 		518907971B46D67500F0E037 /* SearchResultsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518907961B46D67500F0E037 /* SearchResultsHeader.swift */; };
 		518B76861B0E688C0009F138 /* SearchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518B76851B0E688C0009F138 /* SearchResultsController.swift */; };
 		518B76881B0ECFA90009F138 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 518B76871B0ECFA90009F138 /* Images.xcassets */; };
-		51A830471AC2EB0A006BCF1B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 51A830461AC2EB0A006BCF1B /* libsqlite3.dylib */; };
 		51B09ED61B112D23007F871C /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B09ED51B112D23007F871C /* SearchResultCell.swift */; };
 		51B907DA1B8624E700688CFE /* SubscriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B907D81B8624E700688CFE /* SubscriptionCell.swift */; };
 		51B907DB1B8624E700688CFE /* SubscriptionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51B907D91B8624E700688CFE /* SubscriptionCell.xib */; };
@@ -44,6 +43,7 @@
 		51D864AF1B99D22400C3713F /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D864AE1B99D22400C3713F /* NotificationsController.swift */; };
 		51D8753E1B1B264B00353347 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753D1B1B264B00353347 /* Album.swift */; };
 		51D875401B1B2AD900353347 /* Devices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753F1B1B2AD900353347 /* Devices.swift */; };
+		51E9F0781BA6414C00E67DAC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */; };
 		51F84DCB1AB750A000D51E0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F84DCA1AB750A000D51E0C /* AppDelegate.swift */; };
 		51F84DCD1AB750A000D51E0C /* SubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F84DCC1AB750A000D51E0C /* SubscriptionController.swift */; };
 		51F84DD01AB750A100D51E0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51F84DCE1AB750A100D51E0C /* Main.storyboard */; };
@@ -80,7 +80,6 @@
 		518907961B46D67500F0E037 /* SearchResultsHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsHeader.swift; sourceTree = "<group>"; };
 		518B76851B0E688C0009F138 /* SearchResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsController.swift; sourceTree = "<group>"; };
 		518B76871B0ECFA90009F138 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
-		51A830461AC2EB0A006BCF1B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		51A830481AC2EB70006BCF1B /* Releasify.Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Releasify.Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		51B09ED51B112D23007F871C /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		51B907D81B8624E700688CFE /* SubscriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionCell.swift; sourceTree = "<group>"; };
@@ -90,6 +89,7 @@
 		51D864AE1B99D22400C3713F /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
 		51D8753D1B1B264B00353347 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		51D8753F1B1B2AD900353347 /* Devices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Devices.swift; sourceTree = "<group>"; };
+		51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		51F84DC51AB750A000D51E0C /* Releasify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Releasify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51F84DC91AB750A000D51E0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51F84DCA1AB750A000D51E0C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; usesTabs = 1; };
@@ -104,7 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51A830471AC2EB0A006BCF1B /* libsqlite3.dylib in Frameworks */,
+				51E9F0781BA6414C00E67DAC /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,7 +140,7 @@
 		51F84DBC1AB750A000D51E0C = {
 			isa = PBXGroup;
 			children = (
-				51A830461AC2EB0A006BCF1B /* libsqlite3.dylib */,
+				51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */,
 				51A830481AC2EB70006BCF1B /* Releasify.Bridging-Header.h */,
 				51F84DC71AB750A000D51E0C /* Releasify */,
 				51F84DC61AB750A000D51E0C /* Products */,
@@ -229,8 +229,9 @@
 		51F84DBD1AB750A000D51E0C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Fioware Studios, LLC";
 				TargetAttributes = {
 					51F84DC41AB750A000D51E0C = {
@@ -379,6 +380,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -446,12 +448,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Maurice Achtenhagen (T7V8V4DYJN)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Maurice Achtenhagen (T7V8V4DYJN)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos8.2]" = "iPhone Developer: Maurice Achtenhagen (T7V8V4DYJN)";
 				INFOPLIST_FILE = Releasify/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fioware.releasify;
 				PRODUCT_NAME = Releasify;
 				PROVISIONING_PROFILE = "18e8ee26-3f9e-43e3-a69c-d3537853625f";
 				SWIFT_OBJC_BRIDGING_HEADER = "Releasify.Bridging-Header.h";
@@ -465,12 +468,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos8.2]" = "";
 				INFOPLIST_FILE = Releasify/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fioware.releasify;
 				PRODUCT_NAME = Releasify;
 				PROVISIONING_PROFILE = "076cd6cd-d922-4a39-aaa1-34753bc2f6bf";
 				SWIFT_OBJC_BRIDGING_HEADER = "Releasify.Bridging-Header.h";

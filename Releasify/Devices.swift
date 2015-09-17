@@ -34,7 +34,7 @@ public extension UIDevice {
 		let modelCode = sysinfo.withUnsafeMutableBufferPointer {
 			(inout ptr: UnsafeMutableBufferPointer<CChar>) -> DeviceTypes in
 			uname(UnsafeMutablePointer<utsname>(ptr.baseAddress))
-			let machinePtr = advance(ptr.baseAddress, Int(_SYS_NAMELEN * 4))
+			let machinePtr = ptr.baseAddress.advancedBy(Int(_SYS_NAMELEN * 4))
 			var modelMap : [String : DeviceTypes] = [
 				"i386"      : .simulator,
 				"x86_64"    : .simulator,
