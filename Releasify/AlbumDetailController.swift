@@ -45,7 +45,7 @@ class AlbumDetailController: UIViewController {
 		albumArtwork.image = artwork
 		albumArtwork.layer.masksToBounds = true
 		albumArtwork.layer.cornerRadius = 2.0
-		artist = AppDB.sharedInstance.getAlbumArtist(album.ID)
+		artist = AppDB.sharedInstance.getAlbumArtist(album.ID)!
 		navigationItem.title = artist
 		albumTitle.text = album.title
 		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
@@ -53,7 +53,7 @@ class AlbumDetailController: UIViewController {
 		copyrightLabel.text = album.copyright
 		timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
 		if timeDiff > 0 {
-			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)
+			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)!
 			progressBar.progress = album.getProgress(dateAdded)
 			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
 		} else {

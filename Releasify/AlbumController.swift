@@ -66,7 +66,6 @@ class AlbumController: UIViewController {
 		albumCollectionView.addGestureRecognizer(longPressGesture)
 		
 		// Notification payload processing
-		// The remote notification payload will return 'content-available: 1' if there is new content.
 		if let remoteContent = appDelegate.remoteNotificationPayload?["aps"]?["content-available"] as? Int {
 			if remoteContent == 1 {
 				refresh()
@@ -81,9 +80,7 @@ class AlbumController: UIViewController {
 					break
 				}
 			}
-			if selectedAlbum.ID == notificationAlbumID {
-				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-			}
+			if selectedAlbum.ID == notificationAlbumID { self.performSegueWithIdentifier("AlbumViewSegue", sender: self) }
 		}
 		
 		/*
@@ -128,8 +125,8 @@ class AlbumController: UIViewController {
 			self.refreshControl.endRefreshing()
 			if newItems.count > 0 {
 				// Todo: Show updates...
-				self.navigationItem.leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications?.count > 0 ? true : false
 			}
+			self.navigationItem.leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications?.count > 0 ? true : false
 			},
 			errorHandler: { (error) in
 				self.refreshControl.endRefreshing()
@@ -360,7 +357,7 @@ extension AlbumController: UICollectionViewDataSource {
 		if timeDiff > 0 {
 			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)
 			cell.containerView.hidden = false
-			cell.progressBar.setProgress(album.getProgress(dateAdded), animated: false)
+			cell.progressBar.setProgress(album.getProgress(dateAdded!), animated: false)
 		}
 		let weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
 		let days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7

@@ -38,9 +38,7 @@ final class API {
 	func refreshContent (successHandler: ([Int] -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
 		newItems = [Int]()
 		var explicitValue = 1
-		if !appDelegate.allowExplicitContent {
-			explicitValue = 0
-		}
+		if !appDelegate.allowExplicitContent { explicitValue = 0 }
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(explicitValue)"
 		sendRequest(URL.updateContent.rawValue, postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 200 {
@@ -85,9 +83,7 @@ final class API {
 						let notification = UILocalNotification()
 						notification.category = "DEFAULT_CATEGORY"
 						notification.timeZone = NSTimeZone.localTimeZone()
-						if #available(iOS 8.2, *) {
-							notification.alertTitle = "New Album Released"
-						}
+						if #available(iOS 8.2, *) { notification.alertTitle = "New Album Released" }
 						notification.alertBody = "\(albumItem.title) is now available."
 						notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
 						notification.applicationIconBadgeNumber++
@@ -142,13 +138,9 @@ final class API {
 	func register (allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let UUID = NSUUID().UUIDString
 		var explicitValue = 1
-		if !allowExplicitContent {
-			explicitValue = 0
-		}
+		if !allowExplicitContent { explicitValue = 0 }
 		var postString = "uuid=\(UUID)&explicit=\(explicitValue)"
-		if deviceToken != nil {
-			postString += "&deviceToken=\(deviceToken!)"
-		}
+		if deviceToken != nil { postString += "&deviceToken=\(deviceToken!)" }
 		sendRequest(URL.register.rawValue, postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 201 {
 				errorHandler(error: Error.BadRequest)
@@ -173,9 +165,7 @@ final class API {
 	func sendRequest (url: String, postString: String, successHandler: ((statusCode: Int!, data: NSData!) -> Void), errorHandler: (error: ErrorType) -> Void) {
 		let apiUrl = NSURL(string: url)
 		var appVersion = "Unknown"
-		if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {
-			appVersion = version
-		}
+		if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String { appVersion = version }
 		let systemVersion = UIDevice.currentDevice().systemVersion
 		let deviceName = UIDevice().deviceType.rawValue
 		let userAgent = "Releasify/\(appVersion) (iOS/\(systemVersion); \(deviceName))"
