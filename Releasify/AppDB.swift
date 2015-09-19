@@ -329,9 +329,7 @@ final class AppDB {
 		if sqlite3_prepare_v2(database, artistExistsQuery, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
 			var numRows = 0
-			if sqlite3_step(statement) == SQLITE_ROW {
-				numRows = Int(sqlite3_column_int(statement, 0))
-			}
+			if sqlite3_step(statement) == SQLITE_ROW { numRows = Int(sqlite3_column_int(statement, 0)) }
 			sqlite3_finalize(statement)
 			if numRows == 0 {
 				let query = "INSERT INTO pending_artists (id, created) VALUES (?, ?)"
@@ -339,9 +337,7 @@ final class AppDB {
 				if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 					sqlite3_bind_int(statement, 1, Int32(ID))
 					sqlite3_bind_int(statement, 2, timestamp)
-					if sqlite3_step(statement) != SQLITE_DONE {
-						print("Failed to insert pending artist.")
-					}
+					if sqlite3_step(statement) != SQLITE_DONE { print("Failed to insert pending artist.") }
 					sqlite3_finalize(statement)
 				}
 			}
@@ -372,9 +368,7 @@ final class AppDB {
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
 			if sqlite3_step(statement) == SQLITE_DONE {
-				if let i = index {
-					artists.removeAtIndex(i)
-				}
+				if let i = index { artists.removeAtIndex(i) }
 			} else {
 				print("SQLite: Failed to delete from `albums`.")
 			}
@@ -386,9 +380,7 @@ final class AppDB {
 		
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
-			if sqlite3_step(statement) != SQLITE_DONE {
-				print("SQLite: Failed to delete from `album_artists`.")
-			}
+			if sqlite3_step(statement) != SQLITE_DONE { print("SQLite: Failed to delete from `album_artists`.") }
 			sqlite3_finalize(statement)
 		}
 		
@@ -397,9 +389,7 @@ final class AppDB {
 		
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
-			if sqlite3_step(statement) != SQLITE_DONE {
-				print("SQLite: Failed to delete from `artists`.")
-			}
+			if sqlite3_step(statement) != SQLITE_DONE { print("SQLite: Failed to delete from `artists`.") }
 			sqlite3_finalize(statement)
 		}
 		disconnect()
@@ -413,9 +403,7 @@ final class AppDB {
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(albumID))
-			if sqlite3_step(statement) == SQLITE_ROW {
-				artistTitle = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 0)))!
-			}
+			if sqlite3_step(statement) == SQLITE_ROW { artistTitle = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 0)))! }
 			sqlite3_finalize(statement)
 		}
 		disconnect()
@@ -429,9 +417,7 @@ final class AppDB {
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(albumID))
-			if sqlite3_step(statement) == SQLITE_ROW {
-				artistID = Int(sqlite3_column_int(statement, 0))
-			}
+			if sqlite3_step(statement) == SQLITE_ROW { artistID = Int(sqlite3_column_int(statement, 0)) }
 			sqlite3_finalize(statement)
 		}
 		disconnect()
@@ -445,9 +431,7 @@ final class AppDB {
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(uniqueID))
-			if sqlite3_step(statement) == SQLITE_ROW {
-				artistID = Int(sqlite3_column_int(statement, 0))
-			}
+			if sqlite3_step(statement) == SQLITE_ROW { artistID = Int(sqlite3_column_int(statement, 0)) }
 			sqlite3_finalize(statement)
 		}
 		disconnect()
