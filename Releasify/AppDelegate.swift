@@ -14,6 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var userID = 0
 	var userDeviceToken: String?
 	var userUUID: String!
+	var contentHash: String?
 	var allowExplicitContent = true
 	var lastUpdated = 0
 	var notificationAlbumID: Int!
@@ -88,6 +89,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
 		if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("uuid") { userUUID = uuid }
+		if let hash = NSUserDefaults.standardUserDefaults().valueForKey("contentHash") as? String {
+			contentHash = hash
+		} else {
+			print("No content hash has been set.")
+		}
 		if let explicit = NSUserDefaults.standardUserDefaults().valueForKey("allowExplicit") as? Bool {
 			allowExplicitContent = explicit
 			if allowExplicitContent {

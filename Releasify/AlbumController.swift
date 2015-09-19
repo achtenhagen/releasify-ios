@@ -141,6 +141,9 @@ class AlbumController: UIViewController {
 					alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
 						// Request new ID from server.
 					}))
+				case API.Error.FailedToParseJSON:
+					alert.title = "Oops! Something went wrong."
+					alert.message = "Failed to parse response data."
 				case API.Error.InternalServerError:
 					alert.title = "500 Internal Server Error"
 					alert.message = "An error on our end occured."

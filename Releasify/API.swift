@@ -39,10 +39,13 @@ final class API {
 		newItems = [Int]()
 		var explicitValue = 1
 		if !appDelegate.allowExplicitContent { explicitValue = 0 }
-		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(explicitValue)"
+		var postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(explicitValue)"
+		if (appDelegate.contentHash != nil) { postString += "&hash=\(appDelegate.contentHash!)" }
 		sendRequest(URL.updateContent.rawValue, postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 200 {
 				switch statusCode {
+				case 204:
+					if let handler: Void = successHandler?(self.newItems) { handler }
 				case 400:
 					errorHandler(error: Error.BadRequest)
 				case 403:
@@ -55,12 +58,17 @@ final class API {
 				return
 			}
 			
-			guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [NSDictionary] else {
+			guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? NSDictionary else {
 				errorHandler(error: Error.FailedToParseJSON)
 				return
 			}
 			
-			for item in json! {
+			guard let content = json!["content"] as? [NSDictionary] else {
+				errorHandler(error: Error.FailedToParseJSON)
+				return
+			}
+			
+			for item in content {
 				let releaseDate = (item["releaseDate"] as! Double)
 				let albumItem = Album(
 					ID: item["id"] as! Int,
@@ -94,9 +102,17 @@ final class API {
 				}
 			}
 			
+			guard let contentHash = json!["hash"] as? String else {
+				errorHandler(error: Error.FailedToParseJSON)
+				return
+			}
+			
+			NSUserDefaults.standardUserDefaults().setValue(contentHash, forKey: "contentHash")
+			
 			AppDB.sharedInstance.getAlbums()
 			NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
 			if let handler: Void = successHandler?(self.newItems) { handler }
+			
 			},
 			errorHandler: { (error) -> Void in
 				errorHandler(error: error)

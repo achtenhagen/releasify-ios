@@ -173,7 +173,7 @@ class ArtistsPicker: UIViewController {
 			API.sharedInstance.sendRequest(API.URL.submitArtist.rawValue, postString: batch, successHandler: { (statusCode, data) in
 				if statusCode == 202 {
 					if let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary {
-						if let awaitingArtists: [NSDictionary] = json["pending"] as? [NSDictionary] {
+						if let awaitingArtists = json["pending"] as? [NSDictionary] {
 							for artist in awaitingArtists {
 								if let uniqueID = artist["iTunesUniqueID"] as? Int {
 									if !uniqueIDs.contains(uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
@@ -183,7 +183,7 @@ class ArtistsPicker: UIViewController {
 								}
 							}
 						}
-						if let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] {
+						if let failedArtists = json["failed"] as? [NSDictionary] {
 							for artist in failedArtists {
 								let title = (artist["title"] as? String)!
 								print("Artist \(title) was not found on iTunes.")
