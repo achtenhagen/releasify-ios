@@ -108,6 +108,7 @@ final class API {
 			}
 			
 			NSUserDefaults.standardUserDefaults().setValue(contentHash, forKey: "contentHash")
+			self.appDelegate.contentHash = contentHash
 			
 			AppDB.sharedInstance.getAlbums()
 			NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")

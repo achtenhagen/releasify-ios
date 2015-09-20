@@ -91,6 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("uuid") { userUUID = uuid }
 		if let hash = NSUserDefaults.standardUserDefaults().valueForKey("contentHash") as? String {
 			contentHash = hash
+			print("Content hash has been set (\(contentHash!)).")
 		} else {
 			print("No content hash has been set.")
 		}
@@ -121,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 
 	func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-		print("User allows notifications.")
+		print("User allows notifications (\(deviceToken.description)).")
 		var deviceTokenString = deviceToken.description
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: .LiteralSearch, range: nil)
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: .LiteralSearch, range: nil)

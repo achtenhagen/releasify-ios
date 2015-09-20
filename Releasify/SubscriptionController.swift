@@ -126,6 +126,7 @@ class SubscriptionController: UIViewController {
 								}
 							}
 						}
+						self.appDelegate.contentHash = nil
 						AppDB.sharedInstance.getArtists()
 						AppDB.sharedInstance.getAlbums()
 						self.filteredData = AppDB.sharedInstance.artists

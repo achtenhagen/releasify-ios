@@ -54,12 +54,8 @@ class SearchResultsController: UIViewController {
 	}
 	
 	func confirmArtist (sender: UIButton) {
-		var artistID = 0
-		
-		if let id = (artists[sender.tag]["artistId"] as? Int) {
-			artistID = id
-		}
-		
+		var artistID = 0		
+		if let id = (artists[sender.tag]["artistId"] as? Int) { artistID = id }
 		let artistTitle = (artists[sender.tag]["title"] as? String)!
 		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
 			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
@@ -71,12 +67,8 @@ class SearchResultsController: UIViewController {
 							let newArtistID = AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 							AppDB.sharedInstance.getArtists()
 							self.selectedArtists.addObject(artistUniqueID)
-							if newArtistID > 0 {
-								print("Successfully subscribed.")
-							}
-							if self.artists.count == self.selectedArtists.count {
-								self.closeView()
-							}
+							if newArtistID > 0 { print("Successfully subscribed.") }
+							if self.artists.count == self.selectedArtists.count { self.closeView() }
 					})
 				}
 				},
@@ -115,18 +107,16 @@ extension SearchResultsController: UITableViewDataSource {
 			cell.albumTitle.text = albums[indexPath.row]["title"] as? String
 			cell.releaseLabel.text = albums[indexPath.row]["releaseDate"] as? String
 			let hash = albums[indexPath.row]["artwork"]! as! String
-			let albumURL = "https://releasify.me/static/artwork/music/\(hash).jpg"
+			let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
+			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash).jpg"
 			if let img = artwork[albumURL] {
 				cell.albumArtwork.image = img
 			} else {
 				if let checkedURL = NSURL(string: albumURL) {
 					let request = NSURLRequest(URL: checkedURL)
 					NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
-						if error != nil {
-							return
-						}
+						if error != nil { return }
 						if let HTTPResponse = response as? NSHTTPURLResponse {
-							print("HTTP status code: \(HTTPResponse.statusCode)")
 							if HTTPResponse.statusCode == 200 {
 								let image = UIImage(data: data!)
 								self.artwork[albumURL] = image

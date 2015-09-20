@@ -75,14 +75,14 @@ class AlbumDetailController: UIViewController {
 		}
 		
 		if AppDB.sharedInstance.getArtwork(album.artwork + "_large") == nil {
-			let albumURL = "https://releasify.me/static/artwork/music/\(album.artwork)_large.jpg"
+			let subDir = (album.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
+			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(album.artwork)_large.jpg"
 			if let checkedURL = NSURL(string: albumURL) {
 				let request = NSURLRequest(URL: checkedURL)
 				UIApplication.sharedApplication().networkActivityIndicatorVisible = true
 				NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
 					if error == nil {
 						if let HTTPResponse = response as? NSHTTPURLResponse {
-							print("HTTP status code: \(HTTPResponse.statusCode)")
 							if HTTPResponse.statusCode == 200 {
 								let image = UIImage(data: data!)
 								AppDB.sharedInstance.addArtwork(self.album.artwork + "_large", artwork: image!)

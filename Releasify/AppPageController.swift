@@ -171,9 +171,7 @@ extension AppPageController: UIPageViewControllerDataSource {
 	func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
 		let identifier = viewController.restorationIdentifier
 		var index = identifiers.indexOfObject(identifier!)
-		if index == identifiers.count - 1 {
-			return nil
-		}
+		if index == identifiers.count - 1 { return nil }
 		index++
 		return viewControllerAtIndex(index)
 	}
@@ -181,9 +179,7 @@ extension AppPageController: UIPageViewControllerDataSource {
 	func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
 		let identifier = viewController.restorationIdentifier
 		var index = identifiers.indexOfObject(identifier!)
-		if index == 0 {
-			return nil
-		}
+		if index == 0 { return nil }
 		index--
 		return self.viewControllerAtIndex(index)
 	}
@@ -193,8 +189,6 @@ extension AppPageController: UIPageViewControllerDataSource {
 extension AppPageController: UIPageViewControllerDelegate {
 	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
 		navigationController?.navigationBar.topItem?.title = "Music"
-		if pageViewController.viewControllers![0].restorationIdentifier == "SubscriptionsController" {
-			navigationController?.navigationBar.topItem?.title = "Subscriptions"
-		}
+		if pageViewController.viewControllers![0].restorationIdentifier == "SubscriptionsController" { navigationController?.navigationBar.topItem?.title = "Subscriptions" }
 	}
 }

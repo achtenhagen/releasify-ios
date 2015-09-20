@@ -165,9 +165,7 @@ class AlbumController: UIViewController {
 					break
 				}
 			}
-			if selectedAlbum.ID == notificationAlbumID {
-				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-			}
+			if selectedAlbum.ID == notificationAlbumID { self.performSegueWithIdentifier("AlbumViewSegue", sender: self) }
 		}
 	}
 	
@@ -209,13 +207,9 @@ class AlbumController: UIViewController {
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
 		let cellLocation = gesture.locationInView(albumCollectionView)
 		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
-		if indexPath == nil {
-			return
-		}
+		if indexPath == nil { return }
 		var section = indexPath!.section
-		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
-			section = sectionAtIndex()
-		}
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
 		
 		if indexPath?.row != nil {
 			if gesture.state == UIGestureRecognizerState.Began {
@@ -325,7 +319,8 @@ extension AlbumController: UICollectionViewDataSource {
 			cell.albumArtwork.image = image
 		} else {
 			cell.albumArtwork.alpha = 0
-			let albumURL = "https://releasify.me/static/artwork/music/\(hash)@2x.jpg"
+			let subDir = (album.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
+			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
 			if let checkedURL = NSURL(string: albumURL) {
 				let request = NSURLRequest(URL: checkedURL)
 				let mainQueue = NSOperationQueue.mainQueue()
@@ -334,7 +329,6 @@ extension AlbumController: UICollectionViewDataSource {
 						return
 					}
 					if let HTTPResponse = response as? NSHTTPURLResponse {
-						print("HTTP status code: \(HTTPResponse.statusCode)")
 						if HTTPResponse.statusCode == 200 {
 							let image = UIImage(data: data!)
 							self.artwork[hash] = image
