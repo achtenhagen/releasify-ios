@@ -113,10 +113,17 @@ extension SearchResultsController: UITableViewDataSource {
 				cell.albumArtwork.image = img
 			} else {
 				if let checkedURL = NSURL(string: albumURL) {
+					print(checkedURL)
 					let request = NSURLRequest(URL: checkedURL)
 					NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
-						if error != nil { return }
+						if error != nil {
+							return
+						}
 						if let HTTPResponse = response as? NSHTTPURLResponse {
+							if HTTPResponse.statusCode == 404 {
+								print("Failed to download artwork!")
+								return
+							}
 							if HTTPResponse.statusCode == 200 {
 								let image = UIImage(data: data!)
 								self.artwork[albumURL] = image

@@ -308,7 +308,6 @@ extension AlbumController: UICollectionViewDataSource {
 			section = sectionAtIndex()
 		}
 		let album = AppDB.sharedInstance.albums[section]![indexPath.row]
-		cell.albumArtwork.image = UIImage()
 		let hash = album.artwork
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
 		let dbArtwork = AppDB.sharedInstance.checkArtwork(hash)
@@ -316,6 +315,7 @@ extension AlbumController: UICollectionViewDataSource {
 			artwork[hash] = AppDB.sharedInstance.getArtwork(hash)
 		}
 		if let image = artwork[hash] {
+			cell.albumArtwork.contentMode = .ScaleToFill
 			cell.albumArtwork.image = image
 		} else {
 			cell.albumArtwork.alpha = 0
@@ -326,6 +326,7 @@ extension AlbumController: UICollectionViewDataSource {
 				let mainQueue = NSOperationQueue.mainQueue()
 				NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
 					if error != nil {
+						print("Failed to download artwork!")
 						return
 					}
 					if let HTTPResponse = response as? NSHTTPURLResponse {
@@ -335,6 +336,7 @@ extension AlbumController: UICollectionViewDataSource {
 							dispatch_async(dispatch_get_main_queue(), {
 								if let cell = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
 									AppDB.sharedInstance.addArtwork(hash, artwork: image!)
+									cell.albumArtwork.contentMode = .ScaleToFill
 									cell.albumArtwork.image = image
 									UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
 										cell.albumArtwork.alpha = 1.0

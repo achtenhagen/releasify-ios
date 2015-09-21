@@ -20,7 +20,7 @@ class SubscriptionController: UIViewController {
 	@IBOutlet weak var searchBar: UISearchBar!
 
 	override func viewDidLoad() {
-		super.viewDidLoad()
+		super.viewDidLoad()		
 		
 		searchBar.delegate = self
 		searchBar.keyboardAppearance = .Dark

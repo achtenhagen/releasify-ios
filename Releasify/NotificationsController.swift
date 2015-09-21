@@ -11,10 +11,25 @@ import UIKit
 class NotificationsController: UIViewController {
 	let notificationCellReuseIdentifier = "NotificationCell"
 	
-	@IBOutlet weak var clearBtn: UIBarButtonItem!
+	
+	@IBOutlet weak var navBar: UINavigationBar!
+	@IBOutlet weak var editBtn: UIBarButtonItem!
 	@IBOutlet weak var notificationsTable: UITableView!
+
+	@IBAction func editTable(sender: UIBarButtonItem) {
+		if notificationsTable.editing {
+			editBtn.title = "Edit"
+			editBtn.style = .Plain
+			notificationsTable.setEditing(false, animated: true)
+		} else {
+			editBtn.title = "Cancel"
+			editBtn.style = .Done
+			notificationsTable.setEditing(true, animated: true)
+		}
+	}
 	
 	@IBAction func closeView(sender: AnyObject) {
+		notificationsTable.setEditing(false, animated: false)
 		dismissViewControllerAnimated(true, completion: nil)
 	}
 	
@@ -31,18 +46,18 @@ class NotificationsController: UIViewController {
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
 		view.layer.insertSublayer(gradient, atIndex: 0)
 		
-		clearBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
+		editBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
 	}
 	
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 	}
-	
 }
 
 // MARK: - UITableViewDataSource
 extension NotificationsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		editBtn.enabled = (AppDB.sharedInstance.artists.count > 0)
 		return UIApplication.sharedApplication().scheduledLocalNotifications!.count
 	}
 	
@@ -61,7 +76,7 @@ extension NotificationsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
 		if editingStyle == .Delete {
 			// UIApplication.sharedApplication().cancelLocalNotification(notification)
-			clearBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
+			editBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
 		}
 	}
 }

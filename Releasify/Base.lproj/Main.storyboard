@@ -85,7 +85,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I57-Gh-IjT">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="icon_album_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="I57-Gh-IjT">
                                                     <rect key="frame" x="10" y="10" width="70" height="70"/>
                                                     <animations/>
                                                 </imageView>
@@ -773,7 +773,9 @@
                             </constraint>
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="centerX" secondItem="4Kr-FR-TdC" secondAttribute="centerX" id="4Vn-T9-UWh"/>
                             <constraint firstItem="9Sx-F0-V6m" firstAttribute="centerX" secondItem="JAd-qz-y0g" secondAttribute="centerX" id="DCv-Xb-6zz"/>
-                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="19" id="NgA-c4-JUK"/>
+                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="19" id="NgA-c4-JUK">
+                                <variation key="heightClass=regular-widthClass=compact" constant="11"/>
+                            </constraint>
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="top" secondItem="7bC-V9-fkI" secondAttribute="bottom" constant="15" id="P3B-gh-RQI">
                                 <variation key="heightClass=regular-widthClass=compact" constant="10"/>
                             </constraint>
@@ -783,7 +785,7 @@
                             <constraint firstItem="eTW-6L-1ZX" firstAttribute="top" secondItem="xZF-Te-Rk8" secondAttribute="bottom" constant="7" id="bJN-5j-4sa"/>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="top" secondItem="MNM-1i-xyu" secondAttribute="bottom" constant="20" id="hJG-2n-Sdg"/>
                             <constraint firstItem="eTW-6L-1ZX" firstAttribute="top" secondItem="xZF-Te-Rk8" secondAttribute="bottom" constant="2" id="ihk-ra-wQG">
-                                <variation key="heightClass=regular-widthClass=compact" constant="9"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="11"/>
                             </constraint>
                             <constraint firstItem="7bC-V9-fkI" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="14" id="kiP-bn-5fC">
                                 <variation key="heightClass=regular-widthClass=compact" constant="10"/>
@@ -920,7 +922,11 @@
                                 </textAttributes>
                                 <items>
                                     <navigationItem title="Notifications" id="kCB-YM-Ard">
-                                        <barButtonItem key="leftBarButtonItem" enabled="NO" systemItem="edit" id="ExW-o5-qtu"/>
+                                        <barButtonItem key="leftBarButtonItem" title="Edit" id="PP4-04-1Cr">
+                                            <connections>
+                                                <action selector="editTable:" destination="2C1-o9-LbX" id="wTa-HA-eQC"/>
+                                            </connections>
+                                        </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" systemItem="done" id="Tnm-oT-6Md">
                                             <connections>
                                                 <action selector="closeView:" destination="2C1-o9-LbX" id="Tk9-a7-vvL"/>
@@ -984,7 +990,8 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <outlet property="clearBtn" destination="ExW-o5-qtu" id="WF6-aa-19x"/>
+                        <outlet property="editBtn" destination="PP4-04-1Cr" id="Xxb-gN-anp"/>
+                        <outlet property="navBar" destination="BpW-MD-8Fo" id="z1g-7m-Q1J"/>
                         <outlet property="notificationsTable" destination="JrY-WK-rWs" id="Lh5-aB-vPh"/>
                     </connections>
                 </viewController>
@@ -1168,6 +1175,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="icon_album_placeholder" width="100" height="100"/>
         <image name="icon_notifications" width="25" height="25"/>
         <image name="navBar" width="1" height="1"/>
     </resources>
