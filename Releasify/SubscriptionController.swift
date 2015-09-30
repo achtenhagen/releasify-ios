@@ -20,7 +20,9 @@ class SubscriptionController: UIViewController {
 	@IBOutlet weak var searchBar: UISearchBar!
 
 	override func viewDidLoad() {
-		super.viewDidLoad()		
+		super.viewDidLoad()
+		
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
 		
 		searchBar.delegate = self
 		searchBar.keyboardAppearance = .Dark
@@ -64,7 +66,7 @@ class SubscriptionController: UIViewController {
 	}
 	
 	override func viewWillAppear(animated: Bool) {
-		artistsCollectionView.reloadData()
+		reloadSubscriptions()
 		artistsCollectionView.scrollsToTop = true
 	}
 	
@@ -76,10 +78,14 @@ class SubscriptionController: UIViewController {
 		super.didReceiveMemoryWarning()
 	}
 	
+	func reloadSubscriptions() {
+		filteredData = AppDB.sharedInstance.artists
+		artistsCollectionView.reloadData()
+	}
+	
 	func refresh() {
 		API.sharedInstance.refreshSubscriptions({
-			self.filteredData = AppDB.sharedInstance.artists
-			self.artistsCollectionView.reloadData()
+			self.reloadSubscriptions()
 			self.refreshControl.endRefreshing()
 			},
 			errorHandler: { (error) in
@@ -129,17 +135,11 @@ class SubscriptionController: UIViewController {
 						self.appDelegate.contentHash = nil
 						AppDB.sharedInstance.getArtists()
 						AppDB.sharedInstance.getAlbums()
-						self.filteredData = AppDB.sharedInstance.artists
-						self.artistsCollectionView.reloadData()
+						self.reloadSubscriptions()
 						self.searchBar.text = ""
 						self.searchBar.resignFirstResponder()
-						print("Successfully unsubscribed.")
+						NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 					})
-//					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-//						artistsCollectionView.cellForItemAtIndexPath(selectedIndexPath!)?.alpha = 0
-//						}, completion: { (value: Bool) in
-//							
-//					})
 				}
 				},
 				errorHandler: { (error) in
@@ -204,8 +204,7 @@ extension SubscriptionController: UISearchBarDelegate {
 	}
 	
 	func searchBarCancelButtonClicked(searchBar: UISearchBar) {
-		filteredData = AppDB.sharedInstance.artists
-		artistsCollectionView.reloadData()
+		reloadSubscriptions()
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
 		searchBar.showsCancelButton = false

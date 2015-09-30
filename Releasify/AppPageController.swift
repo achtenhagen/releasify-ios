@@ -13,7 +13,7 @@ class AppPageController: UIPageViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var responseArtists = [NSDictionary]()
 	var mediaQuery = MPMediaQuery.artistsQuery()
-	var identifiers: NSArray = ["AlbumsController", "SubscriptionsController"]
+	var identifiers: NSArray = ["AlbumController", "SubscriptionController"]
 	var keyword: String!
 	
 	@IBOutlet weak var notificationsBtn: UIBarButtonItem!
@@ -41,6 +41,9 @@ class AppPageController: UIPageViewController {
 	override func viewDidLoad() {
 		dataSource = self
 		delegate = self
+		
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"updateNotificationButton", name: "updateNotificationButton", object: nil)
+		
 		let startingViewController = viewControllerAtIndex(0)
 		setViewControllers([startingViewController!], direction: .Forward, animated: false, completion: nil)
 		
@@ -56,16 +59,18 @@ class AppPageController: UIPageViewController {
 	}
 	
 	func viewControllerAtIndex(index: Int) -> UIViewController? {
-		let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-		if index == 0 { return storyBoard.instantiateViewControllerWithIdentifier("AlbumsController") }
-		if index == 1 { return storyBoard.instantiateViewControllerWithIdentifier("SubscriptionsController") }
+		if index == 0 { return UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AlbumController") }
+		if index == 1 { return UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") }
 		return nil
+	}
+	
+	func updateNotificationButton () {
+		notificationsBtn.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 	}
 	
 	func addSubscription () {
 		responseArtists = [NSDictionary]()
-		let prompt = "Please enter the name of the artist you would like to be subscribed to."
-		let actionSheetController = UIAlertController(title: "New Subscription", message: prompt, preferredStyle: .Alert)
+		let actionSheetController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
 		let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 		actionSheetController.addAction(cancelAction)
 		let addAction = UIAlertAction(title: "Confirm", style: .Default) { action in
@@ -93,14 +98,8 @@ class AppPageController: UIPageViewController {
 									let artistUniqueID = artist["iTunesUniqueID"] as! Int
 									if AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID) > 0 {
 										AppDB.sharedInstance.getArtists()
-										let startingViewController = self.viewControllerAtIndex(0)
-										if startingViewController!.restorationIdentifier != "AlbumsController" {
-											self.setViewControllers([startingViewController!], direction: .Reverse, animated: true, completion: { bool in
-												NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
-											})
-										} else {
-											NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
-										}
+										NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+										NSNotificationCenter.defaultCenter().postNotificationName("refreshSubscriptions", object: nil, userInfo: nil)
 										print("You've successfully subscribed to \(artistTitle).")
 									}
 								}
@@ -112,7 +111,6 @@ class AppPageController: UIPageViewController {
 								}
 							}
 						}
-						AppDB.sharedInstance.getArtists()
 						if self.responseArtists.count > 0 {
 							self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
 						}
@@ -189,6 +187,8 @@ extension AppPageController: UIPageViewControllerDataSource {
 extension AppPageController: UIPageViewControllerDelegate {
 	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
 		navigationController?.navigationBar.topItem?.title = "Music"
-		if pageViewController.viewControllers![0].restorationIdentifier == "SubscriptionsController" { navigationController?.navigationBar.topItem?.title = "Subscriptions" }
+		if pageViewController.viewControllers![0].restorationIdentifier == "SubscriptionController" {
+			navigationController?.navigationBar.topItem?.title = "Subscriptions"
+		}
 	}
 }

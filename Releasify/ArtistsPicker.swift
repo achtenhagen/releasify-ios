@@ -57,7 +57,6 @@ class ArtistsPicker: UIViewController {
 		
 		var previousArtist = ""
 		for artist in collection {
-			//let representativeItem: MPMediaItem = artist.representativeItem as MPMediaItem
 			let artistName = (artist.representativeItem!!.valueForProperty(MPMediaItemPropertyAlbumArtist)) as! String
 			if artistName != previousArtist && !blacklist.containsObject(artistName) {
 				let currentSection = getSectionForArtistName(artistName)
@@ -318,9 +317,7 @@ class ArtistsPicker: UIViewController {
 // MARK: - UITableViewDataSource
 extension ArtistsPicker: UITableViewDataSource {
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		if searchController.active {
-			return 1
-		}
+		if searchController.active { return 1 }
 		return keys.count
 	}
 	
@@ -329,22 +326,14 @@ extension ArtistsPicker: UITableViewDataSource {
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if searchController.active {
-			return filteredArtists.count
-		}
+		if searchController.active { return filteredArtists.count }
 		return artists[keys[section] as! String] == nil ? 0 : artists[keys[section] as! String]!.count
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as UITableViewCell!
 		let section = keys[indexPath.section] as! String
-		
-		if searchController.active {
-			cell.textLabel?.text = filteredArtists[indexPath.row]
-		} else {
-			cell.textLabel?.text = artists[section]![indexPath.row]
-		}
-		
+		cell.textLabel?.text = searchController.active ? filteredArtists[indexPath.row] : artists[section]![indexPath.row]
 		cell.accessoryType = .None
 		
 		if searchController.active {

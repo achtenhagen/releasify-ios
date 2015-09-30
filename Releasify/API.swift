@@ -37,10 +37,10 @@ final class API {
 	// MARK: - Refresh Content
 	func refreshContent (successHandler: ([Int] -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
 		newItems = [Int]()
-		var explicitValue = 1
-		if !appDelegate.allowExplicitContent { explicitValue = 0 }
-		var postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(explicitValue)"
-		if (appDelegate.contentHash != nil) { postString += "&hash=\(appDelegate.contentHash!)" }
+		var postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(appDelegate.allowExplicitContent ? 1 : 0)"
+		if appDelegate.contentHash != nil {
+			postString += "&hash=\(appDelegate.contentHash!)"
+		}
 		sendRequest(URL.updateContent.rawValue, postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 200 {
 				switch statusCode {
@@ -69,7 +69,7 @@ final class API {
 			}
 			
 			for item in content {
-				let releaseDate = (item["releaseDate"] as! Double)
+				let releaseDate = item["releaseDate"] as! Double
 				let albumItem = Album(
 					ID: item["id"] as! Int,
 					title: item["title"] as! String,
@@ -91,7 +91,9 @@ final class API {
 						let notification = UILocalNotification()
 						notification.category = "DEFAULT_CATEGORY"
 						notification.timeZone = NSTimeZone.localTimeZone()
-						if #available(iOS 8.2, *) { notification.alertTitle = "New Album Released" }
+						if #available(iOS 8.2, *) {
+							notification.alertTitle = "New Album Released"
+						}
 						notification.alertBody = "\(albumItem.title) is now available."
 						notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
 						notification.applicationIconBadgeNumber++
@@ -109,11 +111,11 @@ final class API {
 			
 			NSUserDefaults.standardUserDefaults().setValue(contentHash, forKey: "contentHash")
 			self.appDelegate.contentHash = contentHash
-			
-			AppDB.sharedInstance.getAlbums()
+						
 			NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
-			if let handler: Void = successHandler?(self.newItems) { handler }
-			
+			if let handler: Void = successHandler?(self.newItems) {
+				handler
+			}
 			},
 			errorHandler: { (error) -> Void in
 				errorHandler(error: error)

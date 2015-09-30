@@ -113,7 +113,6 @@ extension SearchResultsController: UITableViewDataSource {
 				cell.albumArtwork.image = img
 			} else {
 				if let checkedURL = NSURL(string: albumURL) {
-					print(checkedURL)
 					let request = NSURLRequest(URL: checkedURL)
 					NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
 						if error != nil {

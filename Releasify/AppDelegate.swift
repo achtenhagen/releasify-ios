@@ -108,9 +108,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		// Check for notification payload when app is launched.
 		if let launchOpts = launchOptions {
-			if let remotePayload = launchOpts[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary { remoteNotificationPayload = remotePayload }
+			if let remotePayload = launchOpts[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
+				remoteNotificationPayload = remotePayload
+			}
 			if let localNotification = launchOpts[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
-				if let userInfo = localNotification.userInfo { localNotificationPayload = userInfo }
+				if let userInfo = localNotification.userInfo {
+					localNotificationPayload = userInfo
+				}
 			}
 		}
 		
@@ -155,7 +159,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				print("UUID was set successfully.")
 				},
 				errorHandler: { (error) in
-					// print("Error: \(error.localizedDescription)")
+				// print("Error: \(error.localizedDescription)")
 			})
 		}
 	}

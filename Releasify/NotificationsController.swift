@@ -10,7 +10,8 @@ import UIKit
 
 class NotificationsController: UIViewController {
 	let notificationCellReuseIdentifier = "NotificationCell"
-	
+	var notifications: [UILocalNotification]!
+	var albums: [Album]!
 	
 	@IBOutlet weak var navBar: UINavigationBar!
 	@IBOutlet weak var editBtn: UIBarButtonItem!
@@ -34,7 +35,18 @@ class NotificationsController: UIViewController {
 	}
 	
 	override func viewDidLoad() {
-		super.viewDidLoad()
+		super.viewDidLoad()		
+		
+		notifications = [UILocalNotification]()
+		albums = [Album]()
+		for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
+			notifications.append(notification)
+			let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+			let notificationID = userInfoCurrent["AlbumID"]! as! Int
+			if let album = AppDB.sharedInstance.getAlbum(notificationID) {
+				albums.append(album)
+			}
+		}
 		
 		notificationsTable.registerNib(UINib(nibName: "NotificationCell", bundle: nil), forCellReuseIdentifier: notificationCellReuseIdentifier)
 		
@@ -46,7 +58,7 @@ class NotificationsController: UIViewController {
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
 		view.layer.insertSublayer(gradient, atIndex: 0)
 		
-		editBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
+		editBtn.enabled = notifications.count > 0 ? true : false		
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -57,26 +69,41 @@ class NotificationsController: UIViewController {
 // MARK: - UITableViewDataSource
 extension NotificationsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		editBtn.enabled = (AppDB.sharedInstance.artists.count > 0)
-		return UIApplication.sharedApplication().scheduledLocalNotifications!.count
+		return notifications.count
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = notificationsTable.dequeueReusableCellWithIdentifier(notificationCellReuseIdentifier) as! NotificationCell
-		let notifications = UIApplication.sharedApplication().scheduledLocalNotifications!
-		let notification = notifications[indexPath.row]
-		if #available(iOS 8.2, *) {
-			cell.notificationBody.text = "\(notification.alertTitle!) - \(notification.alertBody!)"
-		} else {
-			cell.notificationBody.text = "Notification - \(notification.alertBody!)"
+		if let hash = albums?[indexPath.row].artwork {
+			if AppDB.sharedInstance.checkArtwork(hash) {
+				cell.artwork.image = AppDB.sharedInstance.getArtwork(hash)
+			} else {
+				cell.artwork.image = UIImage(named: "icon_album_placeholder")
+			}
 		}
+		
+		let date = NSDate(timeIntervalSince1970: (albums?[indexPath.row].releaseDate)!)
+		let dateFormatter = NSDateFormatter()
+		dateFormatter.timeStyle = .NoStyle
+		dateFormatter.dateStyle = .ShortStyle
+		dateFormatter.timeZone = NSTimeZone()
+		let localDate = dateFormatter.stringFromDate(date)
+		
+		cell.notificationBody.text = "\(AppDB.sharedInstance.getAlbumArtist(albums[indexPath.row].ID)!): \(albums[indexPath.row].title) is set to be released on \(localDate)."
 		return cell
 	}
 	
 	func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
 		if editingStyle == .Delete {
-			// UIApplication.sharedApplication().cancelLocalNotification(notification)
-			editBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
+			let notification = notifications[indexPath.row]
+			let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+			let notificationID = userInfoCurrent["AlbumID"]! as! Int
+			UIApplication.sharedApplication().cancelLocalNotification(notification)
+			notifications.removeAtIndex(indexPath.row)
+			notificationsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+			//notificationsTable.reloadData()
+			print("Cancelled local notification \(notificationID)")
+			editBtn.enabled = notifications.count > 0 ? true : false
 		}
 	}
 }

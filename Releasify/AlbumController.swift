@@ -80,7 +80,9 @@ class AlbumController: UIViewController {
 					break
 				}
 			}
-			if selectedAlbum.ID == notificationAlbumID { self.performSegueWithIdentifier("AlbumViewSegue", sender: self) }
+			if selectedAlbum.ID == notificationAlbumID {
+				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+			}
 		}
 		
 		/*
@@ -117,16 +119,14 @@ class AlbumController: UIViewController {
 	}
 	
 	func refresh() {
-		if AppDB.sharedInstance.artists.count == 0 {
-			// API.sharedInstance.refreshSubscriptions(nil, errorHandler: nil)
-		}
 		API.sharedInstance.refreshContent({ (newItems) in
+			AppDB.sharedInstance.getAlbums()
 			self.albumCollectionView.reloadData()
 			self.refreshControl.endRefreshing()
 			if newItems.count > 0 {
 				// Todo: Show updates...
 			}
-			self.navigationItem.leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications?.count > 0 ? true : false
+			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 			},
 			errorHandler: { (error) in
 				self.refreshControl.endRefreshing()
@@ -146,7 +146,7 @@ class AlbumController: UIViewController {
 					alert.message = "Failed to parse response data."
 				case API.Error.InternalServerError:
 					alert.title = "500 Internal Server Error"
-					alert.message = "An error on our end occured."
+					alert.message = "An error occured on our end."
 				default:
 					alert.title = "Oops! Something went wrong."
 					alert.message = "An unknown error occured."
@@ -165,7 +165,9 @@ class AlbumController: UIViewController {
 					break
 				}
 			}
-			if selectedAlbum.ID == notificationAlbumID { self.performSegueWithIdentifier("AlbumViewSegue", sender: self) }
+			if selectedAlbum.ID == notificationAlbumID {
+				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+			}
 		}
 	}
 	
@@ -209,8 +211,9 @@ class AlbumController: UIViewController {
 		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
 		if indexPath == nil { return }
 		var section = indexPath!.section
-		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
-		
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
+			section = sectionAtIndex()
+		}
 		if indexPath?.row != nil {
 			if gesture.state == UIGestureRecognizerState.Began {
 				let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
@@ -222,14 +225,14 @@ class AlbumController: UIViewController {
 				})
 				controller.addAction(buyAction)
 				
-				// Implement for final release.
-				/*let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
-				// Todo: implement...
-				})
-				controller.addAction(reportAction)*/
+//				// Implement for final release.
+//				let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
+//				// Todo: implement...
+//				})
+//				controller.addAction(reportAction)
 				
 				if AppDB.sharedInstance.albums[section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
-					let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
+					let deleteAction = UIAlertAction(title: "Remove", style: .Destructive, handler: { action in
 						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
 						let albumArtwork = AppDB.sharedInstance.albums[section]![indexPath!.row].artwork
 						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
@@ -238,6 +241,7 @@ class AlbumController: UIViewController {
 							if ID == albumID {
 								print("Canceled location notification with ID: \(ID)")
 								UIApplication.sharedApplication().cancelLocalNotification(notification)
+								NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 								break
 							}
 						}
@@ -251,15 +255,15 @@ class AlbumController: UIViewController {
 					})
 					controller.addAction(deleteAction)
 				} else {
-					let hideAction = UIAlertAction(title: "Hide Album", style: .Destructive, handler: { action in
-						// let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
-						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
-							}, completion: { (value: Bool) in
-								// Todo: implement...
-						})
-					})
-					controller.addAction(hideAction)
+//					let hideAction = UIAlertAction(title: "Hide Album", style: .Destructive, handler: { action in
+//						// let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
+//						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+//							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+//							}, completion: { (value: Bool) in
+//								// Todo: implement...
+//						})
+//					})
+//					controller.addAction(hideAction)
 				}
 				
 				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
@@ -310,15 +314,15 @@ extension AlbumController: UICollectionViewDataSource {
 		let album = AppDB.sharedInstance.albums[section]![indexPath.row]
 		let hash = album.artwork
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
-		let dbArtwork = AppDB.sharedInstance.checkArtwork(hash)
-		if dbArtwork {
+		cell.albumArtwork.contentMode = .Center
+		cell.albumArtwork.image = UIImage(named: "icon_album_placeholder")
+		if AppDB.sharedInstance.checkArtwork(hash){
 			artwork[hash] = AppDB.sharedInstance.getArtwork(hash)
 		}
 		if let image = artwork[hash] {
 			cell.albumArtwork.contentMode = .ScaleToFill
 			cell.albumArtwork.image = image
 		} else {
-			cell.albumArtwork.alpha = 0
 			let subDir = (album.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
 			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
 			if let checkedURL = NSURL(string: albumURL) {
@@ -326,24 +330,31 @@ extension AlbumController: UICollectionViewDataSource {
 				let mainQueue = NSOperationQueue.mainQueue()
 				NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
 					if error != nil {
+						cell.albumArtwork.contentMode = .Center
+						cell.albumArtwork.image = UIImage(named: "icon_album_placeholder")
 						print("Failed to download artwork!")
 						return
 					}
 					if let HTTPResponse = response as? NSHTTPURLResponse {
-						if HTTPResponse.statusCode == 200 {
-							let image = UIImage(data: data!)
-							self.artwork[hash] = image
-							dispatch_async(dispatch_get_main_queue(), {
-								if let cell = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
-									AppDB.sharedInstance.addArtwork(hash, artwork: image!)
-									cell.albumArtwork.contentMode = .ScaleToFill
-									cell.albumArtwork.image = image
-									UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-										cell.albumArtwork.alpha = 1.0
-									}, completion: nil)
-								}
-							})
+						if HTTPResponse.statusCode != 200 {
+							cell.albumArtwork.contentMode = .Center
+							cell.albumArtwork.image = UIImage(named: "icon_album_placeholder")
+							print("Failed to download artwork!")
+							return
 						}
+						let image = UIImage(data: data!)
+						cell.albumArtwork.alpha = 0
+						self.artwork[hash] = image
+						dispatch_async(dispatch_get_main_queue(), {
+							if let cell = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
+								AppDB.sharedInstance.addArtwork(hash, artwork: image!)
+								cell.albumArtwork.contentMode = .ScaleToFill
+								cell.albumArtwork.image = image
+								UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+									cell.albumArtwork.alpha = 1.0
+								}, completion: nil)
+							}
+						})
 					}
 				})
 			}
@@ -414,7 +425,9 @@ extension AlbumController: UICollectionViewDataSource {
 extension AlbumController: UICollectionViewDelegate {
 	func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
 		var section = indexPath.section
-		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
+			section = sectionAtIndex()
+		}
 		selectedAlbum = AppDB.sharedInstance.albums[section]![indexPath.row]
 		performSegueWithIdentifier("AlbumViewSegue", sender: self)
 		return true

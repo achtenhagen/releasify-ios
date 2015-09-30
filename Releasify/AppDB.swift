@@ -60,27 +60,30 @@ final class AppDB {
 		if sqlite3_prepare_v2(database, albumExistsQuery, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(albumItem.ID))
 			var numRows = 0
-			if sqlite3_step(statement) == SQLITE_ROW { numRows = Int(sqlite3_column_int(statement, 0)) }
+			if sqlite3_step(statement) == SQLITE_ROW {
+				numRows = Int(sqlite3_column_int(statement, 0))
+			}
 			sqlite3_finalize(statement)
-			if numRows == 0 {
-				let newAlbumQuery = "INSERT INTO albums (id, title, release_date, artwork, explicit, copyright, iTunes_unique_id, iTunes_url, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-				statement = nil
-				if sqlite3_prepare_v2(database, newAlbumQuery, -1, &statement, nil) == SQLITE_OK {
-					sqlite3_bind_int(statement, 1, Int32(albumItem.ID))
-					sqlite3_bind_text(statement, 2, (albumItem.title as NSString).UTF8String, -1, nil)
-					sqlite3_bind_int(statement, 3, Int32(albumItem.releaseDate))
-					sqlite3_bind_text(statement, 4, (albumItem.artwork as NSString).UTF8String, -1, nil)
-					sqlite3_bind_int(statement, 5, Int32(albumItem.explicit))
-					sqlite3_bind_text(statement, 6, (albumItem.copyright as NSString).UTF8String, -1, nil)
-					sqlite3_bind_int(statement, 7, Int32(albumItem.iTunesUniqueID))
-					sqlite3_bind_text(statement, 8, (albumItem.iTunesURL as NSString).UTF8String, -1, nil)
-					sqlite3_bind_int(statement, 9, Int32(albumItem.created))
-					if sqlite3_step(statement) == SQLITE_DONE { newAlbumID = Int(sqlite3_last_insert_rowid(database)) }
-					sqlite3_finalize(statement)
-					if newAlbumID > 0 {
-						print("Album added successfully.")
-						addContributingArtist(albumItem.ID, artistID: albumItem.artistID)
-					}
+			if numRows > 0 { return 0 }
+			let newAlbumQuery = "INSERT INTO albums (id, title, release_date, artwork, explicit, copyright, iTunes_unique_id, iTunes_url, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+			statement = nil
+			if sqlite3_prepare_v2(database, newAlbumQuery, -1, &statement, nil) == SQLITE_OK {
+				sqlite3_bind_int(statement, 1, Int32(albumItem.ID))
+				sqlite3_bind_text(statement, 2, (albumItem.title as NSString).UTF8String, -1, nil)
+				sqlite3_bind_int(statement, 3, Int32(albumItem.releaseDate))
+				sqlite3_bind_text(statement, 4, (albumItem.artwork as NSString).UTF8String, -1, nil)
+				sqlite3_bind_int(statement, 5, Int32(albumItem.explicit))
+				sqlite3_bind_text(statement, 6, (albumItem.copyright as NSString).UTF8String, -1, nil)
+				sqlite3_bind_int(statement, 7, Int32(albumItem.iTunesUniqueID))
+				sqlite3_bind_text(statement, 8, (albumItem.iTunesURL as NSString).UTF8String, -1, nil)
+				sqlite3_bind_int(statement, 9, Int32(albumItem.created))
+				if sqlite3_step(statement) == SQLITE_DONE {
+					newAlbumID = Int(sqlite3_last_insert_rowid(database))
+				}
+				sqlite3_finalize(statement)
+				if newAlbumID > 0 {
+					print("Album added successfully.")
+					addContributingArtist(albumItem.ID, artistID: albumItem.artistID)
 				}
 			}
 		}
@@ -114,29 +117,33 @@ final class AppDB {
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
-			if sqlite3_step(statement) == SQLITE_DONE {
-				let ID = Int(sqlite3_column_int(statement, 0))
-				let albumTitle = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 1)))
-				let releaseDate = Double(sqlite3_column_int(statement, 2))
-				let created = Int(sqlite3_column_int(statement, 8))
-				let artwork = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 3)))
-				let explicit = Int(sqlite3_column_int(statement, 4))
-				let copyright = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 5)))
-				let iTunesUniqueID = Int(sqlite3_column_int(statement, 6))
-				let iTunesURL = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 7)))
-				album = Album(
-					ID: ID,
-					title: albumTitle!,
-					artistID: getAlbumArtistId(ID),
-					releaseDate: releaseDate,
-					artwork: artwork!,
-					explicit: explicit,
-					copyright: copyright!,
-					iTunesUniqueID: iTunesUniqueID,
-					iTunesURL: iTunesURL!,
-					created: created
-				)
+			if sqlite3_step(statement) != SQLITE_ROW {
+				print("Failed to get album from db.")
+				disconnect()
+				return nil
 			}
+			let ID = Int(sqlite3_column_int(statement, 0))
+			let albumTitle = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 1)))
+			let releaseDate = Double(sqlite3_column_int(statement, 2))
+			let created = Int(sqlite3_column_int(statement, 8))
+			let artwork = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 3)))
+			let explicit = Int(sqlite3_column_int(statement, 4))
+			let copyright = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 5)))
+			let iTunesUniqueID = Int(sqlite3_column_int(statement, 6))
+			let iTunesURL = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 7)))
+			album = Album(
+				ID: ID,
+				title: albumTitle!,
+				artistID: getAlbumArtistID(ID),
+				releaseDate: releaseDate,
+				artwork: artwork!,
+				explicit: explicit,
+				copyright: copyright!,
+				iTunesUniqueID: iTunesUniqueID,
+				iTunesURL: iTunesURL!,
+				created: created
+			)
+			sqlite3_finalize(statement)
 		}
 		disconnect()
 		return album
@@ -170,7 +177,7 @@ final class AppDB {
 				albums[section]!.append(Album(
 					ID: ID,
 					title: albumTitle!,
-					artistID: getAlbumArtistId(ID),
+					artistID: getAlbumArtistID(ID),
 					releaseDate: releaseDate,
 					artwork: artwork!,
 					explicit: explicit,
@@ -329,7 +336,9 @@ final class AppDB {
 		if sqlite3_prepare_v2(database, artistExistsQuery, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
 			var numRows = 0
-			if sqlite3_step(statement) == SQLITE_ROW { numRows = Int(sqlite3_column_int(statement, 0)) }
+			if sqlite3_step(statement) == SQLITE_ROW {
+				numRows = Int(sqlite3_column_int(statement, 0))
+			}
 			sqlite3_finalize(statement)
 			if numRows == 0 {
 				let query = "INSERT INTO pending_artists (id, created) VALUES (?, ?)"
@@ -337,7 +346,9 @@ final class AppDB {
 				if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 					sqlite3_bind_int(statement, 1, Int32(ID))
 					sqlite3_bind_int(statement, 2, timestamp)
-					if sqlite3_step(statement) != SQLITE_DONE { print("Failed to insert pending artist.") }
+					if sqlite3_step(statement) != SQLITE_DONE {
+						print("Failed to insert pending artist.")
+					}
 					sqlite3_finalize(statement)
 				}
 			}
@@ -367,9 +378,7 @@ final class AppDB {
 		
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
-			if sqlite3_step(statement) == SQLITE_DONE {
-				if let i = index { artists.removeAtIndex(i) }
-			} else {
+			if sqlite3_step(statement) != SQLITE_DONE {
 				print("SQLite: Failed to delete from `albums`.")
 			}
 			sqlite3_finalize(statement)
@@ -380,7 +389,9 @@ final class AppDB {
 		
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
-			if sqlite3_step(statement) != SQLITE_DONE { print("SQLite: Failed to delete from `album_artists`.") }
+			if sqlite3_step(statement) != SQLITE_DONE {
+				print("SQLite: Failed to delete from `album_artists`.")
+			}
 			sqlite3_finalize(statement)
 		}
 		
@@ -389,7 +400,9 @@ final class AppDB {
 		
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
-			if sqlite3_step(statement) != SQLITE_DONE { print("SQLite: Failed to delete from `artists`.") }
+			if sqlite3_step(statement) != SQLITE_DONE {
+				print("SQLite: Failed to delete from `artists`.")
+			}
 			sqlite3_finalize(statement)
 		}
 		disconnect()
@@ -403,21 +416,25 @@ final class AppDB {
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(albumID))
-			if sqlite3_step(statement) == SQLITE_ROW { artistTitle = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 0)))! }
+			if sqlite3_step(statement) == SQLITE_ROW {
+				artistTitle = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 0)))!
+			}
 			sqlite3_finalize(statement)
 		}
 		disconnect()
 		return artistTitle
 	}
 	
-	func getAlbumArtistId (albumID: Int) -> Int {
+	func getAlbumArtistID (albumID: Int) -> Int {
 		if !connected() { return 0 }
 		var artistID = 0
 		let query = "SELECT artist_id FROM album_artists WHERE album_id = ?"
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(albumID))
-			if sqlite3_step(statement) == SQLITE_ROW { artistID = Int(sqlite3_column_int(statement, 0)) }
+			if sqlite3_step(statement) == SQLITE_ROW {
+				artistID = Int(sqlite3_column_int(statement, 0))
+			}
 			sqlite3_finalize(statement)
 		}
 		disconnect()
@@ -431,7 +448,9 @@ final class AppDB {
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(uniqueID))
-			if sqlite3_step(statement) == SQLITE_ROW { artistID = Int(sqlite3_column_int(statement, 0)) }
+			if sqlite3_step(statement) == SQLITE_ROW {
+				artistID = Int(sqlite3_column_int(statement, 0))
+			}
 			sqlite3_finalize(statement)
 		}
 		disconnect()
@@ -465,8 +484,7 @@ final class AppDB {
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			while sqlite3_step(statement) == SQLITE_ROW {
-				let IDRow = sqlite3_column_int(statement, 0)
-				pendingArtists.append(Int(IDRow))
+				pendingArtists.append(Int(sqlite3_column_int(statement, 0)))
 			}
 			sqlite3_finalize(statement)
 		}
@@ -478,7 +496,9 @@ final class AppDB {
 	// MARK: - Artwork
 	func addArtwork (hash: String, artwork: UIImage) {
 		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
-		if !NSFileManager.defaultManager().fileExistsAtPath(artworkPath) { UIImageJPEGRepresentation(artwork, 1.0)!.writeToFile(artworkPath, atomically: true) }
+		if !NSFileManager.defaultManager().fileExistsAtPath(artworkPath) {
+			UIImageJPEGRepresentation(artwork, 1.0)!.writeToFile(artworkPath, atomically: true)
+		}
 	}
 	
 	func checkArtwork (hash: String) -> Bool {
@@ -516,7 +536,9 @@ final class AppDB {
 		if !connected() { return }
 		let query = "DELETE FROM \(table)"
 		var errMsg: UnsafeMutablePointer<Int8> = nil
-		if sqlite3_exec(database, query, nil, nil, &errMsg) != SQLITE_OK { print(String.fromCString(UnsafePointer<Int8>(errMsg))) }
+		if sqlite3_exec(database, query, nil, nil, &errMsg) != SQLITE_OK {
+			print(String.fromCString(UnsafePointer<Int8>(errMsg)))
+		}
 		disconnect()
 	}
 }

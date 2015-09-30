@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15B17c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="HBF-6K-pqv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15B22c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="HBF-6K-pqv">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
@@ -89,14 +89,14 @@
                                                     <rect key="frame" x="10" y="10" width="70" height="70"/>
                                                     <animations/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Album Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vKx-Gw-3ic">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Album Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vKx-Gw-3ic">
                                                     <rect key="frame" x="88" y="10" width="220" height="24"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="16"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="2015" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EZT-FJ-fEi">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="2015" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EZT-FJ-fEi">
                                                     <rect key="frame" x="88" y="60" width="220" height="20"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="12"/>
@@ -278,7 +278,7 @@
         <!--Subscriptions-->
         <scene sceneID="IvS-dN-N2g">
             <objects>
-                <viewController storyboardIdentifier="SubscriptionsController" title="Subscriptions" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hFU-gz-3m4" customClass="SubscriptionController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SubscriptionController" title="Subscriptions" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hFU-gz-3m4" customClass="SubscriptionController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ldc-8S-yBm"/>
                         <viewControllerLayoutGuide type="bottom" id="G3r-01-7gM"/>
@@ -1002,7 +1002,7 @@
         <!--Albums-->
         <scene sceneID="vZm-i9-Evi">
             <objects>
-                <viewController storyboardIdentifier="AlbumsController" title="Albums" useStoryboardIdentifierAsRestorationIdentifier="YES" id="sGZ-AU-DNR" customClass="AlbumController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AlbumController" title="Albums" useStoryboardIdentifierAsRestorationIdentifier="YES" id="sGZ-AU-DNR" customClass="AlbumController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="z6t-wj-o6j"/>
                         <viewControllerLayoutGuide type="bottom" id="AIC-ES-XLk"/>

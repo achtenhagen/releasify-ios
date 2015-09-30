@@ -40,6 +40,9 @@ class AlbumDetailController: UIViewController {
 		
 		if let dbArtwork = AppDB.sharedInstance.getArtwork(album.artwork) {
 			artwork = dbArtwork
+		} else {
+			artwork = UIImage(named: "icon_album_placeholder")!
+			albumArtwork.contentMode = .Center
 		}
 		
 		albumArtwork.image = artwork
@@ -64,10 +67,10 @@ class AlbumDetailController: UIViewController {
 		albumArtwork.addGestureRecognizer(doubleTapGesture)
 		
 		switch UIScreen.mainScreen().bounds.width {
-			// iPhone 6
+			// iPhone 6s
 		case 375:
 			detailContainerTopConstraint.constant = 45
-			// iPhone 6 Plus
+			// iPhone 6s Plus
 		case 414:
 			detailContainerTopConstraint.constant = 60
 		default:
@@ -86,6 +89,7 @@ class AlbumDetailController: UIViewController {
 							if HTTPResponse.statusCode == 200 {
 								let image = UIImage(data: data!)
 								AppDB.sharedInstance.addArtwork(self.album.artwork + "_large", artwork: image!)
+								self.albumArtwork.contentMode = .ScaleToFill
 								self.albumArtwork.image = image
 								print("Successfully downloaded HD artwork.")
 							}

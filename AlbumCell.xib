@@ -23,7 +23,7 @@
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                 <rect key="frame" x="0.0" y="0.0" width="145" height="190"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="icon_album_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="cAq-II-fkp">
+                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="icon_album_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="cAq-II-fkp">
                         <rect key="frame" x="0.0" y="0.0" width="145" height="145"/>
                         <animations/>
                         <constraints>
