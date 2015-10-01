@@ -47,7 +47,8 @@ final class API {
 				case 204:
 					if let handler: Void = successHandler?(self.newItems) { handler }
 				case 400:
-					errorHandler(error: Error.BadRequest)
+					// Request new ID
+					break
 				case 403:
 					errorHandler(error: Error.Unauthorized)
 				case 500:

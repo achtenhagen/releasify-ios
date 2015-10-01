@@ -318,8 +318,8 @@ final class AppDB {
 					sqlite3_bind_int(statement, 1, Int32(albumID))
 					sqlite3_bind_int(statement, 2, Int32(artistID))
 					sqlite3_bind_int(statement, 3, timeStamp)
-					if sqlite3_step(statement) == SQLITE_DONE {
-						print("Successfully added a contributing artist.")
+					if sqlite3_step(statement) != SQLITE_DONE {
+						print("Failed to a contributing artist.")
 					}
 					sqlite3_finalize(statement)
 				}
@@ -513,6 +513,7 @@ final class AppDB {
 			do {
 				try NSFileManager.defaultManager().removeItemAtPath(artworkPath)
 			} catch _ {
+				print("Failed to remove artwork: \(hash).")
 			}
 			print("Successfully removed artwork: \(hash).")
 		}
@@ -520,6 +521,7 @@ final class AppDB {
 			do {
 				try NSFileManager.defaultManager().removeItemAtPath(artworkPathHD)
 			} catch _ {
+				print("Failed to remove HD artwork: \(hash).")
 			}
 			print("Successfully removed HD artwork: \(hash).")
 		}
@@ -537,7 +539,7 @@ final class AppDB {
 		let query = "DELETE FROM \(table)"
 		var errMsg: UnsafeMutablePointer<Int8> = nil
 		if sqlite3_exec(database, query, nil, nil, &errMsg) != SQLITE_OK {
-			print(String.fromCString(UnsafePointer<Int8>(errMsg)))
+			print("SQLite: \(String.fromCString(UnsafePointer<Int8>(errMsg)))")
 		}
 		disconnect()
 	}

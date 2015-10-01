@@ -40,13 +40,16 @@ class NotificationsController: UIViewController {
 		notifications = [UILocalNotification]()
 		albums = [Album]()
 		for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
-			notifications.append(notification)
 			let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
 			let notificationID = userInfoCurrent["AlbumID"]! as! Int
 			if let album = AppDB.sharedInstance.getAlbum(notificationID) {
+				notifications.append(notification)
 				albums.append(album)
 			}
 		}
+		
+		print(UIApplication.sharedApplication().scheduledLocalNotifications!.count)
+		print(albums.count)
 		
 		notificationsTable.registerNib(UINib(nibName: "NotificationCell", bundle: nil), forCellReuseIdentifier: notificationCellReuseIdentifier)
 		
@@ -81,14 +84,12 @@ extension NotificationsController: UITableViewDataSource {
 				cell.artwork.image = UIImage(named: "icon_album_placeholder")
 			}
 		}
-		
 		let date = NSDate(timeIntervalSince1970: (albums?[indexPath.row].releaseDate)!)
 		let dateFormatter = NSDateFormatter()
 		dateFormatter.timeStyle = .NoStyle
 		dateFormatter.dateStyle = .ShortStyle
 		dateFormatter.timeZone = NSTimeZone()
-		let localDate = dateFormatter.stringFromDate(date)
-		
+		let localDate = dateFormatter.stringFromDate(date)		
 		cell.notificationBody.text = "\(AppDB.sharedInstance.getAlbumArtist(albums[indexPath.row].ID)!): \(albums[indexPath.row].title) is set to be released on \(localDate)."
 		return cell
 	}
@@ -101,9 +102,9 @@ extension NotificationsController: UITableViewDataSource {
 			UIApplication.sharedApplication().cancelLocalNotification(notification)
 			notifications.removeAtIndex(indexPath.row)
 			notificationsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
-			//notificationsTable.reloadData()
-			print("Cancelled local notification \(notificationID)")
+			notificationsTable.reloadData()
 			editBtn.enabled = notifications.count > 0 ? true : false
+			print("Cancelled local notification \(notificationID)")
 		}
 	}
 }

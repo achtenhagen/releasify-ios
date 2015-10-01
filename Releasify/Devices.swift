@@ -51,13 +51,13 @@ public extension UIDevice {
 				"iPhone5,4" : .iPhone5c,       // (model A1507, A1516, A1526 (China), A1529 | Global)
 				"iPhone6,1" : .iPhone5S,       // (model A1433, A1533 | GSM)
 				"iPhone6,2" : .iPhone5S,       // (model A1457, A1518, A1528 (China), A1530 | Global)
+				"iPhone7,1" : .iPhone6plus,    // All iPhone 6 Plus's
+				"iPhone7,2" : .iPhone6,		   // All iPhone 6's
 				"iPad4,1"   : .iPadAir1,       // 5th Generation iPad (iPad Air) - Wifi
 				"iPad4,2"   : .iPadAir2,       // 5th Generation iPad (iPad Air) - Cellular
 				"iPad4,4"   : .iPadMini2,      // (2nd Generation iPad Mini - Wifi)
 				"iPad4,5"   : .iPadMini2,      // (2nd Generation iPad Mini - Cellular)
-				"iPhone7,1" : .iPhone6plus,    // All iPhone 6 Plus's
-				"iPod5,1"   : .iPodTouch,      // 5th Generation iPod Touch
-				"iPhone7,2" : .iPhone6         // All iPhone 6's
+				"iPod5,1"   : .iPodTouch      // 5th Generation iPod Touch
 			]
 			if let model = modelMap[String.fromCString(machinePtr)!] {
 				return model

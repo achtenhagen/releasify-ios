@@ -117,7 +117,7 @@ class SubscriptionController: UIViewController {
 		let rowIndex = sender.tag
 		let alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
 		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-		alert.addAction(UIAlertAction(title: "Confirm", style: .Destructive, handler: { action in
+		alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
 			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(self.filteredData[rowIndex].iTunesUniqueID)"
 			API.sharedInstance.sendRequest(API.URL.removeArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
 				if statusCode == 204 {
@@ -132,6 +132,7 @@ class SubscriptionController: UIViewController {
 								}
 							}
 						}
+						NSUserDefaults.standardUserDefaults().setValue(nil, forKey: "contentHash")
 						self.appDelegate.contentHash = nil
 						AppDB.sharedInstance.getArtists()
 						AppDB.sharedInstance.getAlbums()
@@ -149,12 +150,6 @@ class SubscriptionController: UIViewController {
 					case API.Error.BadRequest:
 						alert.title = "400 Bad Request"
 						alert.message = "Missing Parameter."
-					case API.Error.Unauthorized:
-						alert.title = "403 Forbidden"
-						alert.message = "Invalid Credentials."
-						alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
-							// Request new ID from server.
-						}))
 					case API.Error.InternalServerError:
 						alert.title = "500 Internal Server Error"
 						alert.message = "An error on our end occured."
