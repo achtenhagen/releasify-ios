@@ -46,10 +46,7 @@ class NotificationsController: UIViewController {
 				notifications.append(notification)
 				albums.append(album)
 			}
-		}
-		
-		print(UIApplication.sharedApplication().scheduledLocalNotifications!.count)
-		print(albums.count)
+		}			
 		
 		notificationsTable.registerNib(UINib(nibName: "NotificationCell", bundle: nil), forCellReuseIdentifier: notificationCellReuseIdentifier)
 		

@@ -28,8 +28,9 @@ class AlbumDetailController: UIViewController {
 	@IBOutlet weak var secondTimeLabel: UILabel!
 	@IBOutlet weak var thirdTimeLabel: UILabel!
 	@IBOutlet weak var progressBar: UIProgressView!
-	@IBOutlet var detailContainer: UIView!
+	@IBOutlet weak var detailContainer: UIView!
 	@IBOutlet weak var detailContainerTopConstraint: NSLayoutConstraint!
+
 	
 	@IBAction func shareAlbum(sender: AnyObject) {
 		shareAlbum()
@@ -40,6 +41,7 @@ class AlbumDetailController: UIViewController {
 		
 		if let dbArtwork = AppDB.sharedInstance.getArtwork(album.artwork) {
 			artwork = dbArtwork
+			albumArtwork.contentMode = .ScaleToFill
 		} else {
 			artwork = UIImage(named: "icon_album_placeholder")!
 			albumArtwork.contentMode = .Center
@@ -67,15 +69,20 @@ class AlbumDetailController: UIViewController {
 		albumArtwork.addGestureRecognizer(doubleTapGesture)
 		
 		switch UIScreen.mainScreen().bounds.width {
-			// iPhone 6s
+			// iPhone 6S
 		case 375:
 			detailContainerTopConstraint.constant = 45
-			// iPhone 6s Plus
+			// iPhone 6S Plus
 		case 414:
 			detailContainerTopConstraint.constant = 60
 		default:
 			detailContainerTopConstraint.constant = 15
-		}
+		}		
+		
+//		detailContainer.translatesAutoresizingMaskIntoConstraints = false
+//		let verticalSpace = NSLayoutConstraint(item: detailContainer, attribute: .Top, relatedBy: .Equal, toItem: albumTitle, attribute: .Bottom, multiplier: 1, constant: detailContainerTopConstraint.constant)
+//		NSLayoutConstraint.activateConstraints([verticalSpace])
+//		//detailContainer.addConstraint(verticalSpace)
 		
 		if AppDB.sharedInstance.getArtwork(album.artwork + "_large") == nil {
 			let subDir = (album.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))

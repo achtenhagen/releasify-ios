@@ -17,6 +17,7 @@ final class API {
 		case BadRequest
 		case FailedRequest
 		case FailedToParseJSON
+		case FileNotFound
 		case InternalServerError
 		case InvalidHTTPResponse
 		case RequestEntityTooLarge
@@ -25,19 +26,21 @@ final class API {
 	}
 	
 	enum URL: String {
-		case register = "https://releasify.me/api/ios/v2.0/register.php",
-		updateContent = "https://releasify.me/api/ios/v2.0/update_content.php",
-		confirmArtist = "https://releasify.me/api/ios/v2.0/confirm_artist.php",
-		submitArtist  = "https://releasify.me/api/ios/v2.0/submit_artist.php",
-		removeArtist  = "https://releasify.me/api/ios/v2.0/unsubscribe_artist.php",
-		updateArtists = "https://releasify.me/api/ios/v2.0/update_artists.php",
-		lookupItem    = "https://releasify.me/api/ios/v2.0/item.php"
+		case register = "https://releasify.me/api/ios/v2.1/register.php",
+		updateContent = "https://releasify.me/api/ios/v2.1/update_content.php",
+		confirmArtist = "https://releasify.me/api/ios/v2.1/confirm_artist.php",
+		submitArtist  = "https://releasify.me/api/ios/v2.1/submit_artist.php",
+		removeArtist  = "https://releasify.me/api/ios/v2.1/unsubscribe_artist.php",
+		lookupItem    = "https://releasify.me/api/ios/v2.1/item.php"
 	}
 	
 	// MARK: - Refresh Content
 	func refreshContent (successHandler: ([Int] -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
 		newItems = [Int]()
 		var postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(appDelegate.allowExplicitContent ? 1 : 0)"
+		if appDelegate.userDeviceToken != nil {
+			postString += "&token=\(appDelegate.userDeviceToken!)"
+		}
 		if appDelegate.contentHash != nil {
 			postString += "&hash=\(appDelegate.contentHash!)"
 		}
@@ -51,6 +54,8 @@ final class API {
 					break
 				case 403:
 					errorHandler(error: Error.Unauthorized)
+				case 404:
+					errorHandler(error: Error.FileNotFound)
 				case 500:
 					errorHandler(error: Error.InternalServerError)
 				default:
@@ -64,56 +69,33 @@ final class API {
 				return
 			}
 			
-			guard let content = json!["content"] as? [NSDictionary] else {
-				errorHandler(error: Error.FailedToParseJSON)
-				return
-			}
-			
-			for item in content {
-				let releaseDate = item["releaseDate"] as! Double
-				let albumItem = Album(
-					ID: item["id"] as! Int,
-					title: item["title"] as! String,
-					artistID: item["artistId"] as! Int,
-					releaseDate: releaseDate,
-					artwork: (string: item["artwork"] as! String),
-					explicit: item["explicit"] as! Int,
-					copyright: item["copyright"] as! String,
-					iTunesUniqueID: item["iTunesUniqueId"] as! Int,
-					iTunesURL: item["iTunesUrl"] as! String,
-					created: Int(NSDate().timeIntervalSince1970)
-				)
-				let newAlbumID = AppDB.sharedInstance.addAlbum(albumItem)
-				if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications!.count < 64 {
-					self.newItems.append(newAlbumID)
-					let remaining = Double(releaseDate) - Double(NSDate().timeIntervalSince1970)
-					if remaining > 0 {
-						print("Notification will fire in \(remaining) seconds.")
-						let notification = UILocalNotification()
-						notification.category = "DEFAULT_CATEGORY"
-						notification.timeZone = NSTimeZone.localTimeZone()
-						if #available(iOS 8.2, *) {
-							notification.alertTitle = "New Album Released"
-						}
-						notification.alertBody = "\(albumItem.title) is now available."
-						notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
-						notification.applicationIconBadgeNumber++
-						notification.soundName = UILocalNotificationDefaultSoundName
-						notification.userInfo = ["AlbumID": albumItem.ID, "iTunesURL": albumItem.iTunesURL]
-						UIApplication.sharedApplication().scheduleLocalNotification(notification)
-					}
-				}
-			}
-			
 			guard let contentHash = json!["hash"] as? String else {
 				errorHandler(error: Error.FailedToParseJSON)
 				return
 			}
 			
+			guard let content = json!["content"] as? [NSDictionary] else {
+				errorHandler(error: Error.FailedToParseJSON)
+				return
+			}
+			
+			guard let subscriptions = json!["subscriptions"] as? [NSDictionary] else {
+				errorHandler(error: Error.FailedToParseJSON)
+				return
+			}
+			
+			self.processContent(content)
+			self.processSubscriptions(subscriptions)
+			
 			NSUserDefaults.standardUserDefaults().setValue(contentHash, forKey: "contentHash")
 			self.appDelegate.contentHash = contentHash
-						
+			
+			AppDB.sharedInstance.getArtists()
+			AppDB.sharedInstance.getAlbums()
+			
+			self.appDelegate.completedRefresh = true
 			NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
+			
 			if let handler: Void = successHandler?(self.newItems) {
 				handler
 			}
@@ -123,35 +105,53 @@ final class API {
 		})
 	}
 	
-	// MARK: - Refresh Subscriptions
-	func refreshSubscriptions (successHandler: (() -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
-		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
-		sendRequest(URL.updateArtists.rawValue, postString: postString, successHandler: { (statusCode, data) in
-			if statusCode == 403 {
-				errorHandler(error: Error.Unauthorized)
-				return
+	// MARK: - Process downloaded JSON data.
+	func processContent (json: [NSDictionary]) {
+		for item in json {
+			let releaseDate = item["releaseDate"] as! Double
+			let albumItem = Album(
+				ID: item["id"] as! Int,
+				title: item["title"] as! String,
+				artistID: item["artistId"] as! Int,
+				releaseDate: releaseDate,
+				artwork: (string: item["artwork"] as! String),
+				explicit: item["explicit"] as! Int,
+				copyright: item["copyright"] as! String,
+				iTunesUniqueID: item["iTunesUniqueId"] as! Int,
+				iTunesURL: item["iTunesUrl"] as! String,
+				created: Int(NSDate().timeIntervalSince1970)
+			)
+			let newAlbumID = AppDB.sharedInstance.addAlbum(albumItem)
+			if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications!.count < 64 {
+				self.newItems.append(newAlbumID)
+				let remaining = Double(releaseDate) - Double(NSDate().timeIntervalSince1970)
+				if remaining > 0 {
+					print("Notification will fire in \(remaining) seconds.")
+					let notification = UILocalNotification()
+					if #available(iOS 8.2, *) {
+						notification.alertTitle = "New Album Released"
+					}
+					notification.category = "DEFAULT_CATEGORY"
+					notification.timeZone = NSTimeZone.localTimeZone()
+					notification.alertBody = "\(albumItem.title) is now available."
+					notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
+					notification.applicationIconBadgeNumber++
+					notification.soundName = UILocalNotificationDefaultSoundName
+					notification.userInfo = ["AlbumID": albumItem.ID, "iTunesURL": albumItem.iTunesURL]
+					UIApplication.sharedApplication().scheduleLocalNotification(notification)
+				}
 			}
-			if statusCode == 200 {
-				guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [NSDictionary] else {
-					errorHandler(error: Error.FailedToParseJSON)
-					return
-				}
-				for item in json! {
-					let artistID = item["artistId"] as! Int
-					let artistTitle = (item["title"] as? String)!
-					let artistUniqueID = item["iTunesUniqueID"] as! Int
-					AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
-				}
-				AppDB.sharedInstance.getArtists()
-				if let handler: Void = successHandler?() {
-					handler
-					return
-				}
-			}
-			},
-			errorHandler: { (error) in
-				errorHandler(error: error)
-		})
+		}
+	}
+	
+	// MARK: - Process downloaded JSON data.
+	func processSubscriptions (json: [NSDictionary]) {
+		for item in json {
+			let artistID = item["artistId"] as! Int
+			let artistTitle = (item["title"] as? String)!
+			let artistUniqueID = item["iTunesUniqueID"] as! Int
+			AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
+		}
 	}
 	
 	// MARK: - Device Registration
@@ -185,7 +185,9 @@ final class API {
 	func sendRequest (url: String, postString: String, successHandler: ((statusCode: Int!, data: NSData!) -> Void), errorHandler: (error: ErrorType) -> Void) {
 		let apiUrl = NSURL(string: url)
 		var appVersion = "Unknown"
-		if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String { appVersion = version }
+		if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {
+			appVersion = version
+		}
 		let systemVersion = UIDevice.currentDevice().systemVersion
 		let deviceName = UIDevice().deviceType.rawValue
 		let userAgent = "Releasify/\(appVersion) (iOS/\(systemVersion); \(deviceName))"

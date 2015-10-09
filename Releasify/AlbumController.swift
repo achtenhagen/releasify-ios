@@ -44,10 +44,10 @@ class AlbumController: UIViewController {
 			// iPhone 4S, 5, 5C & 5S
 		case 320:
 			albumCollectionLayout.itemSize = defaultItemSize
-			// iPhone 6
+			// iPhone 6S
 		case 375:
 			albumCollectionLayout.itemSize = CGSize(width: 172, height: 217)
-			// iPhone 6 Plus
+			// iPhone 6S Plus
 		case 414:
 			albumCollectionLayout.itemSize = CGSize(width: 192, height: 237)
 		default:
@@ -85,23 +85,8 @@ class AlbumController: UIViewController {
 			}
 		}
 		
-		/*
-		var notification = UILocalNotification()
-		notification.category = "DEFAULT_CATEGORY"
-		notification.timeZone = NSTimeZone.localTimeZone()
-		notification.alertTitle = "New Album Released"
-		notification.alertBody = "\"Album\" is now available!"
-		notification.fireDate = NSDate().dateByAddingTimeInterval(5)
-		notification.applicationIconBadgeNumber = 1
-		notification.soundName = UILocalNotificationDefaultSoundName
-		notification.userInfo = ["AlbumID": 3127, "iTunesURL": "https://itunes.apple.com/us/album/long-walk-to-freedom-fuego/id1015003602?uo=4"]
-		UIApplication.sharedApplication().scheduleLocalNotification(notification)
-		*/
-		
-		// Refresh the App's content only once per day.
-		// print(appDelegate.lastUpdated)
-		if appDelegate.userID > 0 && (Int(NSDate().timeIntervalSince1970) - appDelegate.lastUpdated >= 86400) {
-			print("Starting daily refresh.")
+		// Refresh the App's content only when launched.
+		if appDelegate.userID > 0 && !appDelegate.completedRefresh {
 			refresh()
 		}
 	}
@@ -109,9 +94,6 @@ class AlbumController: UIViewController {
 	override func viewWillAppear(animated: Bool) {
 		albumCollectionView.reloadData()
 		albumCollectionView.scrollsToTop = true
-		if AppDB.sharedInstance.artists.count > 0 && AppDB.sharedInstance.albums[0]!.count == 0 && AppDB.sharedInstance.albums[1]!.count == 0 {
-			refresh()
-		}
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
@@ -119,8 +101,7 @@ class AlbumController: UIViewController {
 	}
 	
 	func refresh() {
-		API.sharedInstance.refreshContent({ (newItems) in
-			AppDB.sharedInstance.getAlbums()
+		API.sharedInstance.refreshContent({ (newItems) in			
 			self.albumCollectionView.reloadData()
 			self.refreshControl.endRefreshing()
 			if newItems.count > 0 {

@@ -18,7 +18,9 @@ final class AppDB {
 	var artists = [Artist]()
 	var albums  = [Int:[Album]]()
 	
-	private func connected () -> Bool { return sqlite3_open(databasePath, &database) == SQLITE_OK }
+	private func connected () -> Bool {
+		return sqlite3_open(databasePath, &database) == SQLITE_OK
+	}
 	
 	private func disconnect () {
 		sqlite3_close(database)
@@ -82,7 +84,6 @@ final class AppDB {
 				}
 				sqlite3_finalize(statement)
 				if newAlbumID > 0 {
-					print("Album added successfully.")
 					addContributingArtist(albumItem.ID, artistID: albumItem.artistID)
 				}
 			}
@@ -100,7 +101,6 @@ final class AppDB {
 			if sqlite3_step(statement) == SQLITE_DONE {
 				if let section = section, i = index {
 					albums[section]?.removeAtIndex(i)
-					print("Successfully removed album.")
 				}
 			} else {
 				print("SQLite: Failed to delete from `albums`.")

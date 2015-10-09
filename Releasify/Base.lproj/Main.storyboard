@@ -543,7 +543,7 @@
                                 <color key="progressTintColor" red="0.0" green="0.94901960780000005" blue="0.75294117650000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="trackTintColor" red="0.0" green="0.20392156859999999" blue="0.28235294119999998" alpha="1" colorSpace="calibratedRGB"/>
                             </progressView>
-                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JAd-qz-y0g">
+                            <imageView contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_album_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="JAd-qz-y0g">
                                 <rect key="frame" x="20" y="84" width="280" height="280"/>
                                 <animations/>
                                 <gestureRecognizers/>
@@ -582,7 +582,7 @@
                                     </mask>
                                 </variation>
                             </textView>
-                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QMI-Ez-bcW">
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QMI-Ez-bcW" userLabel="Detail Container">
                                 <rect key="frame" x="15" y="355" width="290" height="100"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UyI-O7-Qlg">
@@ -774,26 +774,21 @@
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="centerX" secondItem="4Kr-FR-TdC" secondAttribute="centerX" id="4Vn-T9-UWh"/>
                             <constraint firstItem="9Sx-F0-V6m" firstAttribute="centerX" secondItem="JAd-qz-y0g" secondAttribute="centerX" id="DCv-Xb-6zz"/>
                             <constraint firstItem="xZF-Te-Rk8" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="19" id="NgA-c4-JUK">
-                                <variation key="heightClass=regular-widthClass=compact" constant="11"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="4"/>
                             </constraint>
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="top" secondItem="7bC-V9-fkI" secondAttribute="bottom" constant="15" id="P3B-gh-RQI">
                                 <variation key="heightClass=regular-widthClass=compact" constant="10"/>
                             </constraint>
-                            <constraint firstItem="eTW-6L-1ZX" firstAttribute="top" secondItem="xZF-Te-Rk8" secondAttribute="bottom" constant="7" id="VvF-cp-VSB"/>
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="-1" id="Wqa-z8-z4K"/>
                             <constraint firstItem="9Sx-F0-V6m" firstAttribute="top" secondItem="MNM-1i-xyu" secondAttribute="bottom" id="aOf-vM-tGo"/>
-                            <constraint firstItem="eTW-6L-1ZX" firstAttribute="top" secondItem="xZF-Te-Rk8" secondAttribute="bottom" constant="7" id="bJN-5j-4sa"/>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="top" secondItem="MNM-1i-xyu" secondAttribute="bottom" constant="20" id="hJG-2n-Sdg"/>
                             <constraint firstItem="eTW-6L-1ZX" firstAttribute="top" secondItem="xZF-Te-Rk8" secondAttribute="bottom" constant="2" id="ihk-ra-wQG">
-                                <variation key="heightClass=regular-widthClass=compact" constant="11"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="12"/>
                             </constraint>
                             <constraint firstItem="7bC-V9-fkI" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="14" id="kiP-bn-5fC">
                                 <variation key="heightClass=regular-widthClass=compact" constant="10"/>
                             </constraint>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="centerX" secondItem="7bC-V9-fkI" secondAttribute="centerX" id="ln6-4X-KqE"/>
-                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="top" secondItem="QMI-Ez-bcW" secondAttribute="bottom" constant="60" id="oAi-3W-2S3">
-                                <variation key="heightClass=regular-widthClass=compact" constant="55"/>
-                            </constraint>
                             <constraint firstItem="QMI-Ez-bcW" firstAttribute="centerX" secondItem="7bC-V9-fkI" secondAttribute="centerX" id="q4n-dE-2Mh"/>
                             <constraint firstItem="xZF-Te-Rk8" firstAttribute="centerX" secondItem="QMI-Ez-bcW" secondAttribute="centerX" id="rcP-TQ-Lw0"/>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="4" id="wWL-9G-Fr7"/>
@@ -811,7 +806,6 @@
                                 <exclude reference="aOf-vM-tGo"/>
                                 <exclude reference="zTh-Pp-cxE"/>
                                 <exclude reference="NgA-c4-JUK"/>
-                                <exclude reference="oAi-3W-2S3"/>
                                 <exclude reference="rcP-TQ-Lw0"/>
                                 <exclude reference="3K6-2X-QOf"/>
                                 <exclude reference="kiP-bn-5fC"/>
@@ -819,8 +813,6 @@
                                 <exclude reference="P3B-gh-RQI"/>
                                 <exclude reference="Wqa-z8-z4K"/>
                                 <exclude reference="q4n-dE-2Mh"/>
-                                <exclude reference="VvF-cp-VSB"/>
-                                <exclude reference="bJN-5j-4sa"/>
                                 <exclude reference="ihk-ra-wQG"/>
                                 <exclude reference="hJG-2n-Sdg"/>
                                 <exclude reference="ln6-4X-KqE"/>
@@ -851,11 +843,8 @@
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="constraints">
                                 <include reference="NgA-c4-JUK"/>
-                                <exclude reference="oAi-3W-2S3"/>
                                 <include reference="rcP-TQ-Lw0"/>
                                 <include reference="P3B-gh-RQI"/>
-                                <exclude reference="VvF-cp-VSB"/>
-                                <exclude reference="bJN-5j-4sa"/>
                                 <include reference="ihk-ra-wQG"/>
                             </mask>
                         </variation>
@@ -873,8 +862,8 @@
                         <outlet property="albumArtwork" destination="JAd-qz-y0g" id="ePe-X9-0TZ"/>
                         <outlet property="albumTitle" destination="7bC-V9-fkI" id="Vyr-H6-0pK"/>
                         <outlet property="copyrightLabel" destination="xZF-Te-Rk8" id="aSc-bS-mXL"/>
-                        <outlet property="detailContainer" destination="4Kr-FR-TdC" id="nYJ-ax-5LK"/>
-                        <outlet property="detailContainerTopConstraint" destination="P3B-gh-RQI" id="PKs-fi-rC3"/>
+                        <outlet property="detailContainer" destination="QMI-Ez-bcW" id="OMa-qA-qAz"/>
+                        <outlet property="detailContainerTopConstraint" destination="P3B-gh-RQI" id="Gnp-gr-b2A"/>
                         <outlet property="firstDigitLabel" destination="UyI-O7-Qlg" id="O1S-e4-jo2"/>
                         <outlet property="firstTimeLabel" destination="Cok-XX-g4E" id="hdJ-SR-hTY"/>
                         <outlet property="progressBar" destination="9Sx-F0-V6m" id="K7N-nh-7GF"/>

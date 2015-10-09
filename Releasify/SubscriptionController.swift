@@ -84,9 +84,10 @@ class SubscriptionController: UIViewController {
 	}
 	
 	func refresh() {
-		API.sharedInstance.refreshSubscriptions({
+		API.sharedInstance.refreshContent({ (newItems) in			
 			self.reloadSubscriptions()
 			self.refreshControl.endRefreshing()
+			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 			},
 			errorHandler: { (error) in
 				self.refreshControl.endRefreshing()
@@ -132,8 +133,6 @@ class SubscriptionController: UIViewController {
 								}
 							}
 						}
-						NSUserDefaults.standardUserDefaults().setValue(nil, forKey: "contentHash")
-						self.appDelegate.contentHash = nil
 						AppDB.sharedInstance.getArtists()
 						AppDB.sharedInstance.getAlbums()
 						self.reloadSubscriptions()

@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var userUUID: String!
 	var contentHash: String?
 	var allowExplicitContent = true
+	var completedRefresh = false
 	var lastUpdated = 0
 	var notificationAlbumID: Int!
 	var remoteNotificationPayload: NSDictionary?
@@ -26,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")
 		
 		// MARK: - Notification settings
-		// Move to tutorial screen.
+		// Move notification permissions to tutorial screen.
 		if application.respondsToSelector("registerUserNotificationSettings:") {
 			
 			let appAction = UIMutableUserNotificationAction()
@@ -97,11 +98,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		if let explicit = NSUserDefaults.standardUserDefaults().valueForKey("allowExplicit") as? Bool {
 			allowExplicitContent = explicit
-			if allowExplicitContent {
-				print("User allows explicit content.")
-			} else {
-				print("User does not allow explicit content.")
-			}
 		} else {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 		}
@@ -126,7 +122,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 
 	func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-		print("User allows notifications (\(deviceToken.description)).")
 		var deviceTokenString = deviceToken.description
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: .LiteralSearch, range: nil)
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: .LiteralSearch, range: nil)
@@ -143,7 +138,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				print("APNS Device token was set successfully.")
 				},
 				errorHandler: { (error) in
-					// print("Error: \(error.localizedDescription)")
+				// print("Error: \(error.localizedDescription)")
 			})
 		}
 	}
