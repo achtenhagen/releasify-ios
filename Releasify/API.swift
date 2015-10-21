@@ -15,11 +15,15 @@ final class API {
 	
 	enum Error: ErrorType {
 		case BadRequest
+		case CannotConnectToHost
+		case DNSLookupFailed
 		case FailedRequest
 		case FailedToParseJSON
 		case FileNotFound
 		case InternalServerError
 		case InvalidHTTPResponse
+		case NetworkConnectionLost
+		case NoInternetConnection
 		case RequestEntityTooLarge
 		case Unauthorized
 		case UnknownError
@@ -30,8 +34,7 @@ final class API {
 		updateContent = "https://releasify.me/api/ios/v2.1/update_content.php",
 		confirmArtist = "https://releasify.me/api/ios/v2.1/confirm_artist.php",
 		submitArtist  = "https://releasify.me/api/ios/v2.1/submit_artist.php",
-		removeArtist  = "https://releasify.me/api/ios/v2.1/unsubscribe_artist.php",
-		lookupItem    = "https://releasify.me/api/ios/v2.1/item.php"
+		removeArtist  = "https://releasify.me/api/ios/v2.1/unsubscribe_artist.php"
 	}
 	
 	// MARK: - Refresh Content
@@ -166,10 +169,12 @@ final class API {
 				errorHandler(error: Error.BadRequest)
 				return
 			}
+			
 			guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? NSDictionary else {
 				errorHandler(error: Error.FailedToParseJSON)
 				return
 			}
+			
 			let receivedUserID = json!["id"] as? Int
 			if receivedUserID > 0 {
 				print("Received user ID: \(receivedUserID!) from the server.")
@@ -202,13 +207,26 @@ final class API {
 		NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
 			UIApplication.sharedApplication().networkActivityIndicatorVisible = false
 			if error != nil {
-				errorHandler(error: Error.FailedRequest)
+				switch (error!.code) {
+				case -1004:
+					errorHandler(error: Error.CannotConnectToHost)
+				case -1005:
+					errorHandler(error: Error.NetworkConnectionLost)
+				case -1006:
+					errorHandler(error: Error.DNSLookupFailed)
+				case -1009:
+					errorHandler(error: Error.NoInternetConnection)
+				default:
+					errorHandler(error: Error.FailedRequest)
+				}
 				return
 			}
+			
 			guard let response = response as? NSHTTPURLResponse else {
 				errorHandler(error: Error.InvalidHTTPResponse)
 				return
 			}
+			
 			print("HTTP status code: \(response.statusCode)")
 			successHandler(statusCode: response.statusCode, data: data)
 		})

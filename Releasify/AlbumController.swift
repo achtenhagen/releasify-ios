@@ -128,6 +128,12 @@ class AlbumController: UIViewController {
 				case API.Error.InternalServerError:
 					alert.title = "500 Internal Server Error"
 					alert.message = "An error occured on our end."
+				case API.Error.NoInternetConnection:
+					alert.title = "Unable to connect"
+					alert.message = "Please make sure you are connected to the internet."
+					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+						UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+					}))
 				default:
 					alert.title = "Oops! Something went wrong."
 					alert.message = "An unknown error occured."

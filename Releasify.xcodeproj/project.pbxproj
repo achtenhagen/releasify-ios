@@ -35,6 +35,10 @@
 		518907971B46D67500F0E037 /* SearchResultsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518907961B46D67500F0E037 /* SearchResultsHeader.swift */; };
 		518B76861B0E688C0009F138 /* SearchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518B76851B0E688C0009F138 /* SearchResultsController.swift */; };
 		518B76881B0ECFA90009F138 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 518B76871B0ECFA90009F138 /* Images.xcassets */; };
+		519CE9581BD6AA260078B270 /* Intro01Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519CE9571BD6AA260078B270 /* Intro01Controller.swift */; settings = {ASSET_TAGS = (); }; };
+		519CE95A1BD7039B0078B270 /* Intro02Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519CE9591BD7039B0078B270 /* Intro02Controller.swift */; settings = {ASSET_TAGS = (); }; };
+		519CE95C1BD703A90078B270 /* Intro03Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519CE95B1BD703A90078B270 /* Intro03Controller.swift */; settings = {ASSET_TAGS = (); }; };
+		519CE95E1BD707A10078B270 /* IntroPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519CE95D1BD707A10078B270 /* IntroPageController.swift */; settings = {ASSET_TAGS = (); }; };
 		51B09ED61B112D23007F871C /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B09ED51B112D23007F871C /* SearchResultCell.swift */; };
 		51B907DA1B8624E700688CFE /* SubscriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B907D81B8624E700688CFE /* SubscriptionCell.swift */; };
 		51B907DB1B8624E700688CFE /* SubscriptionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51B907D91B8624E700688CFE /* SubscriptionCell.xib */; };
@@ -80,6 +84,10 @@
 		518907961B46D67500F0E037 /* SearchResultsHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsHeader.swift; sourceTree = "<group>"; };
 		518B76851B0E688C0009F138 /* SearchResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsController.swift; sourceTree = "<group>"; };
 		518B76871B0ECFA90009F138 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
+		519CE9571BD6AA260078B270 /* Intro01Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro01Controller.swift; sourceTree = "<group>"; };
+		519CE9591BD7039B0078B270 /* Intro02Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro02Controller.swift; sourceTree = "<group>"; };
+		519CE95B1BD703A90078B270 /* Intro03Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro03Controller.swift; sourceTree = "<group>"; };
+		519CE95D1BD707A10078B270 /* IntroPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroPageController.swift; sourceTree = "<group>"; };
 		51A830481AC2EB70006BCF1B /* Releasify.Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Releasify.Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		51B09ED51B112D23007F871C /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		51B907D81B8624E700688CFE /* SubscriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionCell.swift; sourceTree = "<group>"; };
@@ -173,6 +181,10 @@
 				5161265A1B9A7D3000171A93 /* AlbumCell.swift */,
 				517C239E1B80F514002F1479 /* AlbumCell.xib */,
 				51B988C31AF1674C00E1A796 /* AlbumDetailController.swift */,
+				519CE95D1BD707A10078B270 /* IntroPageController.swift */,
+				519CE9571BD6AA260078B270 /* Intro01Controller.swift */,
+				519CE9591BD7039B0078B270 /* Intro02Controller.swift */,
+				519CE95B1BD703A90078B270 /* Intro03Controller.swift */,
 				51F84DCC1AB750A000D51E0C /* SubscriptionController.swift */,
 				51B907D81B8624E700688CFE /* SubscriptionCell.swift */,
 				51B907D91B8624E700688CFE /* SubscriptionCell.xib */,
@@ -319,10 +331,14 @@
 				5142037B1B840517008891F9 /* AppPageController.swift in Sources */,
 				517D6E0D1B6585DC002EC864 /* AppController.swift in Sources */,
 				511CBD7D1B960341004E4A7F /* ActivityView.swift in Sources */,
+				519CE95C1BD703A90078B270 /* Intro03Controller.swift in Sources */,
 				517C23641B80DDE0002F1479 /* AlbumController.swift in Sources */,
 				51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */,
 				516126581B9A7B6E00171A93 /* NotificationCell.swift in Sources */,
 				51F84DCD1AB750A000D51E0C /* SubscriptionController.swift in Sources */,
+				519CE9581BD6AA260078B270 /* Intro01Controller.swift in Sources */,
+				519CE95E1BD707A10078B270 /* IntroPageController.swift in Sources */,
+				519CE95A1BD7039B0078B270 /* Intro02Controller.swift in Sources */,
 				51B09ED61B112D23007F871C /* SearchResultCell.swift in Sources */,
 				51F84DCB1AB750A000D51E0C /* AppDelegate.swift in Sources */,
 				51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */,

@@ -24,51 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String) + " (" + (NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as! String) + ")"
-		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")
-		
-		// MARK: - Notification settings
-		// Move notification permissions to tutorial screen.
-		if application.respondsToSelector("registerUserNotificationSettings:") {
-			
-			let appAction = UIMutableUserNotificationAction()
-			appAction.identifier = "APP_ACTION"
-			appAction.title = "View in App"
-			appAction.activationMode = .Foreground
-			appAction.destructive = false
-			appAction.authenticationRequired = false
-			
-			let storeAction = UIMutableUserNotificationAction()
-			storeAction.identifier = "STORE_ACTION"
-			switch UIDevice.currentDevice().systemVersion.compare("8.4.0", options: .NumericSearch) {
-			case .OrderedSame, .OrderedDescending:
-				storeAction.title = " MUSIC"
-			case .OrderedAscending:
-				storeAction.title = "Buy on iTunes"
-			}
-			storeAction.activationMode = .Foreground
-			storeAction.destructive = false
-			storeAction.authenticationRequired = false
-			
-			let defaultCategory = UIMutableUserNotificationCategory()
-			defaultCategory.identifier = "DEFAULT_CATEGORY"
-			let remoteCategory = UIMutableUserNotificationCategory()
-			remoteCategory.identifier = "REMOTE_CATEGORY"
-			
-			let defaultActions = [appAction, storeAction]
-			let remoteActions  = [appAction]
-			
-			defaultCategory.setActions(defaultActions, forContext: .Default)
-			defaultCategory.setActions(defaultActions, forContext: .Minimal)
-			remoteCategory.setActions(remoteActions, forContext: .Default)
-			remoteCategory.setActions(remoteActions, forContext: .Minimal)
-			
-			let categories = NSSet(objects: defaultCategory, remoteCategory)
-			let types: UIUserNotificationType = ([.Alert, .Badge, .Sound])
-			let settings = UIUserNotificationSettings(forTypes: types, categories: categories as? Set<UIUserNotificationCategory>)
-			
-			application.registerUserNotificationSettings(settings)
-			application.registerForRemoteNotifications()
-		}
+		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")		
 		
 		// MARK: - App reset setting
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
@@ -115,7 +71,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
+		//window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
+		window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPage") as! UIPageViewController
 		window?.makeKeyAndVisible()
 		
 		return true

@@ -229,7 +229,7 @@ final class AppDB {
 		return numRows == 1
 	}
 	
-	// Removes albums that are older than 4 weeks.
+	// MARK: - Removes albums that are older than 4 weeks.
 	func removeExpiredAlbums () {
 		if !connected() { return }
 		var expiredAlbums = [Int:String]()
@@ -515,7 +515,6 @@ final class AppDB {
 			} catch _ {
 				print("Failed to remove artwork: \(hash).")
 			}
-			print("Successfully removed artwork: \(hash).")
 		}
 		if NSFileManager.defaultManager().fileExistsAtPath(artworkPathHD) {
 			do {
@@ -523,7 +522,6 @@ final class AppDB {
 			} catch _ {
 				print("Failed to remove HD artwork: \(hash).")
 			}
-			print("Successfully removed HD artwork: \(hash).")
 		}
 	}
 	
