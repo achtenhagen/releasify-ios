@@ -233,7 +233,7 @@ class AlbumController: UIViewController {
 							}
 						}
 						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+							self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
 							}, completion: { (value: Bool) in
 								AppDB.sharedInstance.deleteAlbum(albumID, section: section, index: indexPath!.row)
 								AppDB.sharedInstance.deleteArtwork(albumArtwork as String)

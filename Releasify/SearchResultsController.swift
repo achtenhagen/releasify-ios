@@ -62,7 +62,7 @@ class SearchResultsController: UIViewController {
 			API.sharedInstance.sendRequest(API.URL.confirmArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
 				if statusCode == 200 {
 					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
-						artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2
+						self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2
 						}, completion: { (state) in
 							let newArtistID = AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 							AppDB.sharedInstance.getArtists()

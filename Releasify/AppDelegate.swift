@@ -71,9 +71,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		//window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
-		window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPage") as! UIPageViewController
-		window?.makeKeyAndVisible()
+		
+		if userID == 0 {
+			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
+		} else {
+			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
+		}
+		
+		window?.makeKeyAndVisible()		
 		
 		return true
 	}

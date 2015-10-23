@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15B22c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="HBF-6K-pqv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="HBF-6K-pqv">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -763,6 +763,9 @@
                                 <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="10"/>
                                 <color key="textColor" red="0.55294117647058827" green="0.55294117647058827" blue="0.55294117647058827" alpha="0.5" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
+                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="20" y="480" width="280" height="12"/>
+                                </variation>
                             </label>
                         </subviews>
                         <animations/>
@@ -1141,7 +1144,7 @@
         <!--Intro Screen Page Controller-->
         <scene sceneID="gmD-nh-hfH">
             <objects>
-                <pageViewController storyboardIdentifier="IntroPage" autoresizesArchivedViewToFullSize="NO" title="Intro Screen Page Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="a5r-UX-Xoi" customClass="IntroPageController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <pageViewController storyboardIdentifier="IntroPageController" autoresizesArchivedViewToFullSize="NO" title="Intro Screen Page Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="a5r-UX-Xoi" customClass="IntroPageController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V2n-o4-4eV" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1157,6 +1160,7 @@
                         <viewControllerLayoutGuide type="bottom" id="T1m-m7-xHo"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="szJ-XQ-0Jr">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mxk-FJ-lcE">
@@ -1165,9 +1169,9 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="q0o-hy-8Uu"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="GET STARTED">
-                                    <color key="titleColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -1203,14 +1207,19 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="In just a few moments you'll never miss the release of another album again!" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cKR-ju-VfK">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cKR-ju-VfK">
                                 <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                 <animations/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="70" id="ksd-wm-wQx"/>
+                                    <constraint firstAttribute="height" constant="70" id="ksd-wm-wQx">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="110"/>
+                                    </constraint>
                                 </constraints>
+                                <string key="text">In just a few moments you'll never miss the release of another album again!
+
+Swipe to get started.</string>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="0.70132643884892087" colorSpace="calibratedWhite"/>
+                                <color key="textColor" white="1" alpha="0.80000000000000004" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -1234,7 +1243,7 @@
                                     <constraint firstAttribute="height" constant="30" id="zrd-s5-K0e"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="24"/>
-                                <color key="textColor" white="1" alpha="0.70295638489208634" colorSpace="calibratedWhite"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -1275,7 +1284,10 @@
                                 <exclude reference="jaP-Tk-HPP"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="JqY-ym-pwY"/>
+                                <exclude reference="5rS-Xt-ZfV"/>
+                                <exclude reference="NG3-bo-xoX"/>
+                                <exclude reference="OGX-S3-BmH"/>
+                                <exclude reference="ajF-fF-3xW"/>
                                 <exclude reference="6WH-jk-dw5"/>
                                 <exclude reference="dNA-UM-HHA"/>
                                 <exclude reference="gtm-X2-hJa"/>
@@ -1285,10 +1297,7 @@
                                 <exclude reference="dVl-y3-n6K"/>
                                 <exclude reference="liu-tm-Ifi"/>
                                 <exclude reference="ulQ-Sp-d83"/>
-                                <exclude reference="NG3-bo-xoX"/>
-                                <exclude reference="OGX-S3-BmH"/>
-                                <exclude reference="ajF-fF-3xW"/>
-                                <exclude reference="5rS-Xt-ZfV"/>
+                                <exclude reference="JqY-ym-pwY"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -1300,7 +1309,10 @@
                                 <include reference="jaP-Tk-HPP"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="JqY-ym-pwY"/>
+                                <include reference="5rS-Xt-ZfV"/>
+                                <include reference="NG3-bo-xoX"/>
+                                <include reference="OGX-S3-BmH"/>
+                                <include reference="ajF-fF-3xW"/>
                                 <include reference="6WH-jk-dw5"/>
                                 <include reference="dNA-UM-HHA"/>
                                 <include reference="gtm-X2-hJa"/>
@@ -1310,10 +1322,7 @@
                                 <include reference="dVl-y3-n6K"/>
                                 <include reference="liu-tm-Ifi"/>
                                 <include reference="ulQ-Sp-d83"/>
-                                <include reference="NG3-bo-xoX"/>
-                                <include reference="OGX-S3-BmH"/>
-                                <include reference="ajF-fF-3xW"/>
-                                <include reference="5rS-Xt-ZfV"/>
+                                <include reference="JqY-ym-pwY"/>
                             </mask>
                         </variation>
                     </view>
@@ -1332,36 +1341,22 @@
                         <viewControllerLayoutGuide type="bottom" id="h8M-vv-Enk"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Zm7-1c-Vzd">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notifications" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SQI-H1-x0c">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0a5-sW-2Fn">
                                 <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                 <animations/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="DPo-f8-z5J"/>
+                                    <constraint firstAttribute="height" constant="70" id="nsr-Lm-lxW">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="135"/>
+                                    </constraint>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="26"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="DPo-f8-z5J"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=regular-widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="DPo-f8-z5J"/>
-                                    </mask>
-                                </variation>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="It wouldn’t be Releasify without Push Notifications! Tap below to never be outside the loop again." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0a5-sW-2Fn">
-                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
-                                <animations/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="70" id="nsr-Lm-lxW"/>
-                                </constraints>
+                                <string key="text">Notifications are the simplest way to stay informed about upcoming content.
+
+Otherwise, you'll have to check manually.</string>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="0.70132643880000001" colorSpace="calibratedWhite"/>
+                                <color key="textColor" white="1" alpha="0.80000000000000004" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -1380,9 +1375,9 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="f3L-4r-3RU"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="GRANT PERMISSION">
-                                    <color key="titleColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -1407,7 +1402,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="SKIP">
-                                    <color key="titleColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -1426,6 +1421,26 @@
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <animations/>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notifications" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SQI-H1-x0c">
+                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="DPo-f8-z5J"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="26"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="DPo-f8-z5J"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="DPo-f8-z5J"/>
+                                    </mask>
+                                </variation>
+                            </label>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" red="0.1215686275" green="0.12941176469999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -1448,50 +1463,50 @@
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
-                                <exclude reference="SQI-H1-x0c"/>
                                 <exclude reference="0a5-sW-2Fn"/>
                                 <exclude reference="PJN-MK-B81"/>
                                 <exclude reference="WDI-yG-J56"/>
                                 <exclude reference="dOP-AN-G70"/>
+                                <exclude reference="SQI-H1-x0c"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="Qbh-60-HYE"/>
-                                <exclude reference="clb-6T-bH6"/>
+                                <exclude reference="bei-1O-lKG"/>
+                                <exclude reference="iVr-3e-IFL"/>
                                 <exclude reference="IhC-l6-2d3"/>
                                 <exclude reference="NHT-ub-XzP"/>
+                                <exclude reference="cYM-hd-qSx"/>
+                                <exclude reference="xt6-Uq-afb"/>
                                 <exclude reference="FwQ-29-1bS"/>
                                 <exclude reference="LMC-H2-ap4"/>
                                 <exclude reference="Ob2-N8-VBm"/>
                                 <exclude reference="cTP-dX-V4A"/>
                                 <exclude reference="jeD-0A-CCz"/>
-                                <exclude reference="cYM-hd-qSx"/>
-                                <exclude reference="xt6-Uq-afb"/>
-                                <exclude reference="bei-1O-lKG"/>
-                                <exclude reference="iVr-3e-IFL"/>
+                                <exclude reference="Qbh-60-HYE"/>
+                                <exclude reference="clb-6T-bH6"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
-                                <include reference="SQI-H1-x0c"/>
                                 <include reference="0a5-sW-2Fn"/>
                                 <include reference="PJN-MK-B81"/>
                                 <include reference="WDI-yG-J56"/>
                                 <include reference="dOP-AN-G70"/>
+                                <include reference="SQI-H1-x0c"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="Qbh-60-HYE"/>
-                                <include reference="clb-6T-bH6"/>
+                                <include reference="bei-1O-lKG"/>
+                                <include reference="iVr-3e-IFL"/>
                                 <include reference="IhC-l6-2d3"/>
                                 <include reference="NHT-ub-XzP"/>
+                                <include reference="cYM-hd-qSx"/>
+                                <include reference="xt6-Uq-afb"/>
                                 <include reference="FwQ-29-1bS"/>
                                 <include reference="LMC-H2-ap4"/>
                                 <include reference="Ob2-N8-VBm"/>
                                 <include reference="cTP-dX-V4A"/>
                                 <include reference="jeD-0A-CCz"/>
-                                <include reference="cYM-hd-qSx"/>
-                                <include reference="xt6-Uq-afb"/>
-                                <include reference="bei-1O-lKG"/>
-                                <include reference="iVr-3e-IFL"/>
+                                <include reference="Qbh-60-HYE"/>
+                                <include reference="clb-6T-bH6"/>
                             </mask>
                         </variation>
                     </view>
@@ -1510,6 +1525,7 @@
                         <viewControllerLayoutGuide type="bottom" id="o7o-l3-gTQ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="J3O-Hl-qcr">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Would you like to import artists from your music library?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jym-JQ-ggf">
@@ -1528,7 +1544,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="SKIP">
-                                    <color key="titleColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -1549,9 +1565,9 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="PI2-QV-qXg"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="IMPORT FROM LIBRARY">
-                                    <color key="titleColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -1617,20 +1633,20 @@
                                 <exclude reference="jsD-zE-fvb"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="2ly-gY-kLP"/>
-                                <exclude reference="JhC-Rg-tER"/>
-                                <exclude reference="zpt-LK-kk2"/>
                                 <exclude reference="NRH-jf-Il4"/>
                                 <exclude reference="Qrl-Qb-sSb"/>
-                                <exclude reference="0Rx-OC-9fb"/>
-                                <exclude reference="LnV-HF-iui"/>
-                                <exclude reference="QHH-un-uNp"/>
-                                <exclude reference="kpy-Hp-hqv"/>
-                                <exclude reference="QLz-gI-hDa"/>
                                 <exclude reference="5U2-bk-jBC"/>
                                 <exclude reference="VRn-kN-3Ze"/>
                                 <exclude reference="XnN-qg-MRz"/>
                                 <exclude reference="s4w-iG-Lhe"/>
+                                <exclude reference="2ly-gY-kLP"/>
+                                <exclude reference="JhC-Rg-tER"/>
+                                <exclude reference="zpt-LK-kk2"/>
+                                <exclude reference="QLz-gI-hDa"/>
+                                <exclude reference="0Rx-OC-9fb"/>
+                                <exclude reference="LnV-HF-iui"/>
+                                <exclude reference="QHH-un-uNp"/>
+                                <exclude reference="kpy-Hp-hqv"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -1642,20 +1658,20 @@
                                 <include reference="jsD-zE-fvb"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="2ly-gY-kLP"/>
-                                <include reference="JhC-Rg-tER"/>
-                                <include reference="zpt-LK-kk2"/>
                                 <include reference="NRH-jf-Il4"/>
                                 <include reference="Qrl-Qb-sSb"/>
-                                <include reference="0Rx-OC-9fb"/>
-                                <include reference="LnV-HF-iui"/>
-                                <include reference="QHH-un-uNp"/>
-                                <include reference="kpy-Hp-hqv"/>
-                                <include reference="QLz-gI-hDa"/>
                                 <include reference="5U2-bk-jBC"/>
                                 <include reference="VRn-kN-3Ze"/>
                                 <include reference="XnN-qg-MRz"/>
                                 <include reference="s4w-iG-Lhe"/>
+                                <include reference="2ly-gY-kLP"/>
+                                <include reference="JhC-Rg-tER"/>
+                                <include reference="zpt-LK-kk2"/>
+                                <include reference="QLz-gI-hDa"/>
+                                <include reference="0Rx-OC-9fb"/>
+                                <include reference="LnV-HF-iui"/>
+                                <include reference="QHH-un-uNp"/>
+                                <include reference="kpy-Hp-hqv"/>
                             </mask>
                         </variation>
                     </view>

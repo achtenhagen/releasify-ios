@@ -2,17 +2,15 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "icon_app_notifications.png",
+      "filename" : "Intro_bg_iPhone6.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "icon_app_notifications@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "icon_app_notifications@3x.png",
       "scale" : "3x"
     }
   ],

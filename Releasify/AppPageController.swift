@@ -179,7 +179,7 @@ extension AppPageController: UIPageViewControllerDataSource {
 		var index = identifiers.indexOfObject(identifier!)
 		if index == 0 { return nil }
 		index--
-		return self.viewControllerAtIndex(index)
+		return viewControllerAtIndex(index)
 	}
 }
 

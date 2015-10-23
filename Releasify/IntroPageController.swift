@@ -2,7 +2,7 @@
 //  IntroPageController.swift
 //  Releasify
 //
-//  Created by Maurice Achtenhagen on 10/20/15.
+//  Created by Maurice Achtenhagen on 10/21/15.
 //  Copyright © 2015 Fioware Studios, LLC. All rights reserved.
 //
 
@@ -10,38 +10,44 @@ import UIKit
 
 class IntroPageController: UIPageViewController {
 
-	var identifiers: NSArray = ["Intro01", "Intro02", "Intro03"]
+	let identifiers: NSArray = ["Intro01", "Intro02", "Intro03"]
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
 		dataSource = self
 		delegate = self
-		
-		let gradient = CAGradientLayer()
-		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
-		gradient.locations = [0.0 , 1.0]
-		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
-		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		view.layer.insertSublayer(gradient, atIndex: 0)
 
-		let startingViewController = viewControllerAtIndex(0)
-		setViewControllers([startingViewController!], direction: .Forward, animated: false, completion: nil)
+		let bgImage: UIImage!
+		switch UIScreen.mainScreen().bounds.width {
+		case 320:
+			bgImage = UIImage(named: "Intro_bg_iPhone5.png");
+		case 375:
+			bgImage = UIImage(named: "Intro_bg_iPhone6.png");
+		case 540:
+			bgImage = UIImage(named: "Intro_bg_iPhone6_plus.png");
+		default:
+			bgImage = UIImage(named: "Intro_bg.png");
+		}
+		
+		let imageView   = UIImageView(frame: view.bounds);
+		imageView.image = bgImage
+		view.addSubview(imageView)
+		view.sendSubviewToBack(imageView)
+		
+		let startVC = viewControllerAtIndex(0) as UIViewController
+		let viewControllers = NSArray(object: startVC)
+		
+		setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
 	
-	func viewControllerAtIndex(index: Int) -> UIViewController? {
+	func viewControllerAtIndex(index: Int) -> UIViewController {
 		return UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier(identifiers[index] as! String)
 	}
-	
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
-    }
-
 }
 
 // MARK: - UIPageViewControllerDataSource
@@ -59,7 +65,7 @@ extension IntroPageController: UIPageViewControllerDataSource {
 		var index = identifiers.indexOfObject(identifier!)
 		if index == 0 { return nil }
 		index--
-		return self.viewControllerAtIndex(index)
+		return viewControllerAtIndex(index)
 	}
 	
 	func presentationCountForPageViewController(pageViewController: UIPageViewController) -> Int  {
@@ -74,6 +80,6 @@ extension IntroPageController: UIPageViewControllerDataSource {
 // MARK: - UIPageViewControllerDelegate
 extension IntroPageController: UIPageViewControllerDelegate {
 	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-
+		
 	}
 }
