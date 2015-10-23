@@ -42,6 +42,7 @@ class AppPageController: UIPageViewController {
 		dataSource = self
 		delegate = self
 		
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscription", name: "addSubscriptionQuickAction", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"updateNotificationButton", name: "updateNotificationButton", object: nil)
 		
 		let startingViewController = viewControllerAtIndex(0)
