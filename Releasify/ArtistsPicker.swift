@@ -81,15 +81,6 @@ class ArtistsPicker: UIViewController {
 		}
 		
 		setupSearchController()
-		
-		// Background gradient.
-		let gradient: CAGradientLayer = CAGradientLayer()
-		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
-		gradient.locations = [0.0 , 1.0]
-		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
-		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		view.layer.insertSublayer(gradient, atIndex: 0)
 	}
 	
 	override func viewDidDisappear(animated: Bool) {
@@ -299,10 +290,11 @@ class ArtistsPicker: UIViewController {
 		searchController.searchBar.placeholder = "Search Artists"
 		searchController.searchBar.searchBarStyle = .Default
 		searchController.searchBar.barStyle = .Black
+		searchController.searchBar.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
 		searchController.searchBar.tintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
+		searchController.searchBar.layer.borderColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1).CGColor
+		searchController.searchBar.layer.borderWidth = 1
 		searchController.searchBar.translucent = false
-		searchController.searchBar.backgroundColor = UIColor.clearColor()
-		searchController.searchBar.backgroundImage = UIImage(named: "navBar")
 		searchController.searchBar.autocapitalizationType = .Words
 		searchController.searchBar.keyboardAppearance = .Dark
 		definesPresentationContext = true
@@ -354,7 +346,7 @@ extension ArtistsPicker: UITableViewDataSource {
 extension ArtistsPicker: UITableViewDelegate {
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let headerView = UIView(frame: CGRectMake(0, 0, view.bounds.size.width, 30.0))
-		headerView.backgroundColor = UIColor(patternImage: UIImage(named: "navBar.png")!)
+		headerView.backgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
 		let lbl = UILabel(frame: CGRectMake(15, 1, 150, 20))
 		lbl.font = UIFont(name: lbl.font.fontName, size: 16)
 		lbl.textColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1.0)

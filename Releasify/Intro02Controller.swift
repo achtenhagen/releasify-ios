@@ -9,7 +9,13 @@
 import UIKit
 
 class Intro02Controller: UIViewController {
+	
+	var delegate: IntroPageDelegate?
 
+	@IBAction func skipButtonPressed(sender: UIButton) {
+		advanceIntroPageTo(2)
+	}
+	
 	@IBAction func permissionBtn(sender: UIButton) {
 		
 		// MARK: - Notification settings
@@ -58,14 +64,24 @@ class Intro02Controller: UIViewController {
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.clearColor()
+		view.backgroundColor = UIColor.clearColor()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+}
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
-    }
+extension Intro02Controller: IntroPageDelegate {
+	func advanceIntroPageTo(index: Int) {
+		if delegate != nil {
+			delegate?.advanceIntroPageTo(2)
+		}
+	}
+	
+	func finishIntro(completed: Bool) {
+		if delegate != nil {
+			delegate?.finishIntro(false)
+		}
+	}
 }

@@ -1,34 +1,33 @@
 //
-//  Intro01Controller.swift
+//  Intro04Controller.swift
 //  Releasify
 //
-//  Created by Maurice Achtenhagen on 10/20/15.
+//  Created by Maurice Achtenhagen on 10/23/15.
 //  Copyright © 2015 Fioware Studios, LLC. All rights reserved.
 //
 
 import UIKit
 
-class Intro01Controller: UIViewController {
+class Intro04Controller: UIViewController {
 	
 	var delegate: IntroPageDelegate?
-	
-	@IBOutlet weak var getStartedButton: UIButton!
-	
+
     override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
     }
-	
-	@IBAction func getStartedButtonPressed(sender: UIButton) {
-		advanceIntroPageTo(1)
-	}
-	
-	override func didReceiveMemoryWarning() {
+
+    override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+	
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		
+    }
+
 }
 
-extension Intro01Controller: IntroPageDelegate {
+extension Intro04Controller: IntroPageDelegate {
 	func advanceIntroPageTo(index: Int) {
 		if delegate != nil {
 			delegate?.advanceIntroPageTo(1)
@@ -37,7 +36,7 @@ extension Intro01Controller: IntroPageDelegate {
 	
 	func finishIntro(completed: Bool) {
 		if delegate != nil {
-			delegate?.finishIntro(false)
+			delegate?.finishIntro(completed)
 		}
 	}
 }

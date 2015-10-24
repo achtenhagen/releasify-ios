@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5101C43F1BDB239100E5ABA8 /* Intro04Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5101C43E1BDB239100E5ABA8 /* Intro04Controller.swift */; };
 		513434F11ADCA6EC00E5813B /* SourceSansPro-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 513434E51ADCA6EC00E5813B /* SourceSansPro-Black.otf */; };
 		513434F21ADCA6EC00E5813B /* SourceSansPro-BlackIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 513434E61ADCA6EC00E5813B /* SourceSansPro-BlackIt.otf */; };
 		513434F31ADCA6EC00E5813B /* SourceSansPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 513434E71ADCA6EC00E5813B /* SourceSansPro-Bold.otf */; };
@@ -55,6 +56,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5101C43E1BDB239100E5ABA8 /* Intro04Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro04Controller.swift; sourceTree = "<group>"; };
 		513434E51ADCA6EC00E5813B /* SourceSansPro-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Black.otf"; sourceTree = "<group>"; };
 		513434E61ADCA6EC00E5813B /* SourceSansPro-BlackIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-BlackIt.otf"; sourceTree = "<group>"; };
 		513434E71ADCA6EC00E5813B /* SourceSansPro-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Bold.otf"; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 				519CE9571BD6AA260078B270 /* Intro01Controller.swift */,
 				519CE9591BD7039B0078B270 /* Intro02Controller.swift */,
 				519CE95B1BD703A90078B270 /* Intro03Controller.swift */,
+				5101C43E1BDB239100E5ABA8 /* Intro04Controller.swift */,
 			);
 			name = Intro;
 			sourceTree = "<group>";
@@ -388,6 +391,7 @@
 				51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */,
 				51D864AF1B99D22400C3713F /* NotificationsController.swift in Sources */,
 				516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */,
+				5101C43F1BDB239100E5ABA8 /* Intro04Controller.swift in Sources */,
 				51D8753E1B1B264B00353347 /* Album.swift in Sources */,
 				51B907DA1B8624E700688CFE /* SubscriptionCell.swift in Sources */,
 				5161265C1B9A7D3000171A93 /* AlbumCell.swift in Sources */,

@@ -8,9 +8,16 @@
 
 import UIKit
 
+protocol IntroPageDelegate {
+	func advanceIntroPageTo (index: Int)
+	func finishIntro(completed: Bool)
+}
+
 class IntroPageController: UIPageViewController {
 
-	let identifiers: NSArray = ["Intro01", "Intro02", "Intro03"]
+	let identifiers: NSArray = ["Intro01", "Intro02", "Intro03", "Intro04"]
+	let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+	var currentIndex = 0
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,21 +28,22 @@ class IntroPageController: UIPageViewController {
 		let bgImage: UIImage!
 		switch UIScreen.mainScreen().bounds.width {
 		case 320:
-			bgImage = UIImage(named: "Intro_bg_iPhone5.png");
+			bgImage = UIImage(named: "Intro_bg_iPhone5.png")
 		case 375:
-			bgImage = UIImage(named: "Intro_bg_iPhone6.png");
+			bgImage = UIImage(named: "Intro_bg_iPhone6.png")
 		case 540:
-			bgImage = UIImage(named: "Intro_bg_iPhone6_plus.png");
+			bgImage = UIImage(named: "Intro_bg_iPhone6_plus.png")
 		default:
-			bgImage = UIImage(named: "Intro_bg.png");
+			bgImage = UIImage(named: "Intro_bg.png")
 		}
 		
-		let imageView   = UIImageView(frame: view.bounds);
+		let imageView = UIImageView(frame: view.bounds)
 		imageView.image = bgImage
 		view.addSubview(imageView)
 		view.sendSubviewToBack(imageView)
 		
-		let startVC = viewControllerAtIndex(0) as UIViewController
+		let startVC = viewControllerAtIndex(0) as! Intro01Controller
+		startVC.delegate = self
 		let viewControllers = NSArray(object: startVC)
 		
 		setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
@@ -46,7 +54,7 @@ class IntroPageController: UIPageViewController {
     }
 	
 	func viewControllerAtIndex(index: Int) -> UIViewController {
-		return UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier(identifiers[index] as! String)
+		return storyBoard.instantiateViewControllerWithIdentifier(identifiers[index] as! String)
 	}
 }
 
@@ -73,7 +81,7 @@ extension IntroPageController: UIPageViewControllerDataSource {
 	}
 	
 	func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int  {
-		return 0
+		return currentIndex
 	}
 }
 
@@ -81,5 +89,38 @@ extension IntroPageController: UIPageViewControllerDataSource {
 extension IntroPageController: UIPageViewControllerDelegate {
 	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
 		
+	}
+}
+
+// MARK: - IntroPageDelegate
+extension IntroPageController: IntroPageDelegate {
+	func advanceIntroPageTo(index: Int) {
+		let viewControllers: NSArray
+		switch index {
+		case 1:
+			let startVC = viewControllerAtIndex(1) as! Intro02Controller
+			startVC.delegate = self
+			viewControllers = NSArray(object: startVC)
+		case 2:
+			let startVC = viewControllerAtIndex(2) as! Intro03Controller
+			startVC.delegate = self
+			viewControllers = NSArray(object: startVC)
+		case 3:
+			let startVC = viewControllerAtIndex(3) as! Intro03Controller
+			startVC.delegate = self
+			viewControllers = NSArray(object: startVC)
+		default:
+			let startVC = viewControllerAtIndex(0) as! Intro04Controller
+			startVC.delegate = self
+			viewControllers = NSArray(object: startVC)
+		}
+		currentIndex = index
+		setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
+	}
+	
+	func finishIntro(completed: Bool) {
+		if completed {
+			print("Intro complete!")
+		}
 	}
 }

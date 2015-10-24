@@ -9,20 +9,43 @@
 import UIKit
 
 class Intro03Controller: UIViewController {
-
+	
+	var delegate: IntroPageDelegate?
+	
+	@IBOutlet weak var importButton: UIButton!
+	
+	@IBAction func skipButtonPressed(sender: UIButton) {
+		finishIntro(true)
+	}
+	
+	@IBAction func importButtonPressed(sender: UIButton) {
+		performSegueWithIdentifier("importFromIntroSegue", sender: self)
+	}
+	
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.backgroundColor = UIColor.clearColor()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 	
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+		
     }
+}
+
+extension Intro03Controller: IntroPageDelegate {
+	func advanceIntroPageTo(index: Int) {
+		if delegate != nil {
+			delegate?.advanceIntroPageTo(3)
+		}
+	}
+	
+	func finishIntro(completed: Bool) {
+		if delegate != nil {
+			delegate?.finishIntro(false)
+		}
+	}
 }

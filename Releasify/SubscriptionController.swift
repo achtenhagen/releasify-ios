@@ -24,9 +24,18 @@ class SubscriptionController: UIViewController {
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
 		
-		searchBar.delegate = self
-		searchBar.keyboardAppearance = .Dark
+		searchBar.delegate = self		
+		searchBar.placeholder = "Search Artists"
+		searchBar.searchBarStyle = .Default
+		searchBar.barStyle = .Black
+		searchBar.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
 		searchBar.tintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
+		searchBar.layer.borderColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1).CGColor
+		searchBar.layer.borderWidth = 1
+		searchBar.translucent = false
+		searchBar.autocapitalizationType = .Words
+		searchBar.keyboardAppearance = .Dark
+		searchBar.sizeToFit()
 		
 		filteredData = AppDB.sharedInstance.artists
 		
