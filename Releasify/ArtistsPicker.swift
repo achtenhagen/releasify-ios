@@ -18,6 +18,7 @@ class ArtistsPicker: UIViewController {
 	var filteredArtists = [String]()
 	var filteredCheckedStates = [Bool]()
 	var hasSelectedAll = false
+	var isIntro = false
 	var searchController = UISearchController()
 	var collection = [AnyObject]()
 	var responseArtists = [NSDictionary]()
@@ -50,6 +51,9 @@ class ArtistsPicker: UIViewController {
 			searchController.dismissViewControllerAnimated(true, completion: nil)
 		}
 		handleBatchProcessing()
+		if isIntro {
+			NSNotificationCenter.defaultCenter().postNotificationName("finishIntroStep", object: nil, userInfo: nil)
+		}
 	}
 	
 	override func viewDidLoad() {

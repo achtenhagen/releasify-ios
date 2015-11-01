@@ -31,7 +31,9 @@ class NotificationsController: UIViewController {
 	
 	@IBAction func closeView(sender: AnyObject) {
 		notificationsTable.setEditing(false, animated: false)
-		dismissViewControllerAnimated(true, completion: nil)
+		dismissViewControllerAnimated(true, completion: {
+			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+		})
 	}
 	
 	override func viewDidLoad() {
@@ -100,6 +102,9 @@ extension NotificationsController: UITableViewDataSource {
 			notificationsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
 			notificationsTable.reloadData()
 			editBtn.enabled = notifications.count > 0 ? true : false
+			if notifications.count == 0 {
+				closeView(self)
+			}
 		}
 	}
 }

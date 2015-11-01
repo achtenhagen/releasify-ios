@@ -76,8 +76,6 @@ class AlbumDetailController: UIViewController {
 			detailContainerTopConstraint.constant = 10
 		}
 		
-		print(detailContainerTopConstraint.constant)
-		
 		if AppDB.sharedInstance.getArtwork(album.artwork + "_large") == nil {
 			let subDir = (album.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
 			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(album.artwork)_large.jpg"
@@ -101,6 +99,7 @@ class AlbumDetailController: UIViewController {
 			}
 		} else {
 			albumArtwork.image = AppDB.sharedInstance.getArtwork(album.artwork + "_large")
+			albumArtwork.contentMode = .ScaleToFill
 		}
 		
 		let gradient: CAGradientLayer = CAGradientLayer()

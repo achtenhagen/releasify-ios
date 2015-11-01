@@ -40,6 +40,7 @@ class Intro03Controller: UIViewController {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
 		mediaQuery = MPMediaQuery.artistsQuery()
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishIntro", name: "finishIntroStep", object: nil)
     }
 	
 	override func viewDidAppear(animated: Bool) {
@@ -56,11 +57,17 @@ class Intro03Controller: UIViewController {
         super.didReceiveMemoryWarning()
     }
 	
+	func finishIntro () {
+		if delegate != nil {
+			delegate?.advanceIntroPageTo(4)
+		}
+	}
+	
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "importFromIntroSegue" {
 			let artistPickerController = segue.destinationViewController as! ArtistsPicker
 			artistPickerController.collection = mediaQuery.collections!
+			artistPickerController.isIntro = true
 		}
     }
 }
- 

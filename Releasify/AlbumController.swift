@@ -17,8 +17,10 @@ class AlbumController: UIViewController {
 	var selectedAlbum: Album!
 	var artwork = [String:UIImage]()
 	var notificationAlbumID: Int!
-	var refreshControl: UIRefreshControl!
+	var refreshControl: UIRefreshControl!	
 	
+	@IBOutlet weak var emptySubtitle: UILabel!
+	@IBOutlet weak var emptyTitle: UILabel!
 	@IBOutlet weak var albumCollectionView: UICollectionView!
 	
 	override func viewDidLoad() {
@@ -89,6 +91,12 @@ class AlbumController: UIViewController {
 		if appDelegate.userID > 0 && !appDelegate.completedRefresh {
 			refresh()
 		}
+		
+		if AppDB.sharedInstance.albums[0]?.count == 0 && AppDB.sharedInstance.albums[1]?.count == 0 {
+			albumCollectionView.hidden = true
+			emptyTitle.hidden = false
+			emptySubtitle.hidden = false
+		}
 	}
 	
 	override func viewWillAppear(animated: Bool) {
@@ -106,6 +114,7 @@ class AlbumController: UIViewController {
 			self.refreshControl.endRefreshing()
 			if newItems.count > 0 {
 				// Todo: Show updates...
+				self.albumCollectionView.hidden = false
 			}
 			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 			},
@@ -282,6 +291,15 @@ extension AlbumController: UICollectionViewDataSource {
 		if AppDB.sharedInstance.albums[1]!.count > 0 {
 			sections++
 		}
+		if sections == 0 {
+			albumCollectionView.hidden = true
+			emptyTitle.hidden = false
+			emptySubtitle.hidden = false
+		} else {
+			albumCollectionView.hidden = false
+			emptyTitle.hidden = true
+			emptySubtitle.hidden = true
+		}
 		return sections
 	}
 	
@@ -303,8 +321,11 @@ extension AlbumController: UICollectionViewDataSource {
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
 		cell.albumArtwork.contentMode = .Center
 		cell.albumArtwork.image = UIImage(named: "icon_album_placeholder")
-		if AppDB.sharedInstance.checkArtwork(hash){
+		// If an album is removed, but the image data is still stored in the artwork array, it WILL NOT re-download!!!
+		if AppDB.sharedInstance.checkArtwork(hash) {
 			artwork[hash] = AppDB.sharedInstance.getArtwork(hash)
+		} else {
+			artwork.removeValueForKey(hash)
 		}
 		if let image = artwork[hash] {
 			cell.albumArtwork.contentMode = .ScaleToFill

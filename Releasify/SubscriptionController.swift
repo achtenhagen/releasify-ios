@@ -148,6 +148,7 @@ class SubscriptionController: UIViewController {
 						self.searchBar.text = ""
 						self.searchBar.resignFirstResponder()
 						NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+						self.appDelegate.contentHash = nil
 					})
 				}
 				},

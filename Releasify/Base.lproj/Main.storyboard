@@ -285,7 +285,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tj9-YK-Fkb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1509" y="328.5"/>
+            <point key="canvasLocation" x="1509" y="532.5"/>
         </scene>
         <!--Subscriptions-->
         <scene sceneID="IvS-dN-N2g">
@@ -365,7 +365,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="artistsCollectionView" destination="tfX-QF-g8m" id="ba9-Gm-1EK"/>
@@ -779,10 +779,14 @@
                             <constraint firstItem="9Sx-F0-V6m" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leading" id="9ea-Uq-pax"/>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="top" secondItem="4Kr-FR-TdC" secondAttribute="top" constant="20" symbolic="YES" id="IDC-sK-Whh"/>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="centerX" secondItem="7bC-V9-fkI" secondAttribute="centerX" id="LNU-fe-DJL"/>
-                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="leading" secondItem="QMI-Ez-bcW" secondAttribute="leading" id="P98-Xr-pp3"/>
+                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="leading" secondItem="QMI-Ez-bcW" secondAttribute="leading" id="P98-Xr-pp3">
+                                <variation key="heightClass=regular-widthClass=compact" constant="15"/>
+                            </constraint>
                             <constraint firstItem="7bC-V9-fkI" firstAttribute="top" secondItem="JAd-qz-y0g" secondAttribute="bottom" constant="5" id="Q9v-4C-u3S"/>
                             <constraint firstItem="JAd-qz-y0g" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="4" id="Zra-r7-EGE"/>
-                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="trailing" secondItem="QMI-Ez-bcW" secondAttribute="trailing" id="eJw-o2-l0z"/>
+                            <constraint firstItem="xZF-Te-Rk8" firstAttribute="trailing" secondItem="QMI-Ez-bcW" secondAttribute="trailing" id="eJw-o2-l0z">
+                                <variation key="heightClass=regular-widthClass=compact" constant="-15"/>
+                            </constraint>
                             <constraint firstItem="7bC-V9-fkI" firstAttribute="leading" secondItem="4Kr-FR-TdC" secondAttribute="leadingMargin" constant="10" id="lYc-9H-C0h"/>
                             <constraint firstItem="eTW-6L-1ZX" firstAttribute="top" secondItem="xZF-Te-Rk8" secondAttribute="bottom" constant="10" id="mmh-oS-gKV"/>
                             <constraint firstAttribute="trailing" secondItem="9Sx-F0-V6m" secondAttribute="trailing" id="q4x-ot-vdt"/>
@@ -850,7 +854,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="albumArtwork" destination="JAd-qz-y0g" id="ePe-X9-0TZ"/>
@@ -995,6 +999,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You have no subscriptions yet." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Li-3e-Whz">
+                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="233" id="Fyj-Xp-Tv4">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="250"/>
+                                    </constraint>
+                                    <constraint firstAttribute="height" constant="21" id="XOO-i8-Osy"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <color key="textColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Fyj-Xp-Tv4"/>
+                                        <exclude reference="XOO-i8-Osy"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="Fyj-Xp-Tv4"/>
+                                        <include reference="XOO-i8-Osy"/>
+                                    </mask>
+                                </variation>
+                            </label>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap the &quot;+&quot; button above to add one." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w1V-E0-QIg">
+                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="udo-fW-4sn">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                                 <animations/>
@@ -1067,12 +1103,20 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="udo-fW-4sn" secondAttribute="trailing" id="EPW-vn-7Oj"/>
+                            <constraint firstItem="2Li-3e-Whz" firstAttribute="centerX" secondItem="RtE-o2-wm0" secondAttribute="centerX" id="EQa-Ft-THa"/>
                             <constraint firstItem="udo-fW-4sn" firstAttribute="bottom" secondItem="AIC-ES-XLk" secondAttribute="top" id="INL-IV-Gv2"/>
                             <constraint firstItem="udo-fW-4sn" firstAttribute="top" secondItem="z6t-wj-o6j" secondAttribute="bottom" id="VNV-1B-QnG"/>
+                            <constraint firstItem="w1V-E0-QIg" firstAttribute="centerX" secondItem="RtE-o2-wm0" secondAttribute="centerX" id="WSI-oV-dWH"/>
+                            <constraint firstItem="2Li-3e-Whz" firstAttribute="centerY" secondItem="RtE-o2-wm0" secondAttribute="centerY" id="YFH-eR-quv"/>
+                            <constraint firstItem="w1V-E0-QIg" firstAttribute="top" secondItem="2Li-3e-Whz" secondAttribute="bottom" constant="-1" id="qKn-Rj-JRm">
+                                <variation key="heightClass=regular-widthClass=compact" constant="4"/>
+                            </constraint>
                             <constraint firstItem="udo-fW-4sn" firstAttribute="leading" secondItem="RtE-o2-wm0" secondAttribute="leading" id="ytt-VS-bdk"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
+                                <exclude reference="2Li-3e-Whz"/>
+                                <exclude reference="w1V-E0-QIg"/>
                                 <exclude reference="udo-fW-4sn"/>
                             </mask>
                             <mask key="constraints">
@@ -1080,10 +1124,16 @@
                                 <exclude reference="INL-IV-Gv2"/>
                                 <exclude reference="VNV-1B-QnG"/>
                                 <exclude reference="ytt-VS-bdk"/>
+                                <exclude reference="EQa-Ft-THa"/>
+                                <exclude reference="YFH-eR-quv"/>
+                                <exclude reference="WSI-oV-dWH"/>
+                                <exclude reference="qKn-Rj-JRm"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
+                                <include reference="2Li-3e-Whz"/>
+                                <include reference="w1V-E0-QIg"/>
                                 <include reference="udo-fW-4sn"/>
                             </mask>
                             <mask key="constraints">
@@ -1091,13 +1141,19 @@
                                 <include reference="INL-IV-Gv2"/>
                                 <include reference="VNV-1B-QnG"/>
                                 <include reference="ytt-VS-bdk"/>
+                                <include reference="EQa-Ft-THa"/>
+                                <include reference="YFH-eR-quv"/>
+                                <include reference="WSI-oV-dWH"/>
+                                <include reference="qKn-Rj-JRm"/>
                             </mask>
                         </variation>
                     </view>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="albumCollectionView" destination="udo-fW-4sn" id="yvO-9f-GtX"/>
+                        <outlet property="emptySubtitle" destination="w1V-E0-QIg" id="KS2-5P-sgm"/>
+                        <outlet property="emptyTitle" destination="2Li-3e-Whz" id="6QL-yN-d3u"/>
                         <segue destination="ICV-6m-5Th" kind="show" identifier="AlbumViewSegue" id="3v7-nH-bJu"/>
                     </connections>
                 </viewController>

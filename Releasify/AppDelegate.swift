@@ -78,8 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		} else {
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
 		}
-		
-		window?.makeKeyAndVisible()		
+		window?.makeKeyAndVisible()
 		
 		return true
 	}
@@ -89,7 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: .LiteralSearch, range: nil)
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: .LiteralSearch, range: nil)
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: .LiteralSearch, range: nil)
-		self.userDeviceToken = deviceTokenString
+		userDeviceToken = deviceTokenString
 		if userID == 0 {
 			API.sharedInstance.register(deviceToken: deviceTokenString, allowExplicitContent, successHandler: { (userID, userUUID) in
 				self.userID = userID!
@@ -97,27 +96,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
 				NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
 				NSUserDefaults.standardUserDefaults().setValue(self.userDeviceToken, forKey: "deviceToken")
-				print("UUID was set successfully.")
-				print("APNS Device token was set successfully.")
 				},
 				errorHandler: { (error) in
-				// print("Error: \(error.localizedDescription)")
 			})
 		}
 	}
 	
 	func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-		print("Error: \(error.localizedDescription)")
 		if userID == 0 {
 			API.sharedInstance.register(allowExplicitContent, successHandler: { (userID, userUUID) in
 				self.userID = userID!
 				self.userUUID = userUUID
 				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
 				NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
-				print("UUID was set successfully.")
 				},
 				errorHandler: { (error) in
-				// print("Error: \(error.localizedDescription)")
 			})
 		}
 	}
