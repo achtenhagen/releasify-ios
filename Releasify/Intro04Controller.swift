@@ -35,7 +35,9 @@ class Intro04Controller: UIViewController {
     }
 	
 	@IBAction func finishIntro(sender: UIButton) {
-		performSegueWithIdentifier("FirstRunSegue", sender: self)
+		if appDelegate.userID > 0 {
+			performSegueWithIdentifier("FirstRunSegue", sender: self)
+		}
 	}
 	
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

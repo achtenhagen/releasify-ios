@@ -25,7 +25,7 @@ class Intro03Controller: UIViewController {
 	
 	@IBAction func importButtonPressed(sender: UIButton) {
 		mediaQuery.groupingType = .AlbumArtist
-		if mediaQuery.collections!.count > 0 {
+		if mediaQuery.collections!.count > 0 && appDelegate.userID > 0 {
 			performSegueWithIdentifier("importFromIntroSegue", sender: self)
 		} else {
 			let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)

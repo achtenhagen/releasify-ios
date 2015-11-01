@@ -12,7 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 	var userID = 0
-	var userDeviceToken: String!
+	var userDeviceToken: String?
 	var userUUID: String!
 	var contentHash: String?
 	var allowExplicitContent = true
@@ -89,17 +89,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: .LiteralSearch, range: nil)
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: .LiteralSearch, range: nil)
 		userDeviceToken = deviceTokenString
-		if userID == 0 {
-			API.sharedInstance.register(deviceToken: deviceTokenString, allowExplicitContent, successHandler: { (userID, userUUID) in
-				self.userID = userID!
-				self.userUUID = userUUID
-				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
-				NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
-				NSUserDefaults.standardUserDefaults().setValue(self.userDeviceToken, forKey: "deviceToken")
-				},
-				errorHandler: { (error) in
-			})
-		}
 	}
 	
 	func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {

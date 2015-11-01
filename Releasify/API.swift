@@ -169,12 +169,10 @@ final class API {
 				errorHandler(error: Error.BadRequest)
 				return
 			}
-			
 			guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? NSDictionary else {
 				errorHandler(error: Error.FailedToParseJSON)
 				return
-			}
-			
+			}			
 			let receivedUserID = json!["id"] as? Int
 			if receivedUserID > 0 {
 				print("Received user ID: \(receivedUserID!) from the server.")

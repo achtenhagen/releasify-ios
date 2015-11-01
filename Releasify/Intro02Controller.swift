@@ -13,7 +13,7 @@ class Intro02Controller: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	weak var delegate: IntroPageDelegate?
 
-	@IBAction func skipButtonPressed(sender: UIButton) {		
+	@IBAction func skipButtonPressed(sender: UIButton) {
 		if delegate != nil {
 			let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 			alert.title = "Disable Push Notifications?"
@@ -29,18 +29,18 @@ class Intro02Controller: UIViewController {
 						self.delegate?.advanceIntroPageTo(3)
 						},
 						errorHandler: { (error) in
+							self.handleError(error)
 					})
 				} else {
 					self.delegate?.advanceIntroPageTo(3)
 				}
-
 			}))
 			self.presentViewController(alert, animated: true, completion: nil)
 		}
 	}
 	
 	// MARK: - Notification settings
-	@IBAction func permissionBtn(sender: UIButton) {		
+	@IBAction func permissionBtn(sender: UIButton) {
 		if UIApplication.sharedApplication().respondsToSelector("registerUserNotificationSettings:") {
 			
 			let appAction = UIMutableUserNotificationAction()
@@ -77,8 +77,20 @@ class Intro02Controller: UIViewController {
 			UIApplication.sharedApplication().registerUserNotificationSettings(settings)
 			UIApplication.sharedApplication().registerForRemoteNotifications()
 			
-			if delegate != nil {
-				delegate?.advanceIntroPageTo(3)
+			if appDelegate.userID == 0 && appDelegate.userDeviceToken != nil {
+				API.sharedInstance.register(deviceToken: appDelegate.userDeviceToken, appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
+					self.appDelegate.userID = userID!
+					self.appDelegate.userUUID = userUUID
+					NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
+					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
+					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userDeviceToken, forKey: "deviceToken")
+					if self.delegate != nil {
+						self.delegate?.advanceIntroPageTo(3)
+					}
+					},
+					errorHandler: { (error) in
+						self.handleError(error)
+				})
 			}
 		}
 	}
@@ -91,4 +103,21 @@ class Intro02Controller: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+	
+	func handleError (error: ErrorType) {
+		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+		switch (error) {
+		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+			alert.title = "You're Offline!"
+			alert.message = "Please make sure you are connected to the internet, then try again."
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+			}))
+		default:
+			alert.title = "Unable to register"
+			alert.message = "Please try again later."
+		}
+		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		self.presentViewController(alert, animated: true, completion: nil)
+	}
 }

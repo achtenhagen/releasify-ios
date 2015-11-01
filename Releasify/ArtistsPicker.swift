@@ -210,26 +210,26 @@ class ArtistsPicker: UIViewController {
 					self.indicatorView.removeFromSuperview()
 					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 					switch (error) {
-					case API.Error.BadRequest:
-						alert.title = "400 Bad Request"
-						alert.message = "Missing Parameter."
-					case API.Error.Unauthorized:
-						alert.title = "403 Forbidden"
-						alert.message = "Invalid Credentials."
-						alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
-							// Request new ID from server.
+					case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+						alert.title = "You're Offline!"
+						alert.message = "Please make sure you are connected to the internet, then try again."
+						alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+							UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+							if self.searchController.active {
+								self.searchController.dismissViewControllerAnimated(true, completion: nil)
+							}
+							self.dismissViewControllerAnimated(true, completion: nil)
 						}))
-					case API.Error.RequestEntityTooLarge:
-						alert.title = "413 Request Entity Too Large"
-						alert.message = "Received batch is too large."
-					case API.Error.InternalServerError:
-						alert.title = "500 Internal Server Error"
-						alert.message = "An error on our end occured."
 					default:
-						alert.title = "Oops! Something went wrong."
-						alert.message = "An unknown error occured."
+						alert.title = "Unable to import!"
+						alert.message = "Please try again later."
 					}
-					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { action in
+						if self.searchController.active {
+							self.searchController.dismissViewControllerAnimated(true, completion: nil)
+						}
+						self.dismissViewControllerAnimated(true, completion: nil)
+					}))
 					self.presentViewController(alert, animated: true, completion: nil)
 			})
 		}

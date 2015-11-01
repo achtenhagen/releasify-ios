@@ -15,7 +15,7 @@ class AlbumController: UIViewController {
 	let albumFooterViewReuseIdentifier = "albumCollectionFooter"
 	var albumCollectionLayout: UICollectionViewFlowLayout!
 	var selectedAlbum: Album!
-	var artwork = [String:UIImage]()
+	var tmpArtwork = [String:UIImage]()
 	var notificationAlbumID: Int!
 	var refreshControl: UIRefreshControl!	
 	
@@ -43,13 +43,10 @@ class AlbumController: UIViewController {
 		albumCollectionLayout.minimumInteritemSpacing = 10
 		
 		switch UIScreen.mainScreen().bounds.width {
-			// iPhone 4S, 5, 5C & 5S
 		case 320:
 			albumCollectionLayout.itemSize = defaultItemSize
-			// iPhone 6S
 		case 375:
 			albumCollectionLayout.itemSize = CGSize(width: 172, height: 217)
-			// iPhone 6S Plus
 		case 414:
 			albumCollectionLayout.itemSize = CGSize(width: 192, height: 237)
 		default:
@@ -122,30 +119,15 @@ class AlbumController: UIViewController {
 				self.refreshControl.endRefreshing()
 				let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 				switch (error) {
-				case API.Error.BadRequest:
-					alert.title = "400 Bad Request"
-					alert.message = "Missing Parameter."
-				case API.Error.Unauthorized:
-					alert.title = "403 Forbidden"
-					alert.message = "Invalid Credentials."
-					alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
-						// Request new ID from server.
-					}))
-				case API.Error.FailedToParseJSON:
-					alert.title = "Oops! Something went wrong."
-					alert.message = "Failed to parse response data."
-				case API.Error.InternalServerError:
-					alert.title = "500 Internal Server Error"
-					alert.message = "An error occured on our end."
-				case API.Error.NoInternetConnection:
-					alert.title = "Unable to connect"
-					alert.message = "Please make sure you are connected to the internet."
+				case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+					alert.title = "You're Offline!"
+					alert.message = "Please make sure you are connected to the internet, then try again."
 					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
 						UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 					}))
 				default:
-					alert.title = "Oops! Something went wrong."
-					alert.message = "An unknown error occured."
+					alert.title = "Unable to update!"
+					alert.message = "Please try again later."
 				}
 				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
@@ -220,15 +202,8 @@ class AlbumController: UIViewController {
 					}
 				})
 				controller.addAction(buyAction)
-				
-//				// Implement for final release.
-//				let reportAction = UIAlertAction(title: "Report a problem", style: .Default, handler: { action in
-//				// Todo: implement...
-//				})
-//				controller.addAction(reportAction)
-				
 				if AppDB.sharedInstance.albums[section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
-					let deleteAction = UIAlertAction(title: "Remove", style: .Destructive, handler: { action in
+					let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
 						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
 						let albumArtwork = AppDB.sharedInstance.albums[section]![indexPath!.row].artwork
 						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
@@ -251,15 +226,15 @@ class AlbumController: UIViewController {
 					})
 					controller.addAction(deleteAction)
 				} else {
-//					let hideAction = UIAlertAction(title: "Hide Album", style: .Destructive, handler: { action in
-//						// let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
-//						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-//							albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
-//							}, completion: { (value: Bool) in
-//								// Todo: implement...
-//						})
-//					})
-//					controller.addAction(hideAction)
+					let removeAction = UIAlertAction(title: "Remove Album", style: .Destructive, handler: { action in
+						// let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
+						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+							self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+							}, completion: { (value: Bool) in
+								// Todo: implement...
+						})
+					})
+					controller.addAction(removeAction)
 				}
 				
 				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
@@ -278,6 +253,36 @@ class AlbumController: UIViewController {
 			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
 		}
+	}
+	
+	func fetchArtwork (hash: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
+		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
+		let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
+		guard let checkedURL = NSURL(string: albumURL) else { errorHandler(); return }
+		let request = NSURLRequest(URL: checkedURL)
+		let mainQueue = NSOperationQueue.mainQueue()
+		NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
+			if error != nil { errorHandler(); return }
+			guard let HTTPResponse = response as? NSHTTPURLResponse else { errorHandler(); return }
+			if HTTPResponse.statusCode != 200 { errorHandler(); return }
+			guard let imageData = UIImage(data: data!) else { errorHandler(); return }
+			successHandler(image: imageData)
+		})
+	}
+	
+	func getArtworkForCell (hash: String, completion: ((artwork: UIImage) -> Void)) {
+		guard let tmpImage = tmpArtwork[hash] else {
+			fetchArtwork(hash, successHandler: { artwork in
+				AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
+				self.tmpArtwork[hash] = artwork
+				completion(artwork: artwork!)
+			}, errorHandler: {
+				print("Failed to download artwork!")
+				completion(artwork: UIImage(named: "icon_album_placeholder")!)
+			})
+			return
+		}
+		completion(artwork: tmpImage)
 	}
 }
 
@@ -316,67 +321,44 @@ extension AlbumController: UICollectionViewDataSource {
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
 			section = sectionAtIndex()
 		}
+		
 		let album = AppDB.sharedInstance.albums[section]![indexPath.row]
 		let hash = album.artwork
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
-		cell.albumArtwork.contentMode = .Center
-		cell.albumArtwork.image = UIImage(named: "icon_album_placeholder")
-		// If an album is removed, but the image data is still stored in the artwork array, it WILL NOT re-download!!!
+		
 		if AppDB.sharedInstance.checkArtwork(hash) {
-			artwork[hash] = AppDB.sharedInstance.getArtwork(hash)
+			tmpArtwork[hash] = AppDB.sharedInstance.getArtwork(hash)
 		} else {
-			artwork.removeValueForKey(hash)
+			tmpArtwork.removeValueForKey(hash)
 		}
-		if let image = artwork[hash] {
-			cell.albumArtwork.contentMode = .ScaleToFill
-			cell.albumArtwork.image = image
-		} else {
-			let subDir = (album.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
-			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
-			if let checkedURL = NSURL(string: albumURL) {
-				let request = NSURLRequest(URL: checkedURL)
-				let mainQueue = NSOperationQueue.mainQueue()
-				NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
-					if error != nil {
-						cell.albumArtwork.contentMode = .Center
-						cell.albumArtwork.image = UIImage(named: "icon_album_placeholder")
-						print("Failed to download artwork!")
-						return
-					}
-					if let HTTPResponse = response as? NSHTTPURLResponse {
-						if HTTPResponse.statusCode != 200 {
-							cell.albumArtwork.contentMode = .Center
-							cell.albumArtwork.image = UIImage(named: "icon_album_placeholder")
-							print("Failed to download artwork!")
-							return
-						}
-						let image = UIImage(data: data!)
-						cell.albumArtwork.alpha = 0
-						self.artwork[hash] = image
-						dispatch_async(dispatch_get_main_queue(), {
-							if let cell = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
-								AppDB.sharedInstance.addArtwork(hash, artwork: image!)
-								cell.albumArtwork.contentMode = .ScaleToFill
-								cell.albumArtwork.image = image
-								UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-									cell.albumArtwork.alpha = 1.0
-								}, completion: nil)
-							}
-						})
+		
+		getArtworkForCell(album.artwork, completion: { artwork in
+			if cell.albumArtwork.image == nil {
+				cell.albumArtwork.alpha = 0
+				dispatch_async(dispatch_get_main_queue(), {
+					if let cell = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
+						cell.albumArtwork.image = artwork
+						UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+							cell.albumArtwork.alpha = 1.0
+							}, completion: nil)
 					}
 				})
+			} else {
+				cell.albumArtwork.image = artwork
 			}
-		}
+		})
 		
 		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(album.ID)
 		cell.albumTitle.text = album.title
 		cell.albumTitle.userInteractionEnabled = false
 		cell.containerView.hidden = true
+		
 		if timeDiff > 0 {
 			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)
 			cell.containerView.hidden = false
 			cell.progressBar.setProgress(album.getProgress(dateAdded!), animated: false)
 		}
+		
 		let weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
 		let days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
 		let hours   = component(Double(timeDiff),      v: 60 * 60) % 24
