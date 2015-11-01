@@ -10,19 +10,32 @@ import UIKit
 
 class Intro04Controller: UIViewController {
 	
+	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	weak var delegate: IntroPageDelegate?
 
+	@IBOutlet weak var finishIntroBtn: UIButton!
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
     }
+	
+	override func viewDidAppear(animated: Bool) {
+		if appDelegate.userID == 0 {
+			finishIntroBtn.enabled = false
+			finishIntroBtn.layer.opacity = 0.5
+		} else {
+			finishIntroBtn.enabled = true
+			finishIntroBtn.layer.opacity = 1
+		}
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
 	
 	@IBAction func finishIntro(sender: UIButton) {
-		UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
+		performSegueWithIdentifier("FirstRunSegue", sender: self)
 	}
 	
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

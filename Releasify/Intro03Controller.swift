@@ -11,6 +11,7 @@ import MediaPlayer
 
 class Intro03Controller: UIViewController {
 	
+	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	weak var delegate: IntroPageDelegate?
 	var mediaQuery: MPMediaQuery!
 	
@@ -40,6 +41,16 @@ class Intro03Controller: UIViewController {
 		view.backgroundColor = UIColor.clearColor()
 		mediaQuery = MPMediaQuery.artistsQuery()
     }
+	
+	override func viewDidAppear(animated: Bool) {
+		if appDelegate.userID == 0 {
+			importButton.enabled = false
+			importButton.layer.opacity = 0.5
+		} else {
+			importButton.enabled = true
+			importButton.layer.opacity = 1
+		}
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

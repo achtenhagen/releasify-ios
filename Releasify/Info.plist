@@ -23,15 +23,11 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1961</string>
+	<string>1987</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
-	<array>
-		<string>SourceSansPro-ExtraLight.otf</string>
-		<string>SourceSansPro-Regular.otf</string>
-		<string>SourceSansPro-Light.otf</string>
-	</array>
+	<array/>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>

@@ -10,6 +10,7 @@ import UIKit
 
 class Intro02Controller: UIViewController {
 	
+	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	weak var delegate: IntroPageDelegate?
 
 	@IBAction func skipButtonPressed(sender: UIButton) {		
@@ -19,7 +20,20 @@ class Intro02Controller: UIViewController {
 			alert.message = "Please confirm that you would like to disable Push Notifications. You can re-enable them later in iOS settings."
 			alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
 			alert.addAction(UIAlertAction(title: "Disable", style: .Destructive, handler: { action in
-				self.delegate?.advanceIntroPageTo(3)
+				if self.appDelegate.userID == 0 {
+					API.sharedInstance.register(self.appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
+						self.appDelegate.userID = userID!
+						self.appDelegate.userUUID = userUUID
+						NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
+						NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
+						self.delegate?.advanceIntroPageTo(3)
+						},
+						errorHandler: { (error) in
+					})
+				} else {
+					self.delegate?.advanceIntroPageTo(3)
+				}
+
 			}))
 			self.presentViewController(alert, animated: true, completion: nil)
 		}

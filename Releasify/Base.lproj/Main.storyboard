@@ -8,11 +8,6 @@
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <mutableArray key="SourceSansPro-ExtraLight.otf">
-            <string>SourceSansPro-ExtraLight</string>
-        </mutableArray>
-    </customFonts>
     <scenes>
         <!--Search Results-->
         <scene sceneID="FQB-CE-TmJ">
@@ -807,17 +802,17 @@
                                 <exclude reference="9ea-Uq-pax"/>
                                 <exclude reference="q4x-ot-vdt"/>
                                 <exclude reference="uGf-ja-wqY"/>
-                                <exclude reference="IDC-sK-Whh"/>
-                                <exclude reference="LNU-fe-DJL"/>
-                                <exclude reference="Zra-r7-EGE"/>
+                                <exclude reference="P98-Xr-pp3"/>
+                                <exclude reference="eJw-o2-l0z"/>
                                 <exclude reference="28G-lz-eNW"/>
                                 <exclude reference="Q9v-4C-u3S"/>
                                 <exclude reference="lYc-9H-C0h"/>
                                 <exclude reference="u9u-F1-KQB"/>
                                 <exclude reference="yvD-vH-dVM"/>
-                                <exclude reference="P98-Xr-pp3"/>
-                                <exclude reference="eJw-o2-l0z"/>
                                 <exclude reference="mmh-oS-gKV"/>
+                                <exclude reference="IDC-sK-Whh"/>
+                                <exclude reference="LNU-fe-DJL"/>
+                                <exclude reference="Zra-r7-EGE"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -834,17 +829,17 @@
                                 <include reference="9ea-Uq-pax"/>
                                 <include reference="q4x-ot-vdt"/>
                                 <include reference="uGf-ja-wqY"/>
-                                <include reference="IDC-sK-Whh"/>
-                                <include reference="LNU-fe-DJL"/>
-                                <include reference="Zra-r7-EGE"/>
+                                <include reference="P98-Xr-pp3"/>
+                                <include reference="eJw-o2-l0z"/>
                                 <include reference="28G-lz-eNW"/>
                                 <include reference="Q9v-4C-u3S"/>
                                 <include reference="lYc-9H-C0h"/>
                                 <include reference="u9u-F1-KQB"/>
                                 <include reference="yvD-vH-dVM"/>
-                                <include reference="P98-Xr-pp3"/>
-                                <include reference="eJw-o2-l0z"/>
                                 <include reference="mmh-oS-gKV"/>
+                                <include reference="IDC-sK-Whh"/>
+                                <include reference="LNU-fe-DJL"/>
+                                <include reference="Zra-r7-EGE"/>
                             </mask>
                         </variation>
                     </view>
@@ -874,7 +869,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gf8-Gk-vWq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3360" y="-722.25"/>
+            <point key="canvasLocation" x="3366" y="-629.25"/>
         </scene>
         <!--Notifications Controller-->
         <scene sceneID="qY8-Fl-eWT">
@@ -1108,7 +1103,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8wk-6E-uWp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2244" y="-722.25"/>
+            <point key="canvasLocation" x="2244" y="-629.25"/>
         </scene>
         <!--App Page Controller-->
         <scene sceneID="2F9-da-T0i">
@@ -1250,7 +1245,7 @@ Swipe to get started.</string>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Releasify" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jaP-Tk-HPP">
                                 <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                 <animations/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="26"/>
+                                <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="26"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -1589,7 +1584,7 @@ Swipe to get started.</string>
                                     <action selector="skipButtonPressed:" destination="J9l-lc-PhZ" eventType="touchUpInside" id="DRS-Jg-WCA"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wW1-Li-qeT">
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wW1-Li-qeT">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <animations/>
                                 <constraints>
@@ -1745,7 +1740,7 @@ Swipe to get started.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BVK-uh-9M2">
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BVK-uh-9M2">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <animations/>
                                 <constraints>
@@ -1942,10 +1937,14 @@ Swipe to get started.</string>
                         </variation>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="finishIntroBtn" destination="BVK-uh-9M2" id="gOg-ve-iBS"/>
+                        <segue destination="HBF-6K-pqv" kind="presentation" identifier="FirstRunSegue" modalTransitionStyle="crossDissolve" id="yjU-0b-TaX"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wlb-ae-b3y" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3640.5" y="-1462.5"/>
+            <point key="canvasLocation" x="3610.5" y="-1462.5"/>
         </scene>
         <!--App Controller-->
         <scene sceneID="Bou-Ys-oqP">
