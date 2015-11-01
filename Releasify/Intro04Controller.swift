@@ -10,7 +10,7 @@ import UIKit
 
 class Intro04Controller: UIViewController {
 	
-	var delegate: IntroPageDelegate?
+	weak var delegate: IntroPageDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,22 +21,11 @@ class Intro04Controller: UIViewController {
         super.didReceiveMemoryWarning()
     }
 	
+	@IBAction func finishIntro(sender: UIButton) {
+		UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
+	}
+	
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		
     }
-
-}
-
-extension Intro04Controller: IntroPageDelegate {
-	func advanceIntroPageTo(index: Int) {
-		if delegate != nil {
-			delegate?.advanceIntroPageTo(1)
-		}
-	}
-	
-	func finishIntro(completed: Bool) {
-		if delegate != nil {
-			delegate?.finishIntro(completed)
-		}
-	}
 }

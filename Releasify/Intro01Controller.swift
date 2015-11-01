@@ -10,7 +10,7 @@ import UIKit
 
 class Intro01Controller: UIViewController {
 	
-	var delegate: IntroPageDelegate?
+	weak var delegate: IntroPageDelegate?
 	
 	@IBOutlet weak var getStartedButton: UIButton!
 	
@@ -20,24 +20,12 @@ class Intro01Controller: UIViewController {
     }
 	
 	@IBAction func getStartedButtonPressed(sender: UIButton) {
-		advanceIntroPageTo(1)
+		if delegate != nil {
+			delegate?.advanceIntroPageTo(2)
+		}
 	}
 	
 	override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-}
-
-extension Intro01Controller: IntroPageDelegate {
-	func advanceIntroPageTo(index: Int) {
-		if delegate != nil {
-			delegate?.advanceIntroPageTo(1)
-		}
-	}
-	
-	func finishIntro(completed: Bool) {
-		if delegate != nil {
-			delegate?.finishIntro(false)
-		}
-	}
 }

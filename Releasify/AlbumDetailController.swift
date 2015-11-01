@@ -30,7 +30,6 @@ class AlbumDetailController: UIViewController {
 	@IBOutlet weak var progressBar: UIProgressView!
 	@IBOutlet weak var detailContainer: UIView!
 	@IBOutlet weak var detailContainerTopConstraint: NSLayoutConstraint!
-
 	
 	@IBAction func shareAlbum(sender: AnyObject) {
 		shareAlbum()
@@ -68,21 +67,16 @@ class AlbumDetailController: UIViewController {
 		doubleTapGesture.numberOfTapsRequired = 2
 		albumArtwork.addGestureRecognizer(doubleTapGesture)
 		
-		switch UIScreen.mainScreen().bounds.width {
-			// iPhone 6S
-		case 375:
-			detailContainerTopConstraint.constant = 45
-			// iPhone 6S Plus
-		case 414:
-			detailContainerTopConstraint.constant = 60
+		switch UIScreen.mainScreen().bounds.height {
+		case 667:
+			detailContainerTopConstraint.constant = 20
+		case 736:
+			detailContainerTopConstraint.constant = 50
 		default:
-			detailContainerTopConstraint.constant = 15
-		}		
+			detailContainerTopConstraint.constant = 10
+		}
 		
-//		detailContainer.translatesAutoresizingMaskIntoConstraints = false
-//		let verticalSpace = NSLayoutConstraint(item: detailContainer, attribute: .Top, relatedBy: .Equal, toItem: albumTitle, attribute: .Bottom, multiplier: 1, constant: detailContainerTopConstraint.constant)
-//		NSLayoutConstraint.activateConstraints([verticalSpace])
-//		//detailContainer.addConstraint(verticalSpace)
+		print(detailContainerTopConstraint.constant)
 		
 		if AppDB.sharedInstance.getArtwork(album.artwork + "_large") == nil {
 			let subDir = (album.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))

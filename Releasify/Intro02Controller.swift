@@ -10,15 +10,23 @@ import UIKit
 
 class Intro02Controller: UIViewController {
 	
-	var delegate: IntroPageDelegate?
+	weak var delegate: IntroPageDelegate?
 
-	@IBAction func skipButtonPressed(sender: UIButton) {
-		advanceIntroPageTo(2)
+	@IBAction func skipButtonPressed(sender: UIButton) {		
+		if delegate != nil {
+			let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+			alert.title = "Disable Push Notifications?"
+			alert.message = "Please confirm that you would like to disable Push Notifications. You can re-enable them later in iOS settings."
+			alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+			alert.addAction(UIAlertAction(title: "Disable", style: .Destructive, handler: { action in
+				self.delegate?.advanceIntroPageTo(3)
+			}))
+			self.presentViewController(alert, animated: true, completion: nil)
+		}
 	}
 	
-	@IBAction func permissionBtn(sender: UIButton) {
-		
-		// MARK: - Notification settings
+	// MARK: - Notification settings
+	@IBAction func permissionBtn(sender: UIButton) {		
 		if UIApplication.sharedApplication().respondsToSelector("registerUserNotificationSettings:") {
 			
 			let appAction = UIMutableUserNotificationAction()
@@ -30,12 +38,7 @@ class Intro02Controller: UIViewController {
 			
 			let storeAction = UIMutableUserNotificationAction()
 			storeAction.identifier = "STORE_ACTION"
-			switch UIDevice.currentDevice().systemVersion.compare("8.4.0", options: .NumericSearch) {
-			case .OrderedSame, .OrderedDescending:
-				storeAction.title = " MUSIC"
-			case .OrderedAscending:
-				storeAction.title = "Buy on iTunes"
-			}
+			storeAction.title = "Purchase"
 			storeAction.activationMode = .Foreground
 			storeAction.destructive = false
 			storeAction.authenticationRequired = false
@@ -59,6 +62,10 @@ class Intro02Controller: UIViewController {
 			
 			UIApplication.sharedApplication().registerUserNotificationSettings(settings)
 			UIApplication.sharedApplication().registerForRemoteNotifications()
+			
+			if delegate != nil {
+				delegate?.advanceIntroPageTo(3)
+			}
 		}
 	}
 	
@@ -70,18 +77,4 @@ class Intro02Controller: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-}
-
-extension Intro02Controller: IntroPageDelegate {
-	func advanceIntroPageTo(index: Int) {
-		if delegate != nil {
-			delegate?.advanceIntroPageTo(2)
-		}
-	}
-	
-	func finishIntro(completed: Bool) {
-		if delegate != nil {
-			delegate?.finishIntro(false)
-		}
-	}
 }

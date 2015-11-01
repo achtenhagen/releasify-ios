@@ -19,6 +19,7 @@ class AlbumCell: UICollectionViewCell {
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		
 		layer.masksToBounds = true
 		layer.cornerRadius = 4
 		

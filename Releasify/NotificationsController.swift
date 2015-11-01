@@ -46,7 +46,7 @@ class NotificationsController: UIViewController {
 				notifications.append(notification)
 				albums.append(album)
 			}
-		}			
+		}
 		
 		notificationsTable.registerNib(UINib(nibName: "NotificationCell", bundle: nil), forCellReuseIdentifier: notificationCellReuseIdentifier)
 		
@@ -94,14 +94,12 @@ extension NotificationsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
 		if editingStyle == .Delete {
 			let notification = notifications[indexPath.row]
-			let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-			let notificationID = userInfoCurrent["AlbumID"]! as! Int
 			UIApplication.sharedApplication().cancelLocalNotification(notification)
 			notifications.removeAtIndex(indexPath.row)
-			notificationsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+			albums.removeAtIndex(indexPath.row)
+			notificationsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
 			notificationsTable.reloadData()
 			editBtn.enabled = notifications.count > 0 ? true : false
-			print("Cancelled local notification \(notificationID)")
 		}
 	}
 }

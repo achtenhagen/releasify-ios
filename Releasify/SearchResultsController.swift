@@ -58,7 +58,7 @@ class SearchResultsController: UIViewController {
 		if let id = (artists[sender.tag]["artistId"] as? Int) { artistID = id }
 		let artistTitle = (artists[sender.tag]["title"] as? String)!
 		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
-			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
+			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID[]=\(artistUniqueID)"
 			API.sharedInstance.sendRequest(API.URL.confirmArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
 				if statusCode == 200 {
 					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {

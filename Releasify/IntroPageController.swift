@@ -8,36 +8,37 @@
 
 import UIKit
 
-protocol IntroPageDelegate {
+protocol IntroPageDelegate: class {
 	func advanceIntroPageTo (index: Int)
-	func finishIntro(completed: Bool)
 }
 
 class IntroPageController: UIPageViewController {
 
 	let identifiers: NSArray = ["Intro01", "Intro02", "Intro03", "Intro04"]
-	let storyBoard = UIStoryboard(name: "Main", bundle: nil)
 	var currentIndex = 0
+	var imageView = UIImageView()
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
 		dataSource = self
 		delegate = self
-
+		
+		view.backgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
+		
 		let bgImage: UIImage!
 		switch UIScreen.mainScreen().bounds.width {
 		case 320:
 			bgImage = UIImage(named: "Intro_bg_iPhone5.png")
 		case 375:
 			bgImage = UIImage(named: "Intro_bg_iPhone6.png")
-		case 540:
+		case 414:
 			bgImage = UIImage(named: "Intro_bg_iPhone6_plus.png")
 		default:
 			bgImage = UIImage(named: "Intro_bg.png")
 		}
 		
-		let imageView = UIImageView(frame: view.bounds)
+		imageView = UIImageView(frame: view.bounds)
 		imageView.image = bgImage
 		view.addSubview(imageView)
 		view.sendSubviewToBack(imageView)
@@ -54,7 +55,7 @@ class IntroPageController: UIPageViewController {
     }
 	
 	func viewControllerAtIndex(index: Int) -> UIViewController {
-		return storyBoard.instantiateViewControllerWithIdentifier(identifiers[index] as! String)
+		return UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier(identifiers[index] as! String)
 	}
 }
 
@@ -88,7 +89,18 @@ extension IntroPageController: UIPageViewControllerDataSource {
 // MARK: - UIPageViewControllerDelegate
 extension IntroPageController: UIPageViewControllerDelegate {
 	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-		
+		if completed {
+			let currentView = pageViewController.viewControllers![0]
+			if currentView.isKindOfClass(Intro02Controller) {
+				print("Delegate is now page controller 2")
+			} else if currentView.isKindOfClass(Intro03Controller) {
+				print("Delegate is now page controller 3")
+			} else if currentView.isKindOfClass(Intro04Controller) {
+				print("Delegate is now page controller 4")
+			} else {
+				print("Delegate is now page controller 1")
+			}
+		}
 	}
 }
 
@@ -97,30 +109,27 @@ extension IntroPageController: IntroPageDelegate {
 	func advanceIntroPageTo(index: Int) {
 		let viewControllers: NSArray
 		switch index {
-		case 1:
+		case 2:
 			let startVC = viewControllerAtIndex(1) as! Intro02Controller
 			startVC.delegate = self
 			viewControllers = NSArray(object: startVC)
-		case 2:
+			print(startVC)
+			print(startVC.delegate)
+			print("Delegate is now page controller 2 (Pressed Button)")
+		case 3:
 			let startVC = viewControllerAtIndex(2) as! Intro03Controller
 			startVC.delegate = self
 			viewControllers = NSArray(object: startVC)
-		case 3:
-			let startVC = viewControllerAtIndex(3) as! Intro03Controller
+		case 4:
+			let startVC = viewControllerAtIndex(3) as! Intro04Controller
 			startVC.delegate = self
 			viewControllers = NSArray(object: startVC)
 		default:
-			let startVC = viewControllerAtIndex(0) as! Intro04Controller
+			let startVC = viewControllerAtIndex(0) as! Intro01Controller
 			startVC.delegate = self
 			viewControllers = NSArray(object: startVC)
 		}
-		currentIndex = index
+		currentIndex = index-1
 		setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
-	}
-	
-	func finishIntro(completed: Bool) {
-		if completed {
-			print("Intro complete!")
-		}
 	}
 }

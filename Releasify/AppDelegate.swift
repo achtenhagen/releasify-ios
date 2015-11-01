@@ -12,7 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 	var userID = 0
-	var userDeviceToken: String?
+	var userDeviceToken: String!
 	var userUUID: String!
 	var contentHash: String?
 	var allowExplicitContent = true
@@ -36,6 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			AppDB.sharedInstance.truncate("albums")
 			AppDB.sharedInstance.truncate("album_artists")
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
+			NSUserDefaults.standardUserDefaults().setValue(nil, forKey: "contentHash")
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "reset")
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
@@ -179,16 +180,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// MARK: - 3D Touch Home Screen Quick Actions
 	@available(iOS 9.0, *)
 	func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
-		
 		if shortcutItem.type == "add-subscription" {
 			NSNotificationCenter.defaultCenter().postNotificationName("addSubscriptionQuickAction", object: nil, userInfo: nil)
 		}
-		
 		completionHandler(true)
 	}
 	
 	func applicationWillResignActive(application: UIApplication) {
-		// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+		// Sent when the application is about to move from active to inactive state.
+		// This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
 		// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 	}
 	
