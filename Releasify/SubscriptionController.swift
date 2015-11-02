@@ -41,7 +41,6 @@ class SubscriptionController: UIViewController {
 		
 		artistsCollectionView.registerNib(UINib(nibName: "SubscriptionCell", bundle: nil), forCellWithReuseIdentifier: subscriptionCellReuseIdentifier)
 		
-		// Collection view layout settings.
 		let defaultItemSize = CGSize(width: 145, height: 180)
 		artistCollectionLayout = UICollectionViewFlowLayout()
 		artistCollectionLayout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
@@ -50,13 +49,10 @@ class SubscriptionController: UIViewController {
 		artistCollectionLayout.minimumInteritemSpacing = 10
 		
 		switch UIScreen.mainScreen().bounds.width {
-			// iPhone 4S, 5, 5C & 5S
 		case 320:
 			artistCollectionLayout.itemSize = defaultItemSize
-			// iPhone 6
 		case 375:
 			artistCollectionLayout.itemSize = CGSize(width: 172, height: 207)
-			// iPhone 6 Plus
 		case 414:
 			artistCollectionLayout.itemSize = CGSize(width: 192, height: 227)
 		default:
@@ -102,21 +98,15 @@ class SubscriptionController: UIViewController {
 				self.refreshControl.endRefreshing()
 				let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 				switch (error) {
-				case API.Error.BadRequest:
-					alert.title = "400 Bad Request"
-					alert.message = "Missing Parameter."
-				case API.Error.Unauthorized:
-					alert.title = "403 Forbidden"
-					alert.message = "Invalid Credentials."
-					alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
-						// Request new ID from server.
+				case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+					alert.title = "You're Offline!"
+					alert.message = "Please make sure you are connected to the internet, then try again."
+					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+						UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 					}))
-				case API.Error.InternalServerError:
-					alert.title = "500 Internal Server Error"
-					alert.message = "An error on our end occured."
 				default:
-					alert.title = "Oops! Something went wrong."
-					alert.message = "An unknown error occured."
+					alert.title = "Unable to update!"
+					alert.message = "Please try again later."
 				}
 				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
@@ -156,15 +146,15 @@ class SubscriptionController: UIViewController {
 					AppDB.sharedInstance.addPendingArtist(self.filteredData[rowIndex].ID)
 					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 					switch (error) {
-					case API.Error.BadRequest:
-						alert.title = "400 Bad Request"
-						alert.message = "Missing Parameter."
-					case API.Error.InternalServerError:
-						alert.title = "500 Internal Server Error"
-						alert.message = "An error on our end occured."
+					case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+						alert.title = "You're Offline!"
+						alert.message = "Please make sure you are connected to the internet, then try again."
+						alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+							UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+						}))
 					default:
-						alert.title = "Oops! Something went wrong."
-						alert.message = "An unknown error occured."
+						alert.title = "Unable to update!"
+						alert.message = "Please try again later."
 					}
 					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 					self.presentViewController(alert, animated: true, completion: nil)

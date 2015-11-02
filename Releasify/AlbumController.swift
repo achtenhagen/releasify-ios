@@ -17,7 +17,7 @@ class AlbumController: UIViewController {
 	var selectedAlbum: Album!
 	var tmpArtwork = [String:UIImage]()
 	var notificationAlbumID: Int!
-	var refreshControl: UIRefreshControl!	
+	var refreshControl: UIRefreshControl!
 	
 	@IBOutlet weak var emptySubtitle: UILabel!
 	@IBOutlet weak var emptyTitle: UILabel!
@@ -110,8 +110,8 @@ class AlbumController: UIViewController {
 			self.albumCollectionView.reloadData()
 			self.refreshControl.endRefreshing()
 			if newItems.count > 0 {
-				// Todo: Show updates...
 				self.albumCollectionView.hidden = false
+//				Notification.sharedInstance.showNotification("New Albums (\(newItems.count))", subtitle: "New items have been added to your stream.")
 			}
 			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 			},
@@ -195,7 +195,11 @@ class AlbumController: UIViewController {
 		if indexPath?.row != nil {
 			if gesture.state == UIGestureRecognizerState.Began {
 				let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-				let buyAction = UIAlertAction(title: "Open in iTunes Store", style: .Default, handler: { action in
+				var buyTitle = "Pre-Order"
+				if section == 1 {
+					buyTitle = "Purchase"
+				}
+				let buyAction = UIAlertAction(title: buyTitle, style: .Default, handler: { action in
 					let albumURL = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesURL
 					if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
 						UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
@@ -205,7 +209,6 @@ class AlbumController: UIViewController {
 				if AppDB.sharedInstance.albums[section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
 					let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
 						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
-						let albumArtwork = AppDB.sharedInstance.albums[section]![indexPath!.row].artwork
 						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
 							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
 							let ID = userInfoCurrent["AlbumID"]! as! Int
@@ -216,13 +219,6 @@ class AlbumController: UIViewController {
 								break
 							}
 						}
-						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-							self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
-							}, completion: { (value: Bool) in
-								AppDB.sharedInstance.deleteAlbum(albumID, section: section, index: indexPath!.row)
-								AppDB.sharedInstance.deleteArtwork(albumArtwork as String)
-								self.albumCollectionView.reloadData()
-						})
 					})
 					controller.addAction(deleteAction)
 				} else {

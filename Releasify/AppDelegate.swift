@@ -192,7 +192,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	}
 	
-	func delay(delay:Double, closure:() -> Void) {
+	func delay(delay: Double, closure: () -> Void) {
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
 	}
 }

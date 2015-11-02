@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AppController: UINavigationController {
+final class AppController: UINavigationController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	
 	@IBOutlet weak var navBar: UINavigationBar!
@@ -28,7 +28,11 @@ class AppController: UINavigationController {
 		navBarAppearance.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
 		navBarAppearance.shadowImage = UIImage()
 		navBarAppearance.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-		navBarAppearance.translucent = false
+		navBarAppearance.translucent = false		
+		
+		view.addSubview(Notification.sharedInstance)
+		Notification.sharedInstance.userInteractionEnabled = false
+		Notification.sharedInstance.drawRect(CGRect(x: 0, y: view.bounds.height, width: view.bounds.width, height: 55))
 		
 		print("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications!.count)")
 		print("App Controller loaded.")

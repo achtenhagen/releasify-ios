@@ -56,7 +56,7 @@ class AppPageController: UIPageViewController {
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
 		view.layer.insertSublayer(gradient, atIndex: 0)
 		
-		notificationsBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
+		notificationsBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)		
 	}
 	
 	func viewControllerAtIndex(index: Int) -> UIViewController? {
@@ -101,7 +101,7 @@ class AppPageController: UIPageViewController {
 										AppDB.sharedInstance.getArtists()
 										NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 										NSNotificationCenter.defaultCenter().postNotificationName("refreshSubscriptions", object: nil, userInfo: nil)
-										print("You've successfully subscribed to \(artistTitle).")
+										Notification.sharedInstance.showNotification("Subscribed to \(artistTitle).", subtitle: "You will be notified of new content by this artist.")
 									}
 								}
 							}
@@ -120,24 +120,15 @@ class AppPageController: UIPageViewController {
 					errorHandler: { (error) in
 						let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 						switch (error) {
-						case API.Error.BadRequest:
-							alert.title = "400 Bad Request"
-							alert.message = "Missing Parameter."
-						case API.Error.Unauthorized:
-							alert.title = "403 Forbidden"
-							alert.message = "Invalid Credentials."
-							alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
-								// Request new ID from server.
+						case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+							alert.title = "You're Offline!"
+							alert.message = "Please make sure you are connected to the internet, then try again."
+							alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+								UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 							}))
-						case API.Error.RequestEntityTooLarge:
-							alert.title = "413 Request Entity Too Large"
-							alert.message = "Received batch is too large."
-						case API.Error.InternalServerError:
-							alert.title = "500 Internal Server Error"
-							alert.message = "An error on our end occured."
 						default:
-							alert.title = "Oops! Something went wrong."
-							alert.message = "An unknown error occured."
+							alert.title = "Unable to update!"
+							alert.message = "Please try again later."
 						}
 						alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 						self.presentViewController(alert, animated: true, completion: nil)

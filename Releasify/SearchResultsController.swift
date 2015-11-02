@@ -64,10 +64,9 @@ class SearchResultsController: UIViewController {
 					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
 						self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2
 						}, completion: { (state) in
-							let newArtistID = AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
+							AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 							AppDB.sharedInstance.getArtists()
 							self.selectedArtists.addObject(artistUniqueID)
-							if newArtistID > 0 { print("Successfully subscribed.") }
 							if self.artists.count == self.selectedArtists.count { self.closeView() }
 					})
 				}
@@ -75,21 +74,15 @@ class SearchResultsController: UIViewController {
 				errorHandler: { (error) in
 					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 					switch (error) {
-					case API.Error.BadRequest:
-						alert.title = "400 Bad Request"
-						alert.message = "Missing Parameter."
-					case API.Error.Unauthorized:
-						alert.title = "403 Forbidden"
-						alert.message = "Invalid Credentials."
-						alert.addAction(UIAlertAction(title: "Fix it!", style: .Default, handler: { action in
-							// Request new ID from server.
+					case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+						alert.title = "You're Offline!"
+						alert.message = "Please make sure you are connected to the internet, then try again."
+						alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+							UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 						}))
-					case API.Error.InternalServerError:
-						alert.title = "500 Internal Server Error"
-						alert.message = "An error on our end occured."
 					default:
-						alert.title = "Oops! Something went wrong."
-						alert.message = "An unknown error occured."
+						alert.title = "Unable to subscribe!"
+						alert.message = "Please try again later."
 					}
 					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 					self.presentViewController(alert, animated: true, completion: nil)
