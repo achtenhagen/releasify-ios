@@ -106,12 +106,12 @@ class AlbumController: UIViewController {
 	}
 	
 	func refresh() {
-		API.sharedInstance.refreshContent({ (newItems) in			
+		API.sharedInstance.refreshContent({ (newItems) in
 			self.albumCollectionView.reloadData()
 			self.refreshControl.endRefreshing()
 			if newItems.count > 0 {
 				self.albumCollectionView.hidden = false
-//				Notification.sharedInstance.showNotification("New Albums (\(newItems.count))", subtitle: "New items have been added to your stream.")
+				Notification.sharedInstance.showNotification("New Albums (\(newItems.count))", subtitle: "New items have been added to your stream.")
 			}
 			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 			},

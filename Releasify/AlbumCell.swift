@@ -26,13 +26,10 @@ class AlbumCell: UICollectionViewCell {
 		var gradientLayerView: UIView!
 		
 		switch UIScreen.mainScreen().bounds.width {
-			// iPhone 4S, 5, 5C & 5S
 		case 320:
 			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
-			// iPhone 6s
 		case 375:
 			gradientLayerView = UIView(frame: CGRectMake(0, 27, 172, containerView.frame.height))
-			// iPhone 6s Plus
 		case 414:
 			gradientLayerView = UIView(frame: CGRectMake(0, 47, 192, containerView.frame.height))
 		default:

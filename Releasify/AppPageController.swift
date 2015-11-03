@@ -11,7 +11,7 @@ import MediaPlayer
 
 class AppPageController: UIPageViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	var responseArtists = [NSDictionary]()
+	var responseArtists: [NSDictionary]!
 	var mediaQuery = MPMediaQuery.artistsQuery()
 	var identifiers: NSArray = ["AlbumController", "SubscriptionController"]
 	var keyword: String!

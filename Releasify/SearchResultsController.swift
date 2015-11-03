@@ -67,7 +67,9 @@ class SearchResultsController: UIViewController {
 							AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 							AppDB.sharedInstance.getArtists()
 							self.selectedArtists.addObject(artistUniqueID)
-							if self.artists.count == self.selectedArtists.count { self.closeView() }
+							if self.artists.count == self.selectedArtists.count {
+								self.closeView()
+							}
 					})
 				}
 				},

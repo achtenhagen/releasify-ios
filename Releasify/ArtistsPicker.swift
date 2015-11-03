@@ -19,11 +19,11 @@ class ArtistsPicker: UIViewController {
 	var filteredCheckedStates = [Bool]()
 	var hasSelectedAll = false
 	var isIntro = false
-	var searchController = UISearchController()
+	var searchController: UISearchController!
 	var collection = [AnyObject]()
 	var responseArtists = [NSDictionary]()
-	var activityView = UIView()
-	var indicatorView = UIActivityIndicatorView()
+	var activityView: UIView!
+	var indicatorView: UIActivityIndicatorView!
 	
 	@IBOutlet weak var navBar: UINavigationBar!
 	@IBOutlet weak var artistsTable: UITableView!
@@ -98,8 +98,10 @@ class ArtistsPicker: UIViewController {
 			}
 		}
 		artistsTable.reloadData()
-		activityView.removeFromSuperview()
-		indicatorView.removeFromSuperview()
+		if activityView != nil {
+			activityView.removeFromSuperview()
+			indicatorView.removeFromSuperview()
+		}
 		selectAllBtn.title = "Select All"
 		progressBar.setProgress(0, animated: false)
 		view.userInteractionEnabled = true
@@ -143,7 +145,9 @@ class ArtistsPicker: UIViewController {
 		progressBar.hidden = false
 		progressBar.progress = 0
 		
-		if !currentBatch.isEmpty { batches.append(postString.stringByAppendingString(currentBatch)) }
+		if !currentBatch.isEmpty {
+			batches.append(postString.stringByAppendingString(currentBatch))
+		}
 		
 		print("Total items: \(totalItems)")
 		print("Total batches: \(batches.count)")

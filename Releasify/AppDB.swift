@@ -532,7 +532,7 @@ final class AppDB {
 	}
 	
 	// MARK: - Table Operations
-	func truncate (table: String) {
+	private func truncate (table: String) {
 		if !connected() { return }
 		let query = "DELETE FROM \(table)"
 		var errMsg: UnsafeMutablePointer<Int8> = nil
