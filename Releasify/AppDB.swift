@@ -541,4 +541,11 @@ final class AppDB {
 		}
 		disconnect()
 	}
+	
+	func reset () {
+		truncate("artists")
+		truncate("pending_artists")
+		truncate("albums")
+		truncate("album_artists")
+	}
 }

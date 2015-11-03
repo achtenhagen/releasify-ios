@@ -15,10 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var userDeviceToken: String?
 	var userUUID: String!
 	var contentHash: String?
+	var shortcutKeyDescription: String?
 	var allowExplicitContent = true
 	var completedRefresh = false
 	var lastUpdated = 0
-	var notificationAlbumID: Int!
+	var notificationAlbumID: Int?
 	var remoteNotificationPayload: NSDictionary?
 	var localNotificationPayload: NSDictionary?
 	
@@ -26,15 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String) + " (" + (NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as! String) + ")"
 		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")		
 		
-		// MARK: - App reset setting
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
 		if reset {
-			print("The application will be reset to default settings.")
+			AppDB.sharedInstance.reset()
 			application.cancelAllLocalNotifications()
-			AppDB.sharedInstance.truncate("artists")
-			AppDB.sharedInstance.truncate("pending_artists")
-			AppDB.sharedInstance.truncate("albums")
-			AppDB.sharedInstance.truncate("album_artists")
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
 			NSUserDefaults.standardUserDefaults().setValue(nil, forKey: "contentHash")
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "reset")
@@ -42,16 +38,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
 		}
 		
-		// MARK: - App settings
 		userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
 		if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("uuid") { userUUID = uuid }
 		if let hash = NSUserDefaults.standardUserDefaults().valueForKey("contentHash") as? String {
 			contentHash = hash
-			print("Content hash has been set (\(contentHash!)).")
-		} else {
-			print("No content hash has been set.")
 		}
 		if let explicit = NSUserDefaults.standardUserDefaults().valueForKey("allowExplicit") as? Bool {
 			allowExplicitContent = explicit
@@ -59,7 +51,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 		}
 		
-		// Check for notification payload when app is launched.
 		if let launchOpts = launchOptions {
 			if let remotePayload = launchOpts[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
 				remoteNotificationPayload = remotePayload
@@ -69,10 +60,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 					localNotificationPayload = userInfo
 				}
 			}
+			if #available(iOS 9.0, *) {
+			    if let shortcutKey = launchOpts[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
+    				shortcutKeyDescription = shortcutKey.type
+    			}
+			}
 		}
 		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		
 		if userID == 0 {
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
@@ -108,7 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Called when app is in the foreground or the notification itself is tapped.
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
-			notificationAlbumID = userInfo["AlbumID"] as! Int
+			notificationAlbumID = userInfo["AlbumID"] as? Int
 			print("Received a local notification with ID: \(notificationAlbumID).")
 			// Called when the notification is tapped if the app is inactive or in the background.
 			if application.applicationState == .Inactive || application.applicationState == .Background {
@@ -142,16 +137,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// MARK: - Remote Notification - Receiver + Background fetch
 	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
 		print("Received remote call to refresh.")
-		API.sharedInstance.refreshContent(nil, errorHandler: { (error) in
+		API.sharedInstance.refreshContent({ (newItems) in
+			if newItems.count > 0 {
+				completionHandler(.NewData)
+			} else {
+				completionHandler(.NoData)
+			}
+		}, errorHandler: { (error) in
 			completionHandler(.Failed)
 		})
-		completionHandler(.NewData)
 	}
 	
 	// MARK: - Remote Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
-			print("app action pressed.")
 			delay(0) {
 				NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
 			}
@@ -164,8 +163,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
 		if shortcutItem.type == "add-subscription" {
 			NSNotificationCenter.defaultCenter().postNotificationName("addSubscriptionQuickAction", object: nil, userInfo: nil)
+			completionHandler(true)
+		} else {
+			completionHandler(false)
 		}
-		completionHandler(true)
 	}
 	
 	func applicationWillResignActive(application: UIApplication) {

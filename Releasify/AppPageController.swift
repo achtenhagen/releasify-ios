@@ -56,6 +56,12 @@ class AppPageController: UIPageViewController {
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
 		view.layer.insertSublayer(gradient, atIndex: 0)
 		
+		if let shortcutItem = appDelegate.shortcutKeyDescription {
+			if shortcutItem == "add-subscription" {
+				addSubscription()
+			}
+		}
+		
 		notificationsBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)		
 	}
 	
