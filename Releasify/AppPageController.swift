@@ -12,7 +12,7 @@ import MediaPlayer
 class AppPageController: UIPageViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var responseArtists: [NSDictionary]!
-	var mediaQuery = MPMediaQuery.artistsQuery()
+	var mediaQuery: MPMediaQuery!
 	var identifiers: NSArray = ["AlbumController", "SubscriptionController"]
 	var keyword: String!
 	
@@ -26,7 +26,9 @@ class AppPageController: UIPageViewController {
 				self.performSegueWithIdentifier("ArtistPickerSegue", sender: self)
 			})
 			let addAction = UIAlertAction(title: "Enter Artist Title", style: .Default, handler: { action in
-				self.addSubscription()
+				self.addSubscription({ error in
+					self.handleAddSubscriptionError(error)
+				})
 			})
 			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 			controller.addAction(importAction)
@@ -34,7 +36,9 @@ class AppPageController: UIPageViewController {
 			controller.addAction(cancelAction)
 			presentViewController(controller, animated: true, completion: nil)
 		} else {
-			addSubscription()
+			self.addSubscription({ error in
+				self.handleAddSubscriptionError(error)
+			})
 		}
 	}
 	
@@ -42,7 +46,7 @@ class AppPageController: UIPageViewController {
 		dataSource = self
 		delegate = self
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscription", name: "addSubscriptionQuickAction", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscriptionFromShortcutItem", name: "addSubscriptionShortcutItem", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"updateNotificationButton", name: "updateNotificationButton", object: nil)
 		
 		let startingViewController = viewControllerAtIndex(0)
@@ -58,11 +62,14 @@ class AppPageController: UIPageViewController {
 		
 		if let shortcutItem = appDelegate.shortcutKeyDescription {
 			if shortcutItem == "add-subscription" {
-				addSubscription()
+				self.addSubscription({ error in
+					self.handleAddSubscriptionError(error)
+				})
 			}
 		}
 		
-		notificationsBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)		
+		mediaQuery = MPMediaQuery.artistsQuery()		
+		notificationsBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
 	}
 	
 	func viewControllerAtIndex(index: Int) -> UIViewController? {
@@ -75,7 +82,13 @@ class AppPageController: UIPageViewController {
 		notificationsBtn.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 	}
 	
-	func addSubscription () {
+	func addSubscriptionFromShortcutItem () {
+		addSubscription({ error in
+			self.handleAddSubscriptionError(error)
+		})
+	}
+	
+	func addSubscription (errorHandler: ((error: ErrorType) -> Void)) {
 		responseArtists = [NSDictionary]()
 		let actionSheetController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
 		let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
@@ -87,57 +100,64 @@ class AppPageController: UIPageViewController {
 				let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&title[]=\(artist)"
 				self.keyword = artist
 				API.sharedInstance.sendRequest(API.URL.submitArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
-					if statusCode == 202 {
-						if let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary {
-							if let pendingArtists: [NSDictionary] = json["pending"] as? [NSDictionary] {
-								for artist in pendingArtists {
-									if let uniqueID = artist["iTunesUniqueID"] as? Int {
-										if AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
-											self.responseArtists.append(artist)
-										}
-									}
-								}
+					if statusCode != 202 {
+						errorHandler(error: API.Error.BadRequest)
+						return
+					}
+					
+					guard let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary else {
+						errorHandler(error: API.Error.FailedToParseJSON)
+						return
+					}
+					
+					guard let pendingArtists: [NSDictionary] = json["pending"] as? [NSDictionary] else {
+						errorHandler(error: API.Error.FailedToParseJSON)
+						return
+					}
+					
+					guard let successArtists: [NSDictionary] = json["success"] as? [NSDictionary] else {
+						errorHandler(error: API.Error.FailedToParseJSON)
+						return
+					}
+					
+					guard let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] else {
+						errorHandler(error: API.Error.FailedToParseJSON)
+						return
+					}
+					
+					for artist in pendingArtists {
+						if let uniqueID = artist["iTunesUniqueID"] as? Int {
+							if AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
+								self.responseArtists.append(artist)
 							}
-							if let successArtists: [NSDictionary] = json["success"] as? [NSDictionary] {
-								for artist in successArtists {
-									let artistID = artist["artistId"] as! Int
-									let artistTitle = (artist["title"] as? String)!
-									let artistUniqueID = artist["iTunesUniqueID"] as! Int
-									if AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID) > 0 {
-										AppDB.sharedInstance.getArtists()
-										NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
-										NSNotificationCenter.defaultCenter().postNotificationName("refreshSubscriptions", object: nil, userInfo: nil)
-										Notification.sharedInstance.showNotification("Subscribed to \(artistTitle).", subtitle: "You will be notified of new content by this artist.")
-									}
-								}
-							}
-							if let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] {
-								for artist in failedArtists {
-									let title = (artist["title"] as? String)!
-									print("Artist \(title) was not found on iTunes.")
-								}
-							}
-						}
-						if self.responseArtists.count > 0 {
-							self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
 						}
 					}
+					
+					for artist in successArtists {
+						let artistID = artist["artistId"] as! Int
+						let artistTitle = (artist["title"] as? String)!
+						let artistUniqueID = artist["iTunesUniqueID"] as! Int
+						if AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID) > 0 {
+							AppDB.sharedInstance.getArtists()
+							NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+							NSNotificationCenter.defaultCenter().postNotificationName("refreshSubscriptions", object: nil, userInfo: nil)
+							Notification.sharedInstance.showNotification("Subscribed to \(artistTitle).", subtitle: "You will be notified of new content by this artist.")
+						}
+					}
+					
+					for artist in failedArtists {
+						let title = (artist["title"] as? String)!
+						print("Artist \(title) was not found on iTunes.")
+					}
+					
+					
+					if self.responseArtists.count > 0 {
+						self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
+					}
+					
 					},
 					errorHandler: { (error) in
-						let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-						switch (error) {
-						case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-							alert.title = "You're Offline!"
-							alert.message = "Please make sure you are connected to the internet, then try again."
-							alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
-								UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
-							}))
-						default:
-							alert.title = "Unable to update!"
-							alert.message = "Please try again later."
-						}
-						alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-						self.presentViewController(alert, animated: true, completion: nil)
+						self.handleAddSubscriptionError(error)
 				})
 			}
 		}
@@ -148,6 +168,23 @@ class AppPageController: UIPageViewController {
 			textField.placeholder = "e.g., Armin van Buuren"
 		}
 		presentViewController(actionSheetController, animated: true, completion: nil)
+	}
+	
+	func handleAddSubscriptionError (error: ErrorType) {
+		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+		switch (error) {
+		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+			alert.title = "You're Offline!"
+			alert.message = "Please make sure you are connected to the internet, then try again."
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+			}))
+		default:
+			alert.title = "Unable to update!"
+			alert.message = "Please try again later."
+		}
+		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

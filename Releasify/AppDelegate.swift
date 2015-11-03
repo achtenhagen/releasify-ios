@@ -162,7 +162,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	@available(iOS 9.0, *)
 	func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
 		if shortcutItem.type == "add-subscription" {
-			NSNotificationCenter.defaultCenter().postNotificationName("addSubscriptionQuickAction", object: nil, userInfo: nil)
+			NSNotificationCenter.defaultCenter().postNotificationName("addSubscriptionShortcutItem", object: nil, userInfo: nil)
 			completionHandler(true)
 		} else {
 			completionHandler(false)

@@ -16,14 +16,10 @@ final class AppController: UINavigationController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		// Load data from database.
 		AppDB.sharedInstance.getArtists()
 		AppDB.sharedInstance.getAlbums()
-		
-		// Check for any pending artists waiting to be removed.
 		AppDB.sharedInstance.getPendingArtists()
 		
-		// Global UINavigationBar styles.
 		let navBarAppearance = UINavigationBar.appearance()
 		navBarAppearance.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
 		navBarAppearance.shadowImage = UIImage()

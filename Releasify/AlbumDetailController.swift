@@ -90,7 +90,6 @@ class AlbumDetailController: UIViewController {
 								AppDB.sharedInstance.addArtwork(self.album.artwork + "_large", artwork: image!)
 								self.albumArtwork.contentMode = .ScaleToFill
 								self.albumArtwork.image = image
-								print("Successfully downloaded HD artwork.")
 							}
 						}
 					}

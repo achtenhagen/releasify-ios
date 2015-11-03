@@ -105,6 +105,7 @@ class AlbumController: UIViewController {
 		albumCollectionView.scrollsToTop = false
 	}
 	
+	// MARK: - Refresh Content
 	func refresh() {
 		API.sharedInstance.refreshContent({ (newItems) in
 			self.albumCollectionView.reloadData()
