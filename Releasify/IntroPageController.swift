@@ -19,8 +19,8 @@ class IntroPageController: UIPageViewController {
 	var introPage02: Intro02Controller?
 	var introPage03: Intro03Controller?
 	var introPage04: Intro04Controller?
-	var currentIndex = 0
 	var imageView: UIImageView!
+	var currentIndex = 0
 	
 	override func viewDidLoad() {
         super.viewDidLoad()

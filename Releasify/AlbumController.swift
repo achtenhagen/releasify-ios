@@ -32,7 +32,6 @@ class AlbumController: UIViewController {
 		
 		albumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
 		
-		// Collection view layout settings.
 		let defaultItemSize = CGSize(width: 145, height: 190)
 		albumCollectionLayout = UICollectionViewFlowLayout()
 		albumCollectionLayout.headerReferenceSize = CGSize(width: 50, height: 50)
@@ -85,7 +84,7 @@ class AlbumController: UIViewController {
 		}
 		
 		// Refresh the App's content only when launched.
-		if appDelegate.userID > 0 && !appDelegate.completedRefresh {
+		if !appDelegate.completedRefresh {
 			refresh()
 		}
 		
@@ -112,7 +111,7 @@ class AlbumController: UIViewController {
 			self.refreshControl.endRefreshing()
 			if newItems.count > 0 {
 				self.albumCollectionView.hidden = false
-				Notification.sharedInstance.showNotification("New Albums (\(newItems.count))", subtitle: "New items have been added to your stream.")
+				Notification.sharedInstance.showNotification("\(newItems.count) Album\(newItems.count == 1 ? "" : "s")", subtitle: "have been added to your stream.")
 			}
 			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 			},
