@@ -494,11 +494,13 @@ final class AppDB {
 	}
 	
 	// MARK: - Artwork
-	func addArtwork (hash: String, artwork: UIImage) {
+	func addArtwork (hash: String, artwork: UIImage) -> Bool {
 		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
 		if !NSFileManager.defaultManager().fileExistsAtPath(artworkPath) {
 			UIImageJPEGRepresentation(artwork, 1.0)!.writeToFile(artworkPath, atomically: true)
+			return true
 		}
+		return false
 	}
 	
 	func checkArtwork (hash: String) -> Bool {

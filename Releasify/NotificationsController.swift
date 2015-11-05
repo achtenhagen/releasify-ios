@@ -43,7 +43,7 @@ class NotificationsController: UIViewController {
 		albums = [Album]()
 		for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
 			let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-			let notificationID = userInfoCurrent["AlbumID"]! as! Int
+			let notificationID = userInfoCurrent["albumID"] as! Int
 			if let album = AppDB.sharedInstance.getAlbum(notificationID) {
 				notifications.append(notification)
 				albums.append(album)

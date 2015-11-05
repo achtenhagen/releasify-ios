@@ -45,7 +45,7 @@ class Intro02Controller: UIViewController {
 			
 			let appAction = UIMutableUserNotificationAction()
 			appAction.identifier = "APP_ACTION"
-			appAction.title = "View in App"
+			appAction.title = "Open in App"
 			appAction.activationMode = .Foreground
 			appAction.destructive = false
 			appAction.authenticationRequired = false
@@ -57,13 +57,21 @@ class Intro02Controller: UIViewController {
 			storeAction.destructive = false
 			storeAction.authenticationRequired = false
 			
+			let preorderAction = UIMutableUserNotificationAction()
+			preorderAction.identifier = "PREORDER_ACTION"
+			preorderAction.title = "Pre-Order"
+			preorderAction.activationMode = .Foreground
+			preorderAction.destructive = false
+			preorderAction.authenticationRequired = false
+			
 			let defaultCategory = UIMutableUserNotificationCategory()
 			defaultCategory.identifier = "DEFAULT_CATEGORY"
+			
 			let remoteCategory = UIMutableUserNotificationCategory()
 			remoteCategory.identifier = "REMOTE_CATEGORY"
 			
-			let defaultActions = [appAction, storeAction]
-			let remoteActions  = [appAction]
+			let defaultActions = [storeAction, appAction]
+			let remoteActions  = [preorderAction, appAction]
 			
 			defaultCategory.setActions(defaultActions, forContext: .Default)
 			defaultCategory.setActions(defaultActions, forContext: .Minimal)

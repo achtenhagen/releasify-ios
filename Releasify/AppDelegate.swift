@@ -103,7 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Called when app is in the foreground or the notification itself is tapped.
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
-			notificationAlbumID = userInfo["AlbumID"] as? Int
+			notificationAlbumID = userInfo["albumID"] as? Int
 			print("Received a local notification with ID: \(notificationAlbumID).")
 			// Called when the notification is tapped if the app is inactive or in the background.
 			if application.applicationState == .Inactive || application.applicationState == .Background {
@@ -124,7 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		} else {
 			delay(0) {
 				if let userInfo = notification.userInfo {
-					let iTunesURL = userInfo["iTunesURL"]! as! String
+					let iTunesURL = userInfo["iTunesUrl"]! as! String
 					if UIApplication.sharedApplication().canOpenURL(NSURL(string: iTunesURL)!) {
 						UIApplication.sharedApplication().openURL(NSURL(string: iTunesURL)!)
 					}
@@ -153,6 +153,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		if identifier == "APP_ACTION" {
 			delay(0) {
 				NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
+			}
+		} else if identifier == "PREORDER_ACTION" {
+			delay(0) {
+				if let iTunesURL = userInfo["aps"]?["iTunesUrl"]! as? String {
+					if UIApplication.sharedApplication().canOpenURL(NSURL(string: iTunesURL)!) {
+						UIApplication.sharedApplication().openURL(NSURL(string: iTunesURL)!)
+					}
+				}
 			}
 		}
 		completionHandler()

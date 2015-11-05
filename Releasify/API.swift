@@ -34,7 +34,8 @@ final class API {
 		updateContent = "https://releasify.me/api/ios/v2.1/update_content.php",
 		confirmArtist = "https://releasify.me/api/ios/v2.1/confirm_artist.php",
 		submitArtist  = "https://releasify.me/api/ios/v2.1/submit_artist.php",
-		removeArtist  = "https://releasify.me/api/ios/v2.1/unsubscribe_artist.php"
+		removeArtist  = "https://releasify.me/api/ios/v2.1/unsubscribe_artist.php",
+		itemLookup	  = "https://releasify.me/api/ios/v2.1/item.php"
 	}
 	
 	// MARK: - Refresh Content
@@ -113,14 +114,14 @@ final class API {
 		for item in json {
 			let releaseDate = item["releaseDate"] as! Double
 			let albumItem = Album(
-				ID: item["id"] as! Int,
+				ID: item["ID"] as! Int,
 				title: item["title"] as! String,
-				artistID: item["artistId"] as! Int,
+				artistID: item["artistID"] as! Int,
 				releaseDate: releaseDate,
 				artwork: (string: item["artwork"] as! String),
 				explicit: item["explicit"] as! Int,
 				copyright: item["copyright"] as! String,
-				iTunesUniqueID: item["iTunesUniqueId"] as! Int,
+				iTunesUniqueID: item["iTunesUniqueID"] as! Int,
 				iTunesURL: item["iTunesUrl"] as! String,
 				created: Int(NSDate().timeIntervalSince1970)
 			)
@@ -129,7 +130,6 @@ final class API {
 				self.newItems.append(newAlbumID)
 				let remaining = Double(releaseDate) - Double(NSDate().timeIntervalSince1970)
 				if remaining > 0 {
-					print("Notification will fire in \(remaining) seconds.")
 					let notification = UILocalNotification()
 					if #available(iOS 8.2, *) {
 						notification.alertTitle = "New Album Released"
@@ -140,7 +140,7 @@ final class API {
 					notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
 					notification.applicationIconBadgeNumber++
 					notification.soundName = UILocalNotificationDefaultSoundName
-					notification.userInfo = ["AlbumID": albumItem.ID, "iTunesURL": albumItem.iTunesURL]
+					notification.userInfo = ["albumID": albumItem.ID, "iTunesUrl": albumItem.iTunesURL]
 					UIApplication.sharedApplication().scheduleLocalNotification(notification)
 				}
 			}
@@ -150,11 +150,45 @@ final class API {
 	// MARK: - Process downloaded JSON data.
 	func processSubscriptions (json: [NSDictionary]) {
 		for item in json {
-			let artistID = item["artistId"] as! Int
+			let artistID = item["artistID"] as! Int
 			let artistTitle = (item["title"] as? String)!
 			let artistUniqueID = item["iTunesUniqueID"] as! Int
 			AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 		}
+	}
+	
+	// MARK: - Album lookup
+	func lookupAlbum (albumID: Int, successHandler: ((album: Album) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
+		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&itemID=\(albumID)"
+		sendRequest(URL.itemLookup.rawValue, postString: postString, successHandler: { (statusCode, data) in
+			if statusCode != 200 {
+				errorHandler(error: Error.BadRequest)
+				return
+			}
+			guard let item = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? NSDictionary else {
+				errorHandler(error: Error.FailedToParseJSON)
+				return
+			}
+			
+			let releaseDate = item!["releaseDate"] as! Double
+			let album = Album(
+				ID: item!["ID"] as! Int,
+				title: item!["title"] as! String,
+				artistID: item!["artistID"] as! Int,
+				releaseDate: releaseDate,
+				artwork: (string: item!["artwork"] as! String),
+				explicit: item!["explicit"] as! Int,
+				copyright: item!["copyright"] as! String,
+				iTunesUniqueID: item!["iTunesUniqueID"] as! Int,
+				iTunesURL: item!["iTunesUrl"] as! String,
+				created: Int(NSDate().timeIntervalSince1970)
+			)
+			
+			successHandler(album: album)			
+			},
+			errorHandler: { (error) in
+				errorHandler(error: error)
+		})
 	}
 	
 	// MARK: - Device Registration
@@ -173,7 +207,7 @@ final class API {
 				errorHandler(error: Error.FailedToParseJSON)
 				return
 			}			
-			let receivedUserID = json!["id"] as? Int
+			let receivedUserID = json!["ID"] as? Int
 			if receivedUserID > 0 {
 				print("Received user ID: \(receivedUserID!) from the server.")
 				successHandler(userID: receivedUserID!, userUUID: UUID)

@@ -10,7 +10,7 @@ import UIKit
 
 class AlbumDetailController: UIViewController {	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	var album: Album!
+	var album: Album?
 	var artist = String()
 	var artwork = UIImage()
 	var timeDiff = Double()
@@ -38,27 +38,28 @@ class AlbumDetailController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		if let dbArtwork = AppDB.sharedInstance.getArtwork(album.artwork) {
-			artwork = dbArtwork
-			albumArtwork.contentMode = .ScaleToFill
-		} else {
+		guard let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) else {
 			artwork = UIImage(named: "icon_album_placeholder")!
 			albumArtwork.contentMode = .Center
+			return
 		}
+		
+		artwork = dbArtwork
+		albumArtwork.contentMode = .ScaleToFill
 		
 		albumArtwork.image = artwork
 		albumArtwork.layer.masksToBounds = true
 		albumArtwork.layer.cornerRadius = 2.0
-		artist = AppDB.sharedInstance.getAlbumArtist(album.ID)!
+		artist = AppDB.sharedInstance.getAlbumArtist(album!.ID)!
 		navigationItem.title = artist
-		albumTitle.text = album.title
+		albumTitle.text = album!.title
 		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
 		albumTitle.textContainer.lineFragmentPadding = 0
-		copyrightLabel.text = album.copyright
-		timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
+		copyrightLabel.text = album!.copyright
+		timeDiff = album!.releaseDate - NSDate().timeIntervalSince1970
 		if timeDiff > 0 {
-			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)!
-			progressBar.progress = album.getProgress(dateAdded)
+			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
+			progressBar.progress = album!.getProgress(dateAdded)
 			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
 		} else {
 			progressBar.hidden = true
@@ -76,9 +77,9 @@ class AlbumDetailController: UIViewController {
 			detailContainerTopConstraint.constant = 10
 		}
 		
-		if AppDB.sharedInstance.getArtwork(album.artwork + "_large") == nil {
-			let subDir = (album.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
-			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(album.artwork)_large.jpg"
+		if AppDB.sharedInstance.getArtwork(album!.artwork + "_large") == nil {
+			let subDir = (album!.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
+			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(album!.artwork)_large.jpg"
 			if let checkedURL = NSURL(string: albumURL) {
 				let request = NSURLRequest(URL: checkedURL)
 				UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -87,7 +88,7 @@ class AlbumDetailController: UIViewController {
 						if let HTTPResponse = response as? NSHTTPURLResponse {
 							if HTTPResponse.statusCode == 200 {
 								let image = UIImage(data: data!)
-								AppDB.sharedInstance.addArtwork(self.album.artwork + "_large", artwork: image!)
+								AppDB.sharedInstance.addArtwork(self.album!.artwork + "_large", artwork: image!)
 								self.albumArtwork.contentMode = .ScaleToFill
 								self.albumArtwork.image = image
 							}
@@ -97,7 +98,7 @@ class AlbumDetailController: UIViewController {
 				})
 			}
 		} else {
-			albumArtwork.image = AppDB.sharedInstance.getArtwork(album.artwork + "_large")
+			albumArtwork.image = AppDB.sharedInstance.getArtwork(album!.artwork + "_large")
 			albumArtwork.contentMode = .ScaleToFill
 		}
 		
@@ -115,13 +116,13 @@ class AlbumDetailController: UIViewController {
 	}
 	
 	func shareAlbum () {
-		let shareActivityItem = "\(album.title) by \(artist)  - \(album.iTunesURL)"
+		let shareActivityItem = "\(album!.title) by \(artist)  - \(album!.iTunesURL)"
 		let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 		presentViewController(activityViewController, animated: true, completion: nil)
 	}
 	
 	func update () {
-		timeLeft(album.releaseDate - NSDate().timeIntervalSince1970)
+		timeLeft(album!.releaseDate - NSDate().timeIntervalSince1970)
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -172,7 +173,7 @@ class AlbumDetailController: UIViewController {
 			thirdDigitLabel.text = formatNumber(seconds)
 			thirdTimeLabel.text = "seconds"
 		}
-		progress = album.getProgress(dateAdded)
+		progress = album!.getProgress(dateAdded)
 		progressBar.progress = progress
 	}
 	

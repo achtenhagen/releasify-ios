@@ -134,20 +134,28 @@ class AppPageController: UIPageViewController {
 					}
 					
 					for artist in successArtists {
-						let artistID = artist["artistId"] as! Int
+						let artistID = artist["artistID"] as! Int
 						let artistTitle = (artist["title"] as? String)!
 						let artistUniqueID = artist["iTunesUniqueID"] as! Int
 						if AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID) > 0 {
 							AppDB.sharedInstance.getArtists()
 							NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 							NSNotificationCenter.defaultCenter().postNotificationName("refreshSubscriptions", object: nil, userInfo: nil)
-							Notification.sharedInstance.showNotification("Subscribed to \(artistTitle).", subtitle: "You will be notified of new content by this artist.")
+							let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
+							notification.title.text = "Subscribed to \(artistTitle)."
+							notification.subtitle.text = "You will be notified of new content by this artist."
+							self.view.addSubview(notification)
+							NotificationQueue.sharedInstance.add(notification)
 						}
 					}
 					
 					for artist in failedArtists {
 						let title = (artist["title"] as? String)!
-						print("Artist \(title) was not found on iTunes.")
+						let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
+						notification.title.text = "Error"
+						notification.subtitle.text = "\(title) was not found on iTunes."
+						self.view.addSubview(notification)
+						NotificationQueue.sharedInstance.add(notification)
 					}
 					
 					

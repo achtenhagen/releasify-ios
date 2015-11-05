@@ -125,7 +125,7 @@ class SubscriptionController: UIViewController {
 						for ID in albumIDs {
 							for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
 								let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-								let notificationID = userInfoCurrent["AlbumID"]! as! Int
+								let notificationID = userInfoCurrent["albumID"]! as! Int
 								if ID == notificationID {
 									print("Canceled location notification with ID: \(ID)")
 									UIApplication.sharedApplication().cancelLocalNotification(notification)

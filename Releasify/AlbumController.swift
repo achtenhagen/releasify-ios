@@ -70,7 +70,7 @@ class AlbumController: UIViewController {
 			}
 		}
 		
-		if let localContent = appDelegate.localNotificationPayload?["AlbumID"] as? Int {
+		if let localContent = appDelegate.localNotificationPayload?["albumID"] as? Int {
 			notificationAlbumID = localContent
 			for album in AppDB.sharedInstance.albums[1] as[Album]! {
 				if album.ID == notificationAlbumID {
@@ -83,7 +83,6 @@ class AlbumController: UIViewController {
 			}
 		}
 		
-		// Refresh the App's content only when launched.
 		if !appDelegate.completedRefresh {
 			refresh()
 		}
@@ -106,16 +105,20 @@ class AlbumController: UIViewController {
 	
 	// MARK: - Refresh Content
 	func refresh() {
-		API.sharedInstance.refreshContent({ (newItems) in
+		API.sharedInstance.refreshContent({ newItems in
 			self.albumCollectionView.reloadData()
 			self.refreshControl.endRefreshing()
 			if newItems.count > 0 {
 				self.albumCollectionView.hidden = false
-				Notification.sharedInstance.showNotification("\(newItems.count) Album\(newItems.count == 1 ? "" : "s")", subtitle: "have been added to your stream.")
+				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
+				notification.title.text = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
+				notification.subtitle.text = "\(newItems.count == 1 ? "has" : "have been added to your stream.")"
+				self.view.addSubview(notification)
+				NotificationQueue.sharedInstance.add(notification)
 			}
 			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 			},
-			errorHandler: { (error) in
+			errorHandler: { error in
 				self.refreshControl.endRefreshing()
 				let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 				switch (error) {
@@ -135,7 +138,7 @@ class AlbumController: UIViewController {
 	}
 	
 	func showAlbumFromNotification(notification: NSNotification) {
-		if let AlbumID = notification.userInfo!["AlbumID"]! as? Int {
+		if let AlbumID = notification.userInfo!["albumID"]! as? Int {
 			notificationAlbumID = AlbumID
 			for album in AppDB.sharedInstance.albums[1] as[Album]! {
 				if album.ID == notificationAlbumID {
@@ -149,29 +152,48 @@ class AlbumController: UIViewController {
 		}
 	}
 	
-	// Search the array in reverse for better performance.
 	func showAlbumFromRemoteNotification(notification: NSNotification) {
 		UIApplication.sharedApplication().applicationIconBadgeNumber--
-		if let AlbumID = notification.userInfo?["aps"]?["AlbumID"] as? Int {
-			notificationAlbumID = AlbumID
-			for album in AppDB.sharedInstance.albums[0] as[Album]! {
-				if album.ID == notificationAlbumID {
-					selectedAlbum = album
-					break
+		if let albumID = notification.userInfo?["aps"]?["albumID"] as? Int {
+			API.sharedInstance.lookupAlbum(albumID, successHandler: { album in
+				if AppDB.sharedInstance.addAlbum(album) == 0 {
+					self.selectedAlbum = album
+					self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+					return
 				}
-			}
-			if selectedAlbum == nil {
-				refresh()
-				for album in AppDB.sharedInstance.albums[0] as[Album]! {
-					if album.ID == notificationAlbumID {
-						selectedAlbum = album
-						break
+				self.fetchArtwork(album.artwork, successHandler: { artwork in
+					if AppDB.sharedInstance.addArtwork(album.artwork, artwork: artwork!) {
+						self.selectedAlbum = album
+						self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 					}
-				}
-			} else if selectedAlbum.ID == notificationAlbumID {
-				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-			}
+				}, errorHandler: {
+					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+					alert.title = "Unable to download artwork!"
+					alert.message = "Please try again later."
+					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+					self.presentViewController(alert, animated: true, completion: nil)
+				})
+				}, errorHandler: { error in
+					self.handleError(error)
+			})
 		}
+	}
+	
+	func handleError (error: ErrorType) {
+		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+		switch (error) {
+		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+			alert.title = "You're Offline!"
+			alert.message = "Please make sure you are connected to the internet, then try again."
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+			}))
+		default:
+			alert.title = "Unable to lookup album!"
+			alert.message = "Please try again later."
+		}
+		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
 	// Determines current section (`upcoming` or `recently released`).
@@ -192,62 +214,50 @@ class AlbumController: UIViewController {
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
 			section = sectionAtIndex()
 		}
-		if indexPath?.row != nil {
-			if gesture.state == UIGestureRecognizerState.Began {
-				let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-				var buyTitle = "Pre-Order"
-				if section == 1 {
-					buyTitle = "Purchase"
+		if indexPath?.row == nil { return }
+		if gesture.state == UIGestureRecognizerState.Began {
+			let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+			var buyTitle = "Pre-Order"
+			if section == 1 {
+				buyTitle = "Purchase"
+			}
+			let buyAction = UIAlertAction(title: buyTitle, style: .Default, handler: { action in
+				let albumURL = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesURL
+				if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
+					UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
 				}
-				let buyAction = UIAlertAction(title: buyTitle, style: .Default, handler: { action in
-					let albumURL = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesURL
-					if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
-						UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
+			})
+			controller.addAction(buyAction)
+			if AppDB.sharedInstance.albums[section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
+				let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
+					let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
+					for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
+						let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+						let ID = userInfoCurrent["albumID"]! as! Int
+						if ID == albumID {
+							print("Canceled location notification with ID: \(ID)")
+							UIApplication.sharedApplication().cancelLocalNotification(notification)
+							NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+							break
+						}
 					}
 				})
-				controller.addAction(buyAction)
-				if AppDB.sharedInstance.albums[section]![indexPath!.row].releaseDate - NSDate().timeIntervalSince1970 > 0 {
-					let deleteAction = UIAlertAction(title: "Don't Notify", style: .Destructive, handler: { action in
-						let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
-						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
-							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-							let ID = userInfoCurrent["AlbumID"]! as! Int
-							if ID == albumID {
-								print("Canceled location notification with ID: \(ID)")
-								UIApplication.sharedApplication().cancelLocalNotification(notification)
-								NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
-								break
-							}
-						}
+				controller.addAction(deleteAction)
+			} else {
+				let removeAction = UIAlertAction(title: "Remove Album", style: .Destructive, handler: { action in
+					// let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
+					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+						self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+						}, completion: { (value: Bool) in
+							// Todo: implement...
 					})
-					controller.addAction(deleteAction)
-				} else {
-					let removeAction = UIAlertAction(title: "Remove Album", style: .Destructive, handler: { action in
-						// let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
-						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-							self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
-							}, completion: { (value: Bool) in
-								// Todo: implement...
-						})
-					})
-					controller.addAction(removeAction)
-				}
-				
-				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-				controller.addAction(cancelAction)
-				presentViewController(controller, animated: true, completion: nil)
+				})
+				controller.addAction(removeAction)
 			}
-		}
-	}
-	
-	override func didReceiveMemoryWarning() {
-		super.didReceiveMemoryWarning()
-	}
-	
-	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-		if segue.identifier == "AlbumViewSegue" {
-			let detailController = segue.destinationViewController as! AlbumDetailController
-			detailController.album = selectedAlbum
+			
+			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+			controller.addAction(cancelAction)
+			presentViewController(controller, animated: true, completion: nil)
 		}
 	}
 	
@@ -279,6 +289,17 @@ class AlbumController: UIViewController {
 			return
 		}
 		completion(artwork: tmpImage)
+	}
+	
+	override func didReceiveMemoryWarning() {
+		super.didReceiveMemoryWarning()
+	}
+	
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		if segue.identifier == "AlbumViewSegue" {
+			let detailController = segue.destinationViewController as! AlbumDetailController
+			detailController.album = selectedAlbum
+		}
 	}
 }
 
