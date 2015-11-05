@@ -100,6 +100,12 @@ class Intro02Controller: UIViewController {
 						self.handleError(error)
 				})
 			}
+			
+			if appDelegate.userID > 0 {
+				if self.delegate != nil {
+					self.delegate?.advanceIntroPageTo(3)
+				}
+			}
 		}
 	}
 	

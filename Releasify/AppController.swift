@@ -24,7 +24,7 @@ final class AppController: UINavigationController {
 		navBarAppearance.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
 		navBarAppearance.shadowImage = UIImage()
 		navBarAppearance.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-		navBarAppearance.translucent = false			
+		navBarAppearance.translucent = false
 		
 		print("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications!.count)")
 		print("App Controller loaded.")

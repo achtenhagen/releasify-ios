@@ -112,7 +112,7 @@ class AlbumController: UIViewController {
 				self.albumCollectionView.hidden = false
 				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
 				notification.title.text = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
-				notification.subtitle.text = "\(newItems.count == 1 ? "has" : "have been added to your stream.")"
+				notification.subtitle.text = "\(newItems.count == 1 ? "has been added to your stream." : "have been added to your stream.")"
 				self.view.addSubview(notification)
 				NotificationQueue.sharedInstance.add(notification)
 			}

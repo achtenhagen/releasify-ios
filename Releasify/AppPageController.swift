@@ -152,8 +152,8 @@ class AppPageController: UIPageViewController {
 					for artist in failedArtists {
 						let title = (artist["title"] as? String)!
 						let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
-						notification.title.text = "Error"
-						notification.subtitle.text = "\(title) was not found on iTunes."
+						notification.title.text = title
+						notification.subtitle.text = "was not found on iTunes."
 						self.view.addSubview(notification)
 						NotificationQueue.sharedInstance.add(notification)
 					}
