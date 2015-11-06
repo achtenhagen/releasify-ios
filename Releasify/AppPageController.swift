@@ -135,7 +135,7 @@ class AppPageController: UIPageViewController {
 					
 					for artist in successArtists {
 						let artistID = artist["artistID"] as! Int
-						let artistTitle = (artist["title"] as? String)!
+						let artistTitle = (artist["title"] as? String)!						
 						let artistUniqueID = artist["iTunesUniqueID"] as! Int
 						if AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID) > 0 {
 							AppDB.sharedInstance.getArtists()

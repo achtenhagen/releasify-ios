@@ -19,23 +19,47 @@ class Intro04Controller: UIViewController {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
     }
-	
-	override func viewDidAppear(animated: Bool) {
-		if appDelegate.userID == 0 {
-			finishIntroBtn.enabled = false
-			finishIntroBtn.layer.opacity = 0.5
-		} else {
-			finishIntroBtn.enabled = true
-			finishIntroBtn.layer.opacity = 1
-		}
-	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
 	
 	@IBAction func finishIntro(sender: UIButton) {
-		if appDelegate.userID > 0 {
+		if appDelegate.userID == 0 {
+			let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+			alert.title = "Continue without Push Notifications?"
+			alert.message = "Are you really sure you would like to use Releasify with Push Notifications turned off?"
+			alert.addAction(UIAlertAction(title: "No", style: .Cancel, handler: { action in
+				if self.delegate != nil {
+					self.delegate?.advanceIntroPageTo(2, reverse: true)
+				}
+			}))
+			alert.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { action in
+				API.sharedInstance.register(self.appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
+					self.appDelegate.userID = userID!
+					self.appDelegate.userUUID = userUUID
+					NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
+					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
+					self.performSegueWithIdentifier("FirstRunSegue", sender: self)
+					},
+					errorHandler: { (error) in
+						switch (error) {
+						case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+							alert.title = "You're Offline!"
+							alert.message = "Please make sure you are connected to the internet, then try again."
+							alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+								UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+							}))
+						default:
+							alert.title = "Unable to register!"
+							alert.message = "Please try again later."
+						}
+						alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+						self.presentViewController(alert, animated: true, completion: nil)
+				})
+			}))
+			self.presentViewController(alert, animated: true, completion: nil)
+		} else {
 			performSegueWithIdentifier("FirstRunSegue", sender: self)
 		}
 	}

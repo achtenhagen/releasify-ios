@@ -25,10 +25,10 @@
                     <color key="textColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cmI-bs-sbQ">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cmI-bs-sbQ">
                     <rect key="frame" x="286" y="14" width="22" height="22"/>
                     <animations/>
-                    <state key="normal">
+                    <state key="normal" image="icon_add">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                 </button>
@@ -37,12 +37,12 @@
             <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="cmI-bs-sbQ" secondAttribute="trailing" constant="12" id="1Zn-JA-cw7"/>
-                <constraint firstItem="Dxt-7U-urn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="3eb-84-CWq"/>
                 <constraint firstAttribute="bottom" secondItem="ZCx-Z0-Gey" secondAttribute="bottom" constant="16" id="4Tw-WU-cUb"/>
+                <constraint firstItem="Dxt-7U-urn" firstAttribute="centerY" secondItem="cmI-bs-sbQ" secondAttribute="centerY" id="EOj-ad-GFK"/>
                 <constraint firstItem="cmI-bs-sbQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="14" id="Hvc-MS-K95"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="10" id="NZt-KK-Zfi"/>
+                <constraint firstItem="Dxt-7U-urn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="Of9-Vb-ABX"/>
                 <constraint firstItem="ZCx-Z0-Gey" firstAttribute="top" secondItem="cmI-bs-sbQ" secondAttribute="top" id="P2s-HL-gtQ"/>
-                <constraint firstItem="Dxt-7U-urn" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="dS2-CV-Ahi"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="10" id="yCg-Xi-pGO"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>
@@ -57,6 +57,7 @@
         </view>
     </objects>
     <resources>
+        <image name="icon_add" width="22" height="22"/>
         <image name="icon_artist_placeholder" width="30" height="30"/>
     </resources>
 </document>

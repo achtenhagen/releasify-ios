@@ -104,13 +104,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["albumID"] as? Int
-			print("Received a local notification with ID: \(notificationAlbumID).")
 			// Called when the notification is tapped if the app is inactive or in the background.
 			if application.applicationState == .Inactive || application.applicationState == .Background {
 				NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: userInfo)
 			} else {
-				// If the app is active, refresh its content.
-				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: userInfo)
+				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 			}
 		}
 	}
@@ -118,9 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// MARK: - Local Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
-			delay(0) {
-				NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: notification.userInfo)
-			}
+			NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: notification.userInfo)
 		} else {
 			delay(0) {
 				if let userInfo = notification.userInfo {
@@ -134,26 +130,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		completionHandler()
 	}
 	
-	// MARK: - Remote Notification - Receiver + Background fetch
-	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-		print("Received remote call to refresh.")
-		API.sharedInstance.refreshContent({ (newItems) in
-			if newItems.count > 0 {
-				completionHandler(.NewData)
-			} else {
-				completionHandler(.NoData)
-			}
-		}, errorHandler: { (error) in
-			completionHandler(.Failed)
-		})
+	
+	// MARK: - Remote Notification - Receiver
+	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+		if application.applicationState == .Inactive || application.applicationState == .Background {
+			NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
+		} else {
+			NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+		}
 	}
 	
 	// MARK: - Remote Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
-			delay(0) {
-				NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
-			}
+			NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
 		} else if identifier == "PREORDER_ACTION" {
 			delay(0) {
 				if let iTunesURL = userInfo["aps"]?["iTunesUrl"]! as? String {

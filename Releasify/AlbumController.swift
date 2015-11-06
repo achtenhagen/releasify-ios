@@ -63,7 +63,6 @@ class AlbumController: UIViewController {
 		longPressGesture.minimumPressDuration = 0.5
 		albumCollectionView.addGestureRecognizer(longPressGesture)
 		
-		// Notification payload processing
 		if let remoteContent = appDelegate.remoteNotificationPayload?["aps"]?["content-available"] as? Int {
 			if remoteContent == 1 {
 				refresh()
@@ -141,12 +140,12 @@ class AlbumController: UIViewController {
 		if let AlbumID = notification.userInfo!["albumID"]! as? Int {
 			notificationAlbumID = AlbumID
 			for album in AppDB.sharedInstance.albums[1] as[Album]! {
-				if album.ID == notificationAlbumID {
-					selectedAlbum = album
-					break
-				}
+				if album.ID != notificationAlbumID { continue }
+				selectedAlbum = album
+				break
 			}
-			if selectedAlbum.ID == notificationAlbumID {
+			guard let album = selectedAlbum else { return }
+			if album.ID == notificationAlbumID {
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
 		}

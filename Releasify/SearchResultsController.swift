@@ -55,22 +55,21 @@ class SearchResultsController: UIViewController {
 	
 	func confirmArtist (sender: UIButton) {
 		var artistID = 0		
-		if let id = (artists[sender.tag]["artistId"] as? Int) { artistID = id }
+		if let id = (artists[sender.tag]["artistID"] as? Int) { artistID = id }
 		let artistTitle = (artists[sender.tag]["title"] as? String)!
 		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
 			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID[]=\(artistUniqueID)"
 			API.sharedInstance.sendRequest(API.URL.confirmArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
 				if statusCode == 200 {
-					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
-						self.artistsTable.headerViewForSection(sender.tag)?.alpha = 0.2
-						}, completion: { (state) in
-							AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
-							AppDB.sharedInstance.getArtists()
-							self.selectedArtists.addObject(artistUniqueID)
-							if self.artists.count == self.selectedArtists.count {
-								self.closeView()
-							}
-					})
+					let headerView = self.artistsTable.headerViewForSection(sender.tag) as? SearchResultsHeader
+					headerView?.confirmBtn.enabled = false
+					headerView?.confirmBtn.setImage(UIImage(named: "icon_confirm"), forState: .Disabled)
+					AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
+					AppDB.sharedInstance.getArtists()
+					self.selectedArtists.addObject(artistUniqueID)
+					if self.artists.count == self.selectedArtists.count {
+						self.closeView()
+					}
 				}
 				},
 				errorHandler: { (error) in
@@ -166,13 +165,12 @@ extension SearchResultsController: UITableViewDelegate {
 		headerView.artistLabel.text = artists[section]["title"] as? String
 		headerView.confirmBtn.tag = section
 		headerView.confirmBtn.addTarget(self, action: "confirmArtist:", forControlEvents: .TouchUpInside)
-		headerView.artistImg.alpha = 1.0
-		headerView.artistLabel.alpha = 1.0
-		headerView.confirmBtn.alpha = 1.0
 		if selectedArtists.containsObject(artistID) {
-			headerView.artistImg.alpha = 0.2
-			headerView.artistLabel.alpha = 0.2
-			headerView.confirmBtn.alpha = 0.2
+			headerView.confirmBtn.enabled = false
+			headerView.confirmBtn.setImage(UIImage(named: "icon_confirm"), forState: .Disabled)
+		} else {
+			headerView.confirmBtn.enabled = true
+			headerView.confirmBtn.setImage(UIImage(named: "icon_add"), forState: .Normal)
 		}
 		return headerView
 	}

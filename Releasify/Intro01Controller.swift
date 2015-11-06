@@ -21,7 +21,7 @@ class Intro01Controller: UIViewController {
 	
 	@IBAction func getStartedButtonPressed(sender: UIButton) {
 		if delegate != nil {
-			delegate?.advanceIntroPageTo(2)
+			delegate?.advanceIntroPageTo(2, reverse: false)
 		}
 	}
 	

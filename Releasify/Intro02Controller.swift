@@ -26,13 +26,13 @@ class Intro02Controller: UIViewController {
 						self.appDelegate.userUUID = userUUID
 						NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
 						NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
-						self.delegate?.advanceIntroPageTo(3)
+						self.delegate?.advanceIntroPageTo(3, reverse: false)
 						},
 						errorHandler: { (error) in
 							self.handleError(error)
 					})
 				} else {
-					self.delegate?.advanceIntroPageTo(3)
+					self.delegate?.advanceIntroPageTo(3, reverse: false)
 				}
 			}))
 			self.presentViewController(alert, animated: true, completion: nil)
@@ -93,7 +93,7 @@ class Intro02Controller: UIViewController {
 					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
 					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userDeviceToken, forKey: "deviceToken")
 					if self.delegate != nil {
-						self.delegate?.advanceIntroPageTo(3)
+						self.delegate?.advanceIntroPageTo(3, reverse: false)
 					}
 					},
 					errorHandler: { (error) in
@@ -103,7 +103,7 @@ class Intro02Controller: UIViewController {
 			
 			if appDelegate.userID > 0 {
 				if self.delegate != nil {
-					self.delegate?.advanceIntroPageTo(3)
+					self.delegate?.advanceIntroPageTo(3, reverse: false)
 				}
 			}
 		}

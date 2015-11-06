@@ -19,7 +19,7 @@ class Intro03Controller: UIViewController {
 	
 	@IBAction func skipButtonPressed(sender: UIButton) {
 		if delegate != nil {
-			delegate?.advanceIntroPageTo(4)
+			delegate?.advanceIntroPageTo(4, reverse: false)
 		}
 	}
 	
@@ -59,7 +59,7 @@ class Intro03Controller: UIViewController {
 	
 	func finishIntro () {
 		if delegate != nil {
-			delegate?.advanceIntroPageTo(4)
+			delegate?.advanceIntroPageTo(4, reverse: false)
 		}
 	}
 	

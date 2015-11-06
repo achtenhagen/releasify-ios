@@ -9,7 +9,7 @@
 import UIKit
 
 protocol IntroPageDelegate: class {
-	func advanceIntroPageTo (index: Int)
+	func advanceIntroPageTo (index: Int, reverse: Bool)
 }
 
 class IntroPageController: UIPageViewController {
@@ -129,7 +129,7 @@ extension IntroPageController: UIPageViewControllerDelegate {
 
 // MARK: - IntroPageDelegate
 extension IntroPageController: IntroPageDelegate {
-	func advanceIntroPageTo(index: Int) {
+	func advanceIntroPageTo(index: Int, reverse: Bool = false) {
 		let viewControllers: NSArray
 		switch index {
 		case 2:
@@ -146,6 +146,10 @@ extension IntroPageController: IntroPageDelegate {
 			viewControllers = NSArray(object: startVC)
 		}
 		currentIndex = index-1
-		setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
+		if reverse {
+			setViewControllers(viewControllers as? [UIViewController], direction: .Reverse, animated: true, completion: nil)
+		} else {
+			setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
+		}
 	}
 }
