@@ -119,20 +119,7 @@ class AlbumController: UIViewController {
 			},
 			errorHandler: { error in
 				self.refreshControl.endRefreshing()
-				let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-				switch (error) {
-				case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-					alert.title = "You're Offline!"
-					alert.message = "Please make sure you are connected to the internet, then try again."
-					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
-						UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
-					}))
-				default:
-					alert.title = "Unable to update!"
-					alert.message = "Please try again later."
-				}
-				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-				self.presentViewController(alert, animated: true, completion: nil)
+				self.handleError("Unable to update!", message: "Please try again later.", error: error)
 		})
 	}
 	
@@ -166,19 +153,16 @@ class AlbumController: UIViewController {
 						self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 					}
 				}, errorHandler: {
-					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-					alert.title = "Unable to download artwork!"
-					alert.message = "Please try again later."
-					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-					self.presentViewController(alert, animated: true, completion: nil)
+					self.handleError("Unable to download artwork!", message: "Please try again later.", error: API.Error.FailedToGetResource)
 				})
 				}, errorHandler: { error in
-					self.handleError(error)
+					self.handleError("Failed to lookup album!", message: "Please try again later.", error: error)
 			})
 		}
 	}
 	
-	func handleError (error: ErrorType) {
+	// MARK: - Error Message Handler
+	func handleError (title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
@@ -188,17 +172,11 @@ class AlbumController: UIViewController {
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		default:
-			alert.title = "Unable to lookup album!"
-			alert.message = "Please try again later."
+			alert.title = title
+			alert.message = message
 		}
 		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
-	}
-	
-	// Determines current section (`upcoming` or `recently released`).
-	// This function is called when there is only one section.
-	func sectionAtIndex () -> Int {
-		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}
 	
 	func component (x: Double, v: Double) -> Double {
@@ -234,7 +212,6 @@ class AlbumController: UIViewController {
 						let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
 						let ID = userInfoCurrent["albumID"]! as! Int
 						if ID == albumID {
-							print("Canceled location notification with ID: \(ID)")
 							UIApplication.sharedApplication().cancelLocalNotification(notification)
 							NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 							break
@@ -244,12 +221,26 @@ class AlbumController: UIViewController {
 				controller.addAction(deleteAction)
 			} else {
 				let removeAction = UIAlertAction(title: "Remove Album", style: .Destructive, handler: { action in
-					// let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
-					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-						self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
-						}, completion: { (value: Bool) in
-							// Todo: implement...
+					let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
+					let iTunesUniqueID = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesUniqueID
+					self.unsubscribe_album(iTunesUniqueID, successHandler: {
+						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+							self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
+							}, completion: { value in
+								AppDB.sharedInstance.deleteAlbum(albumID, section: section)
+								AppDB.sharedInstance.getAlbums()
+								if AppDB.sharedInstance.albums[1]!.count == 0 {
+									self.albumCollectionView.deleteSections(NSIndexSet(index: section))
+								} else {
+									self.albumCollectionView.deleteItemsAtIndexPaths([indexPath!])
+								}
+								self.albumCollectionView.reloadData()
+								
+						})
+						}, errorHandler: { error in
+							self.handleError("Unable to download artwork!", message: "Please try again later.", error: error)
 					})
+
 				})
 				controller.addAction(removeAction)
 			}
@@ -260,6 +251,22 @@ class AlbumController: UIViewController {
 		}
 	}
 	
+	// MARK: - Unsubscribe Album
+	func unsubscribe_album (iTunesUniqueID: Int, successHandler: () -> Void, errorHandler: (error: ErrorType) -> Void) {
+		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
+		API.sharedInstance.sendRequest(API.URL.removeAlbum.rawValue, postString: postString, successHandler: { (statusCode, data) in
+			if statusCode != 204 {
+				errorHandler(error: API.Error.FailedRequest)
+				return
+			}
+			successHandler()
+			},
+			errorHandler: { (error) in
+				self.handleError("Unable to unsubscribe from album!", message: "Please try again later.", error: error)
+		})
+	}
+	
+	// MARK: - Fetch Artwork
 	func fetchArtwork (hash: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
 		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
 		let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
@@ -275,6 +282,7 @@ class AlbumController: UIViewController {
 		})
 	}
 	
+	// MARK: - Returns the artwork image for each cell.
 	func getArtworkForCell (hash: String, completion: ((artwork: UIImage) -> Void)) {
 		guard let tmpImage = tmpArtwork[hash] else {
 			fetchArtwork(hash, successHandler: { artwork in
@@ -288,6 +296,12 @@ class AlbumController: UIViewController {
 			return
 		}
 		completion(artwork: tmpImage)
+	}
+	
+	// Determines current section (`upcoming` or `recently released`).
+	// This function is called when there is only one section.
+	func sectionAtIndex () -> Int {
+		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}
 	
 	override func didReceiveMemoryWarning() {

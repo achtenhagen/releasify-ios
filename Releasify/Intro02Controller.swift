@@ -85,26 +85,22 @@ class Intro02Controller: UIViewController {
 			UIApplication.sharedApplication().registerUserNotificationSettings(settings)
 			UIApplication.sharedApplication().registerForRemoteNotifications()
 			
-			if appDelegate.userID == 0 && appDelegate.userDeviceToken != nil {
+			if appDelegate.userID == 0 && appDelegate.userDeviceToken != nil && self.delegate != nil {
 				API.sharedInstance.register(deviceToken: appDelegate.userDeviceToken, appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
 					self.appDelegate.userID = userID!
 					self.appDelegate.userUUID = userUUID
 					NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
 					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
 					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userDeviceToken, forKey: "deviceToken")
-					if self.delegate != nil {
-						self.delegate?.advanceIntroPageTo(3, reverse: false)
-					}
+					self.delegate?.advanceIntroPageTo(3, reverse: false)
 					},
 					errorHandler: { (error) in
 						self.handleError(error)
 				})
 			}
 			
-			if appDelegate.userID > 0 {
-				if self.delegate != nil {
-					self.delegate?.advanceIntroPageTo(3, reverse: false)
-				}
+			if appDelegate.userID > 0 && self.delegate != nil{
+				self.delegate?.advanceIntroPageTo(3, reverse: false)
 			}
 		}
 	}

@@ -18,6 +18,7 @@ final class API {
 		case CannotConnectToHost
 		case DNSLookupFailed
 		case FailedRequest
+		case FailedToGetResource
 		case FailedToParseJSON
 		case FileNotFound
 		case InternalServerError
@@ -30,12 +31,13 @@ final class API {
 	}
 	
 	enum URL: String {
-		case register = "https://releasify.me/api/ios/v2.1/register.php",
-		updateContent = "https://releasify.me/api/ios/v2.1/update_content.php",
-		confirmArtist = "https://releasify.me/api/ios/v2.1/confirm_artist.php",
-		submitArtist  = "https://releasify.me/api/ios/v2.1/submit_artist.php",
-		removeArtist  = "https://releasify.me/api/ios/v2.1/unsubscribe_artist.php",
-		itemLookup	  = "https://releasify.me/api/ios/v2.1/item.php"
+		case register = "https://releasify.me/api/ios/v1/register.php",
+		updateContent = "https://releasify.me/api/ios/v1/update_content.php",
+		confirmArtist = "https://releasify.me/api/ios/v1/confirm_artist.php",
+		submitArtist  = "https://releasify.me/api/ios/v1/submit_artist.php",
+		removeArtist  = "https://releasify.me/api/ios/v1/unsubscribe_artist.php",
+		removeAlbum   = "https://releasify.me/api/ios/v1/unsubscribe_album.php",
+		itemLookup	  = "https://releasify.me/api/ios/v1/item.php"
 	}
 	
 	// MARK: - Refresh Content

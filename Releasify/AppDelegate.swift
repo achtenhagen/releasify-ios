@@ -104,7 +104,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["albumID"] as? Int
-			// Called when the notification is tapped if the app is inactive or in the background.
 			if application.applicationState == .Inactive || application.applicationState == .Background {
 				NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: userInfo)
 			} else {
