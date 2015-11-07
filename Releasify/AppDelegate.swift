@@ -84,6 +84,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: .LiteralSearch, range: nil)
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: .LiteralSearch, range: nil)
 		userDeviceToken = deviceTokenString
+		if userID == 0 && userDeviceToken != nil {
+			API.sharedInstance.register(deviceToken: userDeviceToken, allowExplicitContent, successHandler: { (userID, userUUID) in
+				self.userID = userID!
+				self.userUUID = userUUID
+				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
+				NSUserDefaults.standardUserDefaults().setValue(self.userUUID, forKey: "uuid")
+				NSUserDefaults.standardUserDefaults().setValue(self.userDeviceToken, forKey: "deviceToken")
+				NSNotificationCenter.defaultCenter().postNotificationName("finishNotificationRegister", object: nil, userInfo: nil)
+				},
+				errorHandler: { (error) in
+					
+			})
+		}
 	}
 	
 	func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {

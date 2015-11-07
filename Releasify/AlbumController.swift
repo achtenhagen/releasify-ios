@@ -9,6 +9,9 @@
 import UIKit
 
 class AlbumController: UIViewController {
+	
+	weak var delegate: AppPageControllerDelegate?
+	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let albumCellReuseIdentifier = "AlbumCell"
 	let albumHeaderViewReuseIdentifier = "albumCollectionHeader"
@@ -112,7 +115,11 @@ class AlbumController: UIViewController {
 				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
 				notification.title.text = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
 				notification.subtitle.text = "\(newItems.count == 1 ? "has been added to your stream." : "have been added to your stream.")"
-				self.view.addSubview(notification)
+				if self.delegate != nil {
+					self.delegate?.addNotificationView(notification)
+				}
+				// AppPageController.sharedInstance.view.addSubview(notification)
+				// self.view.addSubview(notification)
 				NotificationQueue.sharedInstance.add(notification)
 			}
 			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
@@ -123,6 +130,7 @@ class AlbumController: UIViewController {
 		})
 	}
 	
+	// MARK: - Open album from a local notification.
 	func showAlbumFromNotification(notification: NSNotification) {
 		if let AlbumID = notification.userInfo!["albumID"]! as? Int {
 			notificationAlbumID = AlbumID
@@ -138,6 +146,7 @@ class AlbumController: UIViewController {
 		}
 	}
 	
+	// MARK: - Open album from a remote notification.
 	func showAlbumFromRemoteNotification(notification: NSNotification) {
 		UIApplication.sharedApplication().applicationIconBadgeNumber--
 		if let albumID = notification.userInfo?["aps"]?["albumID"] as? Int {
@@ -223,11 +232,13 @@ class AlbumController: UIViewController {
 				let removeAction = UIAlertAction(title: "Remove Album", style: .Destructive, handler: { action in
 					let albumID = AppDB.sharedInstance.albums[section]![indexPath!.row].ID
 					let iTunesUniqueID = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesUniqueID
+					let hash = AppDB.sharedInstance.albums[section]![indexPath!.row].artwork
 					self.unsubscribe_album(iTunesUniqueID, successHandler: {
 						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
 							self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
 							}, completion: { value in
 								AppDB.sharedInstance.deleteAlbum(albumID, section: section)
+								AppDB.sharedInstance.deleteArtwork(hash)
 								AppDB.sharedInstance.getAlbums()
 								if AppDB.sharedInstance.albums[1]!.count == 0 {
 									self.albumCollectionView.deleteSections(NSIndexSet(index: section))
@@ -298,8 +309,7 @@ class AlbumController: UIViewController {
 		completion(artwork: tmpImage)
 	}
 	
-	// Determines current section (`upcoming` or `recently released`).
-	// This function is called when there is only one section.
+	// MARK: - Determines current section | Only called when there is one section.
 	func sectionAtIndex () -> Int {
 		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}

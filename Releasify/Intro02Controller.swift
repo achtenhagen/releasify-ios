@@ -84,35 +84,24 @@ class Intro02Controller: UIViewController {
 			
 			UIApplication.sharedApplication().registerUserNotificationSettings(settings)
 			UIApplication.sharedApplication().registerForRemoteNotifications()
-			
-			if appDelegate.userID == 0 && appDelegate.userDeviceToken != nil && self.delegate != nil {
-				API.sharedInstance.register(deviceToken: appDelegate.userDeviceToken, appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
-					self.appDelegate.userID = userID!
-					self.appDelegate.userUUID = userUUID
-					NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
-					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
-					NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userDeviceToken, forKey: "deviceToken")
-					self.delegate?.advanceIntroPageTo(3, reverse: false)
-					},
-					errorHandler: { (error) in
-						self.handleError(error)
-				})
-			}
-			
-			if appDelegate.userID > 0 && self.delegate != nil{
-				self.delegate?.advanceIntroPageTo(3, reverse: false)
-			}
 		}
 	}
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishRegister", name: "finishNotificationRegister", object: nil)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+	
+	func finishRegister () {
+		if appDelegate.userID > 0 && self.delegate != nil{
+			self.delegate?.advanceIntroPageTo(3, reverse: false)
+		}
+	}
 	
 	func handleError (error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)

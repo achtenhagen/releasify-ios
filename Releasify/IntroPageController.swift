@@ -12,7 +12,7 @@ protocol IntroPageDelegate: class {
 	func advanceIntroPageTo (index: Int, reverse: Bool)
 }
 
-class IntroPageController: UIPageViewController {
+class IntroPageController: UIPageViewController, UIPageViewControllerDelegate {
 
 	let storyBoard = UIStoryboard(name: "Main", bundle: nil)
 	var introPage01: Intro01Controller?
@@ -120,11 +120,6 @@ extension IntroPageController: UIPageViewControllerDataSource {
 	func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int  {
 		return currentIndex
 	}
-}
-
-// MARK: - UIPageViewControllerDelegate
-extension IntroPageController: UIPageViewControllerDelegate {
-	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {}
 }
 
 // MARK: - IntroPageDelegate

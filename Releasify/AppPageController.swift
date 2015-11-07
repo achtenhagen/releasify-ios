@@ -9,7 +9,12 @@
 import UIKit
 import MediaPlayer
 
+protocol AppPageControllerDelegate: class {
+	func addNotificationView (notification: Notification)
+}
+
 class AppPageController: UIPageViewController {
+	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var responseArtists: [NSDictionary]!
 	var mediaQuery: MPMediaQuery!
@@ -73,8 +78,14 @@ class AppPageController: UIPageViewController {
 	}
 	
 	func viewControllerAtIndex(index: Int) -> UIViewController? {
-		if index == 0 { return UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AlbumController") }
-		if index == 1 { return UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") }
+		if index == 0 {
+			let albumController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AlbumController") as! AlbumController
+			albumController.delegate = self
+			return albumController
+		}
+		if index == 1 {
+			return UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController")
+		}
 		return nil
 	}
 	
@@ -235,3 +246,11 @@ extension AppPageController: UIPageViewControllerDelegate {
 		}
 	}
 }
+
+// MARK: - AppPageControllerDelegate
+extension AppPageController: AppPageControllerDelegate {
+	func addNotificationView(notification: Notification) {
+		view.addSubview(notification)
+	}
+}
+
