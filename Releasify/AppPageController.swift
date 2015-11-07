@@ -73,7 +73,7 @@ class AppPageController: UIPageViewController {
 			}
 		}
 		
-		mediaQuery = MPMediaQuery.artistsQuery()		
+		mediaQuery = MPMediaQuery.artistsQuery()
 		notificationsBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
 	}
 	

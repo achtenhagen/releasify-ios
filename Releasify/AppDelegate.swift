@@ -69,6 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
 		if userID == 0 {
+			UIApplication.sharedApplication().cancelAllLocalNotifications()
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
@@ -94,7 +95,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				NSNotificationCenter.defaultCenter().postNotificationName("finishNotificationRegister", object: nil, userInfo: nil)
 				},
 				errorHandler: { (error) in
-					
 			})
 		}
 	}

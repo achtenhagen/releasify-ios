@@ -372,6 +372,8 @@ extension AlbumController: UICollectionViewDataSource {
 			tmpArtwork.removeValueForKey(hash)
 		}
 		
+		cell.albumArtwork.image = UIImage(named: "icon_album_placeholder")
+		
 		getArtworkForCell(album.artwork, completion: { artwork in
 			if cell.albumArtwork.image == nil {
 				cell.albumArtwork.alpha = 0
