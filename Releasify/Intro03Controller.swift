@@ -41,12 +41,10 @@ class Intro03Controller: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
-		
 		if view.bounds.height == 480 {
 			buttonBottomLayoutConstraint.constant = 0
 			imageTopLayoutConstraint.constant = 20
-		}
-		
+		}		
 		mediaQuery = MPMediaQuery.artistsQuery()
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishIntro", name: "finishIntroStep", object: nil)
     }

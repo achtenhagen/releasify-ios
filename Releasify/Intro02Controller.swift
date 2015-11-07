@@ -92,11 +92,9 @@ class Intro02Controller: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
-		
 		if view.bounds.height == 480 {
 			imageTopLayoutConstraint.constant = 200
-		}
-		
+		}		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishRegister", name: "finishNotificationRegister", object: nil)
     }
 
