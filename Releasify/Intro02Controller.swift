@@ -13,6 +13,8 @@ class Intro02Controller: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	weak var delegate: IntroPageDelegate?
 
+	
+	@IBOutlet weak var imageTopLayoutConstraint: NSLayoutConstraint!
 	@IBAction func skipButtonPressed(sender: UIButton) {
 		if delegate != nil {
 			let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
@@ -90,6 +92,11 @@ class Intro02Controller: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
+		
+		if view.bounds.height == 480 {
+			imageTopLayoutConstraint.constant = 200
+		}
+		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishRegister", name: "finishNotificationRegister", object: nil)
     }
 

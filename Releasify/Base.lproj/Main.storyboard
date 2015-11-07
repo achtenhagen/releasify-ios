@@ -1309,22 +1309,27 @@ Swipe to get started.</string>
                         <animations/>
                         <color key="backgroundColor" red="0.0" green="0.086274509803921567" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="zHl-KR-AWX" firstAttribute="top" secondItem="3xK-xq-5BT" secondAttribute="bottom" constant="240" id="0Nj-Ib-bwH"/>
                             <constraint firstItem="Mxk-FJ-lcE" firstAttribute="leading" secondItem="cKR-ju-VfK" secondAttribute="leading" id="1bP-e3-b5k"/>
-                            <constraint firstItem="jaP-Tk-HPP" firstAttribute="leading" secondItem="szJ-XQ-0Jr" secondAttribute="leadingMargin" constant="94" id="7zh-Gb-jJw"/>
+                            <constraint firstItem="jaP-Tk-HPP" firstAttribute="leading" secondItem="szJ-XQ-0Jr" secondAttribute="leadingMargin" constant="94" id="7zh-Gb-jJw">
+                                <variation key="heightClass=regular-widthClass=compact" constant="90"/>
+                            </constraint>
                             <constraint firstItem="jaP-Tk-HPP" firstAttribute="top" secondItem="VWZ-cW-T0K" secondAttribute="bottom" id="DwJ-qZ-GgS"/>
                             <constraint firstItem="Mxk-FJ-lcE" firstAttribute="trailing" secondItem="cKR-ju-VfK" secondAttribute="trailing" id="K6z-AI-V6d"/>
                             <constraint firstItem="jaP-Tk-HPP" firstAttribute="centerX" secondItem="zHl-KR-AWX" secondAttribute="centerX" id="KaW-u3-6d0"/>
-                            <constraint firstItem="VWZ-cW-T0K" firstAttribute="centerX" secondItem="szJ-XQ-0Jr" secondAttribute="centerX" id="L1j-qm-KGj"/>
+                            <constraint firstItem="VWZ-cW-T0K" firstAttribute="centerX" secondItem="szJ-XQ-0Jr" secondAttribute="centerX" id="L1j-qm-KGj">
+                                <variation key="heightClass=regular-widthClass=compact" constant="3"/>
+                            </constraint>
                             <constraint firstItem="zHl-KR-AWX" firstAttribute="leading" secondItem="szJ-XQ-0Jr" secondAttribute="leadingMargin" constant="19" id="RJG-SQ-ryv"/>
                             <constraint firstItem="zHl-KR-AWX" firstAttribute="leading" secondItem="cKR-ju-VfK" secondAttribute="leading" id="Rsn-On-ijS"/>
                             <constraint firstItem="cKR-ju-VfK" firstAttribute="top" secondItem="zHl-KR-AWX" secondAttribute="bottom" constant="5" id="XNQ-sD-GQt"/>
-                            <constraint firstItem="jaP-Tk-HPP" firstAttribute="centerX" secondItem="VWZ-cW-T0K" secondAttribute="centerX" id="aWX-zU-uIb"/>
+                            <constraint firstItem="jaP-Tk-HPP" firstAttribute="centerX" secondItem="VWZ-cW-T0K" secondAttribute="centerX" id="aWX-zU-uIb">
+                                <variation key="heightClass=regular-widthClass=compact" constant="-3"/>
+                            </constraint>
                             <constraint firstItem="VWZ-cW-T0K" firstAttribute="top" secondItem="3xK-xq-5BT" secondAttribute="bottom" constant="47" id="bTf-Ah-KaZ">
                                 <variation key="heightClass=regular-widthClass=compact" constant="30"/>
                             </constraint>
-                            <constraint firstItem="zHl-KR-AWX" firstAttribute="top" secondItem="jaP-Tk-HPP" secondAttribute="bottom" constant="80" id="d6X-uc-fWf"/>
                             <constraint firstAttribute="bottom" secondItem="Mxk-FJ-lcE" secondAttribute="bottom" constant="20" symbolic="YES" id="is5-9B-Spz"/>
+                            <constraint firstItem="zHl-KR-AWX" firstAttribute="top" secondItem="jaP-Tk-HPP" secondAttribute="top" constant="140" id="tBs-Zi-q9z"/>
                             <constraint firstItem="cKR-ju-VfK" firstAttribute="trailing" secondItem="zHl-KR-AWX" secondAttribute="trailing" id="tj6-aF-fTs"/>
                         </constraints>
                         <variation key="default">
@@ -1336,21 +1341,20 @@ Swipe to get started.</string>
                                 <exclude reference="jaP-Tk-HPP"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="1bP-e3-b5k"/>
-                                <exclude reference="K6z-AI-V6d"/>
-                                <exclude reference="is5-9B-Spz"/>
-                                <exclude reference="XNQ-sD-GQt"/>
-                                <exclude reference="tj6-aF-fTs"/>
+                                <exclude reference="L1j-qm-KGj"/>
+                                <exclude reference="bTf-Ah-KaZ"/>
                                 <exclude reference="7zh-Gb-jJw"/>
                                 <exclude reference="DwJ-qZ-GgS"/>
                                 <exclude reference="KaW-u3-6d0"/>
                                 <exclude reference="aWX-zU-uIb"/>
-                                <exclude reference="0Nj-Ib-bwH"/>
                                 <exclude reference="RJG-SQ-ryv"/>
                                 <exclude reference="Rsn-On-ijS"/>
-                                <exclude reference="d6X-uc-fWf"/>
-                                <exclude reference="L1j-qm-KGj"/>
-                                <exclude reference="bTf-Ah-KaZ"/>
+                                <exclude reference="tBs-Zi-q9z"/>
+                                <exclude reference="XNQ-sD-GQt"/>
+                                <exclude reference="tj6-aF-fTs"/>
+                                <exclude reference="1bP-e3-b5k"/>
+                                <exclude reference="K6z-AI-V6d"/>
+                                <exclude reference="is5-9B-Spz"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -1362,27 +1366,27 @@ Swipe to get started.</string>
                                 <include reference="jaP-Tk-HPP"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="1bP-e3-b5k"/>
-                                <include reference="K6z-AI-V6d"/>
-                                <include reference="is5-9B-Spz"/>
-                                <include reference="XNQ-sD-GQt"/>
-                                <include reference="tj6-aF-fTs"/>
+                                <include reference="L1j-qm-KGj"/>
+                                <include reference="bTf-Ah-KaZ"/>
                                 <include reference="7zh-Gb-jJw"/>
                                 <include reference="DwJ-qZ-GgS"/>
                                 <include reference="KaW-u3-6d0"/>
                                 <include reference="aWX-zU-uIb"/>
-                                <include reference="0Nj-Ib-bwH"/>
                                 <include reference="RJG-SQ-ryv"/>
                                 <include reference="Rsn-On-ijS"/>
-                                <include reference="d6X-uc-fWf"/>
-                                <include reference="L1j-qm-KGj"/>
-                                <include reference="bTf-Ah-KaZ"/>
+                                <include reference="tBs-Zi-q9z"/>
+                                <include reference="XNQ-sD-GQt"/>
+                                <include reference="tj6-aF-fTs"/>
+                                <include reference="1bP-e3-b5k"/>
+                                <include reference="K6z-AI-V6d"/>
+                                <include reference="is5-9B-Spz"/>
                             </mask>
                         </variation>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="getStartedButton" destination="Mxk-FJ-lcE" id="LqA-WN-9UD"/>
+                        <outlet property="labelTopLayoutConstraint" destination="tBs-Zi-q9z" id="psK-GH-2ov"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Raa-o5-f18" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1508,7 +1512,7 @@ Swipe to get started.</string>
                             <constraint firstAttribute="trailing" secondItem="WDI-yG-J56" secondAttribute="trailing" id="IhC-l6-2d3"/>
                             <constraint firstItem="SQI-H1-x0c" firstAttribute="leading" secondItem="Zm7-1c-Vzd" secondAttribute="leadingMargin" constant="19" id="LMC-H2-ap4"/>
                             <constraint firstItem="WDI-yG-J56" firstAttribute="top" secondItem="YFx-0f-TQE" secondAttribute="bottom" id="NHT-ub-XzP"/>
-                            <constraint firstItem="SQI-H1-x0c" firstAttribute="top" secondItem="Zm7-1c-Vzd" secondAttribute="top" constant="260" id="Ob2-N8-VBm"/>
+                            <constraint firstItem="SQI-H1-x0c" firstAttribute="top" secondItem="Zm7-1c-Vzd" secondAttribute="top" constant="280" id="Ob2-N8-VBm"/>
                             <constraint firstItem="dOP-AN-G70" firstAttribute="centerX" secondItem="SQI-H1-x0c" secondAttribute="centerX" id="Qbh-60-HYE"/>
                             <constraint firstAttribute="bottom" secondItem="PJN-MK-B81" secondAttribute="bottom" constant="20" symbolic="YES" id="bei-1O-lKG"/>
                             <constraint firstItem="SQI-H1-x0c" firstAttribute="top" secondItem="dOP-AN-G70" secondAttribute="bottom" constant="20" id="cTP-dX-V4A"/>
@@ -1576,6 +1580,9 @@ Swipe to get started.</string>
                         </variation>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="imageTopLayoutConstraint" destination="Ob2-N8-VBm" id="tx4-5G-gaq"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eaG-kw-OS3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1776,6 +1783,8 @@ Swipe to get started.</string>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="buttonBottomLayoutConstraint" destination="RSx-2V-uiW" id="kdv-h9-JuK"/>
+                        <outlet property="imageTopLayoutConstraint" destination="3bU-a6-lq2" id="iIJ-TV-RSr"/>
                         <outlet property="importButton" destination="wW1-Li-qeT" id="IfG-RP-Unp"/>
                         <segue destination="5Wn-lw-nVy" kind="presentation" identifier="importFromIntroSegue" modalTransitionStyle="coverVertical" id="0OL-Xb-Eq8"/>
                     </connections>
@@ -1800,6 +1809,7 @@ Swipe to get started.</string>
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <animations/>
                                 <constraints>
+                                    <constraint firstAttribute="width" constant="250" id="9JL-Wm-tdU"/>
                                     <constraint firstAttribute="height" constant="40" id="iMe-MZ-Bh1"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1808,11 +1818,13 @@ Swipe to get started.</string>
                                 </state>
                                 <variation key="default">
                                     <mask key="constraints">
+                                        <exclude reference="9JL-Wm-tdU"/>
                                         <exclude reference="iMe-MZ-Bh1"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=compact">
                                     <mask key="constraints">
+                                        <include reference="9JL-Wm-tdU"/>
                                         <include reference="iMe-MZ-Bh1"/>
                                     </mask>
                                 </variation>
@@ -1824,6 +1836,19 @@ Swipe to get started.</string>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_intro_complete" translatesAutoresizingMaskIntoConstraints="NO" id="meP-ft-tWF">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="meP-ft-tWF" secondAttribute="height" multiplier="1:1" id="5yD-Lh-n9N"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="5yD-Lh-n9N"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="5yD-Lh-n9N"/>
+                                    </mask>
+                                </variation>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="thX-3z-zGa">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
@@ -1918,34 +1943,42 @@ Swipe to get started.</string>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You've completed the setup, congratulations!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J6y-2U-0Rz">
                                 <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                 <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="320" id="Rt7-YE-F4v"/>
+                                    <constraint firstAttribute="height" constant="60" id="bTy-NP-8XD"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Rt7-YE-F4v"/>
+                                        <exclude reference="bTy-NP-8XD"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="Rt7-YE-F4v"/>
+                                        <include reference="bTy-NP-8XD"/>
+                                    </mask>
+                                </variation>
                             </label>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="J6y-2U-0Rz" firstAttribute="centerX" secondItem="meP-ft-tWF" secondAttribute="centerX" id="0gE-wP-3P8"/>
+                            <constraint firstItem="meP-ft-tWF" firstAttribute="centerY" secondItem="h4v-7V-EJ5" secondAttribute="centerY" id="9RZ-R0-0q6"/>
+                            <constraint firstItem="BVK-uh-9M2" firstAttribute="centerX" secondItem="h4v-7V-EJ5" secondAttribute="centerX" id="Bey-FX-rbH"/>
                             <constraint firstAttribute="bottom" secondItem="BVK-uh-9M2" secondAttribute="bottom" constant="20" symbolic="YES" id="DY2-Gg-j7A"/>
-                            <constraint firstItem="BVK-uh-9M2" firstAttribute="trailing" secondItem="thX-3z-zGa" secondAttribute="trailing" id="IRJ-bS-t4i"/>
-                            <constraint firstItem="thX-3z-zGa" firstAttribute="centerX" secondItem="h4v-7V-EJ5" secondAttribute="centerX" id="J7h-aV-n4v"/>
-                            <constraint firstItem="BVK-uh-9M2" firstAttribute="leading" secondItem="thX-3z-zGa" secondAttribute="leading" id="LU8-vo-r6z"/>
-                            <constraint firstItem="J6y-2U-0Rz" firstAttribute="leading" secondItem="h4v-7V-EJ5" secondAttribute="leadingMargin" id="T2O-Tb-gvB">
-                                <variation key="heightClass=regular-widthClass=compact" constant="-12"/>
+                            <constraint firstItem="thX-3z-zGa" firstAttribute="centerX" secondItem="h4v-7V-EJ5" secondAttribute="centerX" id="J7h-aV-n4v">
+                                <variation key="heightClass=regular-widthClass=compact" constant="1"/>
                             </constraint>
-                            <constraint firstItem="J6y-2U-0Rz" firstAttribute="trailing" secondItem="h4v-7V-EJ5" secondAttribute="trailingMargin" id="Xv0-aK-jcw">
-                                <variation key="heightClass=regular-widthClass=compact" constant="12"/>
-                            </constraint>
-                            <constraint firstItem="meP-ft-tWF" firstAttribute="top" secondItem="J6y-2U-0Rz" secondAttribute="bottom" constant="84" id="Z3R-qb-TCs">
-                                <variation key="heightClass=regular-widthClass=compact" constant="114"/>
-                            </constraint>
-                            <constraint firstItem="meP-ft-tWF" firstAttribute="centerX" secondItem="thX-3z-zGa" secondAttribute="centerX" id="Z6c-sm-zZf"/>
-                            <constraint firstItem="BVK-uh-9M2" firstAttribute="top" secondItem="thX-3z-zGa" secondAttribute="bottom" constant="18" id="ZBF-li-aog"/>
-                            <constraint firstItem="meP-ft-tWF" firstAttribute="centerY" secondItem="h4v-7V-EJ5" secondAttribute="centerY" id="bGj-ak-pNk"/>
+                            <constraint firstItem="BVK-uh-9M2" firstAttribute="top" secondItem="thX-3z-zGa" secondAttribute="bottom" constant="18" id="Tck-Zm-pCj"/>
+                            <constraint firstItem="J6y-2U-0Rz" firstAttribute="centerX" secondItem="h4v-7V-EJ5" secondAttribute="centerX" id="gGu-SG-4bT"/>
                             <constraint firstItem="J6y-2U-0Rz" firstAttribute="top" secondItem="eiM-WT-wJY" secondAttribute="bottom" constant="60" id="wMg-Yy-pil">
-                                <variation key="heightClass=regular-widthClass=compact" constant="30"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
                             </constraint>
+                            <constraint firstItem="meP-ft-tWF" firstAttribute="centerX" secondItem="h4v-7V-EJ5" secondAttribute="centerX" id="yfZ-8g-XUC"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
@@ -1955,18 +1988,14 @@ Swipe to get started.</string>
                                 <exclude reference="J6y-2U-0Rz"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="DY2-Gg-j7A"/>
-                                <exclude reference="IRJ-bS-t4i"/>
-                                <exclude reference="LU8-vo-r6z"/>
-                                <exclude reference="ZBF-li-aog"/>
-                                <exclude reference="0gE-wP-3P8"/>
-                                <exclude reference="T2O-Tb-gvB"/>
-                                <exclude reference="Xv0-aK-jcw"/>
+                                <exclude reference="gGu-SG-4bT"/>
                                 <exclude reference="wMg-Yy-pil"/>
-                                <exclude reference="Z3R-qb-TCs"/>
-                                <exclude reference="Z6c-sm-zZf"/>
-                                <exclude reference="bGj-ak-pNk"/>
+                                <exclude reference="9RZ-R0-0q6"/>
+                                <exclude reference="yfZ-8g-XUC"/>
                                 <exclude reference="J7h-aV-n4v"/>
+                                <exclude reference="Bey-FX-rbH"/>
+                                <exclude reference="DY2-Gg-j7A"/>
+                                <exclude reference="Tck-Zm-pCj"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -1977,18 +2006,14 @@ Swipe to get started.</string>
                                 <include reference="J6y-2U-0Rz"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="DY2-Gg-j7A"/>
-                                <include reference="IRJ-bS-t4i"/>
-                                <include reference="LU8-vo-r6z"/>
-                                <include reference="ZBF-li-aog"/>
-                                <include reference="0gE-wP-3P8"/>
-                                <include reference="T2O-Tb-gvB"/>
-                                <include reference="Xv0-aK-jcw"/>
+                                <include reference="gGu-SG-4bT"/>
                                 <include reference="wMg-Yy-pil"/>
-                                <include reference="Z3R-qb-TCs"/>
-                                <include reference="Z6c-sm-zZf"/>
-                                <include reference="bGj-ak-pNk"/>
+                                <include reference="9RZ-R0-0q6"/>
+                                <include reference="yfZ-8g-XUC"/>
                                 <include reference="J7h-aV-n4v"/>
+                                <include reference="Bey-FX-rbH"/>
+                                <include reference="DY2-Gg-j7A"/>
+                                <include reference="Tck-Zm-pCj"/>
                             </mask>
                         </variation>
                     </view>

@@ -11,12 +11,17 @@ import UIKit
 class Intro01Controller: UIViewController {
 	
 	weak var delegate: IntroPageDelegate?
-	
+
+	@IBOutlet weak var labelTopLayoutConstraint: NSLayoutConstraint!
 	@IBOutlet weak var getStartedButton: UIButton!
 	
     override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
+		print(view.bounds)
+		if view.bounds.height == 480 {
+			labelTopLayoutConstraint.constant = 80
+		}
     }
 	
 	@IBAction func getStartedButtonPressed(sender: UIButton) {
