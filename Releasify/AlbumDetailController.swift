@@ -29,6 +29,7 @@ class AlbumDetailController: UIViewController {
 	@IBOutlet weak var thirdTimeLabel: UILabel!
 	@IBOutlet weak var progressBar: UIProgressView!
 	@IBOutlet weak var detailContainer: UIView!
+	@IBOutlet weak var labelTopLayoutConstraint: NSLayoutConstraint!
 	@IBOutlet weak var detailContainerTopConstraint: NSLayoutConstraint!
 	
 	@IBAction func shareAlbum(sender: AnyObject) {
@@ -70,11 +71,14 @@ class AlbumDetailController: UIViewController {
 		
 		switch UIScreen.mainScreen().bounds.height {
 		case 667:
-			detailContainerTopConstraint.constant = 20
+			detailContainerTopConstraint.constant = 30
+			labelTopLayoutConstraint.constant = 70
 		case 736:
-			detailContainerTopConstraint.constant = 50
+			detailContainerTopConstraint.constant = 60
+			labelTopLayoutConstraint.constant = 70
 		default:
-			detailContainerTopConstraint.constant = 10
+			detailContainerTopConstraint.constant = 20
+			labelTopLayoutConstraint.constant = 40
 		}
 		
 		if AppDB.sharedInstance.getArtwork(album!.artwork + "_large") == nil {
