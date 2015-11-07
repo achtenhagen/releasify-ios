@@ -118,8 +118,6 @@ class AlbumController: UIViewController {
 				if self.delegate != nil {
 					self.delegate?.addNotificationView(notification)
 				}
-				// AppPageController.sharedInstance.view.addSubview(notification)
-				// self.view.addSubview(notification)
 				NotificationQueue.sharedInstance.add(notification)
 			}
 			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
@@ -372,7 +370,7 @@ extension AlbumController: UICollectionViewDataSource {
 			tmpArtwork.removeValueForKey(hash)
 		}
 		
-		cell.albumArtwork.image = UIImage(named: "icon_album_placeholder")
+		cell.albumArtwork.image = UIImage()
 		
 		getArtworkForCell(album.artwork, completion: { artwork in
 			if cell.albumArtwork.image == nil {

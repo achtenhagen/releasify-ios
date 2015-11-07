@@ -77,8 +77,8 @@ class AlbumDetailController: UIViewController {
 			detailContainerTopConstraint.constant = 60
 			labelTopLayoutConstraint.constant = 70
 		default:
-			detailContainerTopConstraint.constant = 20
-			labelTopLayoutConstraint.constant = 40
+			detailContainerTopConstraint.constant = 15
+			labelTopLayoutConstraint.constant = 45
 		}
 		
 		if AppDB.sharedInstance.getArtwork(album!.artwork + "_large") == nil {

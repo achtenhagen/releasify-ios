@@ -771,13 +771,13 @@
                                 <animations/>
                                 <constraints>
                                     <constraint firstItem="7bC-V9-fkI" firstAttribute="leading" secondItem="F0U-3z-n2R" secondAttribute="leading" constant="26" id="4s9-Eb-nO6"/>
-                                    <constraint firstItem="xZF-Te-Rk8" firstAttribute="top" secondItem="QMI-Ez-bcW" secondAttribute="bottom" constant="40" id="Kp8-Lv-mOr"/>
+                                    <constraint firstItem="xZF-Te-Rk8" firstAttribute="top" secondItem="QMI-Ez-bcW" secondAttribute="bottom" constant="45" id="Kp8-Lv-mOr"/>
                                     <constraint firstAttribute="trailing" secondItem="QMI-Ez-bcW" secondAttribute="trailing" constant="15" id="KsJ-iS-Xyx"/>
                                     <constraint firstAttribute="bottom" secondItem="xZF-Te-Rk8" secondAttribute="bottom" constant="10" id="NzW-13-Fis"/>
                                     <constraint firstItem="xZF-Te-Rk8" firstAttribute="leading" secondItem="F0U-3z-n2R" secondAttribute="leading" constant="30" id="OSq-CG-okK"/>
                                     <constraint firstItem="JAd-qz-y0g" firstAttribute="centerX" secondItem="7bC-V9-fkI" secondAttribute="centerX" id="UhD-x8-VWb"/>
                                     <constraint firstItem="xZF-Te-Rk8" firstAttribute="centerX" secondItem="F0U-3z-n2R" secondAttribute="centerX" id="Vas-g5-ICe"/>
-                                    <constraint firstItem="QMI-Ez-bcW" firstAttribute="top" secondItem="7bC-V9-fkI" secondAttribute="bottom" constant="20" id="bUN-aK-mRJ"/>
+                                    <constraint firstItem="QMI-Ez-bcW" firstAttribute="top" secondItem="7bC-V9-fkI" secondAttribute="bottom" constant="15" id="bUN-aK-mRJ"/>
                                     <constraint firstItem="QMI-Ez-bcW" firstAttribute="centerX" secondItem="7bC-V9-fkI" secondAttribute="centerX" id="cF3-D6-dBq"/>
                                     <constraint firstItem="JAd-qz-y0g" firstAttribute="top" secondItem="F0U-3z-n2R" secondAttribute="top" constant="20" id="duN-6c-2CV"/>
                                     <constraint firstItem="7bC-V9-fkI" firstAttribute="top" secondItem="JAd-qz-y0g" secondAttribute="bottom" constant="5" id="itq-K3-G2S"/>
