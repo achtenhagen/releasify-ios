@@ -793,20 +793,20 @@
                                         <exclude reference="xZF-Te-Rk8"/>
                                     </mask>
                                     <mask key="constraints">
-                                        <exclude reference="UhD-x8-VWb"/>
-                                        <exclude reference="duN-6c-2CV"/>
-                                        <exclude reference="yBT-WE-FlJ"/>
-                                        <exclude reference="4s9-Eb-nO6"/>
-                                        <exclude reference="itq-K3-G2S"/>
-                                        <exclude reference="KsJ-iS-Xyx"/>
-                                        <exclude reference="bUN-aK-mRJ"/>
-                                        <exclude reference="cF3-D6-dBq"/>
-                                        <exclude reference="olr-ts-qxD"/>
                                         <exclude reference="Kp8-Lv-mOr"/>
                                         <exclude reference="NzW-13-Fis"/>
                                         <exclude reference="OSq-CG-okK"/>
                                         <exclude reference="Vas-g5-ICe"/>
                                         <exclude reference="wmX-kU-uF2"/>
+                                        <exclude reference="4s9-Eb-nO6"/>
+                                        <exclude reference="itq-K3-G2S"/>
+                                        <exclude reference="UhD-x8-VWb"/>
+                                        <exclude reference="duN-6c-2CV"/>
+                                        <exclude reference="yBT-WE-FlJ"/>
+                                        <exclude reference="KsJ-iS-Xyx"/>
+                                        <exclude reference="bUN-aK-mRJ"/>
+                                        <exclude reference="cF3-D6-dBq"/>
+                                        <exclude reference="olr-ts-qxD"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=compact">
@@ -817,20 +817,20 @@
                                         <include reference="xZF-Te-Rk8"/>
                                     </mask>
                                     <mask key="constraints">
-                                        <include reference="UhD-x8-VWb"/>
-                                        <include reference="duN-6c-2CV"/>
-                                        <include reference="yBT-WE-FlJ"/>
-                                        <include reference="4s9-Eb-nO6"/>
-                                        <include reference="itq-K3-G2S"/>
-                                        <include reference="KsJ-iS-Xyx"/>
-                                        <include reference="bUN-aK-mRJ"/>
-                                        <include reference="cF3-D6-dBq"/>
-                                        <include reference="olr-ts-qxD"/>
                                         <include reference="Kp8-Lv-mOr"/>
                                         <include reference="NzW-13-Fis"/>
                                         <include reference="OSq-CG-okK"/>
                                         <include reference="Vas-g5-ICe"/>
                                         <include reference="wmX-kU-uF2"/>
+                                        <include reference="4s9-Eb-nO6"/>
+                                        <include reference="itq-K3-G2S"/>
+                                        <include reference="UhD-x8-VWb"/>
+                                        <include reference="duN-6c-2CV"/>
+                                        <include reference="yBT-WE-FlJ"/>
+                                        <include reference="KsJ-iS-Xyx"/>
+                                        <include reference="bUN-aK-mRJ"/>
+                                        <include reference="cF3-D6-dBq"/>
+                                        <include reference="olr-ts-qxD"/>
                                     </mask>
                                 </variation>
                             </scrollView>
@@ -1139,7 +1139,7 @@
                                 </collectionReusableView>
                                 <connections>
                                     <outlet property="dataSource" destination="sGZ-AU-DNR" id="6sZ-9H-hfD"/>
-                                    <outlet property="delegate" destination="sGZ-AU-DNR" id="D03-Zg-XCe"/>
+                                    <outlet property="delegate" destination="sGZ-AU-DNR" id="fZd-8F-Cs8"/>
                                 </connections>
                             </collectionView>
                         </subviews>

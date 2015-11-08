@@ -14,7 +14,7 @@ class SubscriptionController: UIViewController {
 	var artistCollectionLayout: UICollectionViewFlowLayout!
 	var refreshControl: UIRefreshControl!
 	var filteredData: [Artist]!
-	var selectedIndexPath: NSIndexPath!
+	var selectedIndexPath: NSIndexPath?
 	
 	@IBOutlet weak var artistsCollectionView: UICollectionView!
 	@IBOutlet weak var searchBar: UISearchBar!
@@ -89,78 +89,76 @@ class SubscriptionController: UIViewController {
 	}
 	
 	func refresh() {
-		API.sharedInstance.refreshContent({ (newItems) in			
+		API.sharedInstance.refreshContent({ newItems in
 			self.reloadSubscriptions()
 			self.refreshControl.endRefreshing()
 			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 			},
-			errorHandler: { (error) in
+			errorHandler: { error in
 				self.refreshControl.endRefreshing()
-				let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-				switch (error) {
-				case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-					alert.title = "You're Offline!"
-					alert.message = "Please make sure you are connected to the internet, then try again."
-					alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
-						UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
-					}))
-				default:
-					alert.title = "Unable to update!"
-					alert.message = "Please try again later."
-				}
-				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-				self.presentViewController(alert, animated: true, completion: nil)
+				self.handleError("Unable to update!", message: "Please try again later.", error: error)
 		})
 	}
 	
+	// MARK: - Unsubscribe Artist
 	func deleteArtist (sender: UIButton) {
 		let rowIndex = sender.tag
+		selectedIndexPath = NSIndexPath(forItem: rowIndex, inSection: 0)
+		print(filteredData[selectedIndexPath!.row].title)
 		let alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
 		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
 		alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
 			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(self.filteredData[rowIndex].iTunesUniqueID)"
 			API.sharedInstance.sendRequest(API.URL.removeArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
-				if statusCode == 204 {
-					AppDB.sharedInstance.deleteArtist(self.filteredData[rowIndex].ID, index: rowIndex, completion: { (albumIDs) in
-						for ID in albumIDs {
-							for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
-								let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-								let notificationID = userInfoCurrent["albumID"]! as! Int
-								if ID == notificationID {
-									print("Canceled location notification with ID: \(ID)")
-									UIApplication.sharedApplication().cancelLocalNotification(notification)
-								}
+				if statusCode != 204 {
+					self.handleError("Unable to update!", message: "Please try again later.", error: API.Error.FailedRequest)
+					return
+				}
+				AppDB.sharedInstance.deleteArtist(self.filteredData[rowIndex].ID, index: rowIndex, completion: { albumIDs in
+					for ID in albumIDs {
+						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
+							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+							let notificationID = userInfoCurrent["albumID"]! as! Int
+							if ID == notificationID {
+								print("Canceled location notification with ID: \(ID)")
+								UIApplication.sharedApplication().cancelLocalNotification(notification)
 							}
 						}
-						AppDB.sharedInstance.getArtists()
-						AppDB.sharedInstance.getAlbums()
-						self.reloadSubscriptions()
-						self.searchBar.text = ""
-						self.searchBar.resignFirstResponder()
-						NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
-						self.appDelegate.contentHash = nil
-					})
-				}
-				},
-				errorHandler: { (error) in
-					AppDB.sharedInstance.addPendingArtist(self.filteredData[rowIndex].ID)
-					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-					switch (error) {
-					case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-						alert.title = "You're Offline!"
-						alert.message = "Please make sure you are connected to the internet, then try again."
-						alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
-							UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
-						}))
-					default:
-						alert.title = "Unable to update!"
-						alert.message = "Please try again later."
 					}
-					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-					self.presentViewController(alert, animated: true, completion: nil)
+					self.filteredData.removeAtIndex(rowIndex)
+					self.artistsCollectionView.deleteItemsAtIndexPaths([self.selectedIndexPath!])
+					self.reloadSubscriptions()
+					self.searchBar.text = ""
+					self.searchBar.resignFirstResponder()
+					NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+					self.selectedIndexPath = nil
+					self.appDelegate.contentHash = nil
+				})
+				},
+				errorHandler: { error in
+					AppDB.sharedInstance.addPendingArtist(self.filteredData[rowIndex].ID)
+					self.handleError("Unable to remove subscription!", message: "Please try again later.", error: error)
 			})
 		}))
 		presentViewController(alert, animated: true, completion: nil)
+	}
+	
+	// MARK: - Error Message Handler
+	func handleError (title: String, message: String, error: ErrorType) {
+		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+		switch (error) {
+		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+			alert.title = "You're Offline!"
+			alert.message = "Please make sure you are connected to the internet, then try again."
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+			}))
+		default:
+			alert.title = title
+			alert.message = message
+		}
+		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		self.presentViewController(alert, animated: true, completion: nil)
 	}
 }
 
@@ -202,12 +200,5 @@ extension SubscriptionController: UISearchBarDelegate {
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
 		searchBar.showsCancelButton = false
-	}
-}
-
-// MARK: - UICollectionViewDelegate
-extension SubscriptionController: UICollectionViewDelegate {
-	func collectionView(collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
-		selectedIndexPath = indexPath
 	}
 }

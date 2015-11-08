@@ -405,6 +405,7 @@ final class AppDB {
 			}
 			sqlite3_finalize(statement)
 		}
+		artists.removeAtIndex(index!)
 		disconnect()
 		completion(albumIDs: albumIDs)
 	}

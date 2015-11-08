@@ -85,18 +85,19 @@ class AlbumController: UIViewController {
 			}
 		}
 		
-		if !appDelegate.completedRefresh {
-			refresh()
-		}
-		
 		if AppDB.sharedInstance.albums[0]?.count == 0 && AppDB.sharedInstance.albums[1]?.count == 0 {
 			albumCollectionView.hidden = true
 			emptyTitle.hidden = false
 			emptySubtitle.hidden = false
 		}
+		
+		if !appDelegate.completedRefresh {
+			refresh()
+		}
 	}
 	
 	override func viewWillAppear(animated: Bool) {
+		AppDB.sharedInstance.getAlbums()
 		albumCollectionView.reloadData()
 		albumCollectionView.scrollsToTop = true
 	}
@@ -190,6 +191,7 @@ class AlbumController: UIViewController {
 		return floor(x / v)
 	}
 	
+	// MARK: - Album Touch Gesture
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
 		let cellLocation = gesture.locationInView(albumCollectionView)
 		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
@@ -232,24 +234,19 @@ class AlbumController: UIViewController {
 					let iTunesUniqueID = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesUniqueID
 					let hash = AppDB.sharedInstance.albums[section]![indexPath!.row].artwork
 					self.unsubscribe_album(iTunesUniqueID, successHandler: {
-						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
-							self.albumCollectionView.cellForItemAtIndexPath(indexPath!)?.alpha = 0
-							}, completion: { value in
-								AppDB.sharedInstance.deleteAlbum(albumID, section: section)
-								AppDB.sharedInstance.deleteArtwork(hash)
-								AppDB.sharedInstance.getAlbums()
-								if AppDB.sharedInstance.albums[1]!.count == 0 {
-									self.albumCollectionView.deleteSections(NSIndexSet(index: section))
-								} else {
-									self.albumCollectionView.deleteItemsAtIndexPaths([indexPath!])
-								}
-								self.albumCollectionView.reloadData()
-								
-						})
+						AppDB.sharedInstance.deleteAlbum(albumID, section: section, index: indexPath?.row)
+						AppDB.sharedInstance.deleteArtwork(hash)
+						if AppDB.sharedInstance.albums[section]!.count == 0 {
+							if self.numberOfSectionsInCollectionView(self.albumCollectionView) > 0 {
+								self.albumCollectionView.deleteSections(NSIndexSet(index: section))
+							}
+						} else {
+							self.albumCollectionView.deleteItemsAtIndexPaths([indexPath!])
+						}
+						self.albumCollectionView.reloadData()
 						}, errorHandler: { error in
-							self.handleError("Unable to download artwork!", message: "Please try again later.", error: error)
+							self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
 					})
-
 				})
 				controller.addAction(removeAction)
 			}
@@ -271,7 +268,7 @@ class AlbumController: UIViewController {
 			successHandler()
 			},
 			errorHandler: { (error) in
-				self.handleError("Unable to unsubscribe from album!", message: "Please try again later.", error: error)
+				self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
 		})
 	}
 	
@@ -299,17 +296,11 @@ class AlbumController: UIViewController {
 				self.tmpArtwork[hash] = artwork
 				completion(artwork: artwork!)
 			}, errorHandler: {
-				print("Failed to download artwork!")
 				completion(artwork: UIImage(named: "icon_album_placeholder")!)
 			})
 			return
 		}
 		completion(artwork: tmpImage)
-	}
-	
-	// MARK: - Determines current section | Only called when there is one section.
-	func sectionAtIndex () -> Int {
-		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -321,6 +312,11 @@ class AlbumController: UIViewController {
 			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
 		}
+	}
+	
+	// MARK: - Determines current section | Only called when there is one section.
+	func sectionAtIndex () -> Int {
+		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}
 }
 
@@ -335,13 +331,26 @@ extension AlbumController: UICollectionViewDataSource {
 			sections++
 		}
 		if sections == 0 {
-			albumCollectionView.hidden = true
-			emptyTitle.hidden = false
-			emptySubtitle.hidden = false
+			if !albumCollectionView.hidden {
+				albumCollectionView.hidden = true
+				emptyTitle.alpha = 0
+				emptySubtitle.alpha = 0
+				emptyTitle.hidden = false
+				emptySubtitle.hidden = false
+				UIView.animateWithDuration(0.5, delay: 0, options: .CurveEaseOut, animations: {
+					self.emptyTitle.alpha = 1
+					self.emptySubtitle.alpha = 1
+					}, completion: nil)
+			}
 		} else {
-			albumCollectionView.hidden = false
-			emptyTitle.hidden = true
-			emptySubtitle.hidden = true
+			UIView.animateWithDuration(0.5, delay: 0, options: .CurveEaseOut, animations: {
+				self.emptyTitle.alpha = 0
+				self.emptySubtitle.alpha = 0
+				}, completion: { value in
+					self.emptyTitle.hidden = true
+					self.emptySubtitle.hidden = true
+					self.albumCollectionView.hidden = false
+			})
 		}
 		return sections
 	}
@@ -434,7 +443,8 @@ extension AlbumController: UICollectionViewDataSource {
 	
 	func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
 		if kind == UICollectionElementKindSectionHeader {
-			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: albumHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeader
+			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader,
+				withReuseIdentifier: albumHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeader
 			var section = indexPath.section
 			if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
 				section = sectionAtIndex()
@@ -446,7 +456,8 @@ extension AlbumController: UICollectionViewDataSource {
 			}
 			return headerView
 		}
-		let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionFooter, withReuseIdentifier: albumFooterViewReuseIdentifier, forIndexPath: indexPath) 
+		let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionFooter,
+			withReuseIdentifier: albumFooterViewReuseIdentifier, forIndexPath: indexPath)
 		return footerView
 	}
 }
