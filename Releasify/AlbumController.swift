@@ -117,6 +117,7 @@ class AlbumController: UIViewController {
 				notification.subtitle.text = "Swipe left to manage your subscriptions."
 				self.delegate?.addNotificationView(notification)
 				NotificationQueue.sharedInstance.add(notification)
+				self.appDelegate.firstRun = false
 			}
 			if newItems.count > 0 {
 				self.albumCollectionView.hidden = false
