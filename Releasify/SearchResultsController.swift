@@ -114,7 +114,6 @@ extension SearchResultsController: UITableViewDataSource {
 						}
 						if let HTTPResponse = response as? NSHTTPURLResponse {
 							if HTTPResponse.statusCode == 404 {
-								print("Failed to download artwork!")
 								return
 							}
 							if HTTPResponse.statusCode == 200 {

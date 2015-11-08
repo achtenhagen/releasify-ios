@@ -211,7 +211,7 @@ final class API {
 			}			
 			let receivedUserID = json!["ID"] as? Int
 			if receivedUserID > 0 {
-				print("Received user ID: \(receivedUserID!) from the server.")
+				// print("Received user ID: \(receivedUserID!) from the server.")
 				successHandler(userID: receivedUserID!, userUUID: UUID)
 			}
 			},
@@ -261,7 +261,7 @@ final class API {
 				return
 			}
 			
-			print("HTTP status code: \(response.statusCode)")
+			// print("HTTP status code: \(response.statusCode)")
 			successHandler(statusCode: response.statusCode, data: data)
 		})
 	}

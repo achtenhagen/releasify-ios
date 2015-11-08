@@ -94,7 +94,9 @@ class Intro02Controller: UIViewController {
 		view.backgroundColor = UIColor.clearColor()
 		if view.bounds.height == 480 {
 			imageTopLayoutConstraint.constant = 200
-		}		
+		} else if view.bounds.height == 568 {
+			imageTopLayoutConstraint.constant = 260
+		}
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishRegister", name: "finishNotificationRegister", object: nil)
     }
 

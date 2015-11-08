@@ -17,9 +17,12 @@ class Intro01Controller: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+		print(view.bounds.height)
 		view.backgroundColor = UIColor.clearColor()
 		if view.bounds.height == 480 {
 			labelTopLayoutConstraint.constant = 80
+		} else if view.bounds.height == 568 {
+			labelTopLayoutConstraint.constant = 110
 		}
     }
 	

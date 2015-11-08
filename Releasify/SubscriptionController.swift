@@ -67,7 +67,7 @@ class SubscriptionController: UIViewController {
 		artistsCollectionView.addSubview(refreshControl)
 		
 		AppDB.sharedInstance.getArtists()
-		artistsCollectionView.reloadData()
+		artistsCollectionView.reloadData()				
 	}
 	
 	override func viewWillAppear(animated: Bool) {
@@ -120,7 +120,6 @@ class SubscriptionController: UIViewController {
 							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
 							let notificationID = userInfoCurrent["albumID"]! as! Int
 							if ID == notificationID {
-								print("Canceled location notification with ID: \(ID)")
 								UIApplication.sharedApplication().cancelLocalNotification(notification)
 							}
 						}
@@ -173,7 +172,6 @@ extension SubscriptionController: UICollectionViewDataSource {
 	}
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-		print("called")
 		let cell = artistsCollectionView.dequeueReusableCellWithReuseIdentifier(subscriptionCellReuseIdentifier, forIndexPath: indexPath) as! SubscriptionCell
 		cell.subscriptionArtwork.image = UIImage(named: filteredData[indexPath.row].avatar)
 		cell.subscriptionTitle.text = filteredData[indexPath.row].title as String

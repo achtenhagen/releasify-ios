@@ -36,7 +36,6 @@ class AlbumCell: UICollectionViewCell {
 			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
 		}
 		
-		// Shadow overlay
 		let gradient = CAGradientLayer()
 		gradient.frame = gradientLayerView.bounds
 		gradient.colors = [AnyObject]()

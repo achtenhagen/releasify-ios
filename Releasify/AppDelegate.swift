@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var shortcutKeyDescription: String?
 	var allowExplicitContent = true
 	var completedRefresh = false
+	var firstRun = false
 	var lastUpdated = 0
 	var notificationAlbumID: Int?
 	var remoteNotificationPayload: NSDictionary?
@@ -69,6 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
 		if userID == 0 {
+			firstRun = true
 			UIApplication.sharedApplication().cancelAllLocalNotifications()
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {

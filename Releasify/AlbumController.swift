@@ -111,6 +111,13 @@ class AlbumController: UIViewController {
 		API.sharedInstance.refreshContent({ newItems in
 			self.albumCollectionView.reloadData()
 			self.refreshControl.endRefreshing()
+			if self.appDelegate.firstRun {
+				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
+				notification.title.text = "Welcome to Releasify!"
+				notification.subtitle.text = "Swipe left to manage your subscriptions."
+				self.delegate?.addNotificationView(notification)
+				NotificationQueue.sharedInstance.add(notification)
+			}
 			if newItems.count > 0 {
 				self.albumCollectionView.hidden = false
 				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
@@ -365,6 +372,7 @@ extension AlbumController: UICollectionViewDataSource {
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell
 		var section = indexPath.section
+		
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
 			section = sectionAtIndex()
 		}
