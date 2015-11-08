@@ -126,12 +126,16 @@ class SubscriptionController: UIViewController {
 						}
 					}
 					self.filteredData.removeAtIndex(rowIndex)
-					self.artistsCollectionView.deleteItemsAtIndexPaths([self.selectedIndexPath!])
-					self.reloadSubscriptions()
+					
+					self.artistsCollectionView.performBatchUpdates({
+						self.artistsCollectionView.deleteItemsAtIndexPaths([self.selectedIndexPath!])
+						}, completion: { finished in
+							self.artistsCollectionView.reloadItemsAtIndexPaths(self.artistsCollectionView.indexPathsForVisibleItems())
+					})					
+					// self.reloadSubscriptions()
 					self.searchBar.text = ""
 					self.searchBar.resignFirstResponder()
 					NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
-					self.selectedIndexPath = nil
 					self.appDelegate.contentHash = nil
 				})
 				},
@@ -169,6 +173,7 @@ extension SubscriptionController: UICollectionViewDataSource {
 	}
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+		print("called")
 		let cell = artistsCollectionView.dequeueReusableCellWithReuseIdentifier(subscriptionCellReuseIdentifier, forIndexPath: indexPath) as! SubscriptionCell
 		cell.subscriptionArtwork.image = UIImage(named: filteredData[indexPath.row].avatar)
 		cell.subscriptionTitle.text = filteredData[indexPath.row].title as String
