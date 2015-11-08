@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -10,11 +11,43 @@
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_releasify" translatesAutoresizingMaskIntoConstraints="NO" id="gxl-Mh-D0S">
+                    <rect key="frame" x="110" y="234" width="100" height="100"/>
+                    <animations/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="100" id="4Vu-jX-baW"/>
+                        <constraint firstAttribute="width" constant="100" id="PFD-QD-tnA"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fioware Studios © 2015 " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="10X-uF-I82">
+                    <rect key="frame" x="10" y="539" width="300" height="21"/>
+                    <animations/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="XD5-GX-Ddv"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
             <animations/>
+            <color key="backgroundColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="10X-uF-I82" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottomMargin" id="1h3-Cr-KJ1"/>
+                <constraint firstItem="10X-uF-I82" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="MPX-lw-RgC"/>
+                <constraint firstItem="10X-uF-I82" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="10" id="ND7-2b-0NG"/>
+                <constraint firstItem="gxl-Mh-D0S" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="QGX-6f-ZKv"/>
+                <constraint firstItem="gxl-Mh-D0S" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="eby-AR-GN8"/>
+                <constraint firstAttribute="bottom" secondItem="10X-uF-I82" secondAttribute="bottom" constant="8" id="ruE-ac-uVx"/>
+            </constraints>
             <nil key="simulatedStatusBarMetrics"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
             <point key="canvasLocation" x="446" y="504"/>
         </view>
     </objects>
+    <resources>
+        <image name="icon_releasify" width="100" height="100"/>
+    </resources>
 </document>
