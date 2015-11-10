@@ -29,6 +29,12 @@ class AlbumController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		if #available(iOS 9.0, *) {
+		    if traitCollection.forceTouchCapability == .Available {
+    			registerForPreviewingWithDelegate(self, sourceView: view)
+    		}
+		}
+		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromRemoteNotification:", name: "appActionPressed", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
@@ -326,6 +332,14 @@ class AlbumController: UIViewController {
 	func sectionAtIndex () -> Int {
 		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}
+	
+	@available(iOS 9.0, *)
+	override func previewActionItems() -> [UIPreviewActionItem] {
+		let purchaseAction = UIPreviewAction(title: "Purchase", style: .Default) { (action, viewController) -> Void in
+
+		}
+		return [purchaseAction]
+	}
 }
 
 // MARK: - UICollectionViewDataSource
@@ -489,5 +503,29 @@ extension AlbumController: UICollectionViewDelegate {
 	
 	func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
 		albumCollectionView.cellForItemAtIndexPath(indexPath)?.alpha = 1.0
+	}
+}
+
+// MARK: - UIViewControllerPreviewingDelegate
+extension AlbumController: UIViewControllerPreviewingDelegate {
+	func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+		guard let indexPath = albumCollectionView.indexPathForItemAtPoint(location) else { return nil }
+		guard let cell = albumCollectionView.cellForItemAtIndexPath(indexPath) else { return nil }
+		guard let albumDetailVC = storyboard?.instantiateViewControllerWithIdentifier("AlbumView") as? AlbumDetailController else { return nil }
+		
+		let album = AppDB.sharedInstance.albums[indexPath.section]![indexPath.row]
+		albumDetailVC.album = album		
+		albumDetailVC.preferredContentSize = CGSize(width: 0.0, height: 300)
+		
+		if #available(iOS 9.0, *) {
+		    previewingContext.sourceRect = cell.frame
+		}
+		
+		return albumDetailVC
+	}
+	
+	func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
+		// presentViewController(viewControllerToCommit, animated: true, completion: nil)
+		showViewController(viewControllerToCommit, sender: self)
 	}
 }
