@@ -513,8 +513,12 @@ extension AlbumController: UIViewControllerPreviewingDelegate {
 		guard let cell = albumCollectionView.cellForItemAtIndexPath(indexPath) else { return nil }
 		guard let albumDetailVC = storyboard?.instantiateViewControllerWithIdentifier("AlbumView") as? AlbumDetailController else { return nil }
 		
-		let album = AppDB.sharedInstance.albums[indexPath.section]![indexPath.row]
-		albumDetailVC.album = album		
+		var section = indexPath.section
+		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
+			section = sectionAtIndex()
+		}
+		let album = AppDB.sharedInstance.albums[section]![indexPath.row]
+		albumDetailVC.album = album
 		albumDetailVC.preferredContentSize = CGSize(width: 0.0, height: 300)
 		
 		if #available(iOS 9.0, *) {
