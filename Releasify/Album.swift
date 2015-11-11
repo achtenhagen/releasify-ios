@@ -17,7 +17,7 @@ struct Album {
 	var explicit: Int
 	var copyright: String
 	var iTunesUniqueID: Int
-	var iTunesURL: String
+	var iTunesUrl: String
 	var created: Int
 	
 	func getProgress (dateAdded: Double) -> Float {

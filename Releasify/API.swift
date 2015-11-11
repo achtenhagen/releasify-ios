@@ -124,7 +124,7 @@ final class API {
 				explicit: item["explicit"] as! Int,
 				copyright: item["copyright"] as! String,
 				iTunesUniqueID: item["iTunesUniqueID"] as! Int,
-				iTunesURL: item["iTunesUrl"] as! String,
+				iTunesUrl: item["iTunesUrl"] as! String,
 				created: Int(NSDate().timeIntervalSince1970)
 			)
 			let newAlbumID = AppDB.sharedInstance.addAlbum(albumItem)
@@ -142,7 +142,7 @@ final class API {
 					notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
 					notification.applicationIconBadgeNumber++
 					notification.soundName = UILocalNotificationDefaultSoundName
-					notification.userInfo = ["albumID": albumItem.ID, "iTunesUrl": albumItem.iTunesURL]
+					notification.userInfo = ["albumID": albumItem.ID, "iTunesUrl": albumItem.iTunesUrl]
 					UIApplication.sharedApplication().scheduleLocalNotification(notification)
 				}
 			}
@@ -182,7 +182,7 @@ final class API {
 				explicit: item!["explicit"] as! Int,
 				copyright: item!["copyright"] as! String,
 				iTunesUniqueID: item!["iTunesUniqueID"] as! Int,
-				iTunesURL: item!["iTunesUrl"] as! String,
+				iTunesUrl: item!["iTunesUrl"] as! String,
 				created: Int(NSDate().timeIntervalSince1970)
 			)
 			

@@ -18,8 +18,9 @@ class AlbumController: UIViewController {
 	let albumFooterViewReuseIdentifier = "albumCollectionFooter"
 	var albumCollectionLayout: UICollectionViewFlowLayout!
 	var selectedAlbum: Album!
-	var tmpArtwork = [String:UIImage]()
-	var notificationAlbumID: Int!
+	var tmpArtwork: [String:UIImage]?
+	var tmpUrl: [Int: String]?
+	var notificationAlbumID: Int?
 	var refreshControl: UIRefreshControl!
 	
 	@IBOutlet weak var emptySubtitle: UILabel!
@@ -81,12 +82,12 @@ class AlbumController: UIViewController {
 		if let localContent = appDelegate.localNotificationPayload?["albumID"] as? Int {
 			notificationAlbumID = localContent
 			for album in AppDB.sharedInstance.albums[1] as[Album]! {
-				if album.ID == notificationAlbumID {
+				if album.ID == notificationAlbumID! {
 					selectedAlbum = album
 					break
 				}
 			}
-			if selectedAlbum.ID == notificationAlbumID {
+			if selectedAlbum.ID == notificationAlbumID! {
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
 		}
@@ -148,12 +149,12 @@ class AlbumController: UIViewController {
 		if let AlbumID = notification.userInfo!["albumID"]! as? Int {
 			notificationAlbumID = AlbumID
 			for album in AppDB.sharedInstance.albums[1] as[Album]! {
-				if album.ID != notificationAlbumID { continue }
+				if album.ID != notificationAlbumID! { continue }
 				selectedAlbum = album
 				break
 			}
 			guard let album = selectedAlbum else { return }
-			if album.ID == notificationAlbumID {
+			if album.ID == notificationAlbumID! {
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
 		}
@@ -205,6 +206,15 @@ class AlbumController: UIViewController {
 		return floor(x / v)
 	}
 	
+	// MARK: - Purchase album
+	func purchaseAlbum (sender: UIButton) {
+		let albumID = sender.tag
+		guard let albumUrl = tmpUrl![albumID] else { return }
+		if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumUrl)!) {
+			UIApplication.sharedApplication().openURL(NSURL(string: albumUrl)!)
+		}
+	}
+	
 	// MARK: - Album Touch Gesture
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
 		let cellLocation = gesture.locationInView(albumCollectionView)
@@ -222,9 +232,9 @@ class AlbumController: UIViewController {
 				buyTitle = "Purchase"
 			}
 			let buyAction = UIAlertAction(title: buyTitle, style: .Default, handler: { action in
-				let albumURL = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesURL
-				if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumURL)!) {
-					UIApplication.sharedApplication().openURL(NSURL(string: albumURL)!)
+				let albumUrl = AppDB.sharedInstance.albums[section]![indexPath!.row].iTunesUrl
+				if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumUrl)!) {
+					UIApplication.sharedApplication().openURL(NSURL(string: albumUrl)!)
 				}
 			})
 			controller.addAction(buyAction)
@@ -304,10 +314,10 @@ class AlbumController: UIViewController {
 	
 	// MARK: - Returns the artwork image for each cell.
 	func getArtworkForCell (hash: String, completion: ((artwork: UIImage) -> Void)) {
-		guard let tmpImage = tmpArtwork[hash] else {
+		guard let tmpImage = tmpArtwork![hash] else {
 			fetchArtwork(hash, successHandler: { artwork in
 				AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
-				self.tmpArtwork[hash] = artwork
+				self.tmpArtwork![hash] = artwork
 				completion(artwork: artwork!)
 			}, errorHandler: {
 				completion(artwork: UIImage(named: "icon_album_placeholder")!)
@@ -392,14 +402,18 @@ extension AlbumController: UICollectionViewDataSource {
 			section = sectionAtIndex()
 		}
 		
+		if tmpArtwork == nil {
+			tmpArtwork = [String:UIImage]()
+		}
+		
 		let album = AppDB.sharedInstance.albums[section]![indexPath.row]
 		let hash = album.artwork
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
 		
 		if AppDB.sharedInstance.checkArtwork(hash) {
-			tmpArtwork[hash] = AppDB.sharedInstance.getArtwork(hash)
+			tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
 		} else {
-			tmpArtwork.removeValueForKey(hash)
+			tmpArtwork!.removeValueForKey(hash)
 		}
 		
 		cell.albumArtwork.image = UIImage()
@@ -461,6 +475,18 @@ extension AlbumController: UICollectionViewDataSource {
 		} else if Int(seconds) > 0 && Int(seconds) <= 60 {
 			cell.timeLeft.text = "\(Int(seconds)) second"
 		}
+		
+		if tmpUrl == nil {
+			tmpUrl = [Int: String]()
+		}
+		
+		if tmpUrl![album.ID] == nil {
+			tmpUrl![album.ID] = album.iTunesUrl
+		}
+		
+		cell.purchaseButton.tag = album.ID
+		cell.purchaseButton.addTarget(self, action: "purchaseAlbum:", forControlEvents: .TouchUpInside)
+		
 		return cell
 	}
 	

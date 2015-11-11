@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
@@ -89,6 +89,15 @@
                             <constraint firstItem="KE7-1C-faa" firstAttribute="top" secondItem="6mT-3R-UAJ" secondAttribute="bottom" constant="-5" id="zbV-aB-MRL"/>
                         </constraints>
                     </view>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0tR-0L-YXu">
+                        <rect key="frame" x="107" y="8" width="30" height="30"/>
+                        <animations/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="R63-Ou-XLM"/>
+                            <constraint firstAttribute="width" constant="30" id="xi9-M2-GU0"/>
+                        </constraints>
+                        <state key="normal" image="icon_purchase"/>
+                    </button>
                 </subviews>
                 <animations/>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -97,6 +106,8 @@
             <color key="backgroundColor" white="1" alpha="0.050000000000000003" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="CrM-FW-S5B" firstAttribute="trailing" secondItem="dtU-Tz-6MX" secondAttribute="trailing" id="7e1-ng-Xxo"/>
+                <constraint firstItem="cAq-II-fkp" firstAttribute="top" secondItem="0tR-0L-YXu" secondAttribute="bottom" constant="-38" id="9pj-3l-6Y0"/>
+                <constraint firstItem="0tR-0L-YXu" firstAttribute="leading" secondItem="cAq-II-fkp" secondAttribute="trailing" constant="-38" id="F3Y-Tr-TJu"/>
                 <constraint firstAttribute="trailing" secondItem="cAq-II-fkp" secondAttribute="trailing" id="PKx-dV-3rQ"/>
                 <constraint firstItem="dtU-Tz-6MX" firstAttribute="top" secondItem="cAq-II-fkp" secondAttribute="bottom" id="W3J-om-O7K"/>
                 <constraint firstItem="cAq-II-fkp" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="YId-49-EKT"/>
@@ -113,9 +124,13 @@
                 <outlet property="artistTitle" destination="6mT-3R-UAJ" id="Rza-Di-8yZ"/>
                 <outlet property="containerView" destination="CrM-FW-S5B" id="dPI-4T-eO9"/>
                 <outlet property="progressBar" destination="8n0-fg-rJJ" id="YhH-hm-iMr"/>
+                <outlet property="purchaseButton" destination="0tR-0L-YXu" id="qlf-jD-b0L"/>
                 <outlet property="timeLeft" destination="fvA-mC-7Sc" id="ppq-9A-yuG"/>
             </connections>
             <point key="canvasLocation" x="191.5" y="81"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="icon_purchase" width="30" height="30"/>
+    </resources>
 </document>

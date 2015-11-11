@@ -77,7 +77,7 @@ final class AppDB {
 				sqlite3_bind_int(statement, 5, Int32(albumItem.explicit))
 				sqlite3_bind_text(statement, 6, (albumItem.copyright as NSString).UTF8String, -1, nil)
 				sqlite3_bind_int(statement, 7, Int32(albumItem.iTunesUniqueID))
-				sqlite3_bind_text(statement, 8, (albumItem.iTunesURL as NSString).UTF8String, -1, nil)
+				sqlite3_bind_text(statement, 8, (albumItem.iTunesUrl as NSString).UTF8String, -1, nil)
 				sqlite3_bind_int(statement, 9, Int32(albumItem.created))
 				if sqlite3_step(statement) == SQLITE_DONE {
 					newAlbumID = Int(sqlite3_last_insert_rowid(database))
@@ -140,7 +140,7 @@ final class AppDB {
 				explicit: explicit,
 				copyright: copyright!,
 				iTunesUniqueID: iTunesUniqueID,
-				iTunesURL: iTunesURL!,
+				iTunesUrl: iTunesURL!,
 				created: created
 			)
 			sqlite3_finalize(statement)
@@ -183,7 +183,7 @@ final class AppDB {
 					explicit: explicit,
 					copyright: copyright!,
 					iTunesUniqueID: iTunesUniqueID,
-					iTunesURL: iTunesURL!,
+					iTunesUrl: iTunesURL!,
 					created: created
 					)
 				)
