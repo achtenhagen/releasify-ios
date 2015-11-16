@@ -216,7 +216,7 @@ class AlbumController: UIViewController {
 	}
 	
 	// MARK: - Album Touch Gesture
-	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
+	func longPressGestureRecognized (gesture: UIGestureRecognizer) {
 		let cellLocation = gesture.locationInView(albumCollectionView)
 		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
 		if indexPath == nil { return }
@@ -341,14 +341,6 @@ class AlbumController: UIViewController {
 	// MARK: - Determines current section | Only called when there is one section.
 	func sectionAtIndex () -> Int {
 		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
-	}
-	
-	@available(iOS 9.0, *)
-	override func previewActionItems() -> [UIPreviewActionItem] {
-		let purchaseAction = UIPreviewAction(title: "Purchase", style: .Default) { (action, viewController) -> Void in
-
-		}
-		return [purchaseAction]
 	}
 }
 
