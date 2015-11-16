@@ -8,13 +8,13 @@
 
 import UIKit
 
-class AlbumDetailController: UIViewController {	
+class AlbumDetailController: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var album: Album?
-	var artist = String()
-	var artwork = UIImage()
-	var timeDiff = Double()
-	var timer = NSTimer()
+	var artist: String?
+	var artwork: UIImage!
+	var timeDiff: Double?
+	var timer: NSTimer!
 	var progress: Float = 0
 	var dateAdded: Double = 0
 	
@@ -116,7 +116,15 @@ class AlbumDetailController: UIViewController {
 	}
 	
 	override func viewDidDisappear(animated: Bool) {
-		timer.invalidate()
+		if timer != nil {
+			timer.invalidate()
+		}
+	}
+	
+	@available(iOS 9.0, *)
+	override func previewActionItems() -> [UIPreviewActionItem] {
+		let purchaseAction = UIPreviewAction(title: "Purchase", style: .Default) { (action, viewController) -> Void in }
+		return [purchaseAction]
 	}
 	
 	func shareAlbum () {
