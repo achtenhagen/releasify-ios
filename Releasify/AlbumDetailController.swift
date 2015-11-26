@@ -40,7 +40,7 @@ class AlbumDetailController: UIViewController {
 		super.viewDidLoad()
 		
 		guard let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) else {
-			artwork = UIImage(named: "icon_album_placeholder")!
+			artwork = UIImage(named: "icon_artwork_placeholder")!
 			albumArtwork.contentMode = .Center
 			return
 		}

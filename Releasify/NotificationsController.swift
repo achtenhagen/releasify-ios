@@ -80,7 +80,7 @@ extension NotificationsController: UITableViewDataSource {
 			if AppDB.sharedInstance.checkArtwork(hash) {
 				cell.artwork.image = AppDB.sharedInstance.getArtwork(hash)
 			} else {
-				cell.artwork.image = UIImage(named: "icon_album_placeholder")
+				cell.artwork.image = UIImage(named: "icon_artwork_placeholder")
 			}
 		}
 		let date = NSDate(timeIntervalSince1970: (albums?[indexPath.row].releaseDate)!)

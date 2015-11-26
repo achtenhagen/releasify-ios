@@ -15,14 +15,13 @@ class AlbumCell: UICollectionViewCell {
 	@IBOutlet weak var artistTitle: UILabel!
 	@IBOutlet weak var albumTitle: UILabel!
 	@IBOutlet weak var timeLeft: UILabel!
-	@IBOutlet weak var progressBar: UIProgressView!
 	@IBOutlet weak var purchaseButton: UIButton!
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		
 		layer.masksToBounds = true
-		layer.cornerRadius = 4
+		// layer.cornerRadius = 4
 		
 		var gradientLayerView: UIView!
 		
@@ -46,7 +45,6 @@ class AlbumCell: UICollectionViewCell {
 		}
 		gradientLayerView.layer.insertSublayer(gradient, atIndex: 0)
 		containerView.addSubview(gradientLayerView)
-		containerView.bringSubviewToFront(progressBar)
 		containerView.bringSubviewToFront(timeLeft)
 	}
 }

@@ -320,7 +320,7 @@ class AlbumController: UIViewController {
 				self.tmpArtwork![hash] = artwork
 				completion(artwork: artwork!)
 			}, errorHandler: {
-				completion(artwork: UIImage(named: "icon_album_placeholder")!)
+				completion(artwork: UIImage(named: "icon_artwork_placeholder")!)
 			})
 			return
 		}
@@ -432,9 +432,7 @@ extension AlbumController: UICollectionViewDataSource {
 		cell.containerView.hidden = true
 		
 		if timeDiff > 0 {
-			let dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album.ID)
 			cell.containerView.hidden = false
-			cell.progressBar.setProgress(album.getProgress(dateAdded!), animated: false)
 		}
 		
 		let weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)

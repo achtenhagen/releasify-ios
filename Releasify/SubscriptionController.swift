@@ -104,7 +104,6 @@ class SubscriptionController: UIViewController {
 	func deleteArtist (sender: UIButton) {
 		let rowIndex = sender.tag
 		selectedIndexPath = NSIndexPath(forItem: rowIndex, inSection: 0)
-		print(filteredData[selectedIndexPath!.row].title)
 		let alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
 		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
 		alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
