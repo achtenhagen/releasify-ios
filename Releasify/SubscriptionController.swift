@@ -24,7 +24,7 @@ class SubscriptionController: UIViewController {
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
 		
-		searchBar.delegate = self		
+		searchBar.delegate = self
 		searchBar.placeholder = "Search Artists"
 		searchBar.searchBarStyle = .Default
 		searchBar.barStyle = .Black
@@ -41,20 +41,20 @@ class SubscriptionController: UIViewController {
 		
 		artistsCollectionView.registerNib(UINib(nibName: "SubscriptionCell", bundle: nil), forCellWithReuseIdentifier: subscriptionCellReuseIdentifier)
 		
-		let defaultItemSize = CGSize(width: 145, height: 180)
+		let defaultItemSize = CGSize(width: 120, height: 150)
 		artistCollectionLayout = UICollectionViewFlowLayout()
-		artistCollectionLayout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+		artistCollectionLayout.sectionInset = UIEdgeInsets(top: 25, left: 25, bottom: 25, right: 25)
 		artistCollectionLayout.itemSize = defaultItemSize
-		artistCollectionLayout.minimumLineSpacing = 10
-		artistCollectionLayout.minimumInteritemSpacing = 10
+		artistCollectionLayout.minimumLineSpacing = 25
+		artistCollectionLayout.minimumInteritemSpacing = 0
 		
 		switch UIScreen.mainScreen().bounds.width {
 		case 320:
 			artistCollectionLayout.itemSize = defaultItemSize
 		case 375:
-			artistCollectionLayout.itemSize = CGSize(width: 172, height: 207)
+			artistCollectionLayout.itemSize = CGSize(width: 150, height: 180)
 		case 414:
-			artistCollectionLayout.itemSize = CGSize(width: 192, height: 227)
+			artistCollectionLayout.itemSize = CGSize(width: 170, height: 200)
 		default:
 			artistCollectionLayout.itemSize = defaultItemSize
 		}
@@ -67,7 +67,7 @@ class SubscriptionController: UIViewController {
 		artistsCollectionView.addSubview(refreshControl)
 		
 		AppDB.sharedInstance.getArtists()
-		artistsCollectionView.reloadData()				
+		artistsCollectionView.reloadData()
 	}
 	
 	override func viewWillAppear(animated: Bool) {
@@ -100,51 +100,6 @@ class SubscriptionController: UIViewController {
 		})
 	}
 	
-	// MARK: - Unsubscribe Artist
-	func deleteArtist (sender: UIButton) {
-		let rowIndex = sender.tag
-		selectedIndexPath = NSIndexPath(forItem: rowIndex, inSection: 0)
-		let alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
-		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-		alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
-			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(self.filteredData[rowIndex].iTunesUniqueID)"
-			API.sharedInstance.sendRequest(API.URL.removeArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
-				if statusCode != 204 {
-					self.handleError("Unable to update!", message: "Please try again later.", error: API.Error.FailedRequest)
-					return
-				}
-				AppDB.sharedInstance.deleteArtist(self.filteredData[rowIndex].ID, index: rowIndex, completion: { albumIDs in
-					for ID in albumIDs {
-						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
-							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-							let notificationID = userInfoCurrent["albumID"]! as! Int
-							if ID == notificationID {
-								UIApplication.sharedApplication().cancelLocalNotification(notification)
-							}
-						}
-					}
-					self.filteredData.removeAtIndex(rowIndex)
-					
-					self.artistsCollectionView.performBatchUpdates({
-						self.artistsCollectionView.deleteItemsAtIndexPaths([self.selectedIndexPath!])
-						}, completion: { finished in
-							self.artistsCollectionView.reloadItemsAtIndexPaths(self.artistsCollectionView.indexPathsForVisibleItems())
-					})					
-					// self.reloadSubscriptions()
-					self.searchBar.text = ""
-					self.searchBar.resignFirstResponder()
-					NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
-					self.appDelegate.contentHash = nil
-				})
-				},
-				errorHandler: { error in
-					AppDB.sharedInstance.addPendingArtist(self.filteredData[rowIndex].ID)
-					self.handleError("Unable to remove subscription!", message: "Please try again later.", error: error)
-			})
-		}))
-		presentViewController(alert, animated: true, completion: nil)
-	}
-	
 	// MARK: - Error Message Handler
 	func handleError (title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
@@ -174,9 +129,60 @@ extension SubscriptionController: UICollectionViewDataSource {
 		let cell = artistsCollectionView.dequeueReusableCellWithReuseIdentifier(subscriptionCellReuseIdentifier, forIndexPath: indexPath) as! SubscriptionCell
 		cell.subscriptionArtwork.image = UIImage(named: filteredData[indexPath.row].avatar)
 		cell.subscriptionTitle.text = filteredData[indexPath.row].title as String
-		cell.optionsBtn.tag = indexPath.row
-		cell.optionsBtn.addTarget(self, action: "deleteArtist:", forControlEvents: .TouchUpInside)
 		return cell
+	}
+}
+
+// MARK: - UICollectionViewDelegate
+extension SubscriptionController: UICollectionViewDelegate {
+	func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+		selectedIndexPath = NSIndexPath(forItem: indexPath.row, inSection: 0)
+		let alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
+		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+		alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
+			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(self.filteredData[indexPath.row].iTunesUniqueID)"
+			API.sharedInstance.sendRequest(API.URL.removeArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
+				if statusCode != 204 {
+					self.handleError("Unable to update!", message: "Please try again later.", error: API.Error.FailedRequest)
+					return
+				}
+				AppDB.sharedInstance.deleteArtist(self.filteredData[indexPath.row].ID, index: indexPath.row, completion: { albumIDs in
+					for ID in albumIDs {
+						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
+							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+							let notificationID = userInfoCurrent["albumID"]! as! Int
+							if ID == notificationID {
+								UIApplication.sharedApplication().cancelLocalNotification(notification)
+							}
+						}
+					}
+					self.filteredData.removeAtIndex(indexPath.row)
+					
+					self.artistsCollectionView.performBatchUpdates({
+						self.artistsCollectionView.deleteItemsAtIndexPaths([self.selectedIndexPath!])
+						}, completion: { finished in
+							self.artistsCollectionView.reloadItemsAtIndexPaths(self.artistsCollectionView.indexPathsForVisibleItems())
+					})
+					self.searchBar.text = ""
+					self.searchBar.resignFirstResponder()
+					NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+					self.appDelegate.contentHash = nil
+				})
+				},
+				errorHandler: { error in
+					AppDB.sharedInstance.addPendingArtist(self.filteredData[indexPath.row].ID)
+					self.handleError("Unable to remove subscription!", message: "Please try again later.", error: error)
+			})
+		}))
+		presentViewController(alert, animated: true, completion: nil)
+		return true
+	}
+	func collectionView(collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
+		artistsCollectionView.cellForItemAtIndexPath(indexPath)?.alpha = 0.8
+	}
+	
+	func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
+		artistsCollectionView.cellForItemAtIndexPath(indexPath)?.alpha = 1.0
 	}
 }
 

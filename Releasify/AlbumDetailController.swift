@@ -123,14 +123,66 @@ class AlbumDetailController: UIViewController {
 	
 	@available(iOS 9.0, *)
 	override func previewActionItems() -> [UIPreviewActionItem] {
-		let purchaseAction = UIPreviewAction(title: "Purchase", style: .Default) { (action, viewController) -> Void in }
-		return [purchaseAction]
+		var previewItems: [UIPreviewActionItem] = [UIPreviewActionItem]()
+		var buyTitle = "Pre-Order"
+		if timeDiff <= 0 {
+			buyTitle = "Purchase"
+		}
+		let purchaseAction = UIPreviewAction(title: buyTitle, style: .Default) { (action, viewController) -> Void in
+			if UIApplication.sharedApplication().canOpenURL(NSURL(string: (self.album?.iTunesUrl)!)!) {
+				UIApplication.sharedApplication().openURL(NSURL(string: (self.album?.iTunesUrl)!)!)
+			}
+		}
+		previewItems.append(purchaseAction)
+		
+		if timeDiff > 0 {
+			let deleteAction = UIPreviewAction(title: "Don't Notify", style: .Destructive) { (action, viewController) -> Void in
+				for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
+					let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+					let ID = userInfoCurrent["albumID"]! as! Int
+					if ID == self.album?.ID {
+						UIApplication.sharedApplication().cancelLocalNotification(notification)
+						NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+						break
+					}
+				}
+			}
+			previewItems.append(deleteAction)
+		} else {
+			let removeAction = UIPreviewAction(title: "Remove Album", style: .Destructive) { (action, viewController) -> Void in
+//				self.unsubscribe_album((self.album?.iTunesUniqueID)!, successHandler: {
+//					let section = self.timeDiff > 0 ? 0 : 1
+//					AppDB.sharedInstance.deleteAlbum(self.album?.ID, section: section, index: indexPath?.row)
+//					AppDB.sharedInstance.deleteArtwork((self.album?.artwork)!)
+//					}, errorHandler: { error in
+//						// self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
+//				})
+			}
+			previewItems.append(removeAction)
+		}
+		
+		return previewItems
 	}
 	
 	func shareAlbum () {
 		let shareActivityItem = "\(album!.title) by \(artist)  - \(album!.iTunesUrl)"
 		let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 		presentViewController(activityViewController, animated: true, completion: nil)
+	}
+	
+	// MARK: - Unsubscribe Album
+	func unsubscribe_album (iTunesUniqueID: Int, successHandler: () -> Void, errorHandler: (error: ErrorType) -> Void) {
+		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
+		API.sharedInstance.sendRequest(API.URL.removeAlbum.rawValue, postString: postString, successHandler: { (statusCode, data) in
+			if statusCode != 204 {
+				errorHandler(error: API.Error.FailedRequest)
+				return
+			}
+			successHandler()
+			},
+			errorHandler: { (error) in
+				// self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
+		})
 	}
 	
 	func update () {

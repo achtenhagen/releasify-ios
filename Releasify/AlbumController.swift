@@ -32,8 +32,12 @@ class AlbumController: UIViewController {
 		
 		if #available(iOS 9.0, *) {
 		    if traitCollection.forceTouchCapability == .Available {
-    			registerForPreviewingWithDelegate(self, sourceView: view)
+    			registerForPreviewingWithDelegate(self, sourceView: albumCollectionView)
     		}
+		} else {
+			let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
+			longPressGesture.minimumPressDuration = 0.5
+			albumCollectionView.addGestureRecognizer(longPressGesture)
 		}
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromRemoteNotification:", name: "appActionPressed", object: nil)
@@ -55,7 +59,7 @@ class AlbumController: UIViewController {
 		case 320:
 			albumCollectionLayout.itemSize = defaultItemSize
 		case 375:
-			albumCollectionLayout.itemSize = CGSize(width: 172, height: 217)
+			albumCollectionLayout.itemSize = CGSize(width: 172.5, height: 217.5)
 		case 414:
 			albumCollectionLayout.itemSize = CGSize(width: 192, height: 237)
 		default:
@@ -68,10 +72,6 @@ class AlbumController: UIViewController {
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 		albumCollectionView.addSubview(refreshControl)
-		
-		let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
-		longPressGesture.minimumPressDuration = 0.5
-		albumCollectionView.addGestureRecognizer(longPressGesture)
 		
 		if let remoteContent = appDelegate.remoteNotificationPayload?["aps"]?["content-available"] as? Int {
 			if remoteContent == 1 {
@@ -477,6 +477,17 @@ extension AlbumController: UICollectionViewDataSource {
 		cell.purchaseButton.tag = album.ID
 		cell.purchaseButton.addTarget(self, action: "purchaseAlbum:", forControlEvents: .TouchUpInside)
 		
+		switch UIScreen.mainScreen().bounds.width {
+		case 375:
+			cell.containerViewTopConstraint.constant = 132.5
+		case 414:
+			cell.containerViewTopConstraint.constant = 152
+		default:
+			cell.containerViewTopConstraint.constant = 105
+		}
+		
+		cell.updateConstraintsIfNeeded()
+		
 		return cell
 	}
 	
@@ -525,17 +536,17 @@ extension AlbumController: UICollectionViewDelegate {
 // MARK: - UIViewControllerPreviewingDelegate
 extension AlbumController: UIViewControllerPreviewingDelegate {
 	func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-		guard let indexPath = albumCollectionView.indexPathForItemAtPoint(location) else { return nil }
-		guard let cell = albumCollectionView.cellForItemAtIndexPath(indexPath) else { return nil }
+		guard let indexPath = albumCollectionView.indexPathForItemAtPoint(location), cell = albumCollectionView.cellForItemAtIndexPath(indexPath) else { return nil }
 		guard let albumDetailVC = storyboard?.instantiateViewControllerWithIdentifier("AlbumView") as? AlbumDetailController else { return nil }
 		
 		var section = indexPath.section
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
 			section = sectionAtIndex()
 		}
+		
 		let album = AppDB.sharedInstance.albums[section]![indexPath.row]
 		albumDetailVC.album = album
-		albumDetailVC.preferredContentSize = CGSize(width: 0.0, height: 300)
+		albumDetailVC.preferredContentSize = CGSize(width: 0.0, height: 0.0)
 		
 		if #available(iOS 9.0, *) {
 		    previewingContext.sourceRect = cell.frame
@@ -545,7 +556,6 @@ extension AlbumController: UIViewControllerPreviewingDelegate {
 	}
 	
 	func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
-		// presentViewController(viewControllerToCommit, animated: true, completion: nil)
 		showViewController(viewControllerToCommit, sender: self)
 	}
 }

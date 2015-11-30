@@ -12,6 +12,7 @@ class AlbumCell: UICollectionViewCell {
 	
 	@IBOutlet weak var albumArtwork: UIImageView!
 	@IBOutlet weak var containerView: UIView!
+	@IBOutlet weak var containerViewTopConstraint: NSLayoutConstraint!
 	@IBOutlet weak var artistTitle: UILabel!
 	@IBOutlet weak var albumTitle: UILabel!
 	@IBOutlet weak var timeLeft: UILabel!
@@ -20,18 +21,14 @@ class AlbumCell: UICollectionViewCell {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		
-		layer.masksToBounds = true
-		// layer.cornerRadius = 4
-		
 		var gradientLayerView: UIView!
-		
 		switch UIScreen.mainScreen().bounds.width {
 		case 320:
 			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
 		case 375:
-			gradientLayerView = UIView(frame: CGRectMake(0, 27, 172, containerView.frame.height))
+			gradientLayerView = UIView(frame: CGRectMake(0, 0, 172.5, containerView.frame.height))
 		case 414:
-			gradientLayerView = UIView(frame: CGRectMake(0, 47, 192, containerView.frame.height))
+			gradientLayerView = UIView(frame: CGRectMake(0, 0, 192, containerView.frame.height))
 		default:
 			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
 		}
