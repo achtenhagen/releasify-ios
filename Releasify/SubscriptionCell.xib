@@ -12,17 +12,17 @@
             <rect key="frame" x="0.0" y="0.0" width="145" height="180"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="120" height="150"/>
+                <rect key="frame" x="0.0" y="0.0" width="145" height="180"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="artist_01" translatesAutoresizingMaskIntoConstraints="NO" id="VJJ-OJ-vij">
                         <rect key="frame" x="0.0" y="0.0" width="145" height="145"/>
                         <animations/>
                         <constraints>
-                            <constraint firstAttribute="width" secondItem="VJJ-OJ-vij" secondAttribute="height" multiplier="1:1" id="MbO-hs-cg9"/>
+                            <constraint firstAttribute="width" secondItem="VJJ-OJ-vij" secondAttribute="height" multiplier="1:1" id="pcZ-aw-G4M"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="MbO-hs-cg9"/>
+                                <exclude reference="pcZ-aw-G4M"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact" fixedFrame="YES">
@@ -30,27 +30,32 @@
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="constraints">
-                                <include reference="MbO-hs-cg9"/>
+                                <include reference="pcZ-aw-G4M"/>
                             </mask>
                         </variation>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Subscription Title" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8d5-KB-ote">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Subscription Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8d5-KB-ote">
                         <rect key="frame" x="6" y="2" width="120" height="30"/>
                         <animations/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="30" id="nfg-el-qWq"/>
+                            <constraint firstAttribute="width" constant="129" id="Q9E-3E-YjN"/>
+                            <constraint firstAttribute="height" constant="30" id="zoz-Yt-v8V">
+                                <variation key="heightClass=regular-widthClass=compact" constant="35"/>
+                            </constraint>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="nfg-el-qWq"/>
+                                <exclude reference="Q9E-3E-YjN"/>
+                                <exclude reference="zoz-Yt-v8V"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="constraints">
-                                <include reference="nfg-el-qWq"/>
+                                <include reference="Q9E-3E-YjN"/>
+                                <include reference="zoz-Yt-v8V"/>
                             </mask>
                         </variation>
                     </label>
@@ -61,11 +66,11 @@
             <animations/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstItem="8d5-KB-ote" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="8tE-gb-dV3"/>
-                <constraint firstItem="VJJ-OJ-vij" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Irv-kW-Xe2"/>
-                <constraint firstAttribute="trailing" secondItem="VJJ-OJ-vij" secondAttribute="trailing" id="nPa-RS-tFH"/>
-                <constraint firstItem="VJJ-OJ-vij" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="ps5-cb-9p4"/>
-                <constraint firstItem="8d5-KB-ote" firstAttribute="top" secondItem="VJJ-OJ-vij" secondAttribute="bottom" id="sPI-GD-xwC"/>
+                <constraint firstAttribute="trailing" secondItem="VJJ-OJ-vij" secondAttribute="trailing" id="38Y-IU-tEn"/>
+                <constraint firstItem="VJJ-OJ-vij" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="4HJ-TK-K7i"/>
+                <constraint firstItem="8d5-KB-ote" firstAttribute="top" secondItem="VJJ-OJ-vij" secondAttribute="bottom" id="Qhl-rN-dkt"/>
+                <constraint firstItem="VJJ-OJ-vij" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Wev-1j-u1f"/>
+                <constraint firstItem="8d5-KB-ote" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="a7w-Rr-rGc"/>
             </constraints>
             <size key="customSize" width="289" height="308"/>
             <variation key="default">
@@ -73,11 +78,11 @@
                     <exclude reference="8d5-KB-ote"/>
                 </mask>
                 <mask key="constraints">
-                    <exclude reference="Irv-kW-Xe2"/>
-                    <exclude reference="nPa-RS-tFH"/>
-                    <exclude reference="ps5-cb-9p4"/>
-                    <exclude reference="8tE-gb-dV3"/>
-                    <exclude reference="sPI-GD-xwC"/>
+                    <exclude reference="Qhl-rN-dkt"/>
+                    <exclude reference="a7w-Rr-rGc"/>
+                    <exclude reference="38Y-IU-tEn"/>
+                    <exclude reference="4HJ-TK-K7i"/>
+                    <exclude reference="Wev-1j-u1f"/>
                 </mask>
             </variation>
             <variation key="heightClass=regular-widthClass=compact">
@@ -85,11 +90,11 @@
                     <include reference="8d5-KB-ote"/>
                 </mask>
                 <mask key="constraints">
-                    <include reference="Irv-kW-Xe2"/>
-                    <include reference="nPa-RS-tFH"/>
-                    <include reference="ps5-cb-9p4"/>
-                    <include reference="8tE-gb-dV3"/>
-                    <include reference="sPI-GD-xwC"/>
+                    <include reference="Qhl-rN-dkt"/>
+                    <include reference="a7w-Rr-rGc"/>
+                    <include reference="38Y-IU-tEn"/>
+                    <include reference="4HJ-TK-K7i"/>
+                    <include reference="Wev-1j-u1f"/>
                 </mask>
             </variation>
             <connections>

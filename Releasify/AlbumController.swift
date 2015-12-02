@@ -33,11 +33,11 @@ class AlbumController: UIViewController {
 		if #available(iOS 9.0, *) {
 		    if traitCollection.forceTouchCapability == .Available {
     			registerForPreviewingWithDelegate(self, sourceView: albumCollectionView)
-    		}
+			} else {
+				registerLongPressGesture ()
+			}
 		} else {
-			let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
-			longPressGesture.minimumPressDuration = 0.5
-			albumCollectionView.addGestureRecognizer(longPressGesture)
+			registerLongPressGesture ()
 		}
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromRemoteNotification:", name: "appActionPressed", object: nil)
@@ -215,6 +215,13 @@ class AlbumController: UIViewController {
 		}
 	}
 	
+	// MARK: - Registers long press gesture if 3D Touch is unavailable
+	func registerLongPressGesture () {
+		let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
+		longPressGesture.minimumPressDuration = 0.5
+		albumCollectionView.addGestureRecognizer(longPressGesture)
+	}
+	
 	// MARK: - Album Touch Gesture
 	func longPressGestureRecognized (gesture: UIGestureRecognizer) {
 		let cellLocation = gesture.locationInView(albumCollectionView)
@@ -274,7 +281,6 @@ class AlbumController: UIViewController {
 				})
 				controller.addAction(removeAction)
 			}
-			
 			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 			controller.addAction(cancelAction)
 			presentViewController(controller, animated: true, completion: nil)
