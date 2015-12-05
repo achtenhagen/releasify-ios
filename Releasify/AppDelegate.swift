@@ -43,9 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
 		if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("uuid") { userUUID = uuid }
-		if let hash = NSUserDefaults.standardUserDefaults().valueForKey("contentHash") as? String {
-			contentHash = hash
-		}
+		if let hash = NSUserDefaults.standardUserDefaults().valueForKey("contentHash") as? String { contentHash = hash }
 		if let explicit = NSUserDefaults.standardUserDefaults().valueForKey("allowExplicit") as? Bool {
 			allowExplicitContent = explicit
 		} else {
@@ -119,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["albumID"] as? Int
-			if application.applicationState == .Inactive || application.applicationState == .Background {
+			if application.applicationState == .Inactive {
 				NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: userInfo)
 			} else {
 				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
@@ -144,10 +142,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		completionHandler()
 	}
 	
-	
 	// MARK: - Remote Notification - Receiver
 	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-		if application.applicationState == .Inactive || application.applicationState == .Background {
+		if application.applicationState == .Inactive {
 			NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
 		} else {
 			NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
@@ -157,7 +154,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// MARK: - Remote Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
-			NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
+			delay(0) {
+				NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
+			}
 		} else if identifier == "PREORDER_ACTION" {
 			delay(0) {
 				if let iTunesURL = userInfo["aps"]?["iTunesUrl"]! as? String {

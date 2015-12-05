@@ -21,6 +21,9 @@ class AlbumCell: UICollectionViewCell {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		
+		albumArtwork.layer.masksToBounds = true
+		albumArtwork.layer.cornerRadius = 2
+		
 		var gradientLayerView: UIView!
 		switch UIScreen.mainScreen().bounds.width {
 		case 320:

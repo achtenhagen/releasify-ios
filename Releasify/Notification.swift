@@ -23,13 +23,13 @@ final class Notification: UIView {
 		addSubview(notificationView)
 		
 		title = UILabel(frame: CGRect(x: 10, y: 8, width: 300, height: 20))
-		title.textColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
+		title.textColor = UIColor.whiteColor()
 		title.font = UIFont.systemFontOfSize(16.0)
 		title.lineBreakMode = .ByTruncatingTail
 		notificationView.contentView.addSubview(title)
 		
 		subtitle = UILabel(frame: CGRect(x: 10, y: 30, width: 300, height: 20))
-		subtitle.textColor = UIColor.whiteColor()
+		subtitle.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 		subtitle.layer.opacity = 0.5
 		subtitle.font = UIFont.systemFontOfSize(13.0)
 		notificationView.contentView.addSubview(subtitle)

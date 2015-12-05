@@ -47,7 +47,7 @@ class AppPageController: UIPageViewController {
 		}
 	}
 	
-	override func viewDidLoad() {
+	override func viewDidLoad () {
 		dataSource = self
 		delegate = self
 		
@@ -77,7 +77,7 @@ class AppPageController: UIPageViewController {
 		notificationsBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
 	}
 	
-	func viewControllerAtIndex(index: Int) -> UIViewController? {
+	func viewControllerAtIndex (index: Int) -> UIViewController? {
 		if index == 0 {
 			let albumController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AlbumController") as! AlbumController
 			albumController.delegate = self
@@ -206,7 +206,7 @@ class AppPageController: UIPageViewController {
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
-	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+	override func prepareForSegue (segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "ArtistPickerSegue" {
 			let artistPickerController = segue.destinationViewController as! ArtistsPicker
 			artistPickerController.collection = mediaQuery.collections!
@@ -220,7 +220,7 @@ class AppPageController: UIPageViewController {
 
 // MARK: - UIPageViewControllerDataSource
 extension AppPageController: UIPageViewControllerDataSource {
-	func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+	func pageViewController (pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
 		let identifier = viewController.restorationIdentifier
 		var index = identifiers.indexOfObject(identifier!)
 		if index == identifiers.count - 1 { return nil }
@@ -228,7 +228,7 @@ extension AppPageController: UIPageViewControllerDataSource {
 		return viewControllerAtIndex(index)
 	}
 	
-	func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+	func pageViewController (pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
 		let identifier = viewController.restorationIdentifier
 		var index = identifiers.indexOfObject(identifier!)
 		if index == 0 { return nil }
@@ -239,7 +239,7 @@ extension AppPageController: UIPageViewControllerDataSource {
 
 // MARK: - UIPageViewControllerDelegate
 extension AppPageController: UIPageViewControllerDelegate {
-	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+	func pageViewController (pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
 		navigationController?.navigationBar.topItem?.title = "Music"
 		if pageViewController.viewControllers![0].restorationIdentifier == "SubscriptionController" {
 			navigationController?.navigationBar.topItem?.title = "Subscriptions"
@@ -249,7 +249,7 @@ extension AppPageController: UIPageViewControllerDelegate {
 
 // MARK: - AppPageControllerDelegate
 extension AppPageController: AppPageControllerDelegate {
-	func addNotificationView(notification: Notification) {
+	func addNotificationView (notification: Notification) {
 		view.addSubview(notification)
 	}
 }

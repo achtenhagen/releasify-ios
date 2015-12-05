@@ -13,7 +13,7 @@ final class AppController: UINavigationController {
 	
 	@IBOutlet weak var navBar: UINavigationBar!
 	
-	override func viewDidLoad() {
+	override func viewDidLoad () {
 		super.viewDidLoad()
 		
 		AppDB.sharedInstance.getArtists()
@@ -32,7 +32,7 @@ final class AppController: UINavigationController {
 		print("App Controller loaded.")
 	}
 	
-	override func didReceiveMemoryWarning() {
+	override func didReceiveMemoryWarning () {
 		super.didReceiveMemoryWarning()
 	}
 }

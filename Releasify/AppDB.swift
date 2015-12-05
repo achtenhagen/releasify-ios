@@ -234,7 +234,7 @@ final class AppDB {
 		if !connected() { return }
 		var expiredAlbums = [Int:String]()
 		let timestamp = String(stringInterpolationSegment: Int(NSDate().timeIntervalSince1970))
-		var query = "SELECT id,artwork FROM albums WHERE \(timestamp) - release_date > 2592000"
+		var query = "SELECT id,artwork FROM albums WHERE \(timestamp) - release_date > 2628000"
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			while sqlite3_step(statement) == SQLITE_ROW {
