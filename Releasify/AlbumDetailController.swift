@@ -165,7 +165,7 @@ class AlbumDetailController: UIViewController {
 	}
 	
 	func shareAlbum () {
-		let shareActivityItem = "\(album!.title) by \(artist)  - \(album!.iTunesUrl)"
+		let shareActivityItem = "Buy this album on iTunes:\n\(album!.iTunesUrl)"
 		let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 		presentViewController(activityViewController, animated: true, completion: nil)
 	}

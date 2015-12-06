@@ -34,10 +34,10 @@ class AlbumController: UIViewController {
 		    if traitCollection.forceTouchCapability == .Available {
     			registerForPreviewingWithDelegate(self, sourceView: albumCollectionView)
 			} else {
-				registerLongPressGesture ()
+				registerLongPressGesture()
 			}
 		} else {
-			registerLongPressGesture ()
+			registerLongPressGesture()
 		}
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromRemoteNotification:", name: "appActionPressed", object: nil)
@@ -72,6 +72,10 @@ class AlbumController: UIViewController {
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 		albumCollectionView.addSubview(refreshControl)
+		
+		if tmpArtwork == nil {
+			tmpArtwork = [String:UIImage]()
+		}
 		
 		// Process remote notification payload
 		if let remoteContent = appDelegate.remoteNotificationPayload {
@@ -280,6 +284,7 @@ class AlbumController: UIViewController {
 						} else {
 							self.albumCollectionView.deleteItemsAtIndexPaths([indexPath!])
 						}
+						self.tmpArtwork?.removeValueForKey(hash)
 						self.albumCollectionView.reloadData()
 						}, errorHandler: { error in
 							self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
@@ -324,8 +329,13 @@ class AlbumController: UIViewController {
 		})
 	}
 	
-	// MARK: - Returns the artwork image for each cell.
+	// MARK: - Returns the artwork image for each cell
 	func getArtworkForCell (hash: String, completion: ((artwork: UIImage) -> Void)) {
+		if tmpArtwork![hash] == nil {
+			if AppDB.sharedInstance.checkArtwork(hash) {
+				tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
+			}
+		}
 		guard let tmpImage = tmpArtwork![hash] else {
 			fetchArtwork(hash, successHandler: { artwork in
 				AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
@@ -350,7 +360,7 @@ class AlbumController: UIViewController {
 		}
 	}
 	
-	// MARK: - Determines current section | Only called when there is one section.
+	// MARK: - Determines current section | Only called when there is one section
 	func sectionAtIndex () -> Int {
 		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}
@@ -402,36 +412,12 @@ extension AlbumController: UICollectionViewDataSource {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell
 		var section = indexPath.section
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
-		if tmpArtwork == nil {
-			tmpArtwork = [String:UIImage]()
-		}
-		
 		let album = AppDB.sharedInstance.albums[section]![indexPath.row]
-		let hash = album.artwork
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
 		
-		if AppDB.sharedInstance.checkArtwork(hash) {
-			tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
-		} else {
-			tmpArtwork!.removeValueForKey(hash)
-		}
-		
-		cell.albumArtwork.image = UIImage()
-		
+		cell.albumArtwork.image = UIImage(named: "icon_artwork_placeholder")!
 		getArtworkForCell(album.artwork, completion: { artwork in
-			if cell.albumArtwork.image == nil {
-				cell.albumArtwork.alpha = 0
-				dispatch_async(dispatch_get_main_queue(), {
-					if let cell = self.albumCollectionView.cellForItemAtIndexPath((indexPath)) as? AlbumCell {
-						cell.albumArtwork.image = artwork
-						UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-							cell.albumArtwork.alpha = 1.0
-							}, completion: nil)
-					}
-				})
-			} else {
-				cell.albumArtwork.image = artwork
-			}
+			cell.albumArtwork.image = artwork
 		})
 		
 		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(album.ID)

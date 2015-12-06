@@ -130,14 +130,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		if identifier == "APP_ACTION" {
 			NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: notification.userInfo)
 		} else {
-			delay(0) {
+			dispatch_async(dispatch_get_main_queue(), {
 				if let userInfo = notification.userInfo {
 					let iTunesURL = userInfo["iTunesUrl"]! as! String
 					if UIApplication.sharedApplication().canOpenURL(NSURL(string: iTunesURL)!) {
 						UIApplication.sharedApplication().openURL(NSURL(string: iTunesURL)!)
 					}
 				}
-			}
+			})
 		}
 		completionHandler()
 	}
@@ -154,17 +154,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// MARK: - Remote Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
-			delay(0) {
+			dispatch_async(dispatch_get_main_queue(), {
 				NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
-			}
+			})
 		} else if identifier == "PREORDER_ACTION" {
-			delay(0) {
+			dispatch_async(dispatch_get_main_queue(), {
 				if let iTunesURL = userInfo["aps"]?["iTunesUrl"]! as? String {
 					if UIApplication.sharedApplication().canOpenURL(NSURL(string: iTunesURL)!) {
 						UIApplication.sharedApplication().openURL(NSURL(string: iTunesURL)!)
 					}
 				}
-			}
+			})
 		}
 		completionHandler()
 	}
@@ -202,9 +202,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	func applicationWillTerminate(application: UIApplication) {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-	}
-	
-	func delay(delay: Double, closure: () -> Void) {
-		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
 	}
 }

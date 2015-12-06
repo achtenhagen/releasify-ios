@@ -92,6 +92,7 @@ class SubscriptionController: UIViewController {
 		artistsCollectionView.reloadData()
 	}
 	
+	// MARK: - Refresh content
 	func refresh() {
 		API.sharedInstance.refreshContent({ newItems in
 			self.reloadSubscriptions()
@@ -104,7 +105,7 @@ class SubscriptionController: UIViewController {
 		})
 	}
 	
-	// MARK: - Error Message Handler
+	// MARK: - Error message handler
 	func handleError (title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
@@ -149,7 +150,7 @@ extension SubscriptionController: UICollectionViewDelegate {
 			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(self.filteredData[indexPath.row].iTunesUniqueID)"
 			API.sharedInstance.sendRequest(API.URL.removeArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
 				if statusCode != 204 {
-					self.handleError("Unable to update!", message: "Please try again later.", error: API.Error.FailedRequest)
+					self.handleError("Failed to remove subscription!", message: "Please try again later.", error: API.Error.FailedRequest)
 					return
 				}
 				AppDB.sharedInstance.deleteArtist(self.filteredData[indexPath.row].ID, index: indexPath.row, completion: { albumIDs in
