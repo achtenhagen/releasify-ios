@@ -149,9 +149,6 @@ class ArtistsPicker: UIViewController {
 			batches.append(postString.stringByAppendingString(currentBatch))
 		}
 		
-		// print("Total items: \(totalItems)")
-		// print("Total batches: \(batches.count)")
-		
 		view.userInteractionEnabled = false
 		activityView = UIView(frame: CGRectMake(0, 0, 90, 90))
 		activityView.center = view.center

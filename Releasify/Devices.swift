@@ -34,8 +34,7 @@ public enum DeviceTypes : String {
 public extension UIDevice {
 	public var deviceType: DeviceTypes {
 		var sysinfo : [CChar] = Array(count: sizeof(utsname), repeatedValue: 0)
-		let modelCode = sysinfo.withUnsafeMutableBufferPointer {
-			(inout ptr: UnsafeMutableBufferPointer<CChar>) -> DeviceTypes in
+		let modelCode = sysinfo.withUnsafeMutableBufferPointer { (inout ptr: UnsafeMutableBufferPointer<CChar>) -> DeviceTypes in
 			uname(UnsafeMutablePointer<utsname>(ptr.baseAddress))
 			let machinePtr = ptr.baseAddress.advancedBy(Int(_SYS_NAMELEN * 4))
 			var modelMap : [String : DeviceTypes] = [
@@ -67,12 +66,12 @@ public extension UIDevice {
 				"iPhone3,2" : .iPhone4,        // iPhone 4
 				"iPhone3,3" : .iPhone4,        // iPhone 4 (Verizon)
 				"iPhone4,1" : .iPhone4S,       // iPhone 4S
-				"iPhone5,1" : .iPhone5,        // (model A1428, AT&T/Canada)
-				"iPhone5,2" : .iPhone5,        // (model A1429, everything else)
-				"iPhone5,3" : .iPhone5c,       // (model A1456, A1532 | GSM)
-				"iPhone5,4" : .iPhone5c,       // (model A1507, A1516, A1526 (China), A1529 | Global)
-				"iPhone6,1" : .iPhone5S,       // (model A1433, A1533 | GSM)
-				"iPhone6,2" : .iPhone5S,       // (model A1457, A1518, A1528 (China), A1530 | Global)
+				"iPhone5,1" : .iPhone5,        // iPhone 5 (model A1428, AT&T/Canada)
+				"iPhone5,2" : .iPhone5,        // iPhone 5 (model A1429, everything else)
+				"iPhone5,3" : .iPhone5c,       // iPhone 5c (model A1456, A1532 | GSM)
+				"iPhone5,4" : .iPhone5c,       // iPhone 5c (model A1507, A1516, A1526 (China), A1529 | Global)
+				"iPhone6,1" : .iPhone5S,       // iPhone 5S (model A1433, A1533 | GSM)
+				"iPhone6,2" : .iPhone5S,       // iPhone 5S (model A1457, A1518, A1528 (China), A1530 | Global)
 				"iPhone7,2" : .iPhone6,		   // iPhone 6
 				"iPhone7,1" : .iPhone6plus,    // iPhone 6 Plus
 				"iPhone8,1" : .iPhone6S,	   // iPhone 6S
