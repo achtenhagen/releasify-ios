@@ -294,8 +294,8 @@
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <inset key="scrollIndicatorInsets" minX="1" minY="1" maxX="1" maxY="1"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="1" id="sLj-07-5DV">
-                                    <size key="itemSize" width="159" height="159"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="0.0" id="sLj-07-5DV">
+                                    <size key="itemSize" width="160" height="160"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -305,28 +305,43 @@
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="158" height="158"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="160" height="160"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fv6-cx-oVQ">
                                                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                                    <variation key="heightClass=regular-widthClass=compact" fixedFrame="YES">
-                                                        <rect key="frame" x="0.0" y="0.0" width="158" height="158"/>
-                                                    </variation>
                                                 </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <size key="customSize" width="158" height="158"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="fv6-cx-oVQ" secondAttribute="bottom" id="BpY-mQ-C1g"/>
+                                            <constraint firstItem="fv6-cx-oVQ" firstAttribute="leading" secondItem="jJL-Jb-3aq" secondAttribute="leading" id="Kzr-EX-r4w"/>
+                                            <constraint firstItem="fv6-cx-oVQ" firstAttribute="top" secondItem="jJL-Jb-3aq" secondAttribute="top" id="b22-Fj-HRy"/>
+                                            <constraint firstAttribute="trailing" secondItem="fv6-cx-oVQ" secondAttribute="trailing" id="uPO-Fg-YrY"/>
+                                        </constraints>
+                                        <size key="customSize" width="160" height="160"/>
                                         <variation key="default">
                                             <mask key="subviews">
                                                 <exclude reference="fv6-cx-oVQ"/>
+                                            </mask>
+                                            <mask key="constraints">
+                                                <exclude reference="BpY-mQ-C1g"/>
+                                                <exclude reference="Kzr-EX-r4w"/>
+                                                <exclude reference="b22-Fj-HRy"/>
+                                                <exclude reference="uPO-Fg-YrY"/>
                                             </mask>
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
                                             <mask key="subviews">
                                                 <include reference="fv6-cx-oVQ"/>
+                                            </mask>
+                                            <mask key="constraints">
+                                                <include reference="BpY-mQ-C1g"/>
+                                                <include reference="Kzr-EX-r4w"/>
+                                                <include reference="b22-Fj-HRy"/>
+                                                <include reference="uPO-Fg-YrY"/>
                                             </mask>
                                         </variation>
                                         <connections>
@@ -1067,6 +1082,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Details" id="VHb-mT-Yu7">
                         <barButtonItem key="rightBarButtonItem" systemItem="action" id="c0p-cX-tDU">
+                            <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="shareAlbum:" destination="ICV-6m-5Th" id="6gx-lH-gbi"/>
                             </connections>

@@ -165,7 +165,7 @@ class ArtistsPicker: UIViewController {
 		
 		var batchesProcessed = 0
 		for batch in batches {
-			API.sharedInstance.sendRequest(API.URL.submitArtist.rawValue, postString: batch, successHandler: { (statusCode, data) in
+			API.sharedInstance.sendRequest(API.Endpoint.submitArtist.url(), postString: batch, successHandler: { (statusCode, data) in
 				if statusCode == 202 {
 					if let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary {
 						if let awaitingArtists = json["pending"] as? [NSDictionary] {

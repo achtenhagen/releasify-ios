@@ -59,7 +59,7 @@ class SearchResultsController: UIViewController {
 		let artistTitle = (artists[sender.tag]["title"] as? String)!
 		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
 			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID[]=\(artistUniqueID)"
-			API.sharedInstance.sendRequest(API.URL.confirmArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
+			API.sharedInstance.sendRequest(API.Endpoint.confirmArtist.url(), postString: postString, successHandler: { (statusCode, data) in
 				if statusCode == 200 {
 					let headerView = self.artistsTable.headerViewForSection(sender.tag) as? SearchResultsHeader
 					headerView?.confirmBtn.enabled = false

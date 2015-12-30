@@ -173,7 +173,7 @@ class AlbumDetailController: UIViewController {
 	// MARK: - Unsubscribe Album
 	func unsubscribe_album (iTunesUniqueID: Int, successHandler: () -> Void, errorHandler: (error: ErrorType) -> Void) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
-		API.sharedInstance.sendRequest(API.URL.removeAlbum.rawValue, postString: postString, successHandler: { (statusCode, data) in
+		API.sharedInstance.sendRequest(API.Endpoint.removeAlbum.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 204 {
 				errorHandler(error: API.Error.FailedRequest)
 				return

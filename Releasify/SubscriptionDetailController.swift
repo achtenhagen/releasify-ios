@@ -23,7 +23,7 @@ class SubscriptionDetailController: UIViewController {
 		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
 		alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
 			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(self.artist!.iTunesUniqueID)"
-			API.sharedInstance.sendRequest(API.URL.removeArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
+			API.sharedInstance.sendRequest(API.Endpoint.removeArtist.url(), postString: postString, successHandler: { (statusCode, data) in
 				if statusCode != 204 {
 					self.handleError("Failed to remove subscription!", message: "Please try again later.", error: API.Error.FailedRequest)
 					return
@@ -54,6 +54,8 @@ class SubscriptionDetailController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		navigationItem.title = artist!.title
+		let itemSize = view.bounds.width / 2
+		detailFlowLayout.itemSize = CGSize(width: itemSize, height: itemSize)
 		subscriptionAlbumCollectionView.setCollectionViewLayout(detailFlowLayout, animated: false)
 		albums = AppDB.sharedInstance.getAlbumsByArtist(artist!.ID)
 		setupSearchBar()

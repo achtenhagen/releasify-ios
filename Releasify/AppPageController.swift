@@ -110,7 +110,7 @@ class AppPageController: UIPageViewController {
 				let artist = textField.text!.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
 				let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&title[]=\(artist)"
 				self.keyword = artist
-				API.sharedInstance.sendRequest(API.URL.submitArtist.rawValue, postString: postString, successHandler: { (statusCode, data) in
+				API.sharedInstance.sendRequest(API.Endpoint.submitArtist.url(), postString: postString, successHandler: { (statusCode, data) in
 					if statusCode != 202 {
 						errorHandler(error: API.Error.BadRequest)
 						return

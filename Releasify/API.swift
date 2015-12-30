@@ -11,6 +11,7 @@ import UIKit
 final class API {
 	static let sharedInstance = API()
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	let baseURL = NSURL(string: "https://releasify.me/api/ios/v1/")!
 	var newItems: [Int]!
 	
 	enum Error: ErrorType {
@@ -30,14 +31,33 @@ final class API {
 		case UnknownError
 	}
 	
-	enum URL: String {
-		case register = "https://releasify.me/api/ios/v1/register.php",
-		updateContent = "https://releasify.me/api/ios/v1/update_content.php",
-		confirmArtist = "https://releasify.me/api/ios/v1/confirm_artist.php",
-		submitArtist  = "https://releasify.me/api/ios/v1/submit_artist.php",
-		removeArtist  = "https://releasify.me/api/ios/v1/unsubscribe_artist.php",
-		removeAlbum   = "https://releasify.me/api/ios/v1/unsubscribe_album.php",
-		itemLookup	  = "https://releasify.me/api/ios/v1/item.php"
+	enum Endpoint {
+		case register
+		case updateContent
+		case confirmArtist
+		case submitArtist
+		case removeArtist
+		case removeAlbum
+		case itemLookup
+		
+		func url () -> NSURL {
+			switch self {
+			case .register:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("register.php")
+			case .updateContent:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("update_content.php")
+			case .confirmArtist:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("confirm_artist.php")
+			case .submitArtist:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("submit_artist.php")
+			case .removeArtist:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("unsubscribe_artist.php")
+			case .removeAlbum:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("unsubscribe_album.php")
+			case .itemLookup:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("item.php")
+			}
+		}
 	}
 	
 	// MARK: - Refresh Content
@@ -50,7 +70,7 @@ final class API {
 		if appDelegate.contentHash != nil {
 			postString += "&hash=\(appDelegate.contentHash!)"
 		}
-		sendRequest(URL.updateContent.rawValue, postString: postString, successHandler: { (statusCode, data) in
+		sendRequest(Endpoint.updateContent.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 200 {
 				switch statusCode {
 				case 204:
@@ -162,7 +182,7 @@ final class API {
 	// MARK: - Album lookup
 	func lookupAlbum (albumID: Int, successHandler: ((album: Album) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&itemID=\(albumID)"
-		sendRequest(URL.itemLookup.rawValue, postString: postString, successHandler: { (statusCode, data) in
+		sendRequest(Endpoint.itemLookup.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 200 {
 				errorHandler(error: Error.BadRequest)
 				return
@@ -200,7 +220,7 @@ final class API {
 		if !allowExplicitContent { explicitValue = 0 }
 		var postString = "uuid=\(UUID)&explicit=\(explicitValue)"
 		if deviceToken != nil { postString += "&deviceToken=\(deviceToken!)" }
-		sendRequest(URL.register.rawValue, postString: postString, successHandler: { (statusCode, data) in
+		sendRequest(Endpoint.register.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 201 {
 				errorHandler(error: Error.BadRequest)
 				return
@@ -220,8 +240,7 @@ final class API {
 	}
 
 	// MARK: - Network Requests
-	func sendRequest (url: String, postString: String, successHandler: ((statusCode: Int!, data: NSData!) -> Void), errorHandler: (error: ErrorType) -> Void) {
-		let apiUrl = NSURL(string: url)
+	func sendRequest (url: NSURL, postString: String, successHandler: ((statusCode: Int!, data: NSData!) -> Void), errorHandler: (error: ErrorType) -> Void) {
 		var appVersion = "Unknown"
 		if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {
 			appVersion = version
@@ -229,7 +248,7 @@ final class API {
 		let systemVersion = UIDevice.currentDevice().systemVersion
 		let deviceName = UIDevice().deviceType.rawValue
 		let userAgent = "Releasify/\(appVersion) (iOS/\(systemVersion); \(deviceName))"
-		let request = NSMutableURLRequest(URL:apiUrl!)
+		let request = NSMutableURLRequest(URL:url)
 		request.HTTPMethod = "POST"
 		request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
 		request.timeoutInterval = 300
