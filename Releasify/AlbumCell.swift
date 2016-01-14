@@ -13,8 +13,8 @@ class AlbumCell: UICollectionViewCell {
 	@IBOutlet weak var albumArtwork: UIImageView!
 	@IBOutlet weak var containerView: UIView!
 	@IBOutlet weak var containerViewTopConstraint: NSLayoutConstraint!
-	@IBOutlet weak var artistTitle: UILabel!
 	@IBOutlet weak var albumTitle: UILabel!
+	@IBOutlet weak var artistTitle: UILabel!	
 	@IBOutlet weak var timeLeft: UILabel!
 	@IBOutlet weak var purchaseButton: UIButton!
 	

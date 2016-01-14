@@ -12,7 +12,7 @@ final class API {
 	static let sharedInstance = API()
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let baseURL = NSURL(string: "https://releasify.me/api/ios/v1/")!
-	var newItems: [Int]!
+	var newItems: [String]!
 	
 	enum Error: ErrorType {
 		case BadRequest
@@ -61,8 +61,8 @@ final class API {
 	}
 	
 	// MARK: - Refresh Content
-	func refreshContent (successHandler: ([Int] -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
-		newItems = [Int]()
+	func refreshContent (successHandler: ([String] -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
+		newItems = [String]()
 		var postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(appDelegate.allowExplicitContent ? 1 : 0)"
 		if appDelegate.userDeviceToken != nil {
 			postString += "&token=\(appDelegate.userDeviceToken!)"
@@ -149,7 +149,7 @@ final class API {
 			)
 			let newAlbumID = AppDB.sharedInstance.addAlbum(albumItem)
 			if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications!.count < 64 {
-				self.newItems.append(newAlbumID)
+				self.newItems.append(albumItem.artwork)
 				let remaining = Double(releaseDate) - Double(NSDate().timeIntervalSince1970)
 				if remaining > 0 {
 					let notification = UILocalNotification()

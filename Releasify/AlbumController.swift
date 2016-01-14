@@ -48,9 +48,7 @@ class AlbumController: UIViewController {
 		
 		let defaultItemSize = CGSize(width: 145, height: 190)
 		albumCollectionLayout = UICollectionViewFlowLayout()
-		albumCollectionLayout.headerReferenceSize = CGSize(width: 50, height: 50)
-		albumCollectionLayout.footerReferenceSize = CGSize(width: 50, height: 10)
-		albumCollectionLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+		albumCollectionLayout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
 		albumCollectionLayout.itemSize = defaultItemSize
 		albumCollectionLayout.minimumLineSpacing = 10
 		albumCollectionLayout.minimumInteritemSpacing = 10
@@ -107,9 +105,12 @@ class AlbumController: UIViewController {
 		}
 	}
 	
-	override func viewWillAppear (animated: Bool) {
+	override func viewDidAppear(animated: Bool) {
 		AppDB.sharedInstance.getAlbums()
 		albumCollectionView.reloadData()
+	}
+	
+	override func viewWillAppear (animated: Bool) {
 		albumCollectionView.scrollsToTop = true
 	}
 	
@@ -131,11 +132,21 @@ class AlbumController: UIViewController {
 				self.appDelegate.firstRun = false
 			}
 			if newItems.count > 0 {
-				print(newItems)
 				self.albumCollectionView.hidden = false
 				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
 				notification.title.text = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
 				notification.subtitle.text = "\(newItems.count == 1 ? "has been added to your stream." : "have been added to your stream.")"
+				let artwork = UIImageView(frame: CGRect(x: notification.frame.width - 50, y: 5, width: 45, height: 45))
+				artwork.contentMode = .ScaleToFill
+				
+				// Retrieve the artwork preview thumbnail
+				self.fetchArtwork(newItems[0], successHandler: { thumb in
+					artwork.image = thumb
+					}, errorHandler: {
+						artwork.image = UIImage(named: "icon_artwork_placeholder")
+				})
+				
+				notification.notificationView.addSubview(artwork)
 				if self.delegate != nil {
 					self.delegate?.addNotificationView(notification)
 				}
@@ -153,7 +164,7 @@ class AlbumController: UIViewController {
 	func showAlbumFromNotification (notification: NSNotification) {
 		if let AlbumID = notification.userInfo!["albumID"]! as? Int {
 			notificationAlbumID = AlbumID
-			for album in AppDB.sharedInstance.albums[1] as[Album]! {
+			for album in AppDB.sharedInstance.albums[1] as [Album]! {
 				if album.ID != notificationAlbumID! { continue }
 				selectedAlbum = album
 				break
@@ -315,12 +326,12 @@ class AlbumController: UIViewController {
 	
 	// MARK: - Fetch Artwork
 	func fetchArtwork (hash: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
+		if hash.isEmpty { errorHandler(); return }
 		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
 		let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
 		guard let checkedURL = NSURL(string: albumURL) else { errorHandler(); return }
 		let request = NSURLRequest(URL: checkedURL)
-		let mainQueue = NSOperationQueue.mainQueue()
-		NSURLConnection.sendAsynchronousRequest(request, queue: mainQueue, completionHandler: { (response, data, error) in
+		NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
 			if error != nil { errorHandler(); return }
 			guard let HTTPResponse = response as? NSHTTPURLResponse else { errorHandler(); return }
 			if HTTPResponse.statusCode != 200 { errorHandler(); return }
@@ -483,26 +494,6 @@ extension AlbumController: UICollectionViewDataSource {
 		cell.updateConstraintsIfNeeded()
 		
 		return cell
-	}
-	
-	func collectionView (collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
-		if kind == UICollectionElementKindSectionHeader {
-			let headerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader,
-				withReuseIdentifier: albumHeaderViewReuseIdentifier, forIndexPath: indexPath) as! AlbumCollectionHeader
-			var section = indexPath.section
-			if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
-				section = sectionAtIndex()
-			}
-			if section == 0 {
-				headerView.headerLabel.text = "UPCOMING"
-			} else {
-				headerView.headerLabel.text = "RECENTLY RELEASED"
-			}
-			return headerView
-		}
-		let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionFooter,
-			withReuseIdentifier: albumFooterViewReuseIdentifier, forIndexPath: indexPath)
-		return footerView
 	}
 }
 

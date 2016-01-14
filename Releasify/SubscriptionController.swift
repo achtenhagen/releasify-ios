@@ -11,58 +11,70 @@ import UIKit
 class SubscriptionController: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var refreshControl: UIRefreshControl!
+	var searchController: UISearchController!
 	var filteredData: [Artist]!
 	var selectedArtist: Artist?
 	
 	@IBOutlet weak var subscriptionsTable: UITableView!
-	@IBOutlet weak var searchBar: UISearchBar!
 	
 	@IBAction func unwindToSubscriptions (sender: UIStoryboardSegue) {
 		AppDB.sharedInstance.getArtists()
 		reloadSubscriptions()
 	}
+	
+	override func loadView() {
+		super.loadView()
+		filteredData = AppDB.sharedInstance.artists
+		searchController = UISearchController(searchResultsController: nil)
+		searchController.searchResultsUpdater = self
+		searchController.definesPresentationContext = true
+		searchController.dimsBackgroundDuringPresentation = false
+		searchController.searchBar.placeholder = "Search Artists"
+		searchController.searchBar.searchBarStyle = .Minimal
+		searchController.searchBar.barStyle = .Black
+		searchController.searchBar.barTintColor = UIColor.clearColor()
+		searchController.searchBar.tintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
+		searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
+		searchController.searchBar.layer.borderWidth = 1
+		searchController.searchBar.translucent = false
+		searchController.searchBar.autocapitalizationType = .Words
+		searchController.searchBar.keyboardAppearance = .Dark
+		searchController.hidesNavigationBarDuringPresentation = false
+		searchController.searchBar.sizeToFit()
+		subscriptionsTable.tableHeaderView = searchController.searchBar
+		let backgroundView = UIView(frame: view.bounds)
+		backgroundView.backgroundColor = UIColor.clearColor()
+		subscriptionsTable.backgroundView = backgroundView
+	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
-		setupSearchBar()
-		filteredData = AppDB.sharedInstance.artists
-		
 		refreshControl = UIRefreshControl()
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 		subscriptionsTable.addSubview(refreshControl)
-
-		AppDB.sharedInstance.getArtists()
-		subscriptionsTable.reloadData()
 	}
 	
 	override func viewWillAppear(animated: Bool) {
 		reloadSubscriptions()
 		subscriptionsTable.scrollsToTop = true
+		subscriptionsTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
 		subscriptionsTable.scrollsToTop = false
+		searchController.active = false
 	}
 	
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 	}
 	
-	func setupSearchBar () {
-		searchBar.delegate = self
-		searchBar.searchBarStyle = .Default
-		searchBar.barStyle = .Black
-		searchBar.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
-		searchBar.tintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
-		searchBar.layer.borderColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1).CGColor
-		searchBar.layer.borderWidth = 1
-		searchBar.translucent = false
-		searchBar.autocapitalizationType = .Words
-		searchBar.keyboardAppearance = .Dark
-		searchBar.sizeToFit()
+	func filterContentForSearchText(searchText: String) {
+		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({(artist: Artist) -> Bool in
+			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+		})
 	}
 	
 	func reloadSubscriptions() {
@@ -136,27 +148,10 @@ extension SubscriptionController: UITableViewDelegate {
 	}
 }
 
-// MARK: - UISearchBarDelegate
-extension SubscriptionController: UISearchBarDelegate {
-	func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
-		searchBar.showsCancelButton = true
-	}
-	
-	func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({(artist: Artist) -> Bool in
-			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
-		})
+// MARK: - UISearchResultsUpdating
+extension SubscriptionController: UISearchResultsUpdating {
+	func updateSearchResultsForSearchController(searchController: UISearchController) {
+		filterContentForSearchText(searchController.searchBar.text!)
 		subscriptionsTable.reloadData()
-	}
-	
-	func searchBarSearchButtonClicked(searchBar: UISearchBar) {
-		searchBar.resignFirstResponder()
-	}
-	
-	func searchBarCancelButtonClicked(searchBar: UISearchBar) {
-		reloadSubscriptions()
-		searchBar.text = ""
-		searchBar.resignFirstResponder()
-		searchBar.showsCancelButton = false
 	}
 }

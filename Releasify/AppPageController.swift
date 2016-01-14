@@ -16,6 +16,9 @@ protocol AppPageControllerDelegate: class {
 class AppPageController: UIPageViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	var albumController: AlbumController!
+	var subscriptionsController: SubscriptionController!
+	var segmentedControl: UISegmentedControl!
 	var responseArtists: [NSDictionary]!
 	var mediaQuery: MPMediaQuery!
 	var identifiers: NSArray = ["AlbumController", "SubscriptionController"]
@@ -45,6 +48,41 @@ class AppPageController: UIPageViewController {
 				self.handleAddSubscriptionError(error)
 			})
 		}
+	}
+	
+	func changeView (sender: UISegmentedControl) {
+		let viewControllers: NSArray
+		if sender.selectedSegmentIndex == 0 {
+			let startVC = viewControllerAtIndex(0) as! AlbumController
+			viewControllers = NSArray(object: startVC)
+			setViewControllers(viewControllers as? [UIViewController], direction: .Reverse, animated: true, completion: nil)
+		} else {
+			let startVC = viewControllerAtIndex(1) as! SubscriptionController
+			viewControllers = NSArray(object: startVC)
+			setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
+		}
+	}
+	
+	override func loadView() {
+		super.loadView()
+		
+		let containerBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.width, height: 50))
+		containerBar.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
+		containerBar.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
+		containerBar.translucent = false
+		
+		segmentedControl = UISegmentedControl(items: ["Albums", "Subscriptions"])
+		segmentedControl.frame = CGRect(x: 10, y: 10, width: containerBar.bounds.width - 20, height: 30)
+		segmentedControl.backgroundColor = UIColor.clearColor()
+		segmentedControl.layer.cornerRadius = 5.0
+		segmentedControl.selectedSegmentIndex = 0
+		segmentedControl.addTarget(self, action: "changeView:", forControlEvents: .ValueChanged)
+		
+		containerBar.addSubview(segmentedControl)
+		view.addSubview(containerBar)
+		
+		albumController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AlbumController") as! AlbumController
+		subscriptionsController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") as! SubscriptionController
 	}
 	
 	override func viewDidLoad () {
@@ -79,12 +117,11 @@ class AppPageController: UIPageViewController {
 	
 	func viewControllerAtIndex (index: Int) -> UIViewController? {
 		if index == 0 {
-			let albumController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AlbumController") as! AlbumController
 			albumController.delegate = self
 			return albumController
 		}
 		if index == 1 {
-			return UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController")
+			return subscriptionsController
 		}
 		return nil
 	}
@@ -240,9 +277,9 @@ extension AppPageController: UIPageViewControllerDataSource {
 // MARK: - UIPageViewControllerDelegate
 extension AppPageController: UIPageViewControllerDelegate {
 	func pageViewController (pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-		navigationController?.navigationBar.topItem?.title = "Music"
+		segmentedControl.selectedSegmentIndex = 0
 		if pageViewController.viewControllers![0].restorationIdentifier == "SubscriptionController" {
-			navigationController?.navigationBar.topItem?.title = "Subscriptions"
+			segmentedControl.selectedSegmentIndex = 1
 		}
 	}
 }
@@ -253,4 +290,3 @@ extension AppPageController: AppPageControllerDelegate {
 		view.addSubview(notification)
 	}
 }
-

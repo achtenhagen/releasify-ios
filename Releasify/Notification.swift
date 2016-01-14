@@ -15,7 +15,7 @@ final class Notification: UIView {
 	var subtitle: UILabel!
 	var viewFrame: CGRect!
 	
-	override init(frame: CGRect) {
+	override init (frame: CGRect) {
 		super.init(frame: frame)
 		viewFrame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
 		notificationView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
@@ -37,22 +37,20 @@ final class Notification: UIView {
 		alpha = 0
 	}
 
-	required init?(coder aDecoder: NSCoder) {
+	required init? (coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	func show(completed: () -> Void) {
+	func show (completed: () -> Void) {
 		UIView.animateWithDuration(0.4, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
 			self.alpha = 1.0
 			self.notificationView.frame.origin.y = self.viewFrame.origin.y - self.notificationView.frame.height
 			}, completion: { bool in
-				self.hide({
-					completed()
-				})
+				self.hide({ completed() })
 		})
 	}
 	
-	func hide(completed: () -> Void) {
+	func hide (completed: () -> Void) {
 		UIView.animateWithDuration(0.4, delay: 3.0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
 			self.alpha = 0
 			self.notificationView.frame.origin.y = self.viewFrame.origin.y + self.notificationView.frame.height
