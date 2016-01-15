@@ -29,6 +29,7 @@ class SubscriptionController: UIViewController {
 		searchController.searchResultsUpdater = self
 		searchController.definesPresentationContext = true
 		searchController.dimsBackgroundDuringPresentation = false
+		searchController.searchBar.delegate = self
 		searchController.searchBar.placeholder = "Search Artists"
 		searchController.searchBar.searchBarStyle = .Minimal
 		searchController.searchBar.barStyle = .Black
@@ -160,6 +161,17 @@ extension SubscriptionController: UITableViewDelegate {
 	func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
 		let cell = tableView.cellForRowAtIndexPath(indexPath) as! SubscriptionCell
 		UIPasteboard.generalPasteboard().string = cell.subscriptionTitle!.text
+	}
+}
+
+// MARK: - UISearchBarDelegate
+extension SubscriptionController: UISearchBarDelegate {
+	func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+		searchController.searchBar.backgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
+	}
+	
+	func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+		searchController.searchBar.backgroundColor = UIColor.clearColor()
 	}
 }
 
