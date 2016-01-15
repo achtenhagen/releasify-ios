@@ -29,7 +29,7 @@ class AppPageController: UIPageViewController {
 	@IBAction func addSubscription(sender: AnyObject) {
 		mediaQuery.groupingType = .AlbumArtist
 		if mediaQuery.collections!.count > 0 {
-			let controller = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+			let controller = UIAlertController(title: "How would you like to add your subscription?", message: nil, preferredStyle: .ActionSheet)
 			let importAction = UIAlertAction(title: "Music Library", style: .Default, handler: { action in
 				self.performSegueWithIdentifier("ArtistPickerSegue", sender: self)
 			})
@@ -39,8 +39,8 @@ class AppPageController: UIPageViewController {
 				})
 			})
 			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-			controller.addAction(importAction)
 			controller.addAction(addAction)
+			controller.addAction(importAction)
 			controller.addAction(cancelAction)
 			presentViewController(controller, animated: true, completion: nil)
 		} else {

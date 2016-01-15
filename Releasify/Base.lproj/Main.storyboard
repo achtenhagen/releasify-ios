@@ -1082,11 +1082,6 @@
                                 </textAttributes>
                                 <items>
                                     <navigationItem title="Notifications" id="kCB-YM-Ard">
-                                        <barButtonItem key="leftBarButtonItem" title="Edit" id="PP4-04-1Cr">
-                                            <connections>
-                                                <action selector="editTable:" destination="2C1-o9-LbX" id="wTa-HA-eQC"/>
-                                            </connections>
-                                        </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" systemItem="done" id="Tnm-oT-6Md">
                                             <connections>
                                                 <action selector="closeView:" destination="2C1-o9-LbX" id="Tk9-a7-vvL"/>
@@ -1149,8 +1144,7 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <outlet property="editBtn" destination="PP4-04-1Cr" id="Xxb-gN-anp"/>
-                        <outlet property="navBar" destination="BpW-MD-8Fo" id="z1g-7m-Q1J"/>
+                        <outlet property="navigationItem" destination="kCB-YM-Ard" id="jpp-Vo-QtP"/>
                         <outlet property="notificationsTable" destination="JrY-WK-rWs" id="Lh5-aB-vPh"/>
                     </connections>
                 </viewController>

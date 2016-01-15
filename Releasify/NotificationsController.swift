@@ -13,27 +13,18 @@ class NotificationsController: UIViewController {
 	var notifications: [UILocalNotification]!
 	var albums: [Album]!
 	
-	@IBOutlet weak var navBar: UINavigationBar!
-	@IBOutlet weak var editBtn: UIBarButtonItem!
 	@IBOutlet weak var notificationsTable: UITableView!
-
-	@IBAction func editTable(sender: UIBarButtonItem) {
-		if notificationsTable.editing {
-			editBtn.title = "Edit"
-			editBtn.style = .Plain
-			notificationsTable.setEditing(false, animated: true)
-		} else {
-			editBtn.title = "Cancel"
-			editBtn.style = .Done
-			notificationsTable.setEditing(true, animated: true)
-		}
-	}
 	
 	@IBAction func closeView(sender: AnyObject) {
 		notificationsTable.setEditing(false, animated: false)
 		dismissViewControllerAnimated(true, completion: {
 			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
 		})
+	}
+	
+	override func setEditing (editing: Bool, animated: Bool) {
+		super.setEditing(editing, animated: animated)
+		notificationsTable.setEditing(editing, animated: true)
 	}
 	
 	override func viewDidLoad() {
@@ -60,7 +51,7 @@ class NotificationsController: UIViewController {
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
 		view.layer.insertSublayer(gradient, atIndex: 0)
 		
-		editBtn.enabled = notifications.count > 0 ? true : false		
+		self.navigationItem.leftBarButtonItem = self.editButtonItem()
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -101,7 +92,6 @@ extension NotificationsController: UITableViewDataSource {
 			albums.removeAtIndex(indexPath.row)
 			notificationsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
 			notificationsTable.reloadData()
-			editBtn.enabled = notifications.count > 0 ? true : false
 			if notifications.count == 0 {
 				closeView(self)
 			}
@@ -113,5 +103,13 @@ extension NotificationsController: UITableViewDataSource {
 extension NotificationsController: UITableViewDelegate {
 	func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String? {
 		return "Don't notify"
+	}
+	
+	func tableView(tableView: UITableView, willBeginEditingRowAtIndexPath indexPath: NSIndexPath) {
+		setEditing(true, animated: true)
+	}
+	
+	func tableView(tableView: UITableView, didEndEditingRowAtIndexPath indexPath: NSIndexPath) {
+		setEditing(false, animated: true)
 	}
 }

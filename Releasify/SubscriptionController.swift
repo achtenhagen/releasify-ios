@@ -53,13 +53,13 @@ class SubscriptionController: UIViewController {
 		refreshControl = UIRefreshControl()
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
+		subscriptionsTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
 		subscriptionsTable.addSubview(refreshControl)
 	}
 	
 	override func viewWillAppear(animated: Bool) {
 		reloadSubscriptions()
 		subscriptionsTable.scrollsToTop = true
-		subscriptionsTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
