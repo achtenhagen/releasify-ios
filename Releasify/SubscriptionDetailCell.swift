@@ -8,7 +8,4 @@
 
 import UIKit
 
-class SubscriptionDetailCell: UICollectionViewCell {
-    
-	@IBOutlet weak var albumArtwork: UIImageView!
-}
+class SubscriptionDetailCell: UICollectionViewCell {}

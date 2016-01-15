@@ -20,6 +20,10 @@ final class AppController: UINavigationController {
 		AppDB.sharedInstance.getAlbums()
 		AppDB.sharedInstance.getPendingArtists()
 		
+		if appDelegate.removeExpiredAlbums {
+			AppDB.sharedInstance.removeExpiredAlbums()
+		}
+		
 		let navBarAppearance = UINavigationBar.appearance()
 		navBarAppearance.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
 		navBarAppearance.shadowImage = UIImage()

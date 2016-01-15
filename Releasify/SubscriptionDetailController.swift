@@ -13,9 +13,9 @@ class SubscriptionDetailController: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var artist: Artist?
 	var albums: [Album]?
+	var selectedAlbum: Album!
 
 	@IBOutlet weak var subscriptionAlbumCollectionView: UICollectionView!
-	@IBOutlet weak var searchBar: UISearchBar!
 	@IBOutlet weak var detailFlowLayout: UICollectionViewFlowLayout!
 	
 	@IBAction func removeArtist(sender: AnyObject) {
@@ -58,7 +58,19 @@ class SubscriptionDetailController: UIViewController {
 		detailFlowLayout.itemSize = CGSize(width: itemSize, height: itemSize)
 		subscriptionAlbumCollectionView.setCollectionViewLayout(detailFlowLayout, animated: false)
 		albums = AppDB.sharedInstance.getAlbumsByArtist(artist!.ID)
-		setupSearchBar()
+		
+		if albums?.count == 0 {
+			let label = UILabel()
+			label.font = UIFont(name: label.font.fontName, size: 18)
+			label.textColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
+			label.text = "No albums here yet!"
+			label.textAlignment = NSTextAlignment.Center
+			label.adjustsFontSizeToFitWidth = true
+			label.sizeToFit()
+			label.center = CGPoint(x: view.frame.size.width / 2, y: (view.frame.size.height / 2) - (label.frame.size.height))
+			view.addSubview(label)
+		}
+		
 		let gradient: CAGradientLayer = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
 		gradient.locations = [0.0 , 1.0]
@@ -71,18 +83,6 @@ class SubscriptionDetailController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-	
-	func setupSearchBar () {
-		searchBar.delegate = self
-		searchBar.searchBarStyle = .Default
-		searchBar.barStyle = .Black
-		searchBar.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
-		searchBar.tintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1)
-		searchBar.layer.borderColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1).CGColor
-		searchBar.layer.borderWidth = 1
-		searchBar.translucent = false
-		searchBar.sizeToFit()
-	}
 	
 	// MARK: - Error message handler
 	func handleError (title: String, message: String, error: ErrorType) {
@@ -101,6 +101,13 @@ class SubscriptionDetailController: UIViewController {
 		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
+	
+	override func prepareForSegue (segue: UIStoryboardSegue, sender: AnyObject?) {
+		if segue.identifier == "SubscriptionDetailCellSegue" {
+			let detailController = segue.destinationViewController as! AlbumDetailController
+			detailController.album = selectedAlbum
+		}
+	}
 }
 
 // MARK: - UICollectionViewDataSource
@@ -111,38 +118,20 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = subscriptionAlbumCollectionView.dequeueReusableCellWithReuseIdentifier("SubscriptionDetailCell", forIndexPath: indexPath) as! SubscriptionDetailCell
-		cell.albumArtwork.image = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork)
+		if cell.subviews.count == 1 {
+			let artwork = UIImageView(frame: CGRect(x: 0, y: 0, width: view.bounds.width / 2, height: view.bounds.width / 2))
+			artwork.image = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork)
+			artwork.contentMode = .ScaleAspectFill
+			cell.addSubview(artwork)
+		}
 		return cell
 	}
 }
 
 // MARK: - UICollectionViewDelegate
 extension SubscriptionDetailController: UICollectionViewDelegate {
-	
-}
-
-// MARK: - UISearchBarDelegate
-extension SubscriptionDetailController: UISearchBarDelegate {
-	func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
-		searchBar.showsCancelButton = true
+	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+		selectedAlbum = albums![indexPath.row]
+		performSegueWithIdentifier("SubscriptionDetailCellSegue", sender: self)
 	}
-	
-	func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-		
-	}
-	
-	func searchBarSearchButtonClicked(searchBar: UISearchBar) {
-		searchBar.resignFirstResponder()
-	}
-	
-	func searchBarCancelButtonClicked(searchBar: UISearchBar) {
-		searchBar.text = ""
-		searchBar.resignFirstResponder()
-		searchBar.showsCancelButton = false
-	}
-}
-
-// MARK: - UISearchControllerDelegate
-extension SubscriptionDetailController: UISearchControllerDelegate {
-	
 }

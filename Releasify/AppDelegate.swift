@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var contentHash: String?
 	var shortcutKeyDescription: String?
 	var allowExplicitContent = true
+	var removeExpiredAlbums = false
 	var completedRefresh = false
 	var firstRun = false
 	var lastUpdated = 0
@@ -39,13 +40,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
 		}
 		
+		// Load App Settings
 		userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
 		if let uuid = NSUserDefaults.standardUserDefaults().stringForKey("uuid") { userUUID = uuid }
 		if let hash = NSUserDefaults.standardUserDefaults().valueForKey("contentHash") as? String { contentHash = hash }
-		if let explicit = NSUserDefaults.standardUserDefaults().valueForKey("allowExplicit") as? Bool {
-			allowExplicitContent = explicit
+		if let expiredAlbumVal = NSUserDefaults.standardUserDefaults().valueForKey("removeExpiredAlbums") as? Bool {
+			removeExpiredAlbums = expiredAlbumVal
+		} else {
+			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "removeExpiredAlbums")
+		}
+		if let explicitContentVal = NSUserDefaults.standardUserDefaults().valueForKey("allowExplicit") as? Bool {
+			allowExplicitContent = explicitContentVal
 		} else {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 		}

@@ -28,7 +28,7 @@ final class AppDB {
 	}
 	
 	init () {
-		if !connected() { return }
+		if !connected() { fatalError("Unable to connect to database") }
 		artists = [Artist]()
 		albums  = [Int:[Album]]()
 		var errMsg: UnsafeMutablePointer<Int8> = nil
@@ -51,8 +51,7 @@ final class AppDB {
 				print("Error: Unable to create artwork directory!")
 			}
 		}
-		disconnect()
-		removeExpiredAlbums()
+		disconnect()		
 	}
 	
 	// MARK: - Albums

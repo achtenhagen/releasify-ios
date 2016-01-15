@@ -71,12 +71,6 @@ class SubscriptionController: UIViewController {
 		super.didReceiveMemoryWarning()
 	}
 	
-	func filterContentForSearchText(searchText: String) {
-		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({(artist: Artist) -> Bool in
-			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
-		})
-	}
-	
 	func reloadSubscriptions() {
 		filteredData = AppDB.sharedInstance.artists
 		subscriptionsTable.reloadData()
@@ -113,6 +107,13 @@ class SubscriptionController: UIViewController {
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
+	// MARK: - Search function for UISearchResultsUpdating
+	func filterContentForSearchText(searchText: String) {
+		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({(artist: Artist) -> Bool in
+			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+		})
+	}
+	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "SubscriptionDetailSegue" {
 			let detailController = segue.destinationViewController as! SubscriptionDetailController
@@ -143,8 +144,22 @@ extension SubscriptionController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension SubscriptionController: UITableViewDelegate {
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		selectedArtist = AppDB.sharedInstance.artists[indexPath.row]
+		selectedArtist = filteredData[indexPath.row]
+		searchController.active = false
 		performSegueWithIdentifier("SubscriptionDetailSegue", sender: self)
+	}
+	
+	func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+		return true
+	}
+	
+	func tableView(tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
+		return action == Selector("copy:")
+	}
+	
+	func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
+		let cell = tableView.cellForRowAtIndexPath(indexPath) as! SubscriptionCell
+		UIPasteboard.generalPasteboard().string = cell.subscriptionTitle!.text
 	}
 }
 

@@ -6,6 +6,34 @@
 	<array>
 		<dict>
 			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+			<key>DefaultValue</key>
+			<string>1.0.0</string>
+			<key>Title</key>
+			<string>Version</string>
+			<key>Key</key>
+			<string>appVersion</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>FooterText</key>
+			<string>If Releasify does not work correctly, the problem might be resolved by resetting the App to default settings. Turn on this setting, close the app, and then start it again.</string>
+			<key>Title</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Auto Remove Albums</string>
+			<key>Key</key>
+			<string>removeExpiredAlbums</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
 			<string>Allow Explicit Content</string>
@@ -23,16 +51,6 @@
 			<string>reset</string>
 			<key>DefaultValue</key>
 			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSTitleValueSpecifier</string>
-			<key>DefaultValue</key>
-			<string>1.0.0</string>
-			<key>Title</key>
-			<string>Version</string>
-			<key>Key</key>
-			<string>appVersion</string>
 		</dict>
 	</array>
 	<key>StringsTable</key>

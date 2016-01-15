@@ -14,8 +14,6 @@ class AlbumController: UIViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let albumCellReuseIdentifier = "AlbumCell"
-	let albumHeaderViewReuseIdentifier = "albumCollectionHeader"
-	let albumFooterViewReuseIdentifier = "albumCollectionFooter"
 	var albumCollectionLayout: UICollectionViewFlowLayout!
 	var selectedAlbum: Album!
 	var tmpArtwork: [String:UIImage]?
@@ -29,6 +27,8 @@ class AlbumController: UIViewController {
 	
 	override func viewDidLoad () {
 		super.viewDidLoad()
+		
+		tmpArtwork = [String:UIImage]()
 		
 		if #available(iOS 9.0, *) {
 		    if traitCollection.forceTouchCapability == .Available {
@@ -70,10 +70,6 @@ class AlbumController: UIViewController {
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 		albumCollectionView.addSubview(refreshControl)
-		
-		if tmpArtwork == nil {
-			tmpArtwork = [String:UIImage]()
-		}
 		
 		// Process remote notification payload
 		if let remoteContent = appDelegate.remoteNotificationPayload {
@@ -138,6 +134,8 @@ class AlbumController: UIViewController {
 				notification.subtitle.text = "\(newItems.count == 1 ? "has been added to your stream." : "have been added to your stream.")"
 				let artwork = UIImageView(frame: CGRect(x: notification.frame.width - 50, y: 5, width: 45, height: 45))
 				artwork.contentMode = .ScaleToFill
+				artwork.layer.masksToBounds = true
+				artwork.layer.cornerRadius = 2
 				
 				// Retrieve the artwork preview thumbnail
 				self.fetchArtwork(newItems[0], successHandler: { thumb in
@@ -342,11 +340,13 @@ class AlbumController: UIViewController {
 	
 	// MARK: - Returns the artwork image for each cell
 	func getArtworkForCell (hash: String, completion: ((artwork: UIImage) -> Void)) {
-		if tmpArtwork![hash] == nil {
-			if AppDB.sharedInstance.checkArtwork(hash) {
-				tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
+		if AppDB.sharedInstance.checkArtwork(hash) {
+			tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
+		} else {
+			if tmpArtwork![hash] != nil {
+				tmpArtwork?.removeValueForKey(hash)
 			}
-		}
+		}		
 		guard let tmpImage = tmpArtwork![hash] else {
 			fetchArtwork(hash, successHandler: { artwork in
 				AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
@@ -499,12 +499,11 @@ extension AlbumController: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegate
 extension AlbumController: UICollectionViewDelegate {
-	func collectionView (collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+	func collectionView (collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 		var section = indexPath.section
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
 		selectedAlbum = AppDB.sharedInstance.albums[section]![indexPath.row]
 		performSegueWithIdentifier("AlbumViewSegue", sender: self)
-		return true
 	}
 	
 	func collectionView (collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
