@@ -58,7 +58,7 @@ class SubscriptionDetailController: UIViewController {
 		detailFlowLayout.itemSize = CGSize(width: itemSize, height: itemSize)
 		subscriptionAlbumCollectionView.setCollectionViewLayout(detailFlowLayout, animated: false)
 		albums = AppDB.sharedInstance.getAlbumsByArtist(artist!.ID)
-		if albums?.count == 0 {
+		if albums == nil || albums?.count == 0 {
 			let label = UILabel()
 			label.font = UIFont(name: label.font.fontName, size: 18)
 			label.textColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
@@ -111,7 +111,7 @@ class SubscriptionDetailController: UIViewController {
 // MARK: - UICollectionViewDataSource
 extension SubscriptionDetailController: UICollectionViewDataSource {
 	func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return albums!.count
+		return albums == nil ? 0 : albums!.count
 	}
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
