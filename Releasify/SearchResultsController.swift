@@ -113,9 +113,7 @@ extension SearchResultsController: UITableViewDataSource {
 							return
 						}
 						if let HTTPResponse = response as? NSHTTPURLResponse {
-							if HTTPResponse.statusCode == 404 {
-								return
-							}
+							if HTTPResponse.statusCode == 404 { return }
 							if HTTPResponse.statusCode == 200 {
 								let image = UIImage(data: data!)
 								self.artwork[albumURL] = image

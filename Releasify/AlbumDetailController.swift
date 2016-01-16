@@ -9,8 +9,12 @@
 import UIKit
 
 class AlbumDetailController: UIViewController {
+	
+	weak var delegate: AlbumControllerDelegate?
+	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var album: Album?
+	var indexPath: NSIndexPath?
 	var artist: String?
 	var artwork: UIImage!
 	var timeDiff: Double?
@@ -148,17 +152,12 @@ class AlbumDetailController: UIViewController {
 			previewItems.append(deleteAction)
 		} else {
 			let removeAction = UIPreviewAction(title: "Remove Album", style: .Destructive) { (action, viewController) -> Void in
-//				self.unsubscribe_album((self.album?.iTunesUniqueID)!, successHandler: {
-//					let section = self.timeDiff > 0 ? 0 : 1
-//					AppDB.sharedInstance.deleteAlbum(self.album?.ID, section: section, index: indexPath?.row)
-//					AppDB.sharedInstance.deleteArtwork((self.album?.artwork)!)
-//					}, errorHandler: { error in
-//						// self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
-//				})
+				if self.delegate != nil {
+					self.delegate?.removeAlbum(self.album!, indexPath: self.indexPath!)
+				}
 			}
 			previewItems.append(removeAction)
 		}
-		
 		return previewItems
 	}
 	
@@ -166,21 +165,6 @@ class AlbumDetailController: UIViewController {
 		let shareActivityItem = "Buy this album on iTunes:\n\(album!.iTunesUrl)"
 		let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 		presentViewController(activityViewController, animated: true, completion: nil)
-	}
-	
-	// MARK: - Unsubscribe Album
-	func unsubscribe_album (iTunesUniqueID: Int, successHandler: () -> Void, errorHandler: (error: ErrorType) -> Void) {
-		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
-		API.sharedInstance.sendRequest(API.Endpoint.removeAlbum.url(), postString: postString, successHandler: { (statusCode, data) in
-			if statusCode != 204 {
-				errorHandler(error: API.Error.FailedRequest)
-				return
-			}
-			successHandler()
-			},
-			errorHandler: { (error) in
-				// self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
-		})
 	}
 	
 	func update () {
@@ -198,7 +182,6 @@ class AlbumDetailController: UIViewController {
 		let hours   = component(Double(timeDiff),      v: 60 * 60) % 24
 		let minutes = component(Double(timeDiff),           v: 60) % 60
 		let seconds = component(Double(timeDiff),            v: 1) % 60
-		
 		if Int(weeks) > 0 {
 			firstDigitLabel.text = formatNumber(weeks)
 			firstTimeLabel.text = "weeks"

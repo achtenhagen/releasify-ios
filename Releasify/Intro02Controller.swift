@@ -12,7 +12,6 @@ class Intro02Controller: UIViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	weak var delegate: IntroPageDelegate?
-
 	
 	@IBOutlet weak var imageTopLayoutConstraint: NSLayoutConstraint!
 	@IBAction func skipButtonPressed(sender: UIButton) {
@@ -43,8 +42,7 @@ class Intro02Controller: UIViewController {
 	
 	// MARK: - Notification settings
 	@IBAction func permissionBtn(sender: UIButton) {
-		if UIApplication.sharedApplication().respondsToSelector("registerUserNotificationSettings:") {
-			
+		if UIApplication.sharedApplication().respondsToSelector("registerUserNotificationSettings:") {			
 			let appAction = UIMutableUserNotificationAction()
 			appAction.identifier = "APP_ACTION"
 			appAction.title = "Open in App"

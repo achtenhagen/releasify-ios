@@ -50,6 +50,7 @@ class AppPageController: UIPageViewController {
 		}
 	}
 	
+	// MARK: - Handle UISegmentedControl selection
 	func changeView (sender: UISegmentedControl) {
 		let viewControllers: NSArray
 		if sender.selectedSegmentIndex == 0 {
@@ -63,7 +64,7 @@ class AppPageController: UIPageViewController {
 		}
 	}
 	
-	override func loadView() {
+	override func loadView () {
 		super.loadView()
 		
 		let containerBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.width, height: 50))
@@ -205,7 +206,6 @@ class AppPageController: UIPageViewController {
 						self.view.addSubview(notification)
 						NotificationQueue.sharedInstance.add(notification)
 					}
-					
 					
 					if self.responseArtists.count > 0 {
 						self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)

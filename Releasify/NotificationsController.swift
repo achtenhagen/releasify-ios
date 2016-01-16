@@ -49,8 +49,7 @@ class NotificationsController: UIViewController {
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		view.layer.insertSublayer(gradient, atIndex: 0)
-		
+		view.layer.insertSublayer(gradient, atIndex: 0)		
 		self.navigationItem.leftBarButtonItem = self.editButtonItem()
 	}
 	

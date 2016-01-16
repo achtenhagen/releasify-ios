@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol AlbumControllerDelegate: class {
+	func removeAlbum (album: Album, indexPath: NSIndexPath)
+}
+
 class AlbumController: UIViewController {
 	
 	weak var delegate: AppPageControllerDelegate?
@@ -17,7 +21,7 @@ class AlbumController: UIViewController {
 	var albumCollectionLayout: UICollectionViewFlowLayout!
 	var selectedAlbum: Album!
 	var tmpArtwork: [String:UIImage]?
-	var tmpUrl: [Int: String]?
+	var tmpUrl: [Int:String]?
 	var notificationAlbumID: Int?
 	var refreshControl: UIRefreshControl!
 	
@@ -27,7 +31,6 @@ class AlbumController: UIViewController {
 	
 	override func viewDidLoad () {
 		super.viewDidLoad()
-		
 		tmpArtwork = [String:UIImage]()
 		
 		if #available(iOS 9.0, *) {
@@ -101,7 +104,7 @@ class AlbumController: UIViewController {
 		}
 	}
 	
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear (animated: Bool) {
 		AppDB.sharedInstance.getAlbums()
 		albumCollectionView.reloadData()
 	}
@@ -491,8 +494,7 @@ extension AlbumController: UICollectionViewDataSource {
 			cell.containerViewTopConstraint.constant = 105
 		}
 		
-		cell.updateConstraintsIfNeeded()
-		
+		cell.updateConstraintsIfNeeded()		
 		return cell
 	}
 }
@@ -515,6 +517,27 @@ extension AlbumController: UICollectionViewDelegate {
 	}
 }
 
+// MARK: - AlbumControllerDelegate
+extension AlbumController: AlbumControllerDelegate {
+	func removeAlbum(album: Album, indexPath: NSIndexPath) {
+		self.unsubscribe_album(album.iTunesUniqueID, successHandler: {
+			AppDB.sharedInstance.deleteAlbum(album.ID, section: 1, index: indexPath.row)
+			AppDB.sharedInstance.deleteArtwork(album.artwork)
+			if AppDB.sharedInstance.albums[1]!.count == 0 {
+				if self.numberOfSectionsInCollectionView(self.albumCollectionView) > 0 {
+					self.albumCollectionView.deleteSections(NSIndexSet(index: 1))
+				}
+			} else {
+				self.albumCollectionView.deleteItemsAtIndexPaths([indexPath])
+			}
+			self.tmpArtwork?.removeValueForKey(album.artwork)
+			self.albumCollectionView.reloadData()
+			}, errorHandler: { error in
+				self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
+		})
+	}
+}
+
 // MARK: - UIViewControllerPreviewingDelegate
 @available(iOS 9.0, *)
 extension AlbumController: UIViewControllerPreviewingDelegate {
@@ -524,7 +547,9 @@ extension AlbumController: UIViewControllerPreviewingDelegate {
 		var section = indexPath.section
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
 		let album = AppDB.sharedInstance.albums[section]![indexPath.row]
+		albumDetailVC.delegate = self
 		albumDetailVC.album = album
+		albumDetailVC.indexPath = indexPath
 		albumDetailVC.preferredContentSize = CGSize(width: 0.0, height: 0.0)
 		previewingContext.sourceRect = cell.frame
 		return albumDetailVC

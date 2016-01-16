@@ -63,8 +63,4 @@ class Intro04Controller: UIViewController {
 			performSegueWithIdentifier("FirstRunSegue", sender: self)
 		}
 	}
-	
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-		
-    }
 }
