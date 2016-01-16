@@ -148,7 +148,7 @@ class AppPageController: UIPageViewController {
 				let artist = textField.text!.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
 				let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&title[]=\(artist)"
 				self.keyword = artist
-				API.sharedInstance.sendRequest(API.Endpoint.submitArtist.url(), postString: postString, successHandler: { (statusCode, data) in
+				API.sharedInstance.sendRequest(API.Endpoint.searchArtist.url(), postString: postString, successHandler: { (statusCode, data) in
 					if statusCode != 202 {
 						errorHandler(error: API.Error.BadRequest)
 						return
@@ -164,11 +164,6 @@ class AppPageController: UIPageViewController {
 						return
 					}
 					
-					guard let successArtists: [NSDictionary] = json["success"] as? [NSDictionary] else {
-						errorHandler(error: API.Error.FailedToParseJSON)
-						return
-					}
-					
 					guard let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] else {
 						errorHandler(error: API.Error.FailedToParseJSON)
 						return
@@ -179,22 +174,6 @@ class AppPageController: UIPageViewController {
 							if AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
 								self.responseArtists.append(artist)
 							}
-						}
-					}
-					
-					for artist in successArtists {
-						let artistID = artist["artistID"] as! Int
-						let artistTitle = (artist["title"] as? String)!						
-						let artistUniqueID = artist["iTunesUniqueID"] as! Int
-						if AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID) > 0 {
-							AppDB.sharedInstance.getArtists()
-							NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
-							NSNotificationCenter.defaultCenter().postNotificationName("refreshSubscriptions", object: nil, userInfo: nil)
-							let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
-							notification.title.text = "Subscribed to \(artistTitle)."
-							notification.subtitle.text = "You will be notified of new content by this artist."
-							self.view.addSubview(notification)
-							NotificationQueue.sharedInstance.add(notification)
 						}
 					}
 					

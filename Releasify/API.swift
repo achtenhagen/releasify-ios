@@ -35,6 +35,7 @@ final class API {
 		case register
 		case updateContent
 		case confirmArtist
+		case searchArtist
 		case submitArtist
 		case removeArtist
 		case removeAlbum
@@ -48,6 +49,8 @@ final class API {
 				return sharedInstance.baseURL.URLByAppendingPathComponent("update_content.php")
 			case .confirmArtist:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("confirm_artist.php")
+			case .searchArtist:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("search_artist.php")
 			case .submitArtist:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("submit_artist.php")
 			case .removeArtist:

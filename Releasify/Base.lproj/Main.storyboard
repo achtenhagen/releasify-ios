@@ -436,13 +436,13 @@
                                                     <exclude reference="8RK-aa-dZH"/>
                                                 </mask>
                                                 <mask key="constraints">
-                                                    <exclude reference="f1u-Ts-bb5"/>
-                                                    <exclude reference="zvb-hV-Il9"/>
                                                     <exclude reference="FGV-4G-GaF"/>
                                                     <exclude reference="foH-Ml-ZWB"/>
                                                     <exclude reference="rMH-4N-wtT"/>
                                                     <exclude reference="wVF-C8-7jm"/>
                                                     <exclude reference="zhB-Y6-n3d"/>
+                                                    <exclude reference="f1u-Ts-bb5"/>
+                                                    <exclude reference="zvb-hV-Il9"/>
                                                 </mask>
                                             </variation>
                                             <variation key="heightClass=regular-widthClass=compact">
@@ -451,13 +451,13 @@
                                                     <include reference="8RK-aa-dZH"/>
                                                 </mask>
                                                 <mask key="constraints">
-                                                    <include reference="f1u-Ts-bb5"/>
-                                                    <include reference="zvb-hV-Il9"/>
                                                     <include reference="FGV-4G-GaF"/>
                                                     <include reference="foH-Ml-ZWB"/>
                                                     <include reference="rMH-4N-wtT"/>
                                                     <include reference="wVF-C8-7jm"/>
                                                     <include reference="zhB-Y6-n3d"/>
+                                                    <include reference="f1u-Ts-bb5"/>
+                                                    <include reference="zvb-hV-Il9"/>
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>
