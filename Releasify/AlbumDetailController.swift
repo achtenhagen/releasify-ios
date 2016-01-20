@@ -123,6 +123,11 @@ class AlbumDetailController: UIViewController {
 		}
 	}
 	
+	override func didReceiveMemoryWarning() {
+		super.didReceiveMemoryWarning()
+		timer.invalidate()
+	}
+	
 	@available(iOS 9.0, *)
 	override func previewActionItems() -> [UIPreviewActionItem] {
 		var previewItems: [UIPreviewActionItem] = [UIPreviewActionItem]()
@@ -161,21 +166,19 @@ class AlbumDetailController: UIViewController {
 		return previewItems
 	}
 	
+	// MARK: - Handle album share sheet
 	func shareAlbum () {
 		let shareActivityItem = "Buy this album on iTunes:\n\(album!.iTunesUrl)"
 		let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 		presentViewController(activityViewController, animated: true, completion: nil)
 	}
 	
+	// MARK: - Selector action for timer to update progress
 	func update () {
 		timeLeft(album!.releaseDate - NSDate().timeIntervalSince1970)
 	}
 	
-	override func didReceiveMemoryWarning() {
-		super.didReceiveMemoryWarning()
-		timer.invalidate()
-	}
-	
+	// MARK: - Compute remaining time
 	func timeLeft(timeDiff: Double) {
 		let weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
 		let days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
@@ -222,10 +225,12 @@ class AlbumDetailController: UIViewController {
 		progressBar.progress = progress
 	}
 	
+	// MARK: - Compute the floor of 2 numbers
 	func component (x: Double, v: Double) -> Double {
 		return floor(x / v)
 	}
 	
+	// MARK: - Format number to string type
 	func formatNumber (n: Double) -> String {
 		let stringNumber = String(Int(n))
 		return n < 10 ? ("0\(stringNumber)") : stringNumber

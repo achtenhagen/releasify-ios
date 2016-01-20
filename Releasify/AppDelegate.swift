@@ -43,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
 		}
 		
-		// Load App Settings
+		// Read App Settings
 		userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
@@ -123,7 +123,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	// MARK: - Local Notification - Receiver
-	// Called when app is in the foreground or the notification itself is tapped.
+	// Called when app is in the foreground or the notification itself is tapped
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["albumID"] as? Int

@@ -55,7 +55,7 @@ final class AppDB {
 		disconnect()		
 	}
 	
-	// MARK: - Albums
+	// MARK: - Add new album
 	func addAlbum (albumItem: Album) -> Int {
 		if !connected() { return 0 }
 		var newAlbumID = 0
@@ -113,7 +113,7 @@ final class AppDB {
 		disconnect()
 	}
 	
-	// MARK: - Get album
+	// MARK: - Get album by ID
 	func getAlbum (ID: Int) -> Album? {
 		if !connected() { return nil }
 		var album: Album?
@@ -172,7 +172,7 @@ final class AppDB {
 		return artistAlbums
 	}
 	
-	// MARK: - Get albums from db based on input query
+	// MARK: - Get albums based on input query
 	func getAlbumsComponent (query: String) -> [Album]? {
 		if !connected() { return nil }
 		var tmpAlbums = [Album]()
@@ -212,6 +212,7 @@ final class AppDB {
 		return tmpAlbums
 	}
 	
+	// MARK: - Get date added property from album ID
 	func getAlbumDateAdded (albumID: Int) -> Double? {
 		if !connected() { return nil }
 		var created = 0
@@ -228,6 +229,7 @@ final class AppDB {
 		return Double(created)
 	}
 	
+	// MARK: - Lookup album
 	func lookupAlbum (albumID: Int) -> Bool {
 		if !connected() { return false }
 		var numRows = 0
@@ -244,7 +246,7 @@ final class AppDB {
 		return numRows == 1
 	}
 	
-	// MARK: - Remove albums that are older than 4 weeks.
+	// MARK: - Remove albums that are older than 4 weeks
 	func removeExpiredAlbums () {
 		if !connected() { return }
 		var expiredAlbums = [Int:String]()
@@ -280,7 +282,7 @@ final class AppDB {
 		disconnect()
 	}
 	
-	// MARK: - Artists
+	// MARK: - Add new artist
 	func addArtist (ID: Int, artistTitle: String, iTunesUniqueID: Int) -> Int {
 		if !connected() { return 0 }
 		var newItemID = 0
@@ -314,6 +316,7 @@ final class AppDB {
 		return newItemID
 	}
 	
+	// MARK: - Link album with artist
 	func addContributingArtist (albumID: Int, artistID: Int) {
 		if !connected() { return }
 		let timeStamp = Int32(NSDate().timeIntervalSince1970)
@@ -343,6 +346,7 @@ final class AppDB {
 		disconnect()
 	}
 	
+	// MARK: - Add pending artist to be removed
 	func addPendingArtist (ID: Int) {
 		if !connected() { return }
 		let timestamp = Int32(NSDate().timeIntervalSince1970)
@@ -372,6 +376,7 @@ final class AppDB {
 		if debug { print("Successfully added a pending artist.") }
 	}
 	
+	// MARK: - Delete artist
 	func deleteArtist (ID: Int, completion: ((albumIDs: [Int]) -> Void)) {
 		if !connected() { return }
 		var albumIDs = [Int]()
@@ -424,6 +429,7 @@ final class AppDB {
 		completion(albumIDs: albumIDs)
 	}
 	
+	// MARK: - Get album artist from album ID
 	func getAlbumArtist (albumID: Int) -> String? {
 		if !connected() { return nil }
 		var artistTitle = String()
@@ -440,6 +446,7 @@ final class AppDB {
 		return artistTitle
 	}
 	
+	// MARK: - Get artist ID from album ID
 	func getAlbumArtistID (albumID: Int) -> Int {
 		if !connected() { return 0 }
 		var artistID = 0
@@ -456,6 +463,7 @@ final class AppDB {
 		return artistID
 	}
 	
+	// MARK: - Get artist ID from artist iTunes ID
 	func getArtistByUniqueID (uniqueID: Int) -> Int {
 		if !connected() { return 0 }
 		var artistID = 0
@@ -472,6 +480,7 @@ final class AppDB {
 		return artistID
 	}
 	
+	// MARK: - Get all artists
 	func getArtists () {
 		if !connected() { return }
 		artists = [Artist]()
@@ -492,6 +501,7 @@ final class AppDB {
 		disconnect()
 	}
 	
+	// MARK: - Get all artists pending removal
 	func getPendingArtists () -> [Int] {
 		if !connected() { return [Int]() }
 		var pendingArtists = [Int]()
@@ -508,7 +518,7 @@ final class AppDB {
 		return pendingArtists
 	}
 	
-	// MARK: - Artwork
+	// MARK: - Add album artwork
 	func addArtwork (hash: String, artwork: UIImage) -> Bool {
 		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
 		if !NSFileManager.defaultManager().fileExistsAtPath(artworkPath) {
@@ -518,11 +528,7 @@ final class AppDB {
 		return false
 	}
 	
-	func checkArtwork (hash: String) -> Bool {
-		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
-		return NSFileManager.defaultManager().fileExistsAtPath(artworkPath)
-	}
-	
+	// MARK: - Delete album artwork
 	func deleteArtwork (hash: String) {
 		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
 		let artworkPathHD = artworkDirectoryPath + "/\(hash)_large.jpg"
@@ -542,17 +548,23 @@ final class AppDB {
 		}
 	}
 	
-	// MARK: - Check artwork path
+	// MARK: - Check album artwork file path
+	func checkArtwork (hash: String) -> Bool {
+		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
+		return NSFileManager.defaultManager().fileExistsAtPath(artworkPath)
+	}
+	
+	// MARK: - Check album artwork file path and return image
 	func getArtwork (hash: String) -> UIImage? {
 		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
 		if NSFileManager.defaultManager().fileExistsAtPath(artworkPath) { return UIImage(contentsOfFile: artworkPath)! }
 		return nil
 	}
 	
-	// MARK: - Table Operations
-	private func truncate (table: String) {
+	// MARK: - Truncate table
+	private func truncate (name: String) {
 		if !connected() { return }
-		let query = "DELETE FROM \(table)"
+		let query = "DELETE FROM \(name)"
 		var errMsg: UnsafeMutablePointer<Int8> = nil
 		if sqlite3_exec(database, query, nil, nil, &errMsg) != SQLITE_OK {
 			if debug { print("SQLite: \(String.fromCString(UnsafePointer<Int8>(errMsg)))") }
@@ -560,6 +572,7 @@ final class AppDB {
 		disconnect()
 	}
 	
+	// MARK: - Flush all tables
 	func reset () {
 		truncate("artists")
 		truncate("pending_artists")

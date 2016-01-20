@@ -31,6 +31,7 @@ public enum DeviceTypes : String {
 	unrecognized   = "Unknown Device"
 }
 
+// MARK: - UIDevice extension
 public extension UIDevice {
 	public var deviceType: DeviceTypes {
 		var sysinfo : [CChar] = Array(count: sizeof(utsname), repeatedValue: 0)

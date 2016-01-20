@@ -116,6 +116,7 @@ class AppPageController: UIPageViewController {
 		notificationsBtn.enabled = (UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false)
 	}
 	
+	// MARK: - Determine the active view controller
 	func viewControllerAtIndex (index: Int) -> UIViewController? {
 		if index == 0 {
 			albumController.delegate = self
@@ -127,16 +128,19 @@ class AppPageController: UIPageViewController {
 		return nil
 	}
 	
+	// MARK: - Determine state of left bar button item
 	func updateNotificationButton () {
 		notificationsBtn.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 	}
 	
+	// MARK: - Handle 3D Touch quick action
 	func addSubscriptionFromShortcutItem () {
 		addSubscription({ error in
 			self.handleAddSubscriptionError(error)
 		})
 	}
 	
+	// MARK: - Show new subscription alert controller
 	func addSubscription (errorHandler: ((error: ErrorType) -> Void)) {
 		responseArtists = [NSDictionary]()
 		var artistFound = false
@@ -216,6 +220,7 @@ class AppPageController: UIPageViewController {
 		presentViewController(actionSheetController, animated: true, completion: nil)
 	}
 	
+	// MARK: - Handle failed subscription
 	func handleAddSubscriptionError (error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {

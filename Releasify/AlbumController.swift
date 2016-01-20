@@ -224,11 +224,12 @@ class AlbumController: UIViewController {
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
+	// MARK: - Compute the floor of 2 numbers
 	func component (x: Double, v: Double) -> Double {
 		return floor(x / v)
 	}
 	
-	// MARK: - Purchase album
+	// MARK: - Handle purchase album
 	func purchaseAlbum (sender: UIButton) {
 		let albumID = sender.tag
 		guard let albumUrl = tmpUrl![albumID] else { return }
@@ -237,14 +238,14 @@ class AlbumController: UIViewController {
 		}
 	}
 	
-	// MARK: - Registers long press gesture if 3D Touch is unavailable
+	// MARK: - Register long press gesture if 3D Touch is unavailable
 	func registerLongPressGesture () {
 		let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
 		longPressGesture.minimumPressDuration = 0.5
 		albumCollectionView.addGestureRecognizer(longPressGesture)
 	}
 	
-	// MARK: - Album Touch Gesture
+	// MARK: - Handle long press gesture
 	func longPressGestureRecognized (gesture: UIGestureRecognizer) {
 		let cellLocation = gesture.locationInView(albumCollectionView)
 		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
@@ -310,7 +311,7 @@ class AlbumController: UIViewController {
 		}
 	}
 	
-	// MARK: - Unsubscribe Album
+	// MARK: - Handle unsubscribe album
 	func unsubscribe_album (iTunesUniqueID: Int, successHandler: () -> Void, errorHandler: (error: ErrorType) -> Void) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
 		API.sharedInstance.sendRequest(API.Endpoint.removeAlbum.url(), postString: postString, successHandler: { (statusCode, data) in
@@ -341,7 +342,7 @@ class AlbumController: UIViewController {
 		})
 	}
 	
-	// MARK: - Returns the artwork image for each cell
+	// MARK: - Return artwork image for each collection view cell
 	func getArtworkForCell (hash: String, completion: ((artwork: UIImage) -> Void)) {
 		if AppDB.sharedInstance.checkArtwork(hash) {
 			tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
@@ -374,7 +375,7 @@ class AlbumController: UIViewController {
 		}
 	}
 	
-	// MARK: - Determines current section | Only called when there is one section
+	// MARK: - Determine current collection view section (only called when there is a single section)
 	func sectionAtIndex () -> Int {
 		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}

@@ -111,12 +111,13 @@ class ArtistsPicker: UIViewController {
 		super.didReceiveMemoryWarning()
 	}
 	
+	// MARK: - Handle artist batch processing
 	func handleBatchProcessing () {
+		let batchSize = 20
+		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
 		var batches = [String]()
 		var uniqueIDs = [Int]()
 		var totalItems = 0
-		let batchSize = 20
-		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
 		var batchCount = 0
 		var currentBatch = String()
 		
@@ -150,16 +151,7 @@ class ArtistsPicker: UIViewController {
 		}
 		
 		view.userInteractionEnabled = false
-		activityView = UIView(frame: CGRectMake(0, 0, 90, 90))
-		activityView.center = view.center
-		activityView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
-		activityView.layer.cornerRadius = 14
-		activityView.layer.masksToBounds = true
-		activityView.userInteractionEnabled = false
-		indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-		indicatorView.center = view.center
-		view.addSubview(activityView)
-		view.addSubview(indicatorView)
+		setupActivityView()
 		indicatorView.startAnimating()
 		UIApplication.sharedApplication().networkActivityIndicatorVisible = true
 		
@@ -236,7 +228,21 @@ class ArtistsPicker: UIViewController {
 		}
 	}
 	
-	// MARK: - Helper function to get the section a given artist is contained in.
+	// MARK: - Initialize activity view
+	func setupActivityView () {
+		activityView = UIView(frame: CGRectMake(0, 0, 90, 90))
+		activityView.center = view.center
+		activityView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
+		activityView.layer.cornerRadius = 14
+		activityView.layer.masksToBounds = true
+		activityView.userInteractionEnabled = false
+		indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+		indicatorView.center = view.center
+		view.addSubview(activityView)
+		view.addSubview(indicatorView)
+	}
+	
+	// MARK: - Get section containing a given artist
 	func getSectionForArtistName (artistName: String) -> (index: Int, section: String) {
 		for (index, value) in keys.enumerate() {
 			if artistName.uppercaseString.hasPrefix(value as! String) || index == keys.count - 1 {
@@ -246,6 +252,7 @@ class ArtistsPicker: UIViewController {
 		return (0, keys[0] as! String)
 	}
 	
+	// MARK: - Set the state of all elements in given section
 	func tableViewCellComponent (filteredCell: String, set: Bool) -> Bool {
 		let currentSection = getSectionForArtistName(filteredCell)
 		for (key, _) in (artists[currentSection.section]!).enumerate() {
@@ -288,6 +295,7 @@ class ArtistsPicker: UIViewController {
 		}
 	}
 	
+	// MARK: - Initialize search controller
 	func setupSearchController () {
 		searchController = UISearchController(searchResultsController: nil)
 		searchController.dimsBackgroundDuringPresentation = false
@@ -381,7 +389,7 @@ extension ArtistsPicker: UISearchResultsUpdating {
 	}
 }
 
-// MARK: - String
+// MARK: - String extension
 extension String {
 	func stringByAddingPercentEncodingForURLQueryValue() -> String? {
 		let characterSet = NSMutableCharacterSet.alphanumericCharacterSet()

@@ -134,7 +134,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Process downloaded JSON data.
+	// MARK: - Process downloaded JSON data
 	func processContent (json: [NSDictionary]) {
 		for item in json {
 			let releaseDate = item["releaseDate"] as! Double
@@ -172,7 +172,7 @@ final class API {
 		}
 	}
 	
-	// MARK: - Process downloaded JSON data.
+	// MARK: - Process downloaded JSON data
 	func processSubscriptions (json: [NSDictionary]) {
 		for item in json {
 			let artistID = item["artistID"] as! Int
@@ -182,7 +182,7 @@ final class API {
 		}
 	}
 	
-	// MARK: - Album lookup
+	// MARK: - Album lookup API
 	func lookupAlbum (albumID: Int, successHandler: ((album: Album) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&itemID=\(albumID)"
 		sendRequest(Endpoint.itemLookup.url(), postString: postString, successHandler: { (statusCode, data) in
@@ -216,7 +216,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Device Registration
+	// MARK: - Device Registration API
 	func register (allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let UUID = NSUUID().UUIDString
 		var explicitValue = 1
@@ -242,7 +242,7 @@ final class API {
 		})
 	}
 
-	// MARK: - Network Requests
+	// MARK: - Handle network requests
 	func sendRequest (url: NSURL, postString: String, successHandler: ((statusCode: Int!, data: NSData!) -> Void), errorHandler: (error: ErrorType) -> Void) {
 		var appVersion = "Unknown"
 		if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {

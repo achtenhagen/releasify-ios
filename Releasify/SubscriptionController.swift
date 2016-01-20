@@ -77,7 +77,7 @@ class SubscriptionController: UIViewController {
 		subscriptionsTable.reloadData()
 	}
 	
-	// MARK: - Refresh content
+	// MARK: - Handle refresh content
 	func refresh() {
 		API.sharedInstance.refreshContent({ newItems in
 			self.reloadSubscriptions()
@@ -90,7 +90,7 @@ class SubscriptionController: UIViewController {
 		})
 	}
 	
-	// MARK: - Error message handler
+	// MARK: - Handle error messages
 	func handleError (title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
