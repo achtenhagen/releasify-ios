@@ -162,6 +162,21 @@ extension SubscriptionController: UITableViewDelegate {
 		let cell = tableView.cellForRowAtIndexPath(indexPath) as! SubscriptionCell
 		UIPasteboard.generalPasteboard().string = cell.subscriptionTitle!.text
 	}
+	
+	func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+		let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.size.width, height: 40))
+		footerView.backgroundColor = UIColor.clearColor()
+		let label = UILabel()
+		label.font = UIFont(name: label.font.fontName, size: 14)
+		label.textColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.2)
+		label.text = "\(filteredData.count) Artists"
+		label.textAlignment = NSTextAlignment.Center
+		label.adjustsFontSizeToFitWidth = true
+		label.sizeToFit()
+		label.center = CGPoint(x: view.frame.size.width / 2, y: (footerView.frame.size.height / 2) - 7)
+		footerView.addSubview(label)
+		return footerView
+	}
 }
 
 // MARK: - UISearchBarDelegate

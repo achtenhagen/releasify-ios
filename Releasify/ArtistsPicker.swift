@@ -181,16 +181,16 @@ class ArtistsPicker: UIViewController {
 						if let failedArtists = json["failed"] as? [NSDictionary] {
 							for artist in failedArtists {
 								let title = (artist["title"] as? String)!
-								print("Artist \(title) was not found on iTunes.")
+								if self.appDelegate.debug { print("Artist \(title) was not found on iTunes.") }
 							}
 						}
 					}
 					batchesProcessed++
-					print("Processed batches: \(batchesProcessed)")
+					if self.appDelegate.debug { print("Processed batches: \(batchesProcessed)") }
 					let batchProgress = Float(Double(batchesProcessed) / Double(batches.count))
 					self.progressBar.setProgress(batchProgress, animated: true)
 					if batchesProcessed == batches.count {
-						print("Completed batch processing.")
+						if self.appDelegate.debug { print("Completed batch processing.") }
 						self.progressBar.setProgress(1.0, animated: true)
 						UIApplication.sharedApplication().networkActivityIndicatorVisible = false
 						if self.responseArtists.count > 0 {

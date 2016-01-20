@@ -37,7 +37,7 @@ class SearchResultsController: UIViewController {
 		if keyword == nil {
 			infoLabel.text = "Please choose from the list below."
 		} else {
-			infoLabel.text = "Search results for \"\(keyword)\"."
+			infoLabel.text = "Showing results for \"\(keyword)\""
 		}
 		
 		let gradient: CAGradientLayer = CAGradientLayer()

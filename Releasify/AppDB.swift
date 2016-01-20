@@ -8,6 +8,7 @@
 
 import UIKit
 
+let debug = true
 let documents = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, .UserDomainMask, true)[0] as String
 let databasePath = documents + "/db.sqlite"
 let artworkDirectoryPath = documents + "/artwork"
@@ -48,7 +49,7 @@ final class AppDB {
 			do {
 				try NSFileManager.defaultManager().createDirectoryAtPath(artworkDirectoryPath, withIntermediateDirectories: false, attributes: nil)
 			} catch _ {
-				print("Error: Unable to create artwork directory!")
+				if debug { print("Error: Unable to create artwork directory!") }
 			}
 		}
 		disconnect()		
@@ -105,7 +106,7 @@ final class AppDB {
 					albums[section]?.removeAtIndex(i)
 				}
 			} else {
-				print("SQLite: Failed to delete from `albums`.")
+				if debug { print("SQLite: Failed to delete from `albums`.") }
 			}
 			sqlite3_finalize(statement)
 		}
@@ -121,7 +122,7 @@ final class AppDB {
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
 			if sqlite3_step(statement) != SQLITE_ROW {
-				print("Failed to get album from db.")
+				if debug { print("Failed to get album from db.") }
 				disconnect()
 				return nil
 			}
@@ -160,7 +161,7 @@ final class AppDB {
 		albums[0] = getAlbumsComponent(query)
 		query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 AND release_date - \(timestamp) > -2592000 ORDER BY release_date DESC LIMIT 50"
 		albums[1] = getAlbumsComponent(query)
-		print("Albums in db: \(albums[0]!.count + albums[1]!.count)")
+		if debug { print("Albums in db: \(albums[0]!.count + albums[1]!.count)") }
 	}
 	
 	// MARK: - Get albums by artist ID
@@ -270,7 +271,7 @@ final class AppDB {
 			query = "DELETE FROM albums WHERE id IN (\(albumList))"
 			if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 				if sqlite3_step(statement) != SQLITE_DONE {
-					print("SQLite: Failed to delete from `albums`.")
+					if debug { print("SQLite: Failed to delete from `albums`.") }
 					return
 				}
 				sqlite3_finalize(statement)
@@ -333,7 +334,7 @@ final class AppDB {
 					sqlite3_bind_int(statement, 2, Int32(artistID))
 					sqlite3_bind_int(statement, 3, timeStamp)
 					if sqlite3_step(statement) != SQLITE_DONE {
-						print("Failed to a contributing artist.")
+						if debug { print("Failed to a contributing artist.") }
 					}
 					sqlite3_finalize(statement)
 				}
@@ -361,14 +362,14 @@ final class AppDB {
 					sqlite3_bind_int(statement, 1, Int32(ID))
 					sqlite3_bind_int(statement, 2, timestamp)
 					if sqlite3_step(statement) != SQLITE_DONE {
-						print("Failed to insert pending artist.")
+						if debug { print("Failed to insert pending artist.") }
 					}
 					sqlite3_finalize(statement)
 				}
 			}
 		}
 		disconnect()
-		print("Successfully added a pending artist.")
+		if debug { print("Successfully added a pending artist.") }
 	}
 	
 	func deleteArtist (ID: Int, completion: ((albumIDs: [Int]) -> Void)) {
@@ -393,7 +394,7 @@ final class AppDB {
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
 			if sqlite3_step(statement) != SQLITE_DONE {
-				print("SQLite: Failed to delete from `albums`.")
+				if debug { print("SQLite: Failed to delete from `albums`.") }
 			}
 			sqlite3_finalize(statement)
 		}
@@ -404,7 +405,7 @@ final class AppDB {
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
 			if sqlite3_step(statement) != SQLITE_DONE {
-				print("SQLite: Failed to delete from `album_artists`.")
+				if debug { print("SQLite: Failed to delete from `album_artists`.") }
 			}
 			sqlite3_finalize(statement)
 		}
@@ -415,7 +416,7 @@ final class AppDB {
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(ID))
 			if sqlite3_step(statement) != SQLITE_DONE {
-				print("SQLite: Failed to delete from `artists`.")
+				if debug { print("SQLite: Failed to delete from `artists`.") }
 			}
 			sqlite3_finalize(statement)
 		}
@@ -487,7 +488,7 @@ final class AppDB {
 			}
 			sqlite3_finalize(statement)
 		}
-		print("Artists in db: \(artists.count)")
+		if debug { print("Artists in db: \(artists.count)") }
 		disconnect()
 	}
 	
@@ -502,7 +503,7 @@ final class AppDB {
 			}
 			sqlite3_finalize(statement)
 		}
-		print("Pending artists in db: \(pendingArtists.count)")
+		if debug { print("Pending artists in db: \(pendingArtists.count)") }
 		disconnect()
 		return pendingArtists
 	}
@@ -529,14 +530,14 @@ final class AppDB {
 			do {
 				try NSFileManager.defaultManager().removeItemAtPath(artworkPath)
 			} catch _ {
-				print("Failed to remove artwork: \(hash).")
+				if debug { print("Failed to remove artwork: \(hash).") }
 			}
 		}
 		if NSFileManager.defaultManager().fileExistsAtPath(artworkPathHD) {
 			do {
 				try NSFileManager.defaultManager().removeItemAtPath(artworkPathHD)
 			} catch _ {
-				print("Failed to remove HD artwork: \(hash).")
+				if debug { print("Failed to remove HD artwork: \(hash).") }
 			}
 		}
 	}
@@ -554,7 +555,7 @@ final class AppDB {
 		let query = "DELETE FROM \(table)"
 		var errMsg: UnsafeMutablePointer<Int8> = nil
 		if sqlite3_exec(database, query, nil, nil, &errMsg) != SQLITE_OK {
-			print("SQLite: \(String.fromCString(UnsafePointer<Int8>(errMsg)))")
+			if debug { print("SQLite: \(String.fromCString(UnsafePointer<Int8>(errMsg)))") }
 		}
 		disconnect()
 	}

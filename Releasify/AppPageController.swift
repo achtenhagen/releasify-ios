@@ -139,6 +139,7 @@ class AppPageController: UIPageViewController {
 	
 	func addSubscription (errorHandler: ((error: ErrorType) -> Void)) {
 		responseArtists = [NSDictionary]()
+		var artistFound = false
 		let actionSheetController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
 		let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 		actionSheetController.addAction(cancelAction)
@@ -157,7 +158,7 @@ class AppPageController: UIPageViewController {
 					guard let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary else {
 						errorHandler(error: API.Error.FailedToParseJSON)
 						return
-					}
+					}					
 					
 					guard let pendingArtists: [NSDictionary] = json["pending"] as? [NSDictionary] else {
 						errorHandler(error: API.Error.FailedToParseJSON)
@@ -171,9 +172,11 @@ class AppPageController: UIPageViewController {
 					
 					for artist in pendingArtists {
 						if let uniqueID = artist["iTunesUniqueID"] as? Int {
-							if AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
-								self.responseArtists.append(artist)
+							if AppDB.sharedInstance.getArtistByUniqueID(uniqueID) > 0 {
+								artistFound = true
+								continue
 							}
+							self.responseArtists.append(artist)
 						}
 					}
 					
@@ -188,6 +191,14 @@ class AppPageController: UIPageViewController {
 					
 					if self.responseArtists.count > 0 {
 						self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
+					}
+					
+					if artistFound && self.responseArtists.count == 0 {
+						let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
+						notification.title.text = "Unable to add subscription"
+						notification.subtitle.text = "you are already subscribed to this artist."
+						self.view.addSubview(notification)
+						NotificationQueue.sharedInstance.add(notification)
 					}
 					
 					},

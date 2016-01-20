@@ -10,6 +10,7 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+	let debug = true
 	var window: UIWindow?
 	var userID = 0
 	var userDeviceToken: String?
@@ -29,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String) + " (" + (NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as! String) + ")"
 		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")		
 		
+		// Handle Reset Case
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
 		if reset {
 			AppDB.sharedInstance.reset()
@@ -36,6 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
 			NSUserDefaults.standardUserDefaults().setValue(nil, forKey: "contentHash")
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "reset")
+			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "removeExpiredAlbums")
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
 		}

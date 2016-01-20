@@ -79,7 +79,7 @@ final class API {
 				case 204:
 					if let handler: Void = successHandler?(self.newItems) { handler }
 				case 400:
-					// Request new ID
+					// Request new ID (v1.1)
 					break
 				case 403:
 					errorHandler(error: Error.Unauthorized)
@@ -282,7 +282,7 @@ final class API {
 				return
 			}
 			
-			print("HTTP status code: \(response.statusCode)")
+			if self.appDelegate.debug { print("HTTP status code: \(response.statusCode)") }
 			successHandler(statusCode: response.statusCode, data: data)
 		})
 	}

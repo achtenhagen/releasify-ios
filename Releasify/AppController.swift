@@ -32,8 +32,10 @@ final class AppController: UINavigationController {
 		navBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)]
 		navBarAppearance.translucent = false
 		
-		print("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications!.count)")
-		print("App Controller loaded.")
+		if appDelegate.debug {
+			print("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications!.count)")
+			print("App Controller loaded.")
+		}
 	}
 	
 	override func didReceiveMemoryWarning () {
