@@ -2152,9 +2152,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Iyy-Lr-QfG"/>
         <segue reference="VIU-TC-0UL"/>
         <segue reference="ajD-EV-H55"/>
+        <segue reference="3v7-nH-bJu"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

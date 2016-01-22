@@ -186,7 +186,7 @@ extension SubscriptionController: UITableViewDelegate {
 			footerLabel.alpha = 0
 			footerLabel.font = UIFont(name: footerLabel.font.fontName, size: 14)
 			footerLabel.textColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.2)
-			footerLabel.text = "\(filteredData.count) Artists"
+			footerLabel.text = filteredData.count == 1 ? "\(filteredData.count) Artist" : "\(filteredData.count) Artists"
 			footerLabel.textAlignment = NSTextAlignment.Center
 			footerLabel.adjustsFontSizeToFitWidth = true
 			footerLabel.sizeToFit()

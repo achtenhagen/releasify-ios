@@ -101,6 +101,14 @@ class AlbumController: UIViewController {
 			emptySubtitle.hidden = false
 		}
 		
+		if AppDB.sharedInstance.albums[0] == nil && AppDB.sharedInstance.albums[1] == nil && AppDB.sharedInstance.artists.count > 0 {
+			emptyTitle.text = "You have no albums yet."
+			emptySubtitle.text = "Check back soon for new content!"
+		}  else {
+			emptyTitle.text = "You have no subscriptions yet."
+			emptySubtitle.text = "Tap the "+" button above to add one."
+		}
+		
 		if !appDelegate.completedRefresh {
 			refresh()
 		}
@@ -469,7 +477,7 @@ extension AlbumController: UICollectionViewDataSource {
 			} else {
 				cell.timeLeft.text = "\(Int(hours)) hours"
 				if Int(hours) == 1  {
-					cell.timeLeft.text = "\(Int(days)) hour"
+					cell.timeLeft.text = "\(Int(hours)) hour"
 				}
 			}
 		} else if Int(minutes) > 0 && Int(minutes) <= 60 {
