@@ -15,6 +15,7 @@ class SubscriptionController: UIViewController {
 	var searchController: UISearchController!
 	var filteredData: [Artist]!
 	var selectedArtist: Artist?
+	var footerLabel: UILabel!
 	
 	@IBOutlet weak var subscriptionsTable: UITableView!
 	
@@ -127,6 +128,14 @@ class SubscriptionController: UIViewController {
 			detailController.artist = selectedArtist
 		}
 	}
+	
+	func scrollViewDidScroll(scrollView: UIScrollView) {
+		if subscriptionsTable.contentOffset.y >= (subscriptionsTable.contentSize.height - subscriptionsTable.bounds.size.height) {
+			footerLabel.fadeIn()
+		} else if footerLabel != nil && footerLabel.alpha == 1.0 {
+			footerLabel.fadeOut()
+		}
+	}
 }
 
 // MARK: - UITableViewDataSource
@@ -172,15 +181,18 @@ extension SubscriptionController: UITableViewDelegate {
 	func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 		let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.size.width, height: 40))
 		footerView.backgroundColor = UIColor.clearColor()
-		let label = UILabel()
-		label.font = UIFont(name: label.font.fontName, size: 14)
-		label.textColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.2)
-		label.text = "\(filteredData.count) Artists"
-		label.textAlignment = NSTextAlignment.Center
-		label.adjustsFontSizeToFitWidth = true
-		label.sizeToFit()
-		label.center = CGPoint(x: view.frame.size.width / 2, y: (footerView.frame.size.height / 2) - 7)
-		footerView.addSubview(label)
+		if filteredData.count > 0 {
+			footerLabel = UILabel()
+			footerLabel.alpha = 0
+			footerLabel.font = UIFont(name: footerLabel.font.fontName, size: 14)
+			footerLabel.textColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.2)
+			footerLabel.text = "\(filteredData.count) Artists"
+			footerLabel.textAlignment = NSTextAlignment.Center
+			footerLabel.adjustsFontSizeToFitWidth = true
+			footerLabel.sizeToFit()
+			footerLabel.center = CGPoint(x: view.frame.size.width / 2, y: (footerView.frame.size.height / 2) - 7)
+			footerView.addSubview(footerLabel)
+		}
 		return footerView
 	}
 }
@@ -205,5 +217,19 @@ extension SubscriptionController: UISearchResultsUpdating {
 	func updateSearchResultsForSearchController(searchController: UISearchController) {
 		filterContentForSearchText(searchController.searchBar.text!)
 		subscriptionsTable.reloadData()
+	}
+}
+
+// Mark: - UIView extension
+extension UIView {
+	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: ((Bool) -> Void) = { (finished: Bool) -> Void in }) {
+		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+			self.alpha = 1.0
+			}, completion: completion) }
+	
+	func fadeOut(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in} ) {
+		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+			self.alpha = 0.0
+			}, completion: completion)
 	}
 }
