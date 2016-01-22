@@ -21,7 +21,7 @@ class SubscriptionDetailController: UIViewController {
 	@IBAction func removeArtist(sender: AnyObject) {
 		let alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
 		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-		alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
+		alert.addAction(UIAlertAction(title: "Remove", style: .Destructive, handler: { action in
 			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(self.artist!.iTunesUniqueID)"
 			API.sharedInstance.sendRequest(API.Endpoint.removeArtist.url(), postString: postString, successHandler: { (statusCode, data) in
 				if statusCode != 204 {
@@ -38,7 +38,7 @@ class SubscriptionDetailController: UIViewController {
 							}
 						}
 					}
-					NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+					self.navigationController?.navigationBar.items![0].leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 					self.appDelegate.contentHash = nil
 					self.performSegueWithIdentifier("UnwindToSubscriptionsSegue", sender: self)
 				})

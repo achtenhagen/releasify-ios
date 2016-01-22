@@ -18,6 +18,7 @@ class AlbumController: UIViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let albumCellReuseIdentifier = "AlbumCell"
+	var notificationBarItem: UIBarButtonItem?
 	var albumCollectionLayout: UICollectionViewFlowLayout!
 	var selectedAlbum: Album!
 	var tmpArtwork: [String:UIImage]?
@@ -32,6 +33,7 @@ class AlbumController: UIViewController {
 	override func viewDidLoad () {
 		super.viewDidLoad()
 		tmpArtwork = [String:UIImage]()
+		notificationBarItem = navigationController?.navigationBar.items![0].leftBarButtonItem
 		
 		if #available(iOS 9.0, *) {
 		    if traitCollection.forceTouchCapability == .Available {
@@ -111,6 +113,7 @@ class AlbumController: UIViewController {
 	
 	override func viewWillAppear (animated: Bool) {
 		albumCollectionView.scrollsToTop = true
+		notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 	}
 	
 	override func viewWillDisappear (animated: Bool) {
@@ -153,7 +156,7 @@ class AlbumController: UIViewController {
 				}
 				NotificationQueue.sharedInstance.add(notification)
 			}
-			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+			self.notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 			},
 			errorHandler: { error in
 				self.refreshControl.endRefreshing()
@@ -276,7 +279,7 @@ class AlbumController: UIViewController {
 						let ID = userInfoCurrent["albumID"]! as! Int
 						if ID == albumID {
 							UIApplication.sharedApplication().cancelLocalNotification(notification)
-							NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+							self.notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 							break
 						}
 					}

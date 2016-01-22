@@ -149,7 +149,7 @@ class AlbumDetailController: UIViewController {
 					let ID = userInfoCurrent["albumID"]! as! Int
 					if ID == self.album?.ID {
 						UIApplication.sharedApplication().cancelLocalNotification(notification)
-						NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+						self.navigationController?.navigationBar.items![0].leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 						break
 					}
 				}

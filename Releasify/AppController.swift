@@ -17,7 +17,6 @@ final class AppController: UINavigationController {
 		super.viewDidLoad()
 		
 		AppDB.sharedInstance.getArtists()
-		AppDB.sharedInstance.getAlbums()
 		AppDB.sharedInstance.getPendingArtists()
 		
 		if appDelegate.removeExpiredAlbums {

@@ -10,6 +10,7 @@ import UIKit
 
 class SubscriptionController: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	var notificationBarItem: UIBarButtonItem?
 	var refreshControl: UIRefreshControl!
 	var searchController: UISearchController!
 	var filteredData: [Artist]!
@@ -51,6 +52,7 @@ class SubscriptionController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
+		notificationBarItem = navigationController?.navigationBar.items![0].leftBarButtonItem
 		refreshControl = UIRefreshControl()
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
@@ -58,9 +60,13 @@ class SubscriptionController: UIViewController {
 		subscriptionsTable.addSubview(refreshControl)
 	}
 	
-	override func viewWillAppear(animated: Bool) {
+	override func viewDidAppear(animated: Bool) {
 		reloadSubscriptions()
+	}
+	
+	override func viewWillAppear(animated: Bool) {
 		subscriptionsTable.scrollsToTop = true
+		notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
@@ -82,7 +88,7 @@ class SubscriptionController: UIViewController {
 		API.sharedInstance.refreshContent({ newItems in
 			self.reloadSubscriptions()
 			self.refreshControl.endRefreshing()
-			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
+			self.notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 			},
 			errorHandler: { error in
 				self.refreshControl.endRefreshing()
@@ -183,10 +189,14 @@ extension SubscriptionController: UITableViewDelegate {
 extension SubscriptionController: UISearchBarDelegate {
 	func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
 		searchController.searchBar.backgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
+		navigationController?.navigationBar.items![0].leftBarButtonItem?.enabled = false
+		navigationController?.navigationBar.items![0].rightBarButtonItem?.enabled = false
 	}
 	
 	func searchBarTextDidEndEditing(searchBar: UISearchBar) {
 		searchController.searchBar.backgroundColor = UIColor.clearColor()
+		notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
+		navigationController?.navigationBar.items![0].rightBarButtonItem?.enabled = true
 	}
 }
 

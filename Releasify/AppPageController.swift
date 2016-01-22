@@ -25,6 +25,7 @@ class AppPageController: UIPageViewController {
 	var keyword: String!
 	
 	@IBOutlet weak var notificationsBtn: UIBarButtonItem!
+	@IBOutlet var addSubscriptionBtn: UIBarButtonItem!
 	
 	@IBAction func addSubscription(sender: AnyObject) {
 		mediaQuery.groupingType = .AlbumArtist
@@ -88,10 +89,9 @@ class AppPageController: UIPageViewController {
 	
 	override func viewDidLoad () {
 		dataSource = self
-		delegate = self
+		delegate = self		
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscriptionFromShortcutItem", name: "addSubscriptionShortcutItem", object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"updateNotificationButton", name: "updateNotificationButton", object: nil)
 		
 		let startingViewController = viewControllerAtIndex(0)
 		setViewControllers([startingViewController!], direction: .Forward, animated: false, completion: nil)
@@ -126,11 +126,6 @@ class AppPageController: UIPageViewController {
 			return subscriptionsController
 		}
 		return nil
-	}
-	
-	// MARK: - Determine state of left bar button item
-	func updateNotificationButton () {
-		notificationsBtn.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 	}
 	
 	// MARK: - Handle 3D Touch quick action

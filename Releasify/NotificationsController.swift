@@ -17,9 +17,7 @@ class NotificationsController: UIViewController {
 	
 	@IBAction func closeView(sender: AnyObject) {
 		notificationsTable.setEditing(false, animated: false)
-		dismissViewControllerAnimated(true, completion: {
-			NSNotificationCenter.defaultCenter().postNotificationName("updateNotificationButton", object: nil, userInfo: nil)
-		})
+		dismissViewControllerAnimated(true, completion: nil)
 	}
 	
 	override func setEditing (editing: Bool, animated: Bool) {
