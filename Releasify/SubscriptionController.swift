@@ -130,7 +130,7 @@ class SubscriptionController: UIViewController {
 	}
 	
 	func scrollViewDidScroll(scrollView: UIScrollView) {
-		if subscriptionsTable.contentOffset.y >= (subscriptionsTable.contentSize.height - subscriptionsTable.bounds.size.height) {
+		if footerLabel != nil && subscriptionsTable.contentOffset.y >= (subscriptionsTable.contentSize.height - subscriptionsTable.bounds.size.height) {
 			footerLabel.fadeIn()
 		} else if footerLabel != nil && footerLabel.alpha == 1.0 {
 			footerLabel.fadeOut()
