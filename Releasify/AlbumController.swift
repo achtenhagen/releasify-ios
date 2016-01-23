@@ -74,7 +74,7 @@ class AlbumController: UIViewController {
 		refreshControl = UIRefreshControl()
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
-		albumCollectionView.addSubview(refreshControl)
+		albumCollectionView.addSubview(refreshControl)				
 		
 		// Process remote notification payload
 		if let remoteContent = appDelegate.remoteNotificationPayload {
@@ -84,14 +84,16 @@ class AlbumController: UIViewController {
 		// Process local notification payload
 		if let localContent = appDelegate.localNotificationPayload?["albumID"] as? Int {
 			notificationAlbumID = localContent
-			for album in AppDB.sharedInstance.albums[1] as[Album]! {
-				if album.ID == notificationAlbumID! {
-					selectedAlbum = album
-					break
+			if AppDB.sharedInstance.albums[1] != nil {
+				for album in AppDB.sharedInstance.albums[1] as[Album]! {
+					if album.ID == notificationAlbumID! {
+						selectedAlbum = album
+						break
+					}
 				}
-			}
-			if selectedAlbum.ID == notificationAlbumID! {
-				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+				if selectedAlbum.ID == notificationAlbumID! {
+					self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+				}
 			}
 		}
 		
@@ -117,6 +119,13 @@ class AlbumController: UIViewController {
 	override func viewDidAppear (animated: Bool) {
 		AppDB.sharedInstance.getAlbums()
 		albumCollectionView.reloadData()
+		if AppDB.sharedInstance.albums[0]?.count == 0 && AppDB.sharedInstance.albums[1]?.count == 0 && AppDB.sharedInstance.artists.count > 0 {
+			emptyTitle.text = "You have no albums yet."
+			emptySubtitle.text = "Check back soon for new content!"
+		} else {
+			emptyTitle.text = "You have no subscriptions yet."
+			emptySubtitle.text = "Tap the "+" button above to add one."
+		}
 	}
 	
 	override func viewWillAppear (animated: Bool) {

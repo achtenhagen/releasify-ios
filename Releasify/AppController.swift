@@ -16,6 +16,7 @@ final class AppController: UINavigationController {
 	override func viewDidLoad () {
 		super.viewDidLoad()
 		
+		AppDB.sharedInstance.getAlbums()
 		AppDB.sharedInstance.getArtists()
 		AppDB.sharedInstance.getPendingArtists()
 		
