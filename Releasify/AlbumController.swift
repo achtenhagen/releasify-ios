@@ -124,7 +124,7 @@ class AlbumController: UIViewController {
 			emptySubtitle.text = "Check back soon for new content!"
 		} else {
 			emptyTitle.text = "You have no subscriptions yet."
-			emptySubtitle.text = "Tap the "+" button above to add one."
+			emptySubtitle.text = "Tap the + button above to add one."
 		}
 	}
 	

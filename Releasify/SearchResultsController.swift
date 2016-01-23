@@ -14,6 +14,7 @@ class SearchResultsController: UIViewController {
 	var artwork = [String:UIImage]()
 	var selectedArtists = NSMutableArray()
 	var keyword: String!
+	var needsRefresh = false
 	
 	@IBOutlet weak var navBar: UINavigationBar!
 	@IBOutlet weak var infoLabel: UILabel!
@@ -26,7 +27,9 @@ class SearchResultsController: UIViewController {
 	// MARK: - Post notification if the user has added a new subscription
 	func closeView () {
 		dismissViewControllerAnimated(true, completion: { bool in
-			NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+			if self.needsRefresh {
+				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+			}
 		})
 	}
 	
@@ -71,6 +74,7 @@ class SearchResultsController: UIViewController {
 					if self.artists.count == self.selectedArtists.count {
 						self.closeView()
 					}
+					self.needsRefresh = true
 				}
 				},
 				errorHandler: { (error) in
