@@ -8,7 +8,7 @@
 
 import UIKit
 
-let debug = true
+let debug = false
 let documents = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, .UserDomainMask, true)[0] as String
 let databasePath = documents + "/db.sqlite"
 let artworkDirectoryPath = documents + "/artwork"

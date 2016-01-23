@@ -10,7 +10,7 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-	let debug = true
+	let debug = false
 	var window: UIWindow?
 	var userID = 0
 	var userDeviceToken: String?
