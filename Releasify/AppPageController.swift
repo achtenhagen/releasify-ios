@@ -43,7 +43,7 @@ class AppPageController: UIPageViewController {
 			controller.addAction(addAction)
 			controller.addAction(importAction)
 			controller.addAction(cancelAction)
-			presentViewController(controller, animated: true, completion: nil)
+			self.presentViewController(controller, animated: true, completion: nil)
 		} else {
 			self.addSubscription({ error in
 				self.handleAddSubscriptionError(error)
@@ -57,11 +57,11 @@ class AppPageController: UIPageViewController {
 		if sender.selectedSegmentIndex == 0 {
 			let startVC = viewControllerAtIndex(0) as! AlbumController
 			viewControllers = NSArray(object: startVC)
-			setViewControllers(viewControllers as? [UIViewController], direction: .Reverse, animated: true, completion: nil)
+			self.setViewControllers(viewControllers as? [UIViewController], direction: .Reverse, animated: true, completion: nil)
 		} else {
 			let startVC = viewControllerAtIndex(1) as! SubscriptionController
 			viewControllers = NSArray(object: startVC)
-			setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
+			self.setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
 		}
 	}
 	
@@ -81,20 +81,20 @@ class AppPageController: UIPageViewController {
 		segmentedControl.addTarget(self, action: "changeView:", forControlEvents: .ValueChanged)
 		
 		containerBar.addSubview(segmentedControl)
-		view.addSubview(containerBar)
+		self.view.addSubview(containerBar)
 		
 		albumController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AlbumController") as! AlbumController
 		subscriptionsController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") as! SubscriptionController
 	}
 	
 	override func viewDidLoad () {
-		dataSource = self
-		delegate = self		
+		self.dataSource = self
+		self.delegate = self
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscriptionFromShortcutItem", name: "addSubscriptionShortcutItem", object: nil)
 		
 		let startingViewController = viewControllerAtIndex(0)
-		setViewControllers([startingViewController!], direction: .Forward, animated: false, completion: nil)
+		self.setViewControllers([startingViewController!], direction: .Forward, animated: false, completion: nil)
 		
 		let gradient = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
@@ -102,7 +102,7 @@ class AppPageController: UIPageViewController {
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		view.layer.insertSublayer(gradient, atIndex: 0)
+		self.view.layer.insertSublayer(gradient, atIndex: 0)
 		
 		if let shortcutItem = appDelegate.shortcutKeyDescription {
 			if shortcutItem == "add-subscription" {
@@ -212,7 +212,7 @@ class AppPageController: UIPageViewController {
 			textField.autocapitalizationType = .Words
 			textField.placeholder = "e.g., Armin van Buuren"
 		}
-		presentViewController(actionSheetController, animated: true, completion: nil)
+		self.presentViewController(actionSheetController, animated: true, completion: nil)
 	}
 	
 	// MARK: - Handle failed subscription
@@ -277,6 +277,6 @@ extension AppPageController: UIPageViewControllerDelegate {
 // MARK: - AppPageControllerDelegate
 extension AppPageController: AppPageControllerDelegate {
 	func addNotificationView (notification: Notification) {
-		view.addSubview(notification)
+		self.view.addSubview(notification)
 	}
 }

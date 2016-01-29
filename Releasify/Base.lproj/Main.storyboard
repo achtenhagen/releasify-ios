@@ -486,20 +486,20 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="rk1-hP-gm8" firstAttribute="top" secondItem="ldc-8S-yBm" secondAttribute="bottom" constant="50" id="cBR-0E-5TN"/>
-                            <constraint firstItem="rk1-hP-gm8" firstAttribute="bottom" secondItem="G3r-01-7gM" secondAttribute="top" id="hnG-VZ-onx"/>
-                            <constraint firstAttribute="trailing" secondItem="rk1-hP-gm8" secondAttribute="trailing" id="qme-7p-ZwX"/>
-                            <constraint firstItem="rk1-hP-gm8" firstAttribute="leading" secondItem="OKZ-8c-Vuc" secondAttribute="leading" id="u4k-XE-ZlL"/>
+                            <constraint firstAttribute="trailing" secondItem="rk1-hP-gm8" secondAttribute="trailing" id="0Ez-3o-Ore"/>
+                            <constraint firstItem="rk1-hP-gm8" firstAttribute="top" secondItem="ldc-8S-yBm" secondAttribute="bottom" constant="50" id="Xsc-JJ-jAq"/>
+                            <constraint firstItem="rk1-hP-gm8" firstAttribute="bottom" secondItem="G3r-01-7gM" secondAttribute="top" id="YNW-MN-CHA"/>
+                            <constraint firstItem="rk1-hP-gm8" firstAttribute="leading" secondItem="OKZ-8c-Vuc" secondAttribute="leading" id="jnp-vA-lPH"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="rk1-hP-gm8"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="cBR-0E-5TN"/>
-                                <exclude reference="hnG-VZ-onx"/>
-                                <exclude reference="qme-7p-ZwX"/>
-                                <exclude reference="u4k-XE-ZlL"/>
+                                <exclude reference="0Ez-3o-Ore"/>
+                                <exclude reference="Xsc-JJ-jAq"/>
+                                <exclude reference="YNW-MN-CHA"/>
+                                <exclude reference="jnp-vA-lPH"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -507,13 +507,14 @@
                                 <include reference="rk1-hP-gm8"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="cBR-0E-5TN"/>
-                                <include reference="hnG-VZ-onx"/>
-                                <include reference="qme-7p-ZwX"/>
-                                <include reference="u4k-XE-ZlL"/>
+                                <include reference="0Ez-3o-Ore"/>
+                                <include reference="Xsc-JJ-jAq"/>
+                                <include reference="YNW-MN-CHA"/>
+                                <include reference="jnp-vA-lPH"/>
                             </mask>
                         </variation>
                     </view>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>

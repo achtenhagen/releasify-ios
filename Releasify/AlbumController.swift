@@ -37,7 +37,7 @@ class AlbumController: UIViewController {
 		
 		if #available(iOS 9.0, *) {
 		    if traitCollection.forceTouchCapability == .Available {
-    			registerForPreviewingWithDelegate(self, sourceView: albumCollectionView)
+    			self.registerForPreviewingWithDelegate(self, sourceView: albumCollectionView)
 			} else {
 				registerLongPressGesture()
 			}
@@ -327,7 +327,7 @@ class AlbumController: UIViewController {
 			}
 			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 			controller.addAction(cancelAction)
-			presentViewController(controller, animated: true, completion: nil)
+			self.presentViewController(controller, animated: true, completion: nil)
 		}
 	}
 	
@@ -526,7 +526,7 @@ extension AlbumController: UICollectionViewDelegate {
 		var section = indexPath.section
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
 		selectedAlbum = AppDB.sharedInstance.albums[section]![indexPath.row]
-		performSegueWithIdentifier("AlbumViewSegue", sender: self)
+		self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 	}
 	
 	func collectionView (collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
@@ -577,6 +577,6 @@ extension AlbumController: UIViewControllerPreviewingDelegate {
 	}
 	
 	func previewingContext (previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
-		showViewController(viewControllerToCommit, sender: self)
+		self.showViewController(viewControllerToCommit, sender: self)
 	}
 }

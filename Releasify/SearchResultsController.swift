@@ -26,7 +26,7 @@ class SearchResultsController: UIViewController {
 	
 	// MARK: - Post notification if the user has added a new subscription
 	func closeView () {
-		dismissViewControllerAnimated(true, completion: { bool in
+		self.dismissViewControllerAnimated(true, completion: { bool in
 			if self.needsRefresh {
 				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 			}
@@ -48,8 +48,8 @@ class SearchResultsController: UIViewController {
 		gradient.locations = [0.0 , 1.0]
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		view.layer.insertSublayer(gradient, atIndex: 0)
+		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
+		self.view.layer.insertSublayer(gradient, atIndex: 0)
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -165,7 +165,7 @@ extension SearchResultsController: UITableViewDelegate {
 		let artistID = (artists[section]["iTunesUniqueID"] as? Int)!
 		headerView.contentView.backgroundColor = UIColor.clearColor()
 		headerView.artistLabel.text = artists[section]["title"] as? String
-		headerView.confirmBtn.tag = section
+		headerView.confirmBtn.tag = section		
 		headerView.confirmBtn.addTarget(self, action: "confirmArtist:", forControlEvents: .TouchUpInside)
 		if selectedArtists.containsObject(artistID) {
 			headerView.confirmBtn.enabled = false

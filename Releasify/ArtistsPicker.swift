@@ -12,7 +12,8 @@ import MediaPlayer
 class ArtistsPicker: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let blacklist: NSArray = ["Various Artists", "Verschiedene Interpreten"]
-	var keys: NSMutableArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"]
+	let keys: [String] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"]
+	var sections: [String]!
 	var artists = [String: [String]]()
 	var checkedStates = [String: [Int: Bool]]()
 	var filteredArtists = [String]()
@@ -76,11 +77,10 @@ class ArtistsPicker: UIViewController {
 			}
 		}
 		
-		if artists.count < keys.count {
-			for (_, section) in keys.enumerate() {
-				if artists.indexForKey(section as! String) == nil {
-					keys.removeObject(section)
-				}
+		sections = [String]()
+		for (_, section) in keys.enumerate() {
+			if artists[section] != nil {
+				sections.append(section)
 			}
 		}
 		
@@ -104,7 +104,7 @@ class ArtistsPicker: UIViewController {
 		}
 		selectAllBtn.title = "Select All"
 		progressBar.setProgress(0, animated: false)
-		view.userInteractionEnabled = true
+		self.view.userInteractionEnabled = true
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -150,7 +150,7 @@ class ArtistsPicker: UIViewController {
 			batches.append(postString.stringByAppendingString(currentBatch))
 		}
 		
-		view.userInteractionEnabled = false
+		self.view.userInteractionEnabled = false
 		setupActivityView()
 		indicatorView.startAnimating()
 		UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -238,18 +238,18 @@ class ArtistsPicker: UIViewController {
 		activityView.userInteractionEnabled = false
 		indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
 		indicatorView.center = view.center
-		view.addSubview(activityView)
-		view.addSubview(indicatorView)
+		self.view.addSubview(activityView)
+		self.view.addSubview(indicatorView)
 	}
 	
 	// MARK: - Get section containing a given artist
 	func getSectionForArtistName (artistName: String) -> (index: Int, section: String) {
 		for (index, value) in keys.enumerate() {
-			if artistName.uppercaseString.hasPrefix(value as! String) || index == keys.count - 1 {
-				return (index, value as! String)
+			if artistName.uppercaseString.hasPrefix(value) || index == keys.count - 1 {
+				return (index, value)
 			}
 		}
-		return (0, keys[0] as! String)
+		return (0, keys[0])
 	}
 	
 	// MARK: - Set the state of all elements in given section
@@ -267,6 +267,7 @@ class ArtistsPicker: UIViewController {
 		return false
 	}
 	
+	// MARK: - Search function for table view
 	func filterContentForSearchText(searchText: String) {
 		filteredArtists.removeAll(keepCapacity: true)
 		filteredCheckedStates.removeAll(keepCapacity: true)
@@ -275,11 +276,11 @@ class ArtistsPicker: UIViewController {
 				let range = artist.rangeOfString(searchText, options: .CaseInsensitiveSearch)
 				return range != nil
 			}
-			for key in keys {
-				if artists[key as! String] == nil {
-					artists[key as! String] = [String]()
+			for key in sections {
+				if artists[key] == nil {
+					artists[key] = [String]()
 				}
-				let namesForKey = artists[key as! String]!, matches = namesForKey.filter(filter)
+				let namesForKey = artists[key]!, matches = namesForKey.filter(filter)
 				filteredArtists += matches
 			}
 		}
@@ -310,48 +311,49 @@ class ArtistsPicker: UIViewController {
 		searchController.searchBar.translucent = false
 		searchController.searchBar.autocapitalizationType = .Words
 		searchController.searchBar.keyboardAppearance = .Dark
-		definesPresentationContext = true
 		searchController.searchBar.sizeToFit()
 		artistsTable.tableHeaderView = searchController.searchBar
 		let backgroundView = UIView(frame: view.bounds)
 		backgroundView.backgroundColor = UIColor.clearColor()
 		artistsTable.backgroundView = backgroundView
+		self.definesPresentationContext = true
 	}
 }
 
 // MARK: - UITableViewDataSource
 extension ArtistsPicker: UITableViewDataSource {
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		if searchController.active { return 1 }
-		return keys.count
+		return searchController.active ? 1 : sections.count
 	}
 	
 	func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		return keys[section] as? String
+		return sections[section]
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if searchController.active { return filteredArtists.count }
-		return artists[keys[section] as! String] == nil ? 0 : artists[keys[section] as! String]!.count
+		return searchController.active ? filteredArtists.count : artists[sections[section]]!.count
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as UITableViewCell!
-		let section = keys[indexPath.section] as! String
+		let section = sections[indexPath.section]
 		cell.textLabel?.text = searchController.active ? filteredArtists[indexPath.row] : artists[section]![indexPath.row]
 		cell.accessoryType = .None
 		
 		if searchController.active {
-			if hasSelectedAll || filteredCheckedStates[indexPath.row] == true { cell.accessoryType = .Checkmark }
+			if hasSelectedAll || filteredCheckedStates[indexPath.row] == true {
+				cell.accessoryType = .Checkmark
+			}
 		} else {
-			if hasSelectedAll || checkedStates[section]?[indexPath.row]! == true { cell.accessoryType = .Checkmark }
+			if hasSelectedAll || checkedStates[section]?[indexPath.row]! == true {
+				cell.accessoryType = .Checkmark
+			}
 		}
 		return cell
 	}
 	
 	func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
-		if searchController.active { return nil }
-		return keys as NSArray as? [String]
+		return !searchController.active ? sections : nil
 	}
 }
 
@@ -364,13 +366,13 @@ extension ArtistsPicker: UITableViewDelegate {
 		lbl.font = UIFont(name: lbl.font.fontName, size: 16)
 		lbl.textColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1.0)
 		headerView.addSubview(lbl)
-		lbl.text = keys[section] as? String
+		lbl.text = sections[section]
 		if searchController.active { lbl.text = "Results (\(filteredArtists.count))" }
 		return headerView
 	}
 	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		let section = keys[indexPath.section] as! String
+		let section = sections[indexPath.section]
 		if searchController.active {
 			filteredCheckedStates[indexPath.row] = !filteredCheckedStates[indexPath.row]
 			tableViewCellComponent(filteredArtists[indexPath.row], set: true)
