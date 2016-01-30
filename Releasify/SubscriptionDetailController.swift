@@ -43,7 +43,7 @@ class SubscriptionDetailController: UIViewController {
 					self.performSegueWithIdentifier("UnwindToSubscriptionsSegue", sender: self)
 				})
 				},
-				errorHandler: { error in
+				errorHandler: { (error) in
 					AppDB.sharedInstance.addPendingArtist(self.artist!.ID)
 					self.handleError("Unable to remove subscription!", message: "Please try again later.", error: error)
 			})
@@ -83,7 +83,7 @@ class SubscriptionDetailController: UIViewController {
     }
 	
 	// MARK: - Error message handler
-	func handleError (title: String, message: String, error: ErrorType) {
+	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
@@ -100,7 +100,7 @@ class SubscriptionDetailController: UIViewController {
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
-	override func prepareForSegue (segue: UIStoryboardSegue, sender: AnyObject?) {
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "SubscriptionDetailCellSegue" {
 			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum

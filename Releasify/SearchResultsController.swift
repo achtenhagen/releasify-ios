@@ -25,7 +25,7 @@ class SearchResultsController: UIViewController {
 	}
 	
 	// MARK: - Post notification if the user has added a new subscription
-	func closeView () {
+	func closeView() {
 		self.dismissViewControllerAnimated(true, completion: { bool in
 			if self.needsRefresh {
 				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
@@ -57,7 +57,7 @@ class SearchResultsController: UIViewController {
 	}
 	
 	// MARK: - Handle artist confirmation
-	func confirmArtist (sender: UIButton) {
+	func confirmArtist(sender: UIButton) {
 		var artistID = 0		
 		if let id = (artists[sender.tag]["artistID"] as? Int) { artistID = id }
 		let artistTitle = (artists[sender.tag]["title"] as? String)!

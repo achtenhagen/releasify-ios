@@ -94,7 +94,7 @@ class SubscriptionController: UIViewController {
 			self.refreshControl.endRefreshing()
 			self.notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 			},
-			errorHandler: { error in
+			errorHandler: { (error) in
 				self.refreshControl.endRefreshing()
 				self.handleError("Unable to update!", message: "Please try again later.", error: error)
 		})

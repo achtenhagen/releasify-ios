@@ -30,7 +30,7 @@ class AlbumController: UIViewController {
 	@IBOutlet weak var emptyTitle: UILabel!
 	@IBOutlet weak var albumCollectionView: UICollectionView!
 	
-	override func viewDidLoad () {
+	override func viewDidLoad() {
 		super.viewDidLoad()
 		tmpArtwork = [String:UIImage]()
 		notificationBarItem = navigationController?.navigationBar.items![0].leftBarButtonItem
@@ -116,7 +116,7 @@ class AlbumController: UIViewController {
 		}
 	}
 	
-	override func viewDidAppear (animated: Bool) {
+	override func viewDidAppear(animated: Bool) {
 		AppDB.sharedInstance.getAlbums()
 		albumCollectionView.reloadData()
 		if AppDB.sharedInstance.albums[0]?.count == 0 && AppDB.sharedInstance.albums[1]?.count == 0 && AppDB.sharedInstance.artists.count > 0 {
@@ -128,17 +128,17 @@ class AlbumController: UIViewController {
 		}
 	}
 	
-	override func viewWillAppear (animated: Bool) {
+	override func viewWillAppear(animated: Bool) {
 		albumCollectionView.scrollsToTop = true
 		notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 	}
 	
-	override func viewWillDisappear (animated: Bool) {
+	override func viewWillDisappear(animated: Bool) {
 		albumCollectionView.scrollsToTop = false
 	}
 	
 	// MARK: - Refresh Content
-	func refresh () {
+	func refresh() {
 		API.sharedInstance.refreshContent({ newItems in
 			self.albumCollectionView.reloadData()
 			self.refreshControl.endRefreshing()
@@ -175,14 +175,14 @@ class AlbumController: UIViewController {
 			}
 			self.notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 			},
-			errorHandler: { error in
+			errorHandler: { (error) in
 				self.refreshControl.endRefreshing()
 				self.handleError("Unable to update!", message: "Please try again later.", error: error)
 		})
 	}
 	
 	// MARK: - Open album from a local notification
-	func showAlbumFromNotification (notification: NSNotification) {
+	func showAlbumFromNotification(notification: NSNotification) {
 		if let AlbumID = notification.userInfo!["albumID"]! as? Int {
 			notificationAlbumID = AlbumID
 			for album in AppDB.sharedInstance.albums[1] as [Album]! {
@@ -198,12 +198,12 @@ class AlbumController: UIViewController {
 	}
 	
 	// MARK: - Open album from a remote notification
-	func showAlbumFromRemoteNotification (notification: NSNotification) {
+	func showAlbumFromRemoteNotification(notification: NSNotification) {
 		processRemoteNotificationPayload(notification.userInfo!)
 	}
 	
 	// MARK: - Process remote notification payload
-	func processRemoteNotificationPayload (userInfo: NSDictionary) {
+	func processRemoteNotificationPayload(userInfo: NSDictionary) {
 		UIApplication.sharedApplication().applicationIconBadgeNumber--
 		if let albumID = userInfo["aps"]?["albumID"] as? Int {
 			API.sharedInstance.lookupAlbum(albumID, successHandler: { album in
@@ -220,14 +220,14 @@ class AlbumController: UIViewController {
 					}, errorHandler: {
 						self.handleError("Unable to download artwork!", message: "Please try again later.", error: API.Error.FailedToGetResource)
 				})
-				}, errorHandler: { error in
+				}, errorHandler: { (error) in
 					self.handleError("Failed to lookup album!", message: "Please try again later.", error: error)
 			})
 		}
 	}
 	
 	// MARK: - Error Message Handler
-	func handleError (title: String, message: String, error: ErrorType) {
+	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
@@ -245,12 +245,12 @@ class AlbumController: UIViewController {
 	}
 	
 	// MARK: - Compute the floor of 2 numbers
-	func component (x: Double, v: Double) -> Double {
+	func component(x: Double, v: Double) -> Double {
 		return floor(x / v)
 	}
 	
 	// MARK: - Handle purchase album
-	func purchaseAlbum (sender: UIButton) {
+	func purchaseAlbum(sender: UIButton) {
 		let albumID = sender.tag
 		guard let albumUrl = tmpUrl![albumID] else { return }
 		if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumUrl)!) {
@@ -259,14 +259,14 @@ class AlbumController: UIViewController {
 	}
 	
 	// MARK: - Register long press gesture if 3D Touch is unavailable
-	func registerLongPressGesture () {
+	func registerLongPressGesture() {
 		let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
 		longPressGesture.minimumPressDuration = 0.5
 		albumCollectionView.addGestureRecognizer(longPressGesture)
 	}
 	
 	// MARK: - Handle long press gesture
-	func longPressGestureRecognized (gesture: UIGestureRecognizer) {
+	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
 		let cellLocation = gesture.locationInView(albumCollectionView)
 		let indexPath = albumCollectionView.indexPathForItemAtPoint(cellLocation)
 		if indexPath == nil { return }
@@ -319,7 +319,7 @@ class AlbumController: UIViewController {
 						}
 						self.tmpArtwork?.removeValueForKey(hash)
 						self.albumCollectionView.reloadData()
-						}, errorHandler: { error in
+						}, errorHandler: { (error) in
 							self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
 					})
 				})
@@ -332,7 +332,7 @@ class AlbumController: UIViewController {
 	}
 	
 	// MARK: - Handle unsubscribe album
-	func unsubscribe_album (iTunesUniqueID: Int, successHandler: () -> Void, errorHandler: (error: ErrorType) -> Void) {
+	func unsubscribe_album(iTunesUniqueID: Int, successHandler: () -> Void, errorHandler: (error: ErrorType) -> Void) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
 		API.sharedInstance.sendRequest(API.Endpoint.removeAlbum.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 204 {
@@ -347,7 +347,7 @@ class AlbumController: UIViewController {
 	}
 	
 	// MARK: - Fetch Artwork
-	func fetchArtwork (hash: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
+	func fetchArtwork(hash: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
 		if hash.isEmpty { errorHandler(); return }
 		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
 		let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
@@ -363,7 +363,7 @@ class AlbumController: UIViewController {
 	}
 	
 	// MARK: - Return artwork image for each collection view cell
-	func getArtworkForCell (hash: String, completion: ((artwork: UIImage) -> Void)) {
+	func getArtworkForCell(hash: String, completion: ((artwork: UIImage) -> Void)) {
 		if AppDB.sharedInstance.checkArtwork(hash) {
 			tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
 		} else {
@@ -384,11 +384,11 @@ class AlbumController: UIViewController {
 		completion(artwork: tmpImage)
 	}
 	
-	override func didReceiveMemoryWarning () {
+	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 	}
 	
-	override func prepareForSegue (segue: UIStoryboardSegue, sender: AnyObject?) {
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "AlbumViewSegue" {
 			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
@@ -396,14 +396,14 @@ class AlbumController: UIViewController {
 	}
 	
 	// MARK: - Determine current collection view section (only called when there is a single section)
-	func sectionAtIndex () -> Int {
+	func sectionAtIndex() -> Int {
 		return AppDB.sharedInstance.albums[0]!.count > 0 ? 0 : 1
 	}
 }
 
 // MARK: - UICollectionViewDataSource
 extension AlbumController: UICollectionViewDataSource {
-	func numberOfSectionsInCollectionView (collectionView: UICollectionView) -> Int {
+	func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
 		var sections = 0
 		if AppDB.sharedInstance.albums[0]!.count > 0 {
 			sections++
@@ -436,14 +436,14 @@ extension AlbumController: UICollectionViewDataSource {
 		return sections
 	}
 	
-	func collectionView (collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+	func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 {
 			return AppDB.sharedInstance.albums[sectionAtIndex()]!.count
 		}
 		return AppDB.sharedInstance.albums[section]!.count
 	}
 	
-	func collectionView (collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell
 		var section = indexPath.section
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
@@ -522,18 +522,18 @@ extension AlbumController: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegate
 extension AlbumController: UICollectionViewDelegate {
-	func collectionView (collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 		var section = indexPath.section
 		if numberOfSectionsInCollectionView(albumCollectionView) == 1 { section = sectionAtIndex() }
 		selectedAlbum = AppDB.sharedInstance.albums[section]![indexPath.row]
 		self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 	}
 	
-	func collectionView (collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
+	func collectionView(collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
 		albumCollectionView.cellForItemAtIndexPath(indexPath)?.alpha = 0.8
 	}
 	
-	func collectionView (collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
+	func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
 		albumCollectionView.cellForItemAtIndexPath(indexPath)?.alpha = 1.0
 	}
 }
@@ -553,7 +553,7 @@ extension AlbumController: AlbumControllerDelegate {
 			}
 			self.tmpArtwork?.removeValueForKey(album.artwork)
 			self.albumCollectionView.reloadData()
-			}, errorHandler: { error in
+			}, errorHandler: { (error) in
 				self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
 		})
 	}
@@ -562,7 +562,7 @@ extension AlbumController: AlbumControllerDelegate {
 // MARK: - UIViewControllerPreviewingDelegate
 @available(iOS 9.0, *)
 extension AlbumController: UIViewControllerPreviewingDelegate {
-	func previewingContext (previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+	func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
 		guard let indexPath = albumCollectionView.indexPathForItemAtPoint(location), cell = albumCollectionView.cellForItemAtIndexPath(indexPath) else { return nil }
 		guard let albumDetailVC = storyboard?.instantiateViewControllerWithIdentifier("AlbumView") as? AlbumDetailController else { return nil }
 		var section = indexPath.section
@@ -576,7 +576,7 @@ extension AlbumController: UIViewControllerPreviewingDelegate {
 		return albumDetailVC
 	}
 	
-	func previewingContext (previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
+	func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
 		self.showViewController(viewControllerToCommit, sender: self)
 	}
 }
