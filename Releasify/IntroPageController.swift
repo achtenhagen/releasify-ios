@@ -56,6 +56,7 @@ class IntroPageController: UIPageViewController, UIPageViewControllerDelegate {
         super.didReceiveMemoryWarning()
     }
 	
+	// MARK: - Return index for view controller restoration identifier
 	func indexForRestorationIdentifier (restorationIdentifier: String) -> Int {
 		switch restorationIdentifier {
 		case "Intro02":
@@ -69,6 +70,7 @@ class IntroPageController: UIPageViewController, UIPageViewControllerDelegate {
 		}
 	}
 	
+	// MARK: - Return view controller for index
 	func viewControllerAtIndex(index: Int) -> UIViewController {
 		switch index {
 		case 1:

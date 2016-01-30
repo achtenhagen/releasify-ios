@@ -44,7 +44,11 @@ class Intro03Controller: UIViewController {
 		if view.bounds.height == 480 {
 			buttonBottomLayoutConstraint.constant = 0
 			imageTopLayoutConstraint.constant = 20
-		}		
+		}
+		if appDelegate.userID == 0 {
+			importButton.enabled = false
+			importButton.layer.opacity = 0.5
+		}
 		mediaQuery = MPMediaQuery.artistsQuery()
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishIntro", name: "finishIntroStep", object: nil)
     }

@@ -20,7 +20,7 @@ class SubscriptionController: UIViewController {
 	
 	@IBOutlet weak var subscriptionsTable: UITableView!
 	
-	@IBAction func unwindToSubscriptions (sender: UIStoryboardSegue) {
+	@IBAction func unwindToSubscriptions(sender: UIStoryboardSegue) {
 		AppDB.sharedInstance.getArtists()
 		reloadSubscriptions()
 	}
@@ -29,9 +29,11 @@ class SubscriptionController: UIViewController {
 		super.loadView()
 		filteredData = AppDB.sharedInstance.artists
 		searchController = UISearchController(searchResultsController: nil)
+		searchController.delegate = self
 		searchController.searchResultsUpdater = self
-		searchController.dimsBackgroundDuringPresentation = true
-		searchController.searchBar.delegate = self
+		searchController.definesPresentationContext = true
+		searchController.dimsBackgroundDuringPresentation = false
+		searchController.hidesNavigationBarDuringPresentation = false
 		searchController.searchBar.placeholder = "Search Artists"
 		searchController.searchBar.searchBarStyle = .Minimal
 		searchController.searchBar.barStyle = .Black
@@ -42,18 +44,17 @@ class SubscriptionController: UIViewController {
 		searchController.searchBar.translucent = false
 		searchController.searchBar.autocapitalizationType = .Words
 		searchController.searchBar.keyboardAppearance = .Dark
-		searchController.hidesNavigationBarDuringPresentation = false
 		searchController.searchBar.sizeToFit()
 		subscriptionsTable.tableHeaderView = searchController.searchBar
 		let backgroundView = UIView(frame: view.bounds)
 		backgroundView.backgroundColor = UIColor.clearColor()
 		subscriptionsTable.backgroundView = backgroundView
-		self.definesPresentationContext = true
 	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"updateStatusBarFrame", name: "updateStatusBarFrame", object: nil)
 		notificationBarItem = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		addBarItem = self.navigationController?.navigationBar.items![0].rightBarButtonItem
 		refreshControl = UIRefreshControl()
@@ -100,7 +101,7 @@ class SubscriptionController: UIViewController {
 	}
 	
 	// MARK: - Handle error messages
-	func handleError (title: String, message: String, error: ErrorType) {
+	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
@@ -199,15 +200,15 @@ extension SubscriptionController: UITableViewDelegate {
 	}
 }
 
-// MARK: - UISearchBarDelegate
-extension SubscriptionController: UISearchBarDelegate {
-	func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+// MARK: - UISearchControllerDelegate
+extension SubscriptionController: UISearchControllerDelegate {
+	func willPresentSearchController(searchController: UISearchController) {
 		searchController.searchBar.backgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
 		notificationBarItem?.enabled = false
 		addBarItem?.enabled = false
 	}
 	
-	func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+	func willDismissSearchController(searchController: UISearchController) {
 		searchController.searchBar.backgroundColor = UIColor.clearColor()
 		notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 		addBarItem?.enabled = true
@@ -224,11 +225,11 @@ extension SubscriptionController: UISearchResultsUpdating {
 
 // Mark: - UIView extension
 extension UIView {
-	func fadeIn (duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
+	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
 		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 1.0 }, completion: completion)
 	}
 	
-	func fadeOut (duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
+	func fadeOut(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
 		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 0.0 }, completion: completion)
 	}
 }

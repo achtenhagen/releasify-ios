@@ -383,13 +383,13 @@
         <!--Subscriptions-->
         <scene sceneID="IvS-dN-N2g">
             <objects>
-                <viewController storyboardIdentifier="SubscriptionController" title="Subscriptions" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hFU-gz-3m4" customClass="SubscriptionController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SubscriptionController" title="Subscriptions" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hFU-gz-3m4" customClass="SubscriptionController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ldc-8S-yBm"/>
                         <viewControllerLayoutGuide type="bottom" id="G3r-01-7gM"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="OKZ-8c-Vuc">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="64" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="rk1-hP-gm8">
@@ -514,6 +514,7 @@
                             </mask>
                         </variation>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
@@ -669,6 +670,7 @@
                             </mask>
                         </variation>
                     </view>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="artistsTable" destination="Ql3-f0-j8c" id="rcM-vv-wcj"/>
@@ -1685,6 +1687,8 @@ Swipe to get started.</string>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="imageTopLayoutConstraint" destination="Ob2-N8-VBm" id="tx4-5G-gaq"/>
+                        <outlet property="permissionBtn" destination="PJN-MK-B81" id="SOF-Wc-sbY"/>
+                        <outlet property="skipBtn" destination="WDI-yG-J56" id="lKL-za-h9e"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eaG-kw-OS3" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2154,7 +2158,7 @@ Swipe to get started.</string>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="VIU-TC-0UL"/>
-        <segue reference="ajD-EV-H55"/>
+        <segue reference="2xf-M1-LZa"/>
         <segue reference="3v7-nH-bJu"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

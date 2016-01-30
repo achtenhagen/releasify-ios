@@ -317,6 +317,11 @@ class ArtistsPicker: UIViewController {
 		backgroundView.backgroundColor = UIColor.clearColor()
 		artistsTable.backgroundView = backgroundView
 		self.definesPresentationContext = true
+		if #available(iOS 9.0, *) {
+			self.searchController.loadViewIfNeeded()
+		} else {
+			let _ = self.searchController.view
+		}
 	}
 }
 
