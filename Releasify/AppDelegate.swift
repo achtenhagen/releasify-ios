@@ -95,8 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString("<", withString: "", options: .LiteralSearch, range: nil)
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(">", withString: "", options: .LiteralSearch, range: nil)
 		userDeviceToken = deviceTokenString
-		if userID == 0 && userDeviceToken != nil {
+		if userDeviceToken != nil {
 			API.sharedInstance.register(deviceToken: userDeviceToken, allowExplicitContent, successHandler: { (userID, userUUID) in
+				if self.debug { print(userID!) }
 				self.userID = userID!
 				self.userUUID = userUUID
 				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")

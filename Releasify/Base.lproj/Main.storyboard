@@ -383,13 +383,13 @@
         <!--Subscriptions-->
         <scene sceneID="IvS-dN-N2g">
             <objects>
-                <viewController storyboardIdentifier="SubscriptionController" title="Subscriptions" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hFU-gz-3m4" customClass="SubscriptionController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SubscriptionController" title="Subscriptions" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hFU-gz-3m4" customClass="SubscriptionController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ldc-8S-yBm"/>
                         <viewControllerLayoutGuide type="bottom" id="G3r-01-7gM"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="OKZ-8c-Vuc">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="64" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="rk1-hP-gm8">
@@ -486,20 +486,20 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="rk1-hP-gm8" firstAttribute="top" secondItem="ldc-8S-yBm" secondAttribute="bottom" constant="50" id="cBR-0E-5TN"/>
-                            <constraint firstItem="rk1-hP-gm8" firstAttribute="bottom" secondItem="G3r-01-7gM" secondAttribute="top" id="hnG-VZ-onx"/>
-                            <constraint firstAttribute="trailing" secondItem="rk1-hP-gm8" secondAttribute="trailing" id="qme-7p-ZwX"/>
-                            <constraint firstItem="rk1-hP-gm8" firstAttribute="leading" secondItem="OKZ-8c-Vuc" secondAttribute="leading" id="u4k-XE-ZlL"/>
+                            <constraint firstAttribute="trailing" secondItem="rk1-hP-gm8" secondAttribute="trailing" id="0Ez-3o-Ore"/>
+                            <constraint firstItem="rk1-hP-gm8" firstAttribute="top" secondItem="ldc-8S-yBm" secondAttribute="bottom" constant="50" id="Xsc-JJ-jAq"/>
+                            <constraint firstItem="rk1-hP-gm8" firstAttribute="bottom" secondItem="G3r-01-7gM" secondAttribute="top" id="YNW-MN-CHA"/>
+                            <constraint firstItem="rk1-hP-gm8" firstAttribute="leading" secondItem="OKZ-8c-Vuc" secondAttribute="leading" id="jnp-vA-lPH"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="rk1-hP-gm8"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="cBR-0E-5TN"/>
-                                <exclude reference="hnG-VZ-onx"/>
-                                <exclude reference="qme-7p-ZwX"/>
-                                <exclude reference="u4k-XE-ZlL"/>
+                                <exclude reference="0Ez-3o-Ore"/>
+                                <exclude reference="Xsc-JJ-jAq"/>
+                                <exclude reference="YNW-MN-CHA"/>
+                                <exclude reference="jnp-vA-lPH"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -507,13 +507,15 @@
                                 <include reference="rk1-hP-gm8"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="cBR-0E-5TN"/>
-                                <include reference="hnG-VZ-onx"/>
-                                <include reference="qme-7p-ZwX"/>
-                                <include reference="u4k-XE-ZlL"/>
+                                <include reference="0Ez-3o-Ore"/>
+                                <include reference="Xsc-JJ-jAq"/>
+                                <include reference="YNW-MN-CHA"/>
+                                <include reference="jnp-vA-lPH"/>
                             </mask>
                         </variation>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
@@ -668,6 +670,7 @@
                             </mask>
                         </variation>
                     </view>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="artistsTable" destination="Ql3-f0-j8c" id="rcM-vv-wcj"/>
@@ -1188,7 +1191,7 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap the &quot;+&quot; button above to add one." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w1V-E0-QIg">
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap the + button above to add one." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w1V-E0-QIg">
                                 <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1684,6 +1687,8 @@ Swipe to get started.</string>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="imageTopLayoutConstraint" destination="Ob2-N8-VBm" id="tx4-5G-gaq"/>
+                        <outlet property="permissionBtn" destination="PJN-MK-B81" id="SOF-Wc-sbY"/>
+                        <outlet property="skipBtn" destination="WDI-yG-J56" id="lKL-za-h9e"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eaG-kw-OS3" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2152,9 +2157,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Iyy-Lr-QfG"/>
         <segue reference="VIU-TC-0UL"/>
-        <segue reference="ajD-EV-H55"/>
+        <segue reference="2xf-M1-LZa"/>
+        <segue reference="3v7-nH-bJu"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

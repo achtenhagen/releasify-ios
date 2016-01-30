@@ -20,7 +20,7 @@ final class Notification: UIView {
 		viewFrame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
 		notificationView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
 		notificationView.frame = viewFrame
-		addSubview(notificationView)
+		self.addSubview(notificationView)
 		
 		title = UILabel(frame: CGRect(x: 10, y: 8, width: 300, height: 20))
 		title.textColor = UIColor.whiteColor()
@@ -34,7 +34,7 @@ final class Notification: UIView {
 		subtitle.font = UIFont.systemFontOfSize(13.0)
 		notificationView.contentView.addSubview(subtitle)
 		
-		alpha = 0
+		self.alpha = 0
 	}
 
 	required init? (coder aDecoder: NSCoder) {

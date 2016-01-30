@@ -114,7 +114,7 @@ class AlbumDetailController: UIViewController {
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		view.layer.insertSublayer(gradient, atIndex: 0)
+		self.view.layer.insertSublayer(gradient, atIndex: 0)
 	}
 	
 	override func viewDidDisappear(animated: Bool) {
@@ -170,7 +170,7 @@ class AlbumDetailController: UIViewController {
 	func shareAlbum () {
 		let shareActivityItem = "Buy this album on iTunes:\n\(album!.iTunesUrl)"
 		let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
-		presentViewController(activityViewController, animated: true, completion: nil)
+		self.presentViewController(activityViewController, animated: true, completion: nil)
 	}
 	
 	// MARK: - Selector action for timer to update progress

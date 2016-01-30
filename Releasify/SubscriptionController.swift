@@ -11,6 +11,7 @@ import UIKit
 class SubscriptionController: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var notificationBarItem: UIBarButtonItem?
+	var addBarItem: UIBarButtonItem?
 	var refreshControl: UIRefreshControl!
 	var searchController: UISearchController!
 	var filteredData: [Artist]!
@@ -19,7 +20,7 @@ class SubscriptionController: UIViewController {
 	
 	@IBOutlet weak var subscriptionsTable: UITableView!
 	
-	@IBAction func unwindToSubscriptions (sender: UIStoryboardSegue) {
+	@IBAction func unwindToSubscriptions(sender: UIStoryboardSegue) {
 		AppDB.sharedInstance.getArtists()
 		reloadSubscriptions()
 	}
@@ -28,10 +29,11 @@ class SubscriptionController: UIViewController {
 		super.loadView()
 		filteredData = AppDB.sharedInstance.artists
 		searchController = UISearchController(searchResultsController: nil)
+		searchController.delegate = self
 		searchController.searchResultsUpdater = self
 		searchController.definesPresentationContext = true
 		searchController.dimsBackgroundDuringPresentation = false
-		searchController.searchBar.delegate = self
+		searchController.hidesNavigationBarDuringPresentation = false
 		searchController.searchBar.placeholder = "Search Artists"
 		searchController.searchBar.searchBarStyle = .Minimal
 		searchController.searchBar.barStyle = .Black
@@ -42,7 +44,6 @@ class SubscriptionController: UIViewController {
 		searchController.searchBar.translucent = false
 		searchController.searchBar.autocapitalizationType = .Words
 		searchController.searchBar.keyboardAppearance = .Dark
-		searchController.hidesNavigationBarDuringPresentation = false
 		searchController.searchBar.sizeToFit()
 		subscriptionsTable.tableHeaderView = searchController.searchBar
 		let backgroundView = UIView(frame: view.bounds)
@@ -53,7 +54,9 @@ class SubscriptionController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
-		notificationBarItem = navigationController?.navigationBar.items![0].leftBarButtonItem
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"updateStatusBarFrame", name: "updateStatusBarFrame", object: nil)
+		notificationBarItem = self.navigationController?.navigationBar.items![0].leftBarButtonItem
+		addBarItem = self.navigationController?.navigationBar.items![0].rightBarButtonItem
 		refreshControl = UIRefreshControl()
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
@@ -91,14 +94,14 @@ class SubscriptionController: UIViewController {
 			self.refreshControl.endRefreshing()
 			self.notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
 			},
-			errorHandler: { error in
+			errorHandler: { (error) in
 				self.refreshControl.endRefreshing()
 				self.handleError("Unable to update!", message: "Please try again later.", error: error)
 		})
 	}
 	
 	// MARK: - Handle error messages
-	func handleError (title: String, message: String, error: ErrorType) {
+	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
@@ -162,7 +165,7 @@ extension SubscriptionController: UITableViewDelegate {
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		selectedArtist = filteredData[indexPath.row]
 		searchController.active = false
-		performSegueWithIdentifier("SubscriptionDetailSegue", sender: self)
+		self.performSegueWithIdentifier("SubscriptionDetailSegue", sender: self)
 	}
 	
 	func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -179,36 +182,36 @@ extension SubscriptionController: UITableViewDelegate {
 	}
 	
 	func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-		let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.size.width, height: 40))
+		let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 40))
 		footerView.backgroundColor = UIColor.clearColor()
 		if filteredData.count > 0 {
 			footerLabel = UILabel()
 			footerLabel.alpha = 0
 			footerLabel.font = UIFont(name: footerLabel.font.fontName, size: 14)
 			footerLabel.textColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.2)
-			footerLabel.text = "\(filteredData.count) Artists"
+			footerLabel.text = filteredData.count == 1 ? "\(filteredData.count) Artist" : "\(filteredData.count) Artists"
 			footerLabel.textAlignment = NSTextAlignment.Center
 			footerLabel.adjustsFontSizeToFitWidth = true
 			footerLabel.sizeToFit()
-			footerLabel.center = CGPoint(x: view.frame.size.width / 2, y: (footerView.frame.size.height / 2) - 7)
+			footerLabel.center = CGPoint(x: self.view.frame.size.width / 2, y: (footerView.frame.size.height / 2) - 7)
 			footerView.addSubview(footerLabel)
 		}
 		return footerView
 	}
 }
 
-// MARK: - UISearchBarDelegate
-extension SubscriptionController: UISearchBarDelegate {
-	func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+// MARK: - UISearchControllerDelegate
+extension SubscriptionController: UISearchControllerDelegate {
+	func willPresentSearchController(searchController: UISearchController) {
 		searchController.searchBar.backgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
-		navigationController?.navigationBar.items![0].leftBarButtonItem?.enabled = false
-		navigationController?.navigationBar.items![0].rightBarButtonItem?.enabled = false
+		notificationBarItem?.enabled = false
+		addBarItem?.enabled = false
 	}
 	
-	func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+	func willDismissSearchController(searchController: UISearchController) {
 		searchController.searchBar.backgroundColor = UIColor.clearColor()
 		notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
-		navigationController?.navigationBar.items![0].rightBarButtonItem?.enabled = true
+		addBarItem?.enabled = true
 	}
 }
 
@@ -222,14 +225,11 @@ extension SubscriptionController: UISearchResultsUpdating {
 
 // Mark: - UIView extension
 extension UIView {
-	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: ((Bool) -> Void) = { (finished: Bool) -> Void in }) {
-		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-			self.alpha = 1.0
-			}, completion: completion) }
+	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
+		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 1.0 }, completion: completion)
+	}
 	
-	func fadeOut(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in} ) {
-		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-			self.alpha = 0.0
-			}, completion: completion)
+	func fadeOut(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
+		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 0.0 }, completion: completion)
 	}
 }

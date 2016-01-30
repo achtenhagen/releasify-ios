@@ -13,31 +13,34 @@ class Intro02Controller: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	weak var delegate: IntroPageDelegate?
 	
+	@IBOutlet var skipBtn: UIButton!
+	@IBOutlet var permissionBtn: UIButton!
+	
 	@IBOutlet weak var imageTopLayoutConstraint: NSLayoutConstraint!
 	@IBAction func skipButtonPressed(sender: UIButton) {
-		if delegate != nil {
-			let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-			alert.title = "Disable Push Notifications?"
-			alert.message = "Please confirm that you would like to disable Push Notifications. You can re-enable them later in iOS settings."
-			alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-			alert.addAction(UIAlertAction(title: "Disable", style: .Destructive, handler: { action in
-				if self.appDelegate.userID == 0 {
-					API.sharedInstance.register(self.appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
-						self.appDelegate.userID = userID!
-						self.appDelegate.userUUID = userUUID
-						NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
-						NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
-						self.delegate?.advanceIntroPageTo(3, reverse: false)
-						},
-						errorHandler: { (error) in
-							self.handleError(error)
-					})
-				} else {
-					self.delegate?.advanceIntroPageTo(3, reverse: false)
-				}
-			}))
-			self.presentViewController(alert, animated: true, completion: nil)
-		}
+		if delegate == nil { return }
+		if appDelegate.userID > 0 {
+			self.delegate?.advanceIntroPageTo(3, reverse: false)
+			return
+		}		
+		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+		alert.title = "Disable Push Notifications?"
+		alert.message = "Please confirm that you would like to disable Push Notifications. You can re-enable them later in iOS settings."
+		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+		alert.addAction(UIAlertAction(title: "Disable", style: .Destructive, handler: { action in
+			API.sharedInstance.register(self.appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
+				self.appDelegate.userID = userID!
+				self.appDelegate.userUUID = userUUID
+				NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
+				NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
+				self.skipBtn.setTitle("NEXT", forState: UIControlState.Normal)
+				self.delegate?.advanceIntroPageTo(3, reverse: false)
+				},
+				errorHandler: { (error) in
+					self.handleError(error)
+			})
+		}))
+		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
 	// MARK: - Notification settings
@@ -102,13 +105,18 @@ class Intro02Controller: UIViewController {
         super.didReceiveMemoryWarning()
     }
 	
-	func finishRegister () {
-		if appDelegate.userID > 0 && self.delegate != nil{
+	func finishRegister() {
+		if appDelegate.userID > 0 && appDelegate.userUUID != nil {
+			skipBtn.setTitle("NEXT", forState: UIControlState.Normal)
+			permissionBtn.enabled = false
+			permissionBtn.layer.opacity = 0.5
+		}
+		if self.delegate != nil {
 			self.delegate?.advanceIntroPageTo(3, reverse: false)
 		}
 	}
 	
-	func handleError (error: ErrorType) {
+	func handleError(error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:

@@ -43,17 +43,17 @@ class SubscriptionDetailController: UIViewController {
 					self.performSegueWithIdentifier("UnwindToSubscriptionsSegue", sender: self)
 				})
 				},
-				errorHandler: { error in
+				errorHandler: { (error) in
 					AppDB.sharedInstance.addPendingArtist(self.artist!.ID)
 					self.handleError("Unable to remove subscription!", message: "Please try again later.", error: error)
 			})
 		}))
-		presentViewController(alert, animated: true, completion: nil)
+		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-		navigationItem.title = artist!.title
+		self.navigationItem.title = artist!.title
 		let itemSize = view.bounds.width / 2
 		detailFlowLayout.itemSize = CGSize(width: itemSize, height: itemSize)
 		subscriptionAlbumCollectionView.setCollectionViewLayout(detailFlowLayout, animated: false)
@@ -67,7 +67,7 @@ class SubscriptionDetailController: UIViewController {
 			label.adjustsFontSizeToFitWidth = true
 			label.sizeToFit()
 			label.center = CGPoint(x: view.frame.size.width / 2, y: (view.frame.size.height / 2) - (label.frame.size.height))
-			view.addSubview(label)
+			self.view.addSubview(label)
 		}
 		let gradient: CAGradientLayer = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
@@ -75,7 +75,7 @@ class SubscriptionDetailController: UIViewController {
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		view.layer.insertSublayer(gradient, atIndex: 0)
+		self.view.layer.insertSublayer(gradient, atIndex: 0)
     }
 
     override func didReceiveMemoryWarning() {
@@ -83,7 +83,7 @@ class SubscriptionDetailController: UIViewController {
     }
 	
 	// MARK: - Error message handler
-	func handleError (title: String, message: String, error: ErrorType) {
+	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
@@ -100,7 +100,7 @@ class SubscriptionDetailController: UIViewController {
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
-	override func prepareForSegue (segue: UIStoryboardSegue, sender: AnyObject?) {
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "SubscriptionDetailCellSegue" {
 			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
@@ -130,6 +130,6 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 extension SubscriptionDetailController: UICollectionViewDelegate {
 	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 		selectedAlbum = albums![indexPath.row]
-		performSegueWithIdentifier("SubscriptionDetailCellSegue", sender: self)
+		self.performSegueWithIdentifier("SubscriptionDetailCellSegue", sender: self)
 	}
 }

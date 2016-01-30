@@ -35,7 +35,7 @@ class AppPageController: UIPageViewController {
 				self.performSegueWithIdentifier("ArtistPickerSegue", sender: self)
 			})
 			let addAction = UIAlertAction(title: "Enter Artist Title", style: .Default, handler: { action in
-				self.addSubscription({ error in
+				self.addSubscription({ (error) in
 					self.handleAddSubscriptionError(error)
 				})
 			})
@@ -43,29 +43,29 @@ class AppPageController: UIPageViewController {
 			controller.addAction(addAction)
 			controller.addAction(importAction)
 			controller.addAction(cancelAction)
-			presentViewController(controller, animated: true, completion: nil)
+			self.presentViewController(controller, animated: true, completion: nil)
 		} else {
-			self.addSubscription({ error in
+			self.addSubscription({ (error) in
 				self.handleAddSubscriptionError(error)
 			})
 		}
 	}
 	
 	// MARK: - Handle UISegmentedControl selection
-	func changeView (sender: UISegmentedControl) {
+	func changeView(sender: UISegmentedControl) {
 		let viewControllers: NSArray
 		if sender.selectedSegmentIndex == 0 {
 			let startVC = viewControllerAtIndex(0) as! AlbumController
 			viewControllers = NSArray(object: startVC)
-			setViewControllers(viewControllers as? [UIViewController], direction: .Reverse, animated: true, completion: nil)
+			self.setViewControllers(viewControllers as? [UIViewController], direction: .Reverse, animated: true, completion: nil)
 		} else {
 			let startVC = viewControllerAtIndex(1) as! SubscriptionController
 			viewControllers = NSArray(object: startVC)
-			setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
+			self.setViewControllers(viewControllers as? [UIViewController], direction: .Forward, animated: true, completion: nil)
 		}
 	}
 	
-	override func loadView () {
+	override func loadView() {
 		super.loadView()
 		
 		let containerBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.width, height: 50))
@@ -81,20 +81,20 @@ class AppPageController: UIPageViewController {
 		segmentedControl.addTarget(self, action: "changeView:", forControlEvents: .ValueChanged)
 		
 		containerBar.addSubview(segmentedControl)
-		view.addSubview(containerBar)
+		self.view.addSubview(containerBar)
 		
 		albumController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AlbumController") as! AlbumController
 		subscriptionsController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") as! SubscriptionController
 	}
 	
-	override func viewDidLoad () {
-		dataSource = self
-		delegate = self		
+	override func viewDidLoad() {
+		self.dataSource = self
+		self.delegate = self
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscriptionFromShortcutItem", name: "addSubscriptionShortcutItem", object: nil)
 		
 		let startingViewController = viewControllerAtIndex(0)
-		setViewControllers([startingViewController!], direction: .Forward, animated: false, completion: nil)
+		self.setViewControllers([startingViewController!], direction: .Forward, animated: false, completion: nil)
 		
 		let gradient = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
@@ -102,11 +102,11 @@ class AppPageController: UIPageViewController {
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
 		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		view.layer.insertSublayer(gradient, atIndex: 0)
+		self.view.layer.insertSublayer(gradient, atIndex: 0)
 		
 		if let shortcutItem = appDelegate.shortcutKeyDescription {
 			if shortcutItem == "add-subscription" {
-				self.addSubscription({ error in
+				self.addSubscription({ (error) in
 					self.handleAddSubscriptionError(error)
 				})
 			}
@@ -117,7 +117,7 @@ class AppPageController: UIPageViewController {
 	}
 	
 	// MARK: - Determine the active view controller
-	func viewControllerAtIndex (index: Int) -> UIViewController? {
+	func viewControllerAtIndex(index: Int) -> UIViewController? {
 		if index == 0 {
 			albumController.delegate = self
 			return albumController
@@ -129,14 +129,14 @@ class AppPageController: UIPageViewController {
 	}
 	
 	// MARK: - Handle 3D Touch quick action
-	func addSubscriptionFromShortcutItem () {
-		addSubscription({ error in
+	func addSubscriptionFromShortcutItem() {
+		addSubscription({ (error) in
 			self.handleAddSubscriptionError(error)
 		})
 	}
 	
 	// MARK: - Show new subscription alert controller
-	func addSubscription (errorHandler: ((error: ErrorType) -> Void)) {
+	func addSubscription(errorHandler: ((error: ErrorType) -> Void)) {
 		responseArtists = [NSDictionary]()
 		var artistFound = false
 		let actionSheetController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
@@ -212,11 +212,11 @@ class AppPageController: UIPageViewController {
 			textField.autocapitalizationType = .Words
 			textField.placeholder = "e.g., Armin van Buuren"
 		}
-		presentViewController(actionSheetController, animated: true, completion: nil)
+		self.presentViewController(actionSheetController, animated: true, completion: nil)
 	}
 	
 	// MARK: - Handle failed subscription
-	func handleAddSubscriptionError (error: ErrorType) {
+	func handleAddSubscriptionError(error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
@@ -233,7 +233,7 @@ class AppPageController: UIPageViewController {
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
-	override func prepareForSegue (segue: UIStoryboardSegue, sender: AnyObject?) {
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "ArtistPickerSegue" {
 			let artistPickerController = segue.destinationViewController as! ArtistsPicker
 			artistPickerController.collection = mediaQuery.collections!
@@ -247,7 +247,7 @@ class AppPageController: UIPageViewController {
 
 // MARK: - UIPageViewControllerDataSource
 extension AppPageController: UIPageViewControllerDataSource {
-	func pageViewController (pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+	func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
 		let identifier = viewController.restorationIdentifier
 		var index = identifiers.indexOfObject(identifier!)
 		if index == identifiers.count - 1 { return nil }
@@ -255,7 +255,7 @@ extension AppPageController: UIPageViewControllerDataSource {
 		return viewControllerAtIndex(index)
 	}
 	
-	func pageViewController (pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+	func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
 		let identifier = viewController.restorationIdentifier
 		var index = identifiers.indexOfObject(identifier!)
 		if index == 0 { return nil }
@@ -266,7 +266,7 @@ extension AppPageController: UIPageViewControllerDataSource {
 
 // MARK: - UIPageViewControllerDelegate
 extension AppPageController: UIPageViewControllerDelegate {
-	func pageViewController (pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
 		segmentedControl.selectedSegmentIndex = 0
 		if pageViewController.viewControllers![0].restorationIdentifier == "SubscriptionController" {
 			segmentedControl.selectedSegmentIndex = 1
@@ -276,7 +276,7 @@ extension AppPageController: UIPageViewControllerDelegate {
 
 // MARK: - AppPageControllerDelegate
 extension AppPageController: AppPageControllerDelegate {
-	func addNotificationView (notification: Notification) {
-		view.addSubview(notification)
+	func addNotificationView(notification: Notification) {
+		self.view.addSubview(notification)
 	}
 }

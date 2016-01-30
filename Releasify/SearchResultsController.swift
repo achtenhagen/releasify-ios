@@ -14,6 +14,7 @@ class SearchResultsController: UIViewController {
 	var artwork = [String:UIImage]()
 	var selectedArtists = NSMutableArray()
 	var keyword: String!
+	var needsRefresh = false
 	
 	@IBOutlet weak var navBar: UINavigationBar!
 	@IBOutlet weak var infoLabel: UILabel!
@@ -24,9 +25,11 @@ class SearchResultsController: UIViewController {
 	}
 	
 	// MARK: - Post notification if the user has added a new subscription
-	func closeView () {
-		dismissViewControllerAnimated(true, completion: { bool in
-			NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+	func closeView() {
+		self.dismissViewControllerAnimated(true, completion: { bool in
+			if self.needsRefresh {
+				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+			}
 		})
 	}
 	
@@ -45,8 +48,8 @@ class SearchResultsController: UIViewController {
 		gradient.locations = [0.0 , 1.0]
 		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
 		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		view.layer.insertSublayer(gradient, atIndex: 0)
+		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
+		self.view.layer.insertSublayer(gradient, atIndex: 0)
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -54,7 +57,7 @@ class SearchResultsController: UIViewController {
 	}
 	
 	// MARK: - Handle artist confirmation
-	func confirmArtist (sender: UIButton) {
+	func confirmArtist(sender: UIButton) {
 		var artistID = 0		
 		if let id = (artists[sender.tag]["artistID"] as? Int) { artistID = id }
 		let artistTitle = (artists[sender.tag]["title"] as? String)!
@@ -71,6 +74,7 @@ class SearchResultsController: UIViewController {
 					if self.artists.count == self.selectedArtists.count {
 						self.closeView()
 					}
+					self.needsRefresh = true
 				}
 				},
 				errorHandler: { (error) in
@@ -161,7 +165,7 @@ extension SearchResultsController: UITableViewDelegate {
 		let artistID = (artists[section]["iTunesUniqueID"] as? Int)!
 		headerView.contentView.backgroundColor = UIColor.clearColor()
 		headerView.artistLabel.text = artists[section]["title"] as? String
-		headerView.confirmBtn.tag = section
+		headerView.confirmBtn.tag = section		
 		headerView.confirmBtn.addTarget(self, action: "confirmArtist:", forControlEvents: .TouchUpInside)
 		if selectedArtists.containsObject(artistID) {
 			headerView.confirmBtn.enabled = false
