@@ -74,7 +74,7 @@ class AlbumController: UIViewController {
 		refreshControl = UIRefreshControl()
 		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
-		albumCollectionView.addSubview(refreshControl)				
+		albumCollectionView.addSubview(refreshControl)
 		
 		// Process remote notification payload
 		if let remoteContent = appDelegate.remoteNotificationPayload {
