@@ -17,7 +17,7 @@ final class AppDB {
 	static let sharedInstance = AppDB()
 	var database: COpaquePointer = nil
 	var artists:[Artist]!
-	var albums: [Int:[Album]]!
+	var albums: [Album]!
 	
 	private func connected () -> Bool {
 		return sqlite3_open(databasePath, &database) == SQLITE_OK
@@ -31,7 +31,7 @@ final class AppDB {
 	init () {
 		if !connected() { fatalError("Unable to connect to database") }
 		artists = [Artist]()
-		albums  = [Int:[Album]]()
+		albums  = [Album]()
 		var errMsg: UnsafeMutablePointer<Int8> = nil
 		var query = "CREATE TABLE IF NOT EXISTS artists (id INTEGER PRIMARY KEY, title VARCHAR(100) NOT NULL, iTunes_unique_id INTEGER, last_updated INTEGER, created INTEGER)"
 		sqlite3_exec(database, query, nil, nil, &errMsg)
@@ -95,15 +95,15 @@ final class AppDB {
 	}
 	
 	// MARK: - Delete album
-	func deleteAlbum (albumID: Int, section: Int? = nil, index: Int? = nil) {
+	func deleteAlbum (albumID: Int, index: Int? = nil) {
 		if !connected() { return }
 		let query = "DELETE FROM albums WHERE id = ?"
 		var statement: COpaquePointer = nil
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) == SQLITE_OK {
 			sqlite3_bind_int(statement, 1, Int32(albumID))
 			if sqlite3_step(statement) == SQLITE_DONE {
-				if let section = section, i = index {
-					albums[section]?.removeAtIndex(i)
+				if let i = index {
+					albums.removeAtIndex(i)
 				}
 			} else {
 				if debug { print("SQLite: Failed to delete from `albums`.") }
@@ -155,13 +155,17 @@ final class AppDB {
 	
 	// MARK: - Get all albums
 	func getAlbums () {
-		albums = [Int:[Album]]()
+		albums = [Album]()
 		let timestamp = String(stringInterpolationSegment: Int(NSDate().timeIntervalSince1970))
 		var query = "SELECT * FROM albums WHERE release_date - \(timestamp) > 0 ORDER BY release_date ASC LIMIT 64"
-		albums[0] = getAlbumsComponent(query)
+		if let upcomingAlbums = getAlbumsComponent(query) {
+			albums.appendContentsOf(upcomingAlbums)
+		}
 		query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 AND release_date - \(timestamp) > -2592000 ORDER BY release_date DESC LIMIT 50"
-		albums[1] = getAlbumsComponent(query)
-		if debug { print("Albums in db: \(albums[0]!.count + albums[1]!.count)") }
+		if let releasedAlbums = getAlbumsComponent(query) {
+			albums.appendContentsOf(releasedAlbums)
+		}
+		if debug { print("Albums in db: \(albums!.count)") }
 	}
 	
 	// MARK: - Get albums by artist ID
@@ -175,7 +179,7 @@ final class AppDB {
 	// MARK: - Get albums based on input query
 	func getAlbumsComponent (query: String) -> [Album]? {
 		if !connected() { return nil }
-		var tmpAlbums = [Album]()
+		var tmpAlbums: [Album] = [Album]()
 		var statement: COpaquePointer = nil
 		
 		if sqlite3_prepare_v2(database, query, -1, &statement, nil) != SQLITE_OK {
@@ -556,7 +560,7 @@ final class AppDB {
 	
 	// MARK: - Check album artwork file path and return image
 	func getArtwork (hash: String) -> UIImage? {
-		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
+		let artworkPath = artworkDirectoryPath + "/\(hash)_large.jpg"
 		if NSFileManager.defaultManager().fileExistsAtPath(artworkPath) { return UIImage(contentsOfFile: artworkPath)! }
 		return nil
 	}

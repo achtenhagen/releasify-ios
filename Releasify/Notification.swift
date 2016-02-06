@@ -18,21 +18,26 @@ final class Notification: UIView {
 	override init (frame: CGRect) {
 		super.init(frame: frame)
 		viewFrame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
-		notificationView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
+		
+		// Change depending on theme
+		notificationView = UIVisualEffectView(effect: UIBlurEffect(style: .ExtraLight))
 		notificationView.frame = viewFrame
 		self.addSubview(notificationView)
 		
+		let vibrancyEffect = UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: .ExtraLight))
+		let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
+		vibrancyEffectView.frame = notificationView.frame
+		
 		title = UILabel(frame: CGRect(x: 10, y: 8, width: 300, height: 20))
-		title.textColor = UIColor.whiteColor()
-		title.font = UIFont.systemFontOfSize(16.0)
+		title.font = UIFont.boldSystemFontOfSize(16.0)
 		title.lineBreakMode = .ByTruncatingTail
-		notificationView.contentView.addSubview(title)
+		vibrancyEffectView.contentView.addSubview(title)
 		
 		subtitle = UILabel(frame: CGRect(x: 10, y: 30, width: 300, height: 20))
-		subtitle.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-		subtitle.layer.opacity = 0.5
 		subtitle.font = UIFont.systemFontOfSize(13.0)
-		notificationView.contentView.addSubview(subtitle)
+		vibrancyEffectView.contentView.addSubview(subtitle)
+		
+		notificationView.contentView.addSubview(vibrancyEffectView)
 		
 		self.alpha = 0
 	}

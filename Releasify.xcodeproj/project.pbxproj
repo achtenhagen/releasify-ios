@@ -23,6 +23,7 @@
 		518907971B46D67500F0E037 /* SearchResultsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518907961B46D67500F0E037 /* SearchResultsHeader.swift */; };
 		518B76861B0E688C0009F138 /* SearchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518B76851B0E688C0009F138 /* SearchResultsController.swift */; };
 		518B76881B0ECFA90009F138 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 518B76871B0ECFA90009F138 /* Images.xcassets */; };
+		519C8ACF1C653819006114EC /* StreamCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519C8ACE1C653819006114EC /* StreamCell.swift */; };
 		519CE9581BD6AA260078B270 /* Intro01Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519CE9571BD6AA260078B270 /* Intro01Controller.swift */; };
 		519CE95A1BD7039B0078B270 /* Intro02Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519CE9591BD7039B0078B270 /* Intro02Controller.swift */; };
 		519CE95C1BD703A90078B270 /* Intro03Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519CE95B1BD703A90078B270 /* Intro03Controller.swift */; };
@@ -36,6 +37,7 @@
 		51D864AF1B99D22400C3713F /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D864AE1B99D22400C3713F /* NotificationsController.swift */; };
 		51D8753E1B1B264B00353347 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753D1B1B264B00353347 /* Album.swift */; };
 		51D875401B1B2AD900353347 /* Devices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753F1B1B2AD900353347 /* Devices.swift */; };
+		51D959481C643965004B16AB /* StreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D959471C643965004B16AB /* StreamViewController.swift */; };
 		51E21F171BE69F2C0099FB27 /* AlbumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51E21F161BE69F2C0099FB27 /* AlbumCell.xib */; };
 		51E9F0781BA6414C00E67DAC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */; };
 		51F84DCB1AB750A000D51E0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F84DCA1AB750A000D51E0C /* AppDelegate.swift */; };
@@ -62,6 +64,7 @@
 		518907961B46D67500F0E037 /* SearchResultsHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsHeader.swift; sourceTree = "<group>"; };
 		518B76851B0E688C0009F138 /* SearchResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsController.swift; sourceTree = "<group>"; };
 		518B76871B0ECFA90009F138 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
+		519C8ACE1C653819006114EC /* StreamCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamCell.swift; sourceTree = "<group>"; };
 		519CE9571BD6AA260078B270 /* Intro01Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro01Controller.swift; sourceTree = "<group>"; };
 		519CE9591BD7039B0078B270 /* Intro02Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro02Controller.swift; sourceTree = "<group>"; };
 		519CE95B1BD703A90078B270 /* Intro03Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro03Controller.swift; sourceTree = "<group>"; };
@@ -76,6 +79,7 @@
 		51D864AE1B99D22400C3713F /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
 		51D8753D1B1B264B00353347 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		51D8753F1B1B2AD900353347 /* Devices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Devices.swift; sourceTree = "<group>"; };
+		51D959471C643965004B16AB /* StreamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewController.swift; sourceTree = "<group>"; };
 		51E21F161BE69F2C0099FB27 /* AlbumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumCell.xib; sourceTree = "<group>"; };
 		51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		51F84DC51AB750A000D51E0C /* Releasify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Releasify.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -178,6 +182,15 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		51D959461C64391B004B16AB /* Stream View */ = {
+			isa = PBXGroup;
+			children = (
+				519C8ACE1C653819006114EC /* StreamCell.swift */,
+				51D959471C643965004B16AB /* StreamViewController.swift */,
+			);
+			name = "Stream View";
+			sourceTree = "<group>";
+		};
 		51F84DBC1AB750A000D51E0C = {
 			isa = PBXGroup;
 			children = (
@@ -209,6 +222,7 @@
 				513E09B61BD8786400E6062C /* Search Results */,
 				513E09B91BD879CD00E6062C /* Notifications View */,
 				51C337F61BEAA0B5003B0E20 /* Notifications */,
+				51D959461C64391B004B16AB /* Stream View */,
 				51D776A91B29FC9300D252A5 /* API.swift */,
 				516AEE581ACAD61D0065B567 /* AppDB.swift */,
 				51F84DCA1AB750A000D51E0C /* AppDelegate.swift */,
@@ -353,6 +367,8 @@
 				51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */,
 				51D864AF1B99D22400C3713F /* NotificationsController.swift in Sources */,
 				516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */,
+				519C8ACF1C653819006114EC /* StreamCell.swift in Sources */,
+				51D959481C643965004B16AB /* StreamViewController.swift in Sources */,
 				5101C43F1BDB239100E5ABA8 /* Intro04Controller.swift in Sources */,
 				51D8753E1B1B264B00353347 /* Album.swift in Sources */,
 				512B69241BE6FCB3003752A8 /* Notification.swift in Sources */,

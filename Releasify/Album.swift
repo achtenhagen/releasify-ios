@@ -24,4 +24,9 @@ struct Album {
 	func getProgress (dateAdded: Double) -> Float {
 		return Float((Double(NSDate().timeIntervalSince1970) - Double(dateAdded)) / (Double(releaseDate) - Double(dateAdded)))
 	}
+	
+	// MARK: - Return the boolean value whether the object is available
+	func isAvailable() -> Bool {
+		return releaseDate - NSDate().timeIntervalSince1970 > 0 ? false : true
+	}
 }

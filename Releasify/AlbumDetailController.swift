@@ -10,7 +10,7 @@ import UIKit
 
 class AlbumDetailController: UIViewController {
 	
-	weak var delegate: AlbumControllerDelegate?
+	weak var delegate: StreamViewControllerDelegate?
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var album: Album?
@@ -41,7 +41,7 @@ class AlbumDetailController: UIViewController {
 	}
 	
 	override func viewDidLoad() {
-		super.viewDidLoad()
+		super.viewDidLoad()		
 		
 		guard let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) else {
 			artwork = UIImage(named: "icon_artwork_placeholder")!
@@ -108,13 +108,14 @@ class AlbumDetailController: UIViewController {
 			albumArtwork.contentMode = .ScaleToFill
 		}
 		
-		let gradient: CAGradientLayer = CAGradientLayer()
-		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
-		gradient.locations = [0.0 , 1.0]
-		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
-		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		// Dark theme only
+//		let gradient: CAGradientLayer = CAGradientLayer()
+//		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
+//		gradient.locations = [0.0 , 1.0]
+//		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
+//		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
+//		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
+//		self.view.layer.insertSublayer(gradient, atIndex: 0)
 	}
 	
 	override func viewDidDisappear(animated: Bool) {
