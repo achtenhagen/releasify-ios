@@ -10,7 +10,6 @@ import UIKit
 
 class StreamCell: UITableViewCell {
 	
-	
 	@IBOutlet var containerView: UIView!
 	@IBOutlet var artistImg: UIImageView!
 	@IBOutlet var albumTitle: UILabel!
