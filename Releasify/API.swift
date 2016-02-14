@@ -216,6 +216,23 @@ final class API {
 		})
 	}
 	
+	// MARK: - Fetch Artwork
+	func fetchArtwork(hash: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
+		if hash.isEmpty { errorHandler(); return }
+		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
+		// Check for dev or production domain
+		let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
+		guard let checkedURL = NSURL(string: albumURL) else { errorHandler(); return }
+		let request = NSURLRequest(URL: checkedURL)
+		NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
+			if error != nil { errorHandler(); return }
+			guard let HTTPResponse = response as? NSHTTPURLResponse else { errorHandler(); return }
+			if HTTPResponse.statusCode != 200 { errorHandler(); return }
+			guard let imageData = UIImage(data: data!) else { errorHandler(); return }
+			successHandler(image: imageData)
+		})
+	}
+	
 	// MARK: - Device Registration API
 	func register (allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let UUID = NSUUID().UUIDString

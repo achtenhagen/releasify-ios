@@ -17,14 +17,14 @@ final class Notification: UIView {
 	
 	override init (frame: CGRect) {
 		super.init(frame: frame)
+		print(frame)
 		viewFrame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
 		
-		// Change depending on theme
-		notificationView = UIVisualEffectView(effect: UIBlurEffect(style: .ExtraLight))
+		notificationView = UIVisualEffectView(effect: UIBlurEffect(style: Theme.sharedInstance.notificationBlurEffectStyle))
 		notificationView.frame = viewFrame
 		self.addSubview(notificationView)
 		
-		let vibrancyEffect = UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: .ExtraLight))
+		let vibrancyEffect = UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: Theme.sharedInstance.notificationBlurEffectStyle))
 		let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
 		vibrancyEffectView.frame = notificationView.frame
 		

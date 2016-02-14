@@ -39,6 +39,7 @@
 		51D8753E1B1B264B00353347 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753D1B1B264B00353347 /* Album.swift */; };
 		51D875401B1B2AD900353347 /* Devices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753F1B1B2AD900353347 /* Devices.swift */; };
 		51D959481C643965004B16AB /* StreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D959471C643965004B16AB /* StreamViewController.swift */; };
+		51DD31C61C6E560E005BAE85 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DD31C51C6E560E005BAE85 /* TabBarController.swift */; };
 		51E21F171BE69F2C0099FB27 /* AlbumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51E21F161BE69F2C0099FB27 /* AlbumCell.xib */; };
 		51E9F0781BA6414C00E67DAC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */; };
 		51F84DCB1AB750A000D51E0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F84DCA1AB750A000D51E0C /* AppDelegate.swift */; };
@@ -82,6 +83,7 @@
 		51D8753D1B1B264B00353347 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		51D8753F1B1B2AD900353347 /* Devices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Devices.swift; sourceTree = "<group>"; };
 		51D959471C643965004B16AB /* StreamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewController.swift; sourceTree = "<group>"; };
+		51DD31C51C6E560E005BAE85 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		51E21F161BE69F2C0099FB27 /* AlbumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumCell.xib; sourceTree = "<group>"; };
 		51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		51F84DC51AB750A000D51E0C /* Releasify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Releasify.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,8 +122,9 @@
 		513E09B51BD8783700E6062C /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				517D6E0C1B6585DC002EC864 /* AppController.swift */,
 				5142037A1B840517008891F9 /* AppPageController.swift */,
+				517D6E0C1B6585DC002EC864 /* AppController.swift */,
+				51DD31C51C6E560E005BAE85 /* TabBarController.swift */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -352,6 +355,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				518907971B46D67500F0E037 /* SearchResultsHeader.swift in Sources */,
+				51DD31C61C6E560E005BAE85 /* TabBarController.swift in Sources */,
 				5186CCF21BD7E59400371F91 /* IntroPageController.swift in Sources */,
 				51F84DED1AB7A91B00D51E0C /* ArtistsPicker.swift in Sources */,
 				5142037B1B840517008891F9 /* AppPageController.swift in Sources */,

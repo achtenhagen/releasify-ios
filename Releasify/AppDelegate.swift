@@ -36,11 +36,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			AppDB.sharedInstance.reset()
 			application.cancelAllLocalNotifications()
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
+			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
+			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "theme")
 			NSUserDefaults.standardUserDefaults().setValue(nil, forKey: "contentHash")
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "reset")
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "removeExpiredAlbums")
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
-			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
 		}
 		
 		// Read App Settings
@@ -75,6 +76,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     			}
 			}
 		}
+		
+		// Theme settings
+		Theme.sharedInstance.style = NSUserDefaults.standardUserDefaults().integerForKey("theme") == 0 ? .dark : .light
+		UIApplication.sharedApplication().statusBarStyle = Theme.sharedInstance.statusBarStyle
+		let navBarAppearance = UINavigationBar.appearance()
+		navBarAppearance.barStyle = Theme.sharedInstance.navBarStyle
+		navBarAppearance.barTintColor = Theme.sharedInstance.navBarTintColor
+		navBarAppearance.shadowImage = UIImage()
+		navBarAppearance.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+		navBarAppearance.tintColor = Theme.sharedInstance.navTintColor
+		navBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: Theme.sharedInstance.navTextColor]
+		navBarAppearance.translucent = false
+		let tabBarAppearance = UITabBar.appearance()
+		tabBarAppearance.barTintColor = Theme.sharedInstance.tabBarTintColor
+		tabBarAppearance.tintColor = Theme.sharedInstance.tabTintColor
 		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
 		if userID == 0 {

@@ -108,14 +108,9 @@ class AlbumDetailController: UIViewController {
 			albumArtwork.contentMode = .ScaleToFill
 		}
 		
-		// Dark theme only
-//		let gradient: CAGradientLayer = CAGradientLayer()
-//		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
-//		gradient.locations = [0.0 , 1.0]
-//		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
-//		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-//		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-//		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		let gradient = Theme.sharedInstance.gradient()
+		gradient.frame = self.view.bounds
+		self.view.layer.insertSublayer(gradient, atIndex: 0)
 	}
 	
 	override func viewDidDisappear(animated: Bool) {
