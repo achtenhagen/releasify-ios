@@ -99,6 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
+			//window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") as! SubscriptionController
 		}
 		window?.makeKeyAndVisible()
 		
@@ -223,8 +224,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	func applicationDidBecomeActive(application: UIApplication) {
-		// Move to Album Controller
-		application.applicationIconBadgeNumber = 0
+	
 	}
 	
 	func applicationWillTerminate(application: UIApplication) {

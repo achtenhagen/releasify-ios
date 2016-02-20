@@ -13,6 +13,7 @@ class AlbumDetailController: UIViewController {
 	weak var delegate: StreamViewControllerDelegate?
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	private let theme = AlbumDetailControllerTheme()
 	var album: Album?
 	var indexPath: NSIndexPath?
 	var artist: String?
@@ -43,14 +44,12 @@ class AlbumDetailController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()		
 		
-		guard let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) else {
+		if let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) {
+			artwork = dbArtwork
+		} else {
 			artwork = UIImage(named: "icon_artwork_placeholder")!
-			albumArtwork.contentMode = .Center
-			return
 		}
 		
-		artwork = dbArtwork
-		albumArtwork.contentMode = .ScaleToFill		
 		albumArtwork.image = artwork
 		albumArtwork.layer.masksToBounds = true
 		albumArtwork.layer.cornerRadius = 2.0
@@ -58,15 +57,23 @@ class AlbumDetailController: UIViewController {
 		albumTitle.text = album!.title
 		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
 		albumTitle.textContainer.lineFragmentPadding = 0
+		albumTitle.textColor = theme.albumTitleColor
 		copyrightLabel.text = album!.copyright
+		progressBar.trackTintColor = theme.progressBarBackTintColor
 		timeDiff = album!.releaseDate - NSDate().timeIntervalSince1970
+		
+		if Int(NSDate().timeIntervalSince1970) - album!.created <= 86400 {
+			UIApplication.sharedApplication().applicationIconBadgeNumber == 0 ? 0 : UIApplication.sharedApplication().applicationIconBadgeNumber--
+		}
+		
 		if timeDiff > 0 {
 			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
-			progressBar.progress = album!.getProgress(dateAdded)
+			progressBar.progress = album!.getProgressSinceDate(dateAdded)
 			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
 		} else {
 			progressBar.hidden = true
 		}
+		
 		let doubleTapGesture = UITapGestureRecognizer(target: self, action: Selector("shareAlbum"))
 		doubleTapGesture.numberOfTapsRequired = 2
 		albumArtwork.addGestureRecognizer(doubleTapGesture)
@@ -217,7 +224,7 @@ class AlbumDetailController: UIViewController {
 			thirdDigitLabel.text = formatNumber(seconds)
 			thirdTimeLabel.text = "seconds"
 		}
-		progress = album!.getProgress(dateAdded)
+		progress = album!.getProgressSinceDate(dateAdded)
 		progressBar.progress = progress
 	}
 	
@@ -230,5 +237,22 @@ class AlbumDetailController: UIViewController {
 	func formatNumber (n: Double) -> String {
 		let stringNumber = String(Int(n))
 		return n < 10 ? ("0\(stringNumber)") : stringNumber
+	}
+}
+
+private class AlbumDetailControllerTheme: Theme {
+	
+	var progressBarBackTintColor: UIColor!
+	var albumTitleColor: UIColor!
+	
+	override init () {
+		switch Theme.sharedInstance.style {
+		case .dark:
+			albumTitleColor = UIColor.whiteColor()
+			progressBarBackTintColor = UIColor(red: 0, green: 52/255, blue: 72/255, alpha: 1)
+		case .light:
+			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			progressBarBackTintColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 0.2)
+		}
 	}
 }

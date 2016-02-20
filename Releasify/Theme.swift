@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class Theme {
+public class Theme {
 	static let sharedInstance = Theme()
 	
 	enum Styles { case dark, light }
@@ -18,7 +18,7 @@ final class Theme {
 	// Default App tint color
 	let tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
 	
-	// Common colors
+	// Common colors (Green alternative: #00D897)
 	let blueColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
 	let greenColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1)
 	let redColor = UIColor(red: 252/255, green: 77/255, blue: 119/255, alpha: 1)
@@ -50,13 +50,6 @@ final class Theme {
 	// Notifications
 	var notificationBlurEffectStyle: UIBlurEffectStyle!
 	
-	// Stream View
-	var streamTableBackgroundColor: UIColor!
-	var streamCellBackgroundColor: UIColor!
-	var streamCellAlbumTitleColor: UIColor!
-	var streamCellArtistTitleColor: UIColor!
-	var streamCellFooterLabelColor: UIColor!
-	
 	init () {
 		switch style {
 		case .dark:
@@ -76,12 +69,6 @@ final class Theme {
 			
 			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 			
-			streamTableBackgroundColor = UIColor.clearColor()
-			streamCellBackgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
-			streamCellAlbumTitleColor = UIColor.whiteColor()
-			streamCellArtistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-			streamCellFooterLabelColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.2)
-			
 			notificationBlurEffectStyle = UIBlurEffectStyle.Dark
 		case .light:
 			statusBarStyle = UIStatusBarStyle.Default
@@ -90,10 +77,6 @@ final class Theme {
 			keyboardStyle = .Light
 			
 			notificationBlurEffectStyle = UIBlurEffectStyle.ExtraLight
-			
-			streamTableBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
-			streamCellBackgroundColor = UIColor.whiteColor()
-			streamCellFooterLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 		}
 	}
 	

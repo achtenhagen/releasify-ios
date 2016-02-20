@@ -28,12 +28,12 @@ final class Notification: UIView {
 		let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
 		vibrancyEffectView.frame = notificationView.frame
 		
-		title = UILabel(frame: CGRect(x: 10, y: 8, width: 300, height: 20))
+		title = UILabel(frame: CGRect(x: 10, y: 22, width: 300, height: 20))
 		title.font = UIFont.boldSystemFontOfSize(16.0)
 		title.lineBreakMode = .ByTruncatingTail
 		vibrancyEffectView.contentView.addSubview(title)
 		
-		subtitle = UILabel(frame: CGRect(x: 10, y: 30, width: 300, height: 20))
+		subtitle = UILabel(frame: CGRect(x: 10, y: 40, width: 300, height: 20))
 		subtitle.font = UIFont.systemFontOfSize(13.0)
 		vibrancyEffectView.contentView.addSubview(subtitle)
 		
@@ -49,7 +49,7 @@ final class Notification: UIView {
 	func show (completed: () -> Void) {
 		UIView.animateWithDuration(0.4, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
 			self.alpha = 1.0
-			self.notificationView.frame.origin.y = self.viewFrame.origin.y - self.notificationView.frame.height
+			self.notificationView.frame.origin.y = self.viewFrame.origin.y + self.notificationView.frame.height
 			}, completion: { bool in
 				self.hide({ completed() })
 		})
@@ -58,7 +58,7 @@ final class Notification: UIView {
 	func hide (completed: () -> Void) {
 		UIView.animateWithDuration(0.4, delay: 3.0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
 			self.alpha = 0
-			self.notificationView.frame.origin.y = self.viewFrame.origin.y + self.notificationView.frame.height
+			self.notificationView.frame.origin.y = self.viewFrame.origin.y - self.notificationView.frame.height
 			}, completion: { bool in
 				completed()
 		})

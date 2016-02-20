@@ -15,11 +15,12 @@ protocol StreamViewControllerDelegate: class {
 
 class StreamViewController: UITableViewController {
 	
+	private let theme = StreamViewControllerTheme()
 	weak var delegate: AppControllerDelegate?
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let reuseIdentifier = "streamCell"
-	var searchController: UISearchController!
+	// var searchController: UISearchController!
 	var selectedAlbum: Album!
 	var filteredData: [Artist]!
 	var tmpArtwork: [String:UIImage]?
@@ -34,7 +35,7 @@ class StreamViewController: UITableViewController {
 		
 		tmpArtwork = [String:UIImage]()
 		
-		streamTable.backgroundColor = Theme.sharedInstance.streamTableBackgroundColor
+		streamTable.backgroundColor = theme.streamTableBackgroundColor
 		streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
 		streamTable.backgroundView?.userInteractionEnabled = false
 		
@@ -46,29 +47,29 @@ class StreamViewController: UITableViewController {
 		
 		registerLongPressGesture()
 		
-		self.searchController = UISearchController(searchResultsController: nil)
-		self.searchController.delegate = self
-		self.searchController.searchResultsUpdater = self
-		self.searchController.dimsBackgroundDuringPresentation = false
-		self.searchController.hidesNavigationBarDuringPresentation = false
-		self.searchController.searchBar.placeholder = "Search artists & albums"
-		self.searchController.searchBar.searchBarStyle = .Minimal
-		self.searchController.searchBar.barStyle = Theme.sharedInstance.searchBarStyle
-		self.searchController.searchBar.barTintColor = UIColor.clearColor()
-		self.searchController.searchBar.tintColor = Theme.sharedInstance.searchBarTintColor
-		self.searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
-		self.searchController.searchBar.layer.borderWidth = 1
-		self.searchController.searchBar.translucent = false
-		self.searchController.searchBar.autocapitalizationType = .Words
-		self.searchController.searchBar.keyboardAppearance = Theme.sharedInstance.keyboardStyle
-		self.searchController.searchBar.sizeToFit()
-		self.streamTable.tableHeaderView = self.searchController.searchBar
+//		self.searchController = UISearchController(searchResultsController: nil)
+//		self.searchController.delegate = self
+//		self.searchController.searchResultsUpdater = self
+//		self.searchController.dimsBackgroundDuringPresentation = false
+//		self.searchController.hidesNavigationBarDuringPresentation = false
+//		self.searchController.searchBar.placeholder = "Search artists & albums"
+//		self.searchController.searchBar.searchBarStyle = .Minimal
+//		self.searchController.searchBar.barStyle = Theme.sharedInstance.searchBarStyle
+//		self.searchController.searchBar.barTintColor = UIColor.clearColor()
+//		self.searchController.searchBar.tintColor = Theme.sharedInstance.searchBarTintColor
+//		self.searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
+//		self.searchController.searchBar.layer.borderWidth = 1
+//		self.searchController.searchBar.translucent = false
+//		self.searchController.searchBar.autocapitalizationType = .Words
+//		self.searchController.searchBar.keyboardAppearance = Theme.sharedInstance.keyboardStyle
+//		self.searchController.searchBar.sizeToFit()
+//		self.streamTable.tableHeaderView = self.searchController.searchBar
 		
-		if #available(iOS 9.0, *) {
-			self.searchController.loadViewIfNeeded()
-		} else {
-			let _ = self.searchController.view
-		}
+//		if #available(iOS 9.0, *) {
+//			self.searchController.loadViewIfNeeded()
+//		} else {
+//			let _ = self.searchController.view
+//		}
 		
 		refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = Theme.sharedInstance.refreshControlTintColor
@@ -78,10 +79,9 @@ class StreamViewController: UITableViewController {
 			refresh()
 		}
 		
-		streamTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
-		definesPresentationContext = true
+//		definesPresentationContext = true
 		
-//		let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
+//		let notification = Notification(frame: CGRect(x: 0, y: -64, width: self.view.bounds.width, height: 64))
 //		notification.title.text = "Notification Title"
 //		notification.subtitle.text = "Notification body text"
 //		delegate?.addNotificationView(notification)
@@ -197,11 +197,11 @@ class StreamViewController: UITableViewController {
 	}
 	
 	// MARK: - Search function for UISearchResultsUpdating
-	func filterContentForSearchText(searchText: String) {
-		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({(artist: Artist) -> Bool in
-			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
-		})
-	}
+//	func filterContentForSearchText(searchText: String) {
+//		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({(artist: Artist) -> Bool in
+//			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+//		})
+//	}
 	
 	// MARK: - Error Message Handler
 	func handleError(title: String, message: String, error: ErrorType) {
@@ -230,8 +230,10 @@ class StreamViewController: UITableViewController {
 	
 	override func scrollViewDidScroll(scrollView: UIScrollView) {
 		if (scrollView == self.streamTable) {
-			for indexPath in self.streamTable.indexPathsForVisibleRows! {
-				self.setCellImageOffset(self.streamTable.cellForRowAtIndexPath(indexPath) as! StreamCell, indexPath: indexPath)
+			if let visibleCells = self.streamTable.indexPathsForVisibleRows {
+				for indexPath in visibleCells {
+					self.setCellImageOffset(self.streamTable.cellForRowAtIndexPath(indexPath) as! StreamCell, indexPath: indexPath)
+				}
 			}
 		}
 		if footerLabel != nil && streamTable.contentOffset.y >= (streamTable.contentSize.height - streamTable.bounds.size.height) {
@@ -268,9 +270,9 @@ class StreamViewController: UITableViewController {
 		let album = AppDB.sharedInstance.albums[indexPath.row]
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
 		
-		cell.containerView.backgroundColor = Theme.sharedInstance.streamCellBackgroundColor
-		cell.albumTitle.textColor = Theme.sharedInstance.streamCellAlbumTitleColor
-		cell.artistTitle.textColor = Theme.sharedInstance.streamCellArtistTitleColor
+		cell.containerView.backgroundColor = theme.streamCellBackgroundColor
+		cell.albumTitle.textColor = theme.streamCellAlbumTitleColor
+		cell.artistTitle.textColor = theme.streamCellArtistTitleColor
 		
 		cell.artwork.image = UIImage(named: "icon_artwork_placeholder")!
 		getArtworkForCell(album.artwork, completion: { artwork in
@@ -312,9 +314,14 @@ class StreamViewController: UITableViewController {
 			} else if Int(seconds) > 0 && Int(seconds) <= 60 {
 				cell.timeLabel.text = "\(Int(seconds)) second"
 			}
-			cell.addNewItemLabel()
 		} else {
-			cell.timeLabel.text = "Feb 4"
+			let dateFormat = NSDateFormatter()
+			dateFormat.dateFormat = "MMM dd"
+			cell.timeLabel.text = dateFormat.stringFromDate(NSDate(timeIntervalSince1970: album.releaseDate))
+		}
+		
+		if Int(NSDate().timeIntervalSince1970) - album.created <= 86400 {
+			cell.addNewItemLabel()
 		}
 		
 		if tmpUrl == nil {
@@ -334,11 +341,11 @@ class StreamViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
-		// streamTable.cellForRowAtIndexPath(indexPath)?.alpha = 0.8
+		streamTable.cellForRowAtIndexPath(indexPath)?.alpha = 0.8
 	}
 	
 	override func tableView(tableView: UITableView, didUnhighlightRowAtIndexPath indexPath: NSIndexPath) {
-		// streamTable.cellForRowAtIndexPath(indexPath)?.alpha = 1.0
+		streamTable.cellForRowAtIndexPath(indexPath)?.alpha = 1.0
 	}
 	
 	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
@@ -394,7 +401,7 @@ class StreamViewController: UITableViewController {
 		footerLabel = UILabel()
 		footerLabel.alpha = 0
 		footerLabel.font = UIFont(name: footerLabel.font.fontName, size: 14)
-		footerLabel.textColor = Theme.sharedInstance.streamCellFooterLabelColor
+		footerLabel.textColor = theme.streamCellFooterLabelColor
 		footerLabel.text = "\(AppDB.sharedInstance.albums.count) albums, \(AppDB.sharedInstance.artists.count) artists"
 		footerLabel.textAlignment = NSTextAlignment.Center
 		footerLabel.adjustsFontSizeToFitWidth = true
@@ -427,23 +434,23 @@ extension StreamViewController: StreamViewControllerDelegate {
 }
 
 // MARK: - UISearchControllerDelegate
-extension StreamViewController: UISearchControllerDelegate {
-	func willPresentSearchController(searchController: UISearchController) {
-		searchController.searchBar.backgroundColor = Theme.sharedInstance.navBarTintColor
-	}
-	
-	func willDismissSearchController(searchController: UISearchController) {
-		searchController.searchBar.backgroundColor = UIColor.clearColor()
-	}
-}
+//extension StreamViewController: UISearchControllerDelegate {
+//	func willPresentSearchController(searchController: UISearchController) {
+//		searchController.searchBar.backgroundColor = Theme.sharedInstance.navBarTintColor
+//	}
+//	
+//	func willDismissSearchController(searchController: UISearchController) {
+//		searchController.searchBar.backgroundColor = UIColor.clearColor()
+//	}
+//}
 
 // MARK: - UISearchResultsUpdating
-extension StreamViewController: UISearchResultsUpdating {
-	func updateSearchResultsForSearchController(searchController: UISearchController) {
-		filterContentForSearchText(searchController.searchBar.text!)
-		streamTable.reloadData()
-	}
-}
+//extension StreamViewController: UISearchResultsUpdating {
+//	func updateSearchResultsForSearchController(searchController: UISearchController) {
+//		filterContentForSearchText(searchController.searchBar.text!)
+//		streamTable.reloadData()
+//	}
+//}
 
 // MARK: - UIViewControllerPreviewingDelegate
 @available(iOS 9.0, *)
@@ -462,5 +469,30 @@ extension StreamViewController: UIViewControllerPreviewingDelegate {
 	
 	func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
 		self.showViewController(viewControllerToCommit, sender: self)
+	}
+}
+
+// MARK: - Theme Extension
+private class StreamViewControllerTheme: Theme {
+	
+	var streamTableBackgroundColor: UIColor!
+	var streamCellBackgroundColor: UIColor!
+	var streamCellAlbumTitleColor: UIColor!
+	var streamCellArtistTitleColor: UIColor!
+	var streamCellFooterLabelColor: UIColor!
+	
+	override init () {
+		switch Theme.sharedInstance.style {
+		case .dark:
+			streamTableBackgroundColor = UIColor.clearColor()
+			streamCellBackgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
+			streamCellAlbumTitleColor = UIColor.whiteColor()
+			streamCellArtistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+			streamCellFooterLabelColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.2)
+		case .light:
+			streamTableBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
+			streamCellBackgroundColor = UIColor.whiteColor()
+			streamCellFooterLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+		}
 	}
 }

@@ -57,7 +57,7 @@ class TabBarController: UITabBarController {
 		let imageView = UIImageView(image:logo)
 		self.navigationItem.titleView = imageView
 		
-		self.tabBar.clipsToBounds = true
+		// self.tabBar.clipsToBounds = true
 		
 		let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 2))
 		topBorder.backgroundColor = UIColor(red: 0, green: 216, blue: 255, alpha: 1.0)
@@ -287,7 +287,10 @@ class TabBarController: UITabBarController {
 	}
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-		if segue.identifier == "ArtistSelectionSegue" {
+		if segue.identifier == "ArtistPickerSegue" {
+			let artistPickerController = segue.destinationViewController as! ArtistsPicker
+			artistPickerController.collection = mediaQuery.collections!
+		} else if segue.identifier == "ArtistSelectionSegue" {
 			let selectionController = segue.destinationViewController as! SearchResultsController
 			selectionController.artists = responseArtists
 			selectionController.keyword = keyword

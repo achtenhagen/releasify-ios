@@ -29,6 +29,7 @@ final class AppDB {
 	}
 	
 	init () {
+		print("App DB class initialized")
 		if !connected() { fatalError("Unable to connect to database") }
 		artists = [Artist]()
 		albums  = [Album]()

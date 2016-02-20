@@ -21,7 +21,7 @@ struct Album {
 	var created: Int
 	
 	// MARK: - Return the decimal progress relative to the date added
-	func getProgress (dateAdded: Double) -> Float {
+	func getProgressSinceDate(dateAdded: Double) -> Float {
 		return Float((Double(NSDate().timeIntervalSince1970) - Double(dateAdded)) / (Double(releaseDate) - Double(dateAdded)))
 	}
 	

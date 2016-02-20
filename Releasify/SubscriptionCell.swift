@@ -9,9 +9,9 @@
 import UIKit
 
 class SubscriptionCell: UITableViewCell {
-
-	@IBOutlet weak var subscriptionImage: UIImageView!
-	@IBOutlet weak var subscriptionTitle: UILabel!
+	
+	@IBOutlet var subscriptionImage: UIImageView!
+	@IBOutlet var subscriptionTitle: UILabel!
 	
 	override func awakeFromNib() {
         super.awakeFromNib()
