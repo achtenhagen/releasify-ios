@@ -16,7 +16,6 @@ class AlbumCell: UICollectionViewCell {
 	@IBOutlet weak var albumTitle: UILabel!
 	@IBOutlet weak var artistTitle: UILabel!	
 	@IBOutlet weak var timeLeft: UILabel!
-	@IBOutlet weak var purchaseButton: UIButton!
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()

@@ -140,14 +140,15 @@
 			name = "Search Results";
 			sourceTree = "<group>";
 		};
-		513E09B71BD878B000E6062C /* Albums Collection */ = {
+		513E09B71BD878B000E6062C /* Album */ = {
 			isa = PBXGroup;
 			children = (
 				517C23631B80DDE0002F1479 /* AlbumController.swift */,
+				51D8753D1B1B264B00353347 /* Album.swift */,
 				5161265A1B9A7D3000171A93 /* AlbumCell.swift */,
 				51E21F161BE69F2C0099FB27 /* AlbumCell.xib */,
 			);
-			name = "Albums Collection";
+			name = Album;
 			sourceTree = "<group>";
 		};
 		513E09B81BD878EE00E6062C /* Subscription Controller */ = {
@@ -222,7 +223,7 @@
 				51F84DD31AB750A100D51E0C /* LaunchScreen.xib */,
 				513E09B41BD877EA00E6062C /* Intro */,
 				513E09B51BD8783700E6062C /* Main */,
-				513E09B71BD878B000E6062C /* Albums Collection */,
+				513E09B71BD878B000E6062C /* Album */,
 				513E09B81BD878EE00E6062C /* Subscription Controller */,
 				513E09B61BD8786400E6062C /* Search Results */,
 				513E09B91BD879CD00E6062C /* Notifications View */,
@@ -232,7 +233,6 @@
 				516AEE581ACAD61D0065B567 /* AppDB.swift */,
 				51F84DCA1AB750A000D51E0C /* AppDelegate.swift */,
 				51557C591B9E073C00D980F9 /* Artist.swift */,
-				51D8753D1B1B264B00353347 /* Album.swift */,
 				51B988C31AF1674C00E1A796 /* AlbumDetailController.swift */,
 				51F84DEC1AB7A91B00D51E0C /* ArtistsPicker.swift */,
 				518FAEEE1C665A5000499A17 /* Theme.swift */,

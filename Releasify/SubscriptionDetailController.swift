@@ -11,6 +11,7 @@ import UIKit
 class SubscriptionDetailController: UIViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	let albumCellReuseIdentifier = "AlbumCell"
 	var artist: Artist?
 	var albums: [Album]?
 	var selectedAlbum: Album!
@@ -53,9 +54,11 @@ class SubscriptionDetailController: UIViewController {
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+		
 		self.navigationItem.title = artist!.title
-		let itemSize = view.bounds.width / 2
-		detailFlowLayout.itemSize = CGSize(width: itemSize, height: itemSize)
+		subscriptionAlbumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
+		let itemSize = CGPoint(x: 172, y: 190)
+		detailFlowLayout.itemSize = CGSize(width: itemSize.x, height: itemSize.y)
 		subscriptionAlbumCollectionView.setCollectionViewLayout(detailFlowLayout, animated: false)
 		albums = AppDB.sharedInstance.getAlbumsByArtist(artist!.ID)
 		if albums == nil || albums?.count == 0 {
@@ -115,13 +118,10 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 	}
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-		let cell = subscriptionAlbumCollectionView.dequeueReusableCellWithReuseIdentifier("SubscriptionDetailCell", forIndexPath: indexPath)
-		if cell.subviews.count == 1 {
-			let artwork = UIImageView(frame: CGRect(x: 0, y: 0, width: view.bounds.width / 2, height: view.bounds.width / 2))
-			artwork.image = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork)
-			artwork.contentMode = .ScaleAspectFill
-			cell.addSubview(artwork)
-		}
+		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell		
+		cell.albumArtwork.image = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork)
+		cell.albumTitle.text = "Album Title"
+		cell.artistTitle.text = artist!.title
 		return cell
 	}
 }
