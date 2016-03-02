@@ -61,6 +61,8 @@ class SubscriptionController: UITableViewController {
 		
 		definesPresentationContext = true
 		
+		print("Subscription Controller - viewDidLoad")
+		
 	}
 	
 	override func viewWillDisappear(animated: Bool) {

@@ -51,13 +51,11 @@ class TabBarController: UITabBarController {
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromRemoteNotification:", name: "appActionPressed", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscriptionFromShortcutItem", name: "addSubscriptionShortcutItem", object: nil)
 		
 		let logo = UIImage(named: "icon_navbar.png")
 		let imageView = UIImageView(image:logo)
 		self.navigationItem.titleView = imageView
-		
-		// self.tabBar.clipsToBounds = true
 		
 		let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 2))
 		topBorder.backgroundColor = UIColor(red: 0, green: 216, blue: 255, alpha: 1.0)

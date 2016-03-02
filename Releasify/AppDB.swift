@@ -8,7 +8,7 @@
 
 import UIKit
 
-let debug = false
+let debug = true
 let documents = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, .UserDomainMask, true)[0] as String
 let databasePath = documents + "/db.sqlite"
 let artworkDirectoryPath = documents + "/artwork"
@@ -29,7 +29,6 @@ final class AppDB {
 	}
 	
 	init () {
-		print("App DB class initialized")
 		if !connected() { fatalError("Unable to connect to database") }
 		artists = [Artist]()
 		albums  = [Album]()

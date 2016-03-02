@@ -19,7 +19,7 @@ final class AppController: UINavigationController {
 	@IBOutlet weak var navBar: UINavigationBar!
 	
 	override func viewDidLoad () {
-		super.viewDidLoad()
+		super.viewDidLoad()		
 		
 		AppDB.sharedInstance.getAlbums()
 		AppDB.sharedInstance.getArtists()
@@ -34,7 +34,7 @@ final class AppController: UINavigationController {
 			print("App Controller loaded.")			
 		}
 		
-		if  tabBarController == nil {
+		if tabBarController == nil {
 			tabController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("TabBarController") as! TabBarController
 			tabController.notificationDelegate = self
 		}
@@ -54,7 +54,7 @@ extension AppController: AppControllerDelegate {
 	}
 }
 
-// Mark: - UIView extension
+// Mark: - UIView fade in/out extension
 extension UIView {
 	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
 		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 1.0 }, completion: completion)

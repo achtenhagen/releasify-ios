@@ -91,6 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let tabBarAppearance = UITabBar.appearance()
 		tabBarAppearance.barTintColor = Theme.sharedInstance.tabBarTintColor
 		tabBarAppearance.tintColor = Theme.sharedInstance.tabTintColor
+		tabBarAppearance.backgroundColor = UIColor.clearColor()
 		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
 		if userID == 0 {
@@ -98,8 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			UIApplication.sharedApplication().cancelAllLocalNotifications()
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
-			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
-			//window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") as! SubscriptionController
+			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController			
 		}
 		window?.makeKeyAndVisible()
 		
@@ -224,7 +224,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	func applicationDidBecomeActive(application: UIApplication) {
-	
+		UIApplication.sharedApplication().applicationIconBadgeNumber = 0
 	}
 	
 	func applicationWillTerminate(application: UIApplication) {

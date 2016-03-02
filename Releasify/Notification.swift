@@ -17,8 +17,7 @@ final class Notification: UIView {
 	
 	override init (frame: CGRect) {
 		super.init(frame: frame)
-		print(frame)
-		viewFrame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
+		self.viewFrame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
 		
 		notificationView = UIVisualEffectView(effect: UIBlurEffect(style: Theme.sharedInstance.notificationBlurEffectStyle))
 		notificationView.frame = viewFrame
@@ -28,12 +27,12 @@ final class Notification: UIView {
 		let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
 		vibrancyEffectView.frame = notificationView.frame
 		
-		title = UILabel(frame: CGRect(x: 10, y: 22, width: 300, height: 20))
+		title = UILabel(frame: CGRect(x: 10, y: 10, width: 300, height: 20))
 		title.font = UIFont.boldSystemFontOfSize(16.0)
 		title.lineBreakMode = .ByTruncatingTail
 		vibrancyEffectView.contentView.addSubview(title)
 		
-		subtitle = UILabel(frame: CGRect(x: 10, y: 40, width: 300, height: 20))
+		subtitle = UILabel(frame: CGRect(x: 10, y: 30, width: 300, height: 20))
 		subtitle.font = UIFont.systemFontOfSize(13.0)
 		vibrancyEffectView.contentView.addSubview(subtitle)
 		
@@ -49,7 +48,7 @@ final class Notification: UIView {
 	func show (completed: () -> Void) {
 		UIView.animateWithDuration(0.4, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
 			self.alpha = 1.0
-			self.notificationView.frame.origin.y = self.viewFrame.origin.y + self.notificationView.frame.height
+			self.notificationView.frame.origin.x = self.viewFrame.origin.x + self.notificationView.frame.width
 			}, completion: { bool in
 				self.hide({ completed() })
 		})
@@ -57,8 +56,8 @@ final class Notification: UIView {
 	
 	func hide (completed: () -> Void) {
 		UIView.animateWithDuration(0.4, delay: 3.0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-			self.alpha = 0
-			self.notificationView.frame.origin.y = self.viewFrame.origin.y - self.notificationView.frame.height
+			// self.alpha = 0
+			self.notificationView.frame.origin.x += self.notificationView.frame.width
 			}, completion: { bool in
 				completed()
 		})

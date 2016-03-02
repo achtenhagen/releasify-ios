@@ -20,9 +20,9 @@ class StreamViewController: UITableViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let reuseIdentifier = "streamCell"
-	// var searchController: UISearchController!
 	var selectedAlbum: Album!
 	var filteredData: [Artist]!
+	var unread: [Int:Bool]!
 	var tmpArtwork: [String:UIImage]?
 	var tmpUrl: [Int:String]?
 	var footerLabel: UILabel!
@@ -31,7 +31,7 @@ class StreamViewController: UITableViewController {
 	@IBOutlet var streamTable: UITableView!
 	
 	override func viewDidLoad() {
-		super.viewDidLoad()
+		super.viewDidLoad()				
 		
 		tmpArtwork = [String:UIImage]()
 		
@@ -47,46 +47,30 @@ class StreamViewController: UITableViewController {
 		
 		registerLongPressGesture()
 		
-//		self.searchController = UISearchController(searchResultsController: nil)
-//		self.searchController.delegate = self
-//		self.searchController.searchResultsUpdater = self
-//		self.searchController.dimsBackgroundDuringPresentation = false
-//		self.searchController.hidesNavigationBarDuringPresentation = false
-//		self.searchController.searchBar.placeholder = "Search artists & albums"
-//		self.searchController.searchBar.searchBarStyle = .Minimal
-//		self.searchController.searchBar.barStyle = Theme.sharedInstance.searchBarStyle
-//		self.searchController.searchBar.barTintColor = UIColor.clearColor()
-//		self.searchController.searchBar.tintColor = Theme.sharedInstance.searchBarTintColor
-//		self.searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
-//		self.searchController.searchBar.layer.borderWidth = 1
-//		self.searchController.searchBar.translucent = false
-//		self.searchController.searchBar.autocapitalizationType = .Words
-//		self.searchController.searchBar.keyboardAppearance = Theme.sharedInstance.keyboardStyle
-//		self.searchController.searchBar.sizeToFit()
-//		self.streamTable.tableHeaderView = self.searchController.searchBar
-		
-//		if #available(iOS 9.0, *) {
-//			self.searchController.loadViewIfNeeded()
-//		} else {
-//			let _ = self.searchController.view
-//		}
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
 		
 		refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = Theme.sharedInstance.refreshControlTintColor
 		streamTable.addSubview(refreshControl!)
 		
+		if self.appDelegate.firstRun {
+			let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
+			notification.title.text = "Welcome to Releasify!"
+			notification.subtitle.text = "Swipe left to manage your subscriptions."
+			self.delegate?.addNotificationView(notification)
+			NotificationQueue.sharedInstance.add(notification)
+			self.appDelegate.firstRun = false
+		}
+		
 		if !appDelegate.completedRefresh {
 			refresh()
 		}
-		
-//		definesPresentationContext = true
-		
-//		let notification = Notification(frame: CGRect(x: 0, y: -64, width: self.view.bounds.width, height: 64))
-//		notification.title.text = "Notification Title"
-//		notification.subtitle.text = "Notification body text"
-//		delegate?.addNotificationView(notification)
-//		NotificationQueue.sharedInstance.add(notification)
     }
+	
+	override func viewDidAppear(animated: Bool) {
+//		AppDB.sharedInstance.getAlbums()
+//		self.streamTable.reloadData()
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -94,18 +78,12 @@ class StreamViewController: UITableViewController {
 	
 	// MARK: - Refresh Content
 	func refresh() {
-		API.sharedInstance.refreshContent({ newItems in
+		API.sharedInstance.refreshContent({ newItems in			
 			self.streamTable.reloadData()
 			self.refreshControl!.endRefreshing()
-			if self.appDelegate.firstRun {
-				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
-				notification.title.text = "Welcome to Releasify!"
-				notification.subtitle.text = "Swipe left to manage your subscriptions."
-				self.delegate?.addNotificationView(notification)
-				NotificationQueue.sharedInstance.add(notification)
-				self.appDelegate.firstRun = false
-			}
 			if newItems.count > 0 {
+				// Populate unread array with new items to keep track of item state
+				self.unread = [Int: Bool]()
 				self.streamTable.hidden = false
 				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
 				notification.title.text = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
@@ -114,7 +92,8 @@ class StreamViewController: UITableViewController {
 				artwork.contentMode = .ScaleToFill
 				artwork.layer.masksToBounds = true
 				artwork.layer.cornerRadius = 2
-				// Retrieve the artwork preview thumbnail
+				
+				// Retrieve the artwork preview thumbnail for the notification
 				API.sharedInstance.fetchArtwork(newItems[0], successHandler: { thumb in
 					artwork.image = thumb
 					}, errorHandler: {
@@ -130,7 +109,7 @@ class StreamViewController: UITableViewController {
 			},
 			errorHandler: { (error) in
 				self.refreshControl!.endRefreshing()
-				self.handleError("Unable to update!", message: "Please try again later.", error: error)
+				self.handleError("Unable to update!", message: "Please try again later.", error: error)	
 		})
 	}
 	
@@ -196,38 +175,6 @@ class StreamViewController: UITableViewController {
 		completion(artwork: tmpImage)
 	}
 	
-	// MARK: - Search function for UISearchResultsUpdating
-//	func filterContentForSearchText(searchText: String) {
-//		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({(artist: Artist) -> Bool in
-//			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
-//		})
-//	}
-	
-	// MARK: - Error Message Handler
-	func handleError(title: String, message: String, error: ErrorType) {
-		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-		switch (error) {
-		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = "You're Offline!"
-			alert.message = "Please make sure you are connected to the internet, then try again."
-			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
-				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
-			}))
-		default:
-			alert.title = title
-			alert.message = message
-		}
-		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-		self.presentViewController(alert, animated: true, completion: nil)
-	}
-	
-	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-		if segue.identifier == "AlbumViewSegue" {
-			let detailController = segue.destinationViewController as! AlbumDetailController
-			detailController.album = selectedAlbum
-		}
-	}
-	
 	override func scrollViewDidScroll(scrollView: UIScrollView) {
 		if (scrollView == self.streamTable) {
 			if let visibleCells = self.streamTable.indexPathsForVisibleRows {
@@ -243,6 +190,7 @@ class StreamViewController: UITableViewController {
 		}
 	}
 	
+	// MARK: - Parallax scrolling effect
 	func setCellImageOffset(cell: StreamCell, indexPath: NSIndexPath) {
 		let cellFrame = self.streamTable.rectForRowAtIndexPath(indexPath)
 		let cellFrameInTable = self.streamTable.convertRect(cellFrame, toView:self.streamTable.superview)
@@ -250,11 +198,6 @@ class StreamViewController: UITableViewController {
 		let tableHeight = self.streamTable.bounds.size.height + cellFrameInTable.size.height
 		let cellOffsetFactor = cellOffset / tableHeight
 		cell.setBackgroundOffset(cellOffsetFactor)
-	}
-	
-	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-		let imageCell = cell as! StreamCell
-		self.setCellImageOffset(imageCell, indexPath: indexPath)
 	}
 	
 	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -269,6 +212,7 @@ class StreamViewController: UITableViewController {
 		let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! StreamCell
 		let album = AppDB.sharedInstance.albums[indexPath.row]
 		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
+		let posted = album.getDatePosted(album.created)
 		
 		cell.containerView.backgroundColor = theme.streamCellBackgroundColor
 		cell.albumTitle.textColor = theme.streamCellAlbumTitleColor
@@ -279,8 +223,8 @@ class StreamViewController: UITableViewController {
 			cell.artwork.image = artwork
 		})
 		
-		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(album.ID)
 		cell.albumTitle.text = album.title
+		cell.artistTitle.text = "By \(AppDB.sharedInstance.getAlbumArtist(album.ID)!), \(posted)"
 		cell.albumTitle.userInteractionEnabled = false
 		
 		if timeDiff > 0 {
@@ -341,11 +285,11 @@ class StreamViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
-		streamTable.cellForRowAtIndexPath(indexPath)?.alpha = 0.8
+		tableView.cellForRowAtIndexPath(indexPath)?.alpha = 0.8
 	}
 	
 	override func tableView(tableView: UITableView, didUnhighlightRowAtIndexPath indexPath: NSIndexPath) {
-		streamTable.cellForRowAtIndexPath(indexPath)?.alpha = 1.0
+		tableView.cellForRowAtIndexPath(indexPath)?.alpha = 1.0
 	}
 	
 	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
@@ -380,19 +324,24 @@ class StreamViewController: UITableViewController {
 				AppDB.sharedInstance.deleteArtwork(hash)
 				if AppDB.sharedInstance.albums.count == 0 {
 					if self.numberOfSectionsInTableView(self.streamTable) > 0 {
-						self.streamTable.deleteSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+						tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
 					}
 				} else {
-					self.streamTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+					tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
 				}
 				self.tmpArtwork?.removeValueForKey(hash)
-				self.streamTable.reloadData()
+				tableView.reloadData()
 				}, errorHandler: { (error) in
 					self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
 			})
 		})
 		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete")!)
 		return [starAction, buyAction, removeAction]
+	}
+	
+	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+		let imageCell = cell as! StreamCell
+		self.setCellImageOffset(imageCell, indexPath: indexPath)
 	}
 	
 	override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -409,6 +358,31 @@ class StreamViewController: UITableViewController {
 		footerLabel.center = CGPoint(x: self.view.frame.size.width / 2, y: 15)
 		footerView.addSubview(footerLabel)
 		return footerView
+	}
+	
+	// MARK: - Error Message Handler
+	func handleError(title: String, message: String, error: ErrorType) {
+		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+		switch (error) {
+		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+			alert.title = "You're Offline!"
+			alert.message = "Please make sure you are connected to the internet, then try again."
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+			}))
+		default:
+			alert.title = title
+			alert.message = message
+		}
+		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		self.presentViewController(alert, animated: true, completion: nil)
+	}
+	
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		if segue.identifier == "AlbumViewSegue" {
+			let detailController = segue.destinationViewController as! AlbumDetailController
+			detailController.album = selectedAlbum
+		}
 	}
 }
 
@@ -432,25 +406,6 @@ extension StreamViewController: StreamViewControllerDelegate {
 		})
 	}
 }
-
-// MARK: - UISearchControllerDelegate
-//extension StreamViewController: UISearchControllerDelegate {
-//	func willPresentSearchController(searchController: UISearchController) {
-//		searchController.searchBar.backgroundColor = Theme.sharedInstance.navBarTintColor
-//	}
-//	
-//	func willDismissSearchController(searchController: UISearchController) {
-//		searchController.searchBar.backgroundColor = UIColor.clearColor()
-//	}
-//}
-
-// MARK: - UISearchResultsUpdating
-//extension StreamViewController: UISearchResultsUpdating {
-//	func updateSearchResultsForSearchController(searchController: UISearchController) {
-//		filterContentForSearchText(searchController.searchBar.text!)
-//		streamTable.reloadData()
-//	}
-//}
 
 // MARK: - UIViewControllerPreviewingDelegate
 @available(iOS 9.0, *)

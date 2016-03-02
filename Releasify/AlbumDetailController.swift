@@ -62,10 +62,6 @@ class AlbumDetailController: UIViewController {
 		progressBar.trackTintColor = theme.progressBarBackTintColor
 		timeDiff = album!.releaseDate - NSDate().timeIntervalSince1970
 		
-		if Int(NSDate().timeIntervalSince1970) - album!.created <= 86400 {
-			UIApplication.sharedApplication().applicationIconBadgeNumber == 0 ? 0 : UIApplication.sharedApplication().applicationIconBadgeNumber--
-		}
-		
 		if timeDiff > 0 {
 			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
 			progressBar.progress = album!.getProgressSinceDate(dateAdded)
@@ -92,7 +88,7 @@ class AlbumDetailController: UIViewController {
 		
 		if AppDB.sharedInstance.getArtwork(album!.artwork + "_large") == nil {
 			let subDir = (album!.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
-			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(album!.artwork)_large.jpg"
+			let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(album!.artwork)_large.jpg"
 			if let checkedURL = NSURL(string: albumURL) {
 				let request = NSURLRequest(URL: checkedURL)
 				UIApplication.sharedApplication().networkActivityIndicatorVisible = true

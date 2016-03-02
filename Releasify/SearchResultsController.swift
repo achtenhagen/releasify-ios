@@ -101,13 +101,13 @@ class SearchResultsController: UIViewController {
 extension SearchResultsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! SearchResultCell
-		let albums = (artists[indexPath.section]["albums"] as? [NSDictionary])!
-		if albums.count > 0 {
-			cell.albumTitle.text = albums[indexPath.row]["title"] as? String
-			cell.releaseLabel.text = albums[indexPath.row]["releaseDate"] as? String
-			let hash = albums[indexPath.row]["artwork"]! as! String
+		let album = (artists[indexPath.section]["albums"] as? [NSDictionary])!
+		if album.count > 0 {
+			cell.albumTitle.text = album[indexPath.row]["title"] as? String
+			cell.releaseLabel.text = album[indexPath.row]["releaseDate"] as? String
+			let hash = album[indexPath.row]["artwork"]! as! String
 			let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
-			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash).jpg"
+			let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(hash).jpg"
 			if let img = artwork[albumURL] {
 				cell.albumArtwork.image = img
 			} else {

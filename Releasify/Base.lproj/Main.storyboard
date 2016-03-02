@@ -9,10 +9,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Subscription Controller-->
+        <!--Subscription View-->
         <scene sceneID="5o2-yT-cvK">
             <objects>
-                <tableViewController storyboardIdentifier="SubscriptionController" title="Subscription Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="4Mu-kG-8iL" customClass="SubscriptionController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="SubscriptionController" title="Subscription View" useStoryboardIdentifierAsRestorationIdentifier="YES" id="4Mu-kG-8iL" customClass="SubscriptionController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="64" sectionHeaderHeight="28" sectionFooterHeight="28" id="5re-xf-j2G">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -113,10 +113,10 @@
             </objects>
             <point key="canvasLocation" x="1872.75" y="-161.625"/>
         </scene>
-        <!--Search Results-->
+        <!--Search Results View-->
         <scene sceneID="FQB-CE-TmJ">
             <objects>
-                <viewController title="Search Results" id="bVm-Vq-jeG" customClass="SearchResultsController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Search Results View" id="bVm-Vq-jeG" customClass="SearchResultsController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="CMs-wi-dAM"/>
                         <viewControllerLayoutGuide type="bottom" id="glS-Yc-3oX"/>
@@ -426,10 +426,10 @@
             </objects>
             <point key="canvasLocation" x="3191.25" y="-161.625"/>
         </scene>
-        <!--Subscription Details-->
+        <!--Subscription Detail View-->
         <scene sceneID="u0K-cP-Fcy">
             <objects>
-                <viewController title="Subscription Details" id="yWS-G5-cd2" customClass="SubscriptionDetailController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Subscription Detail View" id="yWS-G5-cd2" customClass="SubscriptionDetailController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Chr-ug-0Mw"/>
                         <viewControllerLayoutGuide type="bottom" id="cmH-8c-jDw"/>
@@ -505,7 +505,7 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="detailFlowLayout" destination="sLj-07-5DV" id="RmC-UG-ZAq"/>
+                        <outlet property="detailFlowLayout" destination="sLj-07-5DV" id="MlM-sX-MPC"/>
                         <outlet property="subscriptionAlbumCollectionView" destination="ucM-Ta-D1F" id="Qm1-Kp-E91"/>
                         <segue destination="eZw-O1-6pW" kind="unwind" identifier="UnwindToSubscriptionsSegue" unwindAction="unwindToSubscriptions:" id="W1n-6y-n6O"/>
                         <segue destination="ICV-6m-5Th" kind="show" identifier="SubscriptionDetailCellSegue" id="Iyy-Lr-QfG"/>
@@ -516,10 +516,10 @@
             </objects>
             <point key="canvasLocation" x="1872.75" y="445.875"/>
         </scene>
-        <!--Artist Picker-->
+        <!--Artist Picker View-->
         <scene sceneID="TAN-hE-HYX">
             <objects>
-                <viewController storyboardIdentifier="ArtistPicker" title="Artist Picker" id="5Wn-lw-nVy" customClass="ArtistsPicker" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ArtistPicker" title="Artist Picker View" id="5Wn-lw-nVy" customClass="ArtistsPicker" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="cb5-Rm-cLE"/>
                         <viewControllerLayoutGuide type="bottom" id="ogT-gm-u5s"/>
@@ -673,10 +673,10 @@
             </objects>
             <point key="canvasLocation" x="3191.25" y="-796.125"/>
         </scene>
-        <!--Album Details-->
+        <!--Album Detail View-->
         <scene sceneID="Ej3-cx-eIi">
             <objects>
-                <viewController storyboardIdentifier="AlbumView" title="Album Details" id="ICV-6m-5Th" customClass="AlbumDetailController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AlbumView" title="Album Detail View" id="ICV-6m-5Th" customClass="AlbumDetailController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MNM-1i-xyu"/>
                         <viewControllerLayoutGuide type="bottom" id="eTW-6L-1ZX"/>
@@ -2003,17 +2003,38 @@ Swipe to get started.</string>
                     <nil name="viewControllers"/>
                     <connections>
                         <outlet property="navBar" destination="Xbp-AH-7Ic" id="eEa-lE-klH"/>
-                        <segue destination="SCy-74-9E0" kind="relationship" relationship="rootViewController" id="MIO-kH-xg4"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YnA-Jo-x40" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="882.75" y="-796.125"/>
         </scene>
-        <!--Stream View Controller-->
+        <!--Add Subscription View-->
+        <scene sceneID="bob-IT-jeH">
+            <objects>
+                <tableViewController storyboardIdentifier="AddSubscriptionController" title="Add Subscription View" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fUk-9M-ZL3" customClass="AddSubscriptionController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="UYU-Lf-ad5">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <connections>
+                            <outlet property="dataSource" destination="fUk-9M-ZL3" id="12e-jI-tqs"/>
+                            <outlet property="delegate" destination="fUk-9M-ZL3" id="ghh-wW-XXP"/>
+                        </connections>
+                    </tableView>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="searchTable" destination="UYU-Lf-ad5" id="288-9T-yz7"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aPV-gk-CCD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-116.25" y="-161.625"/>
+        </scene>
+        <!--Stream View-->
         <scene sceneID="D05-Vo-lUd">
             <objects>
-                <tableViewController storyboardIdentifier="StreamController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="equ-hM-XdW" customClass="StreamViewController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="StreamController" title="Stream View" useStoryboardIdentifierAsRestorationIdentifier="YES" id="equ-hM-XdW" customClass="StreamViewController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="310" sectionHeaderHeight="28" sectionFooterHeight="40" id="YfH-dM-XsL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2245,6 +2266,7 @@ Swipe to get started.</string>
                     <connections>
                         <outlet property="streamTabBarItem" destination="NTH-vx-Fv2" id="KWW-k3-2VL"/>
                         <outlet property="streamTable" destination="YfH-dM-XsL" id="e5r-jR-yTg"/>
+                        <outlet property="view" destination="YfH-dM-XsL" id="8jx-MU-syi"/>
                         <segue destination="ICV-6m-5Th" kind="show" identifier="AlbumViewSegue" id="6ln-2C-qu7"/>
                     </connections>
                 </tableViewController>
@@ -2255,9 +2277,12 @@ Swipe to get started.</string>
         <!--Tab Bar Controller-->
         <scene sceneID="HNW-4P-Q1B">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SCy-74-9E0" customClass="TabBarController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" title="Tab Bar Controller" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SCy-74-9E0" customClass="TabBarController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="j1T-C0-eOR">
+                        <barButtonItem key="leftBarButtonItem" image="icon_favorites" id="2zg-bl-iCD">
+                            <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Da5-pS-Ult">
                             <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
@@ -2265,6 +2290,8 @@ Swipe to get started.</string>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="6hG-pB-WFW">
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2276,7 +2303,8 @@ Swipe to get started.</string>
                         <outlet property="tabBar" destination="6hG-pB-WFW" id="Ahv-UZ-g2W"/>
                         <segue destination="5Wn-lw-nVy" kind="presentation" identifier="ArtistPickerSegue" id="cZg-RQ-l62"/>
                         <segue destination="bVm-Vq-jeG" kind="presentation" identifier="ArtistSelectionSegue" id="i1c-0T-qib"/>
-                        <segue destination="equ-hM-XdW" kind="relationship" relationship="viewControllers" id="ThB-kJ-uV8"/>
+                        <segue destination="fUk-9M-ZL3" kind="presentation" identifier="AddSubscriptionSegue" modalTransitionStyle="coverVertical" id="yXI-ew-bI3"/>
+                        <segue destination="equ-hM-XdW" kind="relationship" relationship="viewControllers" id="sUk-dh-Kio"/>
                         <segue destination="4Mu-kG-8iL" kind="relationship" relationship="viewControllers" id="Wrv-fo-Kcu"/>
                     </connections>
                 </tabBarController>
@@ -2291,6 +2319,7 @@ Swipe to get started.</string>
         <image name="icon_arrow" width="70" height="70"/>
         <image name="icon_artwork_placeholder" width="145" height="145"/>
         <image name="icon_cloud" width="25" height="25"/>
+        <image name="icon_favorites" width="22" height="22"/>
         <image name="icon_intro_complete" width="100" height="100"/>
         <image name="icon_library" width="100" height="100"/>
         <image name="icon_more" width="25" height="25"/>
@@ -2298,9 +2327,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="i1c-0T-qib"/>
+        <segue reference="6ln-2C-qu7"/>
         <segue reference="cZg-RQ-l62"/>
-        <segue reference="Iyy-Lr-QfG"/>
+        <segue reference="i1c-0T-qib"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

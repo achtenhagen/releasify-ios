@@ -8,16 +8,16 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AlbumCell" id="gTV-IL-0wX" customClass="AlbumCell" customModule="Releasify" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="172" height="190"/>
+            <rect key="frame" x="0.0" y="0.0" width="172" height="217"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="172" height="190"/>
+                <rect key="frame" x="0.0" y="0.0" width="172" height="217"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cAq-II-fkp">
-                        <rect key="frame" x="0.0" y="0.0" width="172" height="145"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_artwork_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="cAq-II-fkp">
+                        <rect key="frame" x="0.0" y="0.0" width="172" height="172"/>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dtU-Tz-6MX">
-                        <rect key="frame" x="0.0" y="145" width="172" height="45"/>
+                        <rect key="frame" x="0.0" y="172" width="172" height="45"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6mT-3R-UAJ">
                                 <rect key="frame" x="2" y="4" width="167" height="21"/>
@@ -51,10 +51,10 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CrM-FW-S5B">
-                        <rect key="frame" x="0.0" y="105" width="172" height="40"/>
+                        <rect key="frame" x="0.0" y="132" width="172" height="40"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Just Now" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fvA-mC-7Sc">
-                                <rect key="frame" x="10" y="12" width="154" height="22"/>
+                                <rect key="frame" x="10" y="10" width="154" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="22" id="tRd-Pj-1hT"/>
                                 </constraints>
@@ -69,7 +69,7 @@
                             <constraint firstItem="fvA-mC-7Sc" firstAttribute="leading" secondItem="CrM-FW-S5B" secondAttribute="leading" constant="10" id="7vG-dA-yo1"/>
                             <constraint firstAttribute="trailing" secondItem="fvA-mC-7Sc" secondAttribute="trailing" constant="8" id="R4I-26-t7m"/>
                             <constraint firstAttribute="height" constant="40" id="dlB-h1-5iZ"/>
-                            <constraint firstAttribute="bottom" secondItem="fvA-mC-7Sc" secondAttribute="bottom" constant="6" id="pAQ-01-dbD"/>
+                            <constraint firstAttribute="bottom" secondItem="fvA-mC-7Sc" secondAttribute="bottom" constant="8" id="pAQ-01-dbD"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -86,7 +86,7 @@
                 <constraint firstItem="dtU-Tz-6MX" firstAttribute="leading" secondItem="cAq-II-fkp" secondAttribute="leading" id="dtm-3Q-Phc"/>
                 <constraint firstItem="cAq-II-fkp" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="fHm-wP-Gqd"/>
                 <constraint firstItem="dtU-Tz-6MX" firstAttribute="trailing" secondItem="cAq-II-fkp" secondAttribute="trailing" id="sVa-SY-xlL"/>
-                <constraint firstItem="CrM-FW-S5B" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="105" id="w7H-iv-vFG"/>
+                <constraint firstItem="CrM-FW-S5B" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="132" id="w7H-iv-vFG"/>
             </constraints>
             <connections>
                 <outlet property="albumArtwork" destination="cAq-II-fkp" id="gde-U4-SN8"/>
@@ -99,4 +99,7 @@
             <point key="canvasLocation" x="191.5" y="81"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="icon_artwork_placeholder" width="145" height="145"/>
+    </resources>
 </document>

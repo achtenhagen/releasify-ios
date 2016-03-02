@@ -17,7 +17,7 @@ class SubscriptionDetailController: UIViewController {
 	var selectedAlbum: Album!
 
 	@IBOutlet weak var subscriptionAlbumCollectionView: UICollectionView!
-	@IBOutlet weak var detailFlowLayout: UICollectionViewFlowLayout!
+	@IBOutlet var detailFlowLayout: UICollectionViewFlowLayout!
 	
 	@IBAction func removeArtist(sender: AnyObject) {
 		let alert = UIAlertController(title: "Remove Subscription?", message: "Please confirm that you want to unsubscribe from this artist.", preferredStyle: .Alert)
@@ -39,7 +39,7 @@ class SubscriptionDetailController: UIViewController {
 							}
 						}
 					}
-					self.navigationController?.navigationBar.items![0].leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
+					// self.navigationController?.navigationBar.items![0].leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false					
 					self.appDelegate.contentHash = nil
 					self.performSegueWithIdentifier("UnwindToSubscriptionsSegue", sender: self)
 				})
@@ -57,8 +57,24 @@ class SubscriptionDetailController: UIViewController {
 		
 		self.navigationItem.title = artist!.title
 		subscriptionAlbumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
-		let itemSize = CGPoint(x: 172, y: 190)
-		detailFlowLayout.itemSize = CGSize(width: itemSize.x, height: itemSize.y)
+		let defaultItemSize = CGSize(width: 145, height: 190)
+		detailFlowLayout = UICollectionViewFlowLayout()
+		detailFlowLayout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+		detailFlowLayout.itemSize = defaultItemSize
+		detailFlowLayout.minimumLineSpacing = 10
+		detailFlowLayout.minimumInteritemSpacing = 10
+		
+		switch UIScreen.mainScreen().bounds.width {
+		case 320:
+			detailFlowLayout.itemSize = defaultItemSize
+		case 375:
+			detailFlowLayout.itemSize = CGSize(width: 172.5, height: 217.5)
+		case 414:
+			detailFlowLayout.itemSize = CGSize(width: 192, height: 237)
+		default:
+			detailFlowLayout.itemSize = defaultItemSize
+		}
+		
 		subscriptionAlbumCollectionView.setCollectionViewLayout(detailFlowLayout, animated: false)
 		albums = AppDB.sharedInstance.getAlbumsByArtist(artist!.ID)
 		if albums == nil || albums?.count == 0 {
@@ -120,7 +136,7 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell		
 		cell.albumArtwork.image = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork)
-		cell.albumTitle.text = "Album Title"
+		cell.albumTitle.text = albums![indexPath.row].title
 		cell.artistTitle.text = artist!.title
 		return cell
 	}
@@ -131,5 +147,13 @@ extension SubscriptionDetailController: UICollectionViewDelegate {
 	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 		selectedAlbum = albums![indexPath.row]
 		self.performSegueWithIdentifier("SubscriptionDetailCellSegue", sender: self)
+	}
+	
+	func collectionView(collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
+		collectionView.cellForItemAtIndexPath(indexPath)?.alpha = 0.8
+	}
+	
+	func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
+		collectionView.cellForItemAtIndexPath(indexPath)?.alpha = 1.0
 	}
 }

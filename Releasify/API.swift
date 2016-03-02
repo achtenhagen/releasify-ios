@@ -32,33 +32,36 @@ final class API {
 	}
 	
 	enum Endpoint {
-		case register
-		case updateContent
 		case confirmArtist
+		case feed
+		case itemLookup
+		case register
+		case removeAlbum
+		case removeArtist
 		case searchArtist
 		case submitArtist
-		case removeArtist
-		case removeAlbum
-		case itemLookup
+		case updateContent
 		
 		func url () -> NSURL {
 			switch self {
-			case .register:
-				return sharedInstance.baseURL.URLByAppendingPathComponent("register.php")
-			case .updateContent:
-				return sharedInstance.baseURL.URLByAppendingPathComponent("update_content.php")
 			case .confirmArtist:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("confirm_artist.php")
+			case .feed:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("feed.php")
+			case .itemLookup:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("item.php")
+			case .register:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("register.php")
+			case .removeAlbum:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("unsubscribe_album.php")
+			case .removeArtist:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("unsubscribe_artist.php")
 			case .searchArtist:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("search_artist.php")
 			case .submitArtist:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("submit_artist.php")
-			case .removeArtist:
-				return sharedInstance.baseURL.URLByAppendingPathComponent("unsubscribe_artist.php")
-			case .removeAlbum:
-				return sharedInstance.baseURL.URLByAppendingPathComponent("unsubscribe_album.php")
-			case .itemLookup:
-				return sharedInstance.baseURL.URLByAppendingPathComponent("item.php")
+			case .updateContent:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("update_content.php")
 			}
 		}
 	}
@@ -182,7 +185,20 @@ final class API {
 		}
 	}
 	
-	// MARK: - Album lookup API
+	// MARK: - Get iTunes feed
+	func getFeed () -> [Album] {
+		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
+		let albums = [Album]()
+		sendRequest(Endpoint.feed.url(), postString: postString, successHandler: { (statusCode, data) in
+			
+			}, errorHandler: { error in
+				
+		})
+		
+		return albums
+	}
+	
+	// MARK: - Album lookup
 	func lookupAlbum (albumID: Int, successHandler: ((album: Album) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&itemID=\(albumID)"
 		sendRequest(Endpoint.itemLookup.url(), postString: postString, successHandler: { (statusCode, data) in
@@ -222,6 +238,7 @@ final class API {
 		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
 		// Check for dev or production domain
 		let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
+		print(albumURL)
 		guard let checkedURL = NSURL(string: albumURL) else { errorHandler(); return }
 		let request = NSURLRequest(URL: checkedURL)
 		NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
@@ -233,7 +250,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Device Registration API
+	// MARK: - Device Registration
 	func register (allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let UUID = NSUUID().UUIDString
 		var explicitValue = 1
