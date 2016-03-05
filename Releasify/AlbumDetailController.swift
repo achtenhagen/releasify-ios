@@ -86,7 +86,7 @@ class AlbumDetailController: UIViewController {
 			labelTopLayoutConstraint.constant = 45
 		}
 		
-		if AppDB.sharedInstance.getArtwork(album!.artwork + "_large") == nil {
+		if AppDB.sharedInstance.getArtwork(album!.artwork) == nil {
 			let subDir = (album!.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
 			let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(album!.artwork)_large.jpg"
 			if let checkedURL = NSURL(string: albumURL) {
@@ -97,7 +97,7 @@ class AlbumDetailController: UIViewController {
 						if let HTTPResponse = response as? NSHTTPURLResponse {
 							if HTTPResponse.statusCode == 200 {
 								let image = UIImage(data: data!)
-								AppDB.sharedInstance.addArtwork(self.album!.artwork + "_large", artwork: image!)
+								AppDB.sharedInstance.addArtwork(self.album!.artwork, artwork: image!)
 								self.albumArtwork.contentMode = .ScaleToFill
 								self.albumArtwork.image = image
 							}
@@ -107,7 +107,7 @@ class AlbumDetailController: UIViewController {
 				})
 			}
 		} else {
-			albumArtwork.image = AppDB.sharedInstance.getArtwork(album!.artwork + "_large")
+			albumArtwork.image = AppDB.sharedInstance.getArtwork(album!.artwork)
 			albumArtwork.contentMode = .ScaleToFill
 		}
 		

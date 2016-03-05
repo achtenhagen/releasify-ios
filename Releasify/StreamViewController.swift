@@ -22,10 +22,10 @@ class StreamViewController: UITableViewController {
 	let reuseIdentifier = "streamCell"
 	var selectedAlbum: Album!
 	var filteredData: [Artist]!
-	var unread: [Int:Bool]!
 	var tmpArtwork: [String:UIImage]?
 	var tmpUrl: [Int:String]?
 	var footerLabel: UILabel!
+	var favListBarBtn: UIBarButtonItem!
 
 	@IBOutlet var streamTabBarItem: UITabBarItem!
 	@IBOutlet var streamTable: UITableView!
@@ -35,23 +35,25 @@ class StreamViewController: UITableViewController {
 		
 		tmpArtwork = [String:UIImage]()
 		
-		streamTable.backgroundColor = theme.streamTableBackgroundColor
-		streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
-		streamTable.backgroundView?.userInteractionEnabled = false
+		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
+		
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
+		
+		self.streamTable.backgroundColor = theme.streamTableBackgroundColor
+		self.streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
+		self.streamTable.backgroundView?.userInteractionEnabled = false
 		
 		if #available(iOS 9.0, *) {
 			if traitCollection.forceTouchCapability == .Available {
-				self.registerForPreviewingWithDelegate(self, sourceView: streamTable)
+				self.registerForPreviewingWithDelegate(self, sourceView: self.streamTable)
 			}
 		}
 		
 		registerLongPressGesture()
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
-		
 		refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = Theme.sharedInstance.refreshControlTintColor
-		streamTable.addSubview(refreshControl!)
+		self.streamTable.addSubview(refreshControl!)
 		
 		if self.appDelegate.firstRun {
 			let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
@@ -68,8 +70,8 @@ class StreamViewController: UITableViewController {
     }
 	
 	override func viewDidAppear(animated: Bool) {
-//		AppDB.sharedInstance.getAlbums()
-//		self.streamTable.reloadData()
+		AppDB.sharedInstance.getAlbums()
+		self.streamTable.reloadData()
 	}
 
     override func didReceiveMemoryWarning() {
@@ -82,8 +84,6 @@ class StreamViewController: UITableViewController {
 			self.streamTable.reloadData()
 			self.refreshControl!.endRefreshing()
 			if newItems.count > 0 {
-				// Populate unread array with new items to keep track of item state
-				self.unread = [Int: Bool]()
 				self.streamTable.hidden = false
 				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
 				notification.title.text = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
@@ -92,14 +92,6 @@ class StreamViewController: UITableViewController {
 				artwork.contentMode = .ScaleToFill
 				artwork.layer.masksToBounds = true
 				artwork.layer.cornerRadius = 2
-				
-				// Retrieve the artwork preview thumbnail for the notification
-				API.sharedInstance.fetchArtwork(newItems[0], successHandler: { thumb in
-					artwork.image = thumb
-					}, errorHandler: {
-						artwork.image = UIImage(named: "icon_artwork_placeholder")
-				})
-				
 				notification.notificationView.addSubview(artwork)
 				if self.delegate != nil {
 					self.delegate?.addNotificationView(notification)
@@ -122,7 +114,7 @@ class StreamViewController: UITableViewController {
 	func registerLongPressGesture() {
 		let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
 		longPressGesture.minimumPressDuration = 1.0
-		streamTable.addGestureRecognizer(longPressGesture)
+		self.streamTable.addGestureRecognizer(longPressGesture)
 	}
 	
 	// MARK: - Handle long press gesture
@@ -155,35 +147,39 @@ class StreamViewController: UITableViewController {
 	
 	// MARK: - Return artwork image for each collection view cell
 	func getArtworkForCell(hash: String, completion: ((artwork: UIImage) -> Void)) {
-		if AppDB.sharedInstance.checkArtwork(hash) {
-			tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
-		} else {
-			if tmpArtwork![hash] != nil {
-				tmpArtwork?.removeValueForKey(hash)
-			}
-		}
-		guard let tmpImage = tmpArtwork![hash] else {
-			API.sharedInstance.fetchArtwork(hash, successHandler: { artwork in
-				AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
-				self.tmpArtwork![hash] = artwork
-				completion(artwork: artwork!)
-				}, errorHandler: {
-					completion(artwork: UIImage(named: "icon_artwork_placeholder")!)
-			})
+		
+		// Artwork is cached in dictionary, return it
+		if tmpArtwork![hash] != nil {
+			completion(artwork: tmpArtwork![hash]!)
 			return
 		}
-		completion(artwork: tmpImage)
+		
+		// Artwork is either not yet cached or needs to be downloaded first
+		if AppDB.sharedInstance.checkArtwork(hash) {
+			tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
+			completion(artwork: tmpArtwork![hash]!)
+			return
+		}
+		
+		// Artwork was not found, so download it
+		API.sharedInstance.fetchArtwork(hash, successHandler: { artwork in
+			AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
+			self.tmpArtwork![hash] = artwork
+			completion(artwork: self.tmpArtwork![hash]!)
+			}, errorHandler: {
+				completion(artwork: UIImage(named: "icon_artwork_placeholder")!)
+		})
 	}
 	
 	override func scrollViewDidScroll(scrollView: UIScrollView) {
-		if (scrollView == self.streamTable) {
+		if scrollView == self.streamTable {
 			if let visibleCells = self.streamTable.indexPathsForVisibleRows {
 				for indexPath in visibleCells {
 					self.setCellImageOffset(self.streamTable.cellForRowAtIndexPath(indexPath) as! StreamCell, indexPath: indexPath)
 				}
 			}
 		}
-		if footerLabel != nil && streamTable.contentOffset.y >= (streamTable.contentSize.height - streamTable.bounds.size.height) {
+		if footerLabel != nil && self.streamTable.contentOffset.y >= (self.streamTable.contentSize.height - self.streamTable.bounds.size.height) {
 			footerLabel.fadeIn()
 		} else if footerLabel != nil && footerLabel.alpha == 1.0 {
 			footerLabel.fadeOut()
@@ -218,7 +214,6 @@ class StreamViewController: UITableViewController {
 		cell.albumTitle.textColor = theme.streamCellAlbumTitleColor
 		cell.artistTitle.textColor = theme.streamCellArtistTitleColor
 		
-		cell.artwork.image = UIImage(named: "icon_artwork_placeholder")!
 		getArtworkForCell(album.artwork, completion: { artwork in
 			cell.artwork.image = artwork
 		})
@@ -262,10 +257,12 @@ class StreamViewController: UITableViewController {
 			let dateFormat = NSDateFormatter()
 			dateFormat.dateFormat = "MMM dd"
 			cell.timeLabel.text = dateFormat.stringFromDate(NSDate(timeIntervalSince1970: album.releaseDate))
-		}
+		}		
 		
 		if Int(NSDate().timeIntervalSince1970) - album.created <= 86400 {
 			cell.addNewItemLabel()
+		} else {
+			cell.removeNewItemLabel()
 		}
 		
 		if tmpUrl == nil {
@@ -293,11 +290,11 @@ class StreamViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-		let starAction = UITableViewRowAction(style: .Normal, title: "        ", handler: { (action, indexPath) -> Void in
+		let starAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in
 			// Add to favorites...
 		})
 		starAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_star")!)
-		let buyAction = UITableViewRowAction(style: .Normal, title: "        ", handler: { (action, indexPath) -> Void in
+		let buyAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in
 			let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
 			guard let albumUrl = self.tmpUrl![albumID] else { return }
 			if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumUrl)!) {
@@ -305,7 +302,7 @@ class StreamViewController: UITableViewController {
 			}
 		})
 		buyAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_buy")!)
-		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "        ", handler: { (action, indexPath) -> Void in
+		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
 			let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
 			if !AppDB.sharedInstance.albums[indexPath.row].isAvailable() {
 				for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {

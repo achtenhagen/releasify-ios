@@ -560,7 +560,7 @@ final class AppDB {
 	
 	// MARK: - Check album artwork file path and return image
 	func getArtwork (hash: String) -> UIImage? {
-		let artworkPath = artworkDirectoryPath + "/\(hash)_large.jpg"
+		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
 		if NSFileManager.defaultManager().fileExistsAtPath(artworkPath) { return UIImage(contentsOfFile: artworkPath)! }
 		return nil
 	}

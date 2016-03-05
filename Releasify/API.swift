@@ -237,8 +237,9 @@ final class API {
 		if hash.isEmpty { errorHandler(); return }
 		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
 		// Check for dev or production domain
-		let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(hash)@2x.jpg"
-		print(albumURL)
+		// Determine artwork size based on iPhone modell
+		let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(hash)_large.jpg"
+		print("fetchArtwork: \(albumURL)")
 		guard let checkedURL = NSURL(string: albumURL) else { errorHandler(); return }
 		let request = NSURLRequest(URL: checkedURL)
 		NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in

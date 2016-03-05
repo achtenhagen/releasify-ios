@@ -11,7 +11,7 @@ import UIKit
 class SubscriptionDetailController: UIViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	let albumCellReuseIdentifier = "AlbumCell"
+	let albumCellReuseIdentifier = "AlbumCell"	
 	var artist: Artist?
 	var albums: [Album]?
 	var selectedAlbum: Album!
@@ -39,7 +39,6 @@ class SubscriptionDetailController: UIViewController {
 							}
 						}
 					}
-					// self.navigationController?.navigationBar.items![0].leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false					
 					self.appDelegate.contentHash = nil
 					self.performSegueWithIdentifier("UnwindToSubscriptionsSegue", sender: self)
 				})
@@ -55,7 +54,7 @@ class SubscriptionDetailController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		self.navigationItem.title = artist!.title
+		self.navigationItem.title = artist!.title		
 		subscriptionAlbumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
 		let defaultItemSize = CGSize(width: 145, height: 190)
 		detailFlowLayout = UICollectionViewFlowLayout()

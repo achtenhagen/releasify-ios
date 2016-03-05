@@ -86,6 +86,13 @@ class StreamCell: UITableViewCell {
 		}
 	}
 	
+	func removeNewItemLabel () {
+		if label != nil {
+			label.removeFromSuperview()
+			label = nil
+		}
+	}
+	
 	func setBackgroundOffset(offset:CGFloat) {
 		let boundOffset = max(0, min(1, offset))
 		let pixelOffset = (1 - boundOffset) * 2 * imageParallaxFactor

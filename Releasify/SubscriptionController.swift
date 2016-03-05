@@ -59,10 +59,11 @@ class SubscriptionController: UITableViewController {
 		searchController.searchBar.sizeToFit()
 		subscriptionsTable.tableHeaderView = searchController.searchBar
 		
-		definesPresentationContext = true
-		
-		print("Subscription Controller - viewDidLoad")
-		
+		definesPresentationContext = true		
+	}
+	
+	override func viewDidAppear(animated: Bool) {
+		reloadSubscriptions()
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
