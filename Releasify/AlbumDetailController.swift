@@ -220,6 +220,9 @@ class AlbumDetailController: UIViewController {
 			thirdDigitLabel.text = formatNumber(seconds)
 			thirdTimeLabel.text = "seconds"
 		}
+		firstTimeLabel.textColor = theme.timeLabelColor
+		secondTimeLabel.textColor = theme.timeLabelColor
+		thirdTimeLabel.textColor = theme.timeLabelColor
 		progress = album!.getProgressSinceDate(dateAdded)
 		progressBar.progress = progress
 	}
@@ -240,12 +243,14 @@ private class AlbumDetailControllerTheme: Theme {
 	
 	var progressBarBackTintColor: UIColor!
 	var albumTitleColor: UIColor!
+	var timeLabelColor: UIColor!
 	
 	override init () {
 		switch Theme.sharedInstance.style {
 		case .dark:
 			albumTitleColor = UIColor.whiteColor()
 			progressBarBackTintColor = UIColor(red: 0, green: 52/255, blue: 72/255, alpha: 1)
+			timeLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 		case .light:
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			progressBarBackTintColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 0.2)

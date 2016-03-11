@@ -31,9 +31,10 @@ class StreamViewController: UITableViewController {
 	@IBOutlet var streamTable: UITableView!
 	
 	override func viewDidLoad() {
-		super.viewDidLoad()				
+		super.viewDidLoad()
 		
 		tmpArtwork = [String:UIImage]()
+		tmpUrl = [Int:String]()
 		
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		
@@ -55,6 +56,7 @@ class StreamViewController: UITableViewController {
 		refreshControl!.tintColor = Theme.sharedInstance.refreshControlTintColor
 		self.streamTable.addSubview(refreshControl!)
 		
+		// Handle first run
 		if self.appDelegate.firstRun {
 			let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
 			notification.title.text = "Welcome to Releasify!"
@@ -67,7 +69,7 @@ class StreamViewController: UITableViewController {
 		if !appDelegate.completedRefresh {
 			refresh()
 		}
-    }
+	}
 	
 	override func viewDidAppear(animated: Bool) {
 		AppDB.sharedInstance.getAlbums()
@@ -80,11 +82,26 @@ class StreamViewController: UITableViewController {
 	
 	// MARK: - Refresh Content
 	func refresh() {
-		API.sharedInstance.refreshContent({ newItems in			
+		API.sharedInstance.refreshContent({ (newItems) in
 			self.streamTable.reloadData()
 			self.refreshControl!.endRefreshing()
+			
+			let album = Album(
+				ID: 192661,
+				title: "Temporary Album",
+				artistID: 11,
+				releaseDate: 1458284400.0,
+				artwork: "80c48b0e7165d077647077e665d3a1cd",
+				explicit: 0,
+				copyright: "℗ 2016 Armada Music B.V.",
+				iTunesUniqueID: 1088283564,
+				iTunesUrl: "https://itunes.apple.com/us/album/state-trance-radio-top-20/id1088283564?uo=4&at=1010lbca",
+				created: 1457145284
+			)
+			AppDB.sharedInstance.albums.append(album)
+			self.streamTable.reloadData()
+			
 			if newItems.count > 0 {
-				self.streamTable.hidden = false
 				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
 				notification.title.text = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
 				notification.subtitle.text = "\(newItems.count == 1 ? "has been added to your stream." : "have been added to your stream.")"
@@ -103,11 +120,6 @@ class StreamViewController: UITableViewController {
 				self.refreshControl!.endRefreshing()
 				self.handleError("Unable to update!", message: "Please try again later.", error: error)	
 		})
-	}
-	
-	// MARK: - Compute the floor of 2 numbers
-	func component(x: Double, v: Double) -> Double {
-		return floor(x / v)
 	}
 	
 	// MARK: - Register long press gesture if 3D Touch is unavailable
@@ -175,7 +187,9 @@ class StreamViewController: UITableViewController {
 		if scrollView == self.streamTable {
 			if let visibleCells = self.streamTable.indexPathsForVisibleRows {
 				for indexPath in visibleCells {
-					self.setCellImageOffset(self.streamTable.cellForRowAtIndexPath(indexPath) as! StreamCell, indexPath: indexPath)
+					if let cell = self.streamTable.cellForRowAtIndexPath(indexPath) as? StreamCell {
+						self.setCellImageOffset(cell, indexPath: indexPath)
+					}
 				}
 			}
 		}
@@ -207,66 +221,25 @@ class StreamViewController: UITableViewController {
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! StreamCell
 		let album = AppDB.sharedInstance.albums[indexPath.row]
-		let timeDiff = album.releaseDate - NSDate().timeIntervalSince1970
-		let posted = album.getDatePosted(album.created)
+		let posted = album.getFormattedDatePosted(album.created)
 		
 		cell.containerView.backgroundColor = theme.streamCellBackgroundColor
 		cell.albumTitle.textColor = theme.streamCellAlbumTitleColor
 		cell.artistTitle.textColor = theme.streamCellArtistTitleColor
 		
-		getArtworkForCell(album.artwork, completion: { artwork in
+		getArtworkForCell(album.artwork, completion: { (artwork) in
 			cell.artwork.image = artwork
 		})
 		
 		cell.albumTitle.text = album.title
 		cell.artistTitle.text = "By \(AppDB.sharedInstance.getAlbumArtist(album.ID)!), \(posted)"
 		cell.albumTitle.userInteractionEnabled = false
-		
-		if timeDiff > 0 {
-			let weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
-			let days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
-			let hours   = component(Double(timeDiff),      v: 60 * 60) % 24
-			let minutes = component(Double(timeDiff),           v: 60) % 60
-			let seconds = component(Double(timeDiff),            v: 1) % 60
-			
-			if Int(weeks) > 0 {
-				cell.timeLabel.text = "\(Int(weeks)) weeks"
-				if Int(weeks) == 1  {
-					cell.timeLabel.text = "\(Int(weeks)) week"
-				}
-			} else if Int(days) > 0 && Int(days) <= 7 {
-				cell.timeLabel.text = "\(Int(days)) days"
-				if Int(days) == 1  {
-					cell.timeLabel.text = "\(Int(days)) day"
-				}
-			} else if Int(hours) > 0 && Int(hours) <= 24 {
-				if Int(hours) >= 12 {
-					cell.timeLabel.text = "Today"
-				} else {
-					cell.timeLabel.text = "\(Int(hours)) hours"
-					if Int(hours) == 1  {
-						cell.timeLabel.text = "\(Int(hours)) hour"
-					}
-				}
-			} else if Int(minutes) > 0 && Int(minutes) <= 60 {
-				cell.timeLabel.text = "\(Int(minutes)) minute"
-			} else if Int(seconds) > 0 && Int(seconds) <= 60 {
-				cell.timeLabel.text = "\(Int(seconds)) second"
-			}
-		} else {
-			let dateFormat = NSDateFormatter()
-			dateFormat.dateFormat = "MMM dd"
-			cell.timeLabel.text = dateFormat.stringFromDate(NSDate(timeIntervalSince1970: album.releaseDate))
-		}		
+		cell.timeLabel.text = album.getFormattedReleaseDate()
 		
 		if Int(NSDate().timeIntervalSince1970) - album.created <= 86400 {
 			cell.addNewItemLabel()
 		} else {
 			cell.removeNewItemLabel()
-		}
-		
-		if tmpUrl == nil {
-			tmpUrl = [Int: String]()
 		}
 		
 		if tmpUrl![album.ID] == nil {
@@ -290,8 +263,8 @@ class StreamViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-		let starAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in
-			// Add to favorites...
+		let starAction = UITableViewRowAction(style: .Normal, title: "        ", handler: { (action, indexPath) -> Void in
+			// AppDB.sharedInstance.addFavorite(AppDB.sharedInstance.albums[indexPath.row].iTunesUniqueID)
 		})
 		starAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_star")!)
 		let buyAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in

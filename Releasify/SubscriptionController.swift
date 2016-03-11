@@ -111,7 +111,7 @@ class SubscriptionController: UITableViewController {
 	
 	// MARK: - Search function for UISearchResultsUpdating
 	func filterContentForSearchText(searchText: String) {
-		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({(artist: Artist) -> Bool in
+		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({ (artist: Artist) -> Bool in
 			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
 		})
 	}

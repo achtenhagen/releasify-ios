@@ -15,9 +15,9 @@ let artworkDirectoryPath = documents + "/artwork"
 
 final class AppDB {
 	static let sharedInstance = AppDB()
-	var database: COpaquePointer = nil
+	var database:COpaquePointer = nil
 	var artists:[Artist]!
-	var albums: [Album]!
+	var albums:[Album]!
 	
 	private func connected () -> Bool {
 		return sqlite3_open(databasePath, &database) == SQLITE_OK
@@ -45,6 +45,9 @@ final class AppDB {
 		query = "CREATE TABLE IF NOT EXISTS pending_artists (id INTEGER PRIMARY KEY, created int(11) NOT NULL)"
 		sqlite3_exec(database, query, nil, nil, &errMsg)
 		
+		query = "CREATE TABLE IF NOT EXISTS album_favorites (id INTEGER PRIMARY KEY, albumID int(11) NOT NULL)"
+		sqlite3_exec(database, query, nil, nil, &errMsg)
+		
 		if !NSFileManager.defaultManager().fileExistsAtPath(artworkDirectoryPath) {
 			do {
 				try NSFileManager.defaultManager().createDirectoryAtPath(artworkDirectoryPath, withIntermediateDirectories: false, attributes: nil)
@@ -54,6 +57,10 @@ final class AppDB {
 		}
 		disconnect()		
 	}
+	
+	
+	// -- Albums -- //
+	
 	
 	// MARK: - Add new album
 	func addAlbum (albumItem: Album) -> Int {
@@ -286,6 +293,10 @@ final class AppDB {
 		disconnect()
 	}
 	
+	
+	// -- Artists -- //
+
+
 	// MARK: - Add new artist
 	func addArtist (ID: Int, artistTitle: String, iTunesUniqueID: Int) -> Int {
 		if !connected() { return 0 }
@@ -521,6 +532,15 @@ final class AppDB {
 		disconnect()
 		return pendingArtists
 	}
+	
+	
+	// -- Favorites -- //
+	
+	func addFavorite (uniqueID: Int) {}
+	func deleteFavorite (uniqueID: Int) {}
+	
+	// -- Artwork -- //
+	
 	
 	// MARK: - Add album artwork
 	func addArtwork (hash: String, artwork: UIImage) -> Bool {

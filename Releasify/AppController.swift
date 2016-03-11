@@ -19,7 +19,7 @@ final class AppController: UINavigationController {
 	@IBOutlet weak var navBar: UINavigationBar!
 	
 	override func viewDidLoad () {
-		super.viewDidLoad()		
+		super.viewDidLoad()
 		
 		AppDB.sharedInstance.getAlbums()
 		AppDB.sharedInstance.getArtists()
