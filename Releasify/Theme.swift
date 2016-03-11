@@ -23,6 +23,7 @@ public class Theme {
 	let greenColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1)
 	let redColor = UIColor(red: 252/255, green: 77/255, blue: 119/255, alpha: 1)
 	let orangeColor = UIColor(red: 1, green: 85/255, blue: 80/255, alpha: 1)
+	let orangeAltColor = UIColor(red: 248/255, green: 65/255, blue: 48/255, alpha: 1)
 	
 	// Status bar appearance
 	var statusBarStyle: UIStatusBarStyle!
@@ -50,11 +51,11 @@ public class Theme {
 	// Notifications
 	var notificationBlurEffectStyle: UIBlurEffectStyle!
 	
-	init () {
+	func set() {
 		switch style {
 		case .dark:
-			statusBarStyle = UIStatusBarStyle.LightContent
-			navBarStyle = UIBarStyle.Black
+			statusBarStyle = .LightContent
+			navBarStyle = .Black
 			navBarTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
 			navTintColor = blueColor
 			navTextColor = blueColor
@@ -69,14 +70,25 @@ public class Theme {
 			
 			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 			
-			notificationBlurEffectStyle = UIBlurEffectStyle.Dark
+			notificationBlurEffectStyle = .Dark
 		case .light:
-			statusBarStyle = UIStatusBarStyle.Default
-			navBarTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
+			statusBarStyle = .Default
+			navBarStyle = .Default
+			navBarTintColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+			navTintColor = blueColor
+			navTextColor = blueColor
+			
+			searchBarStyle = .Default
+			searchBarTintColor = blueColor
+			
+			tabTintColor = blueColor
+			tabBarTintColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
 			
 			keyboardStyle = .Light
 			
-			notificationBlurEffectStyle = UIBlurEffectStyle.ExtraLight
+			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
+			
+			notificationBlurEffectStyle = .ExtraLight
 		}
 	}
 	

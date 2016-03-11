@@ -22,6 +22,7 @@ class StreamViewController: UITableViewController {
 	let reuseIdentifier = "streamCell"
 	var selectedAlbum: Album!
 	var filteredData: [Artist]!
+	var notificationAlbumID: Int?
 	var tmpArtwork: [String:UIImage]?
 	var tmpUrl: [Int:String]?
 	var footerLabel: UILabel!
@@ -39,6 +40,8 @@ class StreamViewController: UITableViewController {
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromRemoteNotification:", name: "appActionPressed", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
 		
 		self.streamTable.backgroundColor = theme.streamTableBackgroundColor
 		self.streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
@@ -66,6 +69,27 @@ class StreamViewController: UITableViewController {
 			self.appDelegate.firstRun = false
 		}
 		
+		// Process remote notification payload
+		if let remoteContent = appDelegate.remoteNotificationPayload {
+			processRemoteNotificationPayload(remoteContent)
+		}
+		
+		// Process local notification payload
+		if let localContent = appDelegate.localNotificationPayload?["albumID"] as? Int {
+			notificationAlbumID = localContent
+			if AppDB.sharedInstance.albums != nil {
+				for album in AppDB.sharedInstance.albums as[Album]! {
+					if album.ID == notificationAlbumID! {
+						selectedAlbum = album
+						break
+					}
+				}
+				if selectedAlbum.ID == notificationAlbumID! {
+					self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+				}
+			}
+		}
+		
 		if !appDelegate.completedRefresh {
 			refresh()
 		}
@@ -85,22 +109,6 @@ class StreamViewController: UITableViewController {
 		API.sharedInstance.refreshContent({ (newItems) in
 			self.streamTable.reloadData()
 			self.refreshControl!.endRefreshing()
-			
-			let album = Album(
-				ID: 192661,
-				title: "Temporary Album",
-				artistID: 11,
-				releaseDate: 1458284400.0,
-				artwork: "80c48b0e7165d077647077e665d3a1cd",
-				explicit: 0,
-				copyright: "℗ 2016 Armada Music B.V.",
-				iTunesUniqueID: 1088283564,
-				iTunesUrl: "https://itunes.apple.com/us/album/state-trance-radio-top-20/id1088283564?uo=4&at=1010lbca",
-				created: 1457145284
-			)
-			AppDB.sharedInstance.albums.append(album)
-			self.streamTable.reloadData()
-			
 			if newItems.count > 0 {
 				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
 				notification.title.text = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
@@ -139,6 +147,51 @@ class StreamViewController: UITableViewController {
 			let shareActivityItem = "Buy this album on iTunes:\n\(AppDB.sharedInstance.albums[indexPath!.row].iTunesUrl)"
 			let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 			self.presentViewController(activityViewController, animated: true, completion: nil)
+		}
+	}
+	
+	// MARK: - Open album from a local notification
+	func showAlbumFromNotification(notification: NSNotification) {
+		if let AlbumID = notification.userInfo!["albumID"]! as? Int {
+			notificationAlbumID = AlbumID
+			for album in AppDB.sharedInstance.albums as [Album]! {
+				if album.ID != notificationAlbumID! { continue }
+				selectedAlbum = album
+				break
+			}
+			guard let album = selectedAlbum else { return }
+			if album.ID == notificationAlbumID! {
+				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+			}
+		}
+	}
+	
+	// MARK: - Open album from a remote notification
+	func showAlbumFromRemoteNotification(notification: NSNotification) {
+		processRemoteNotificationPayload(notification.userInfo!)
+	}
+	
+	// MARK: - Process remote notification payload
+	func processRemoteNotificationPayload(userInfo: NSDictionary) {
+		UIApplication.sharedApplication().applicationIconBadgeNumber--
+		if let albumID = userInfo["aps"]?["albumID"] as? Int {
+			API.sharedInstance.lookupAlbum(albumID, successHandler: { album in
+				if AppDB.sharedInstance.addAlbum(album) == 0 {
+					self.selectedAlbum = album
+					self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+					return
+				}
+				API.sharedInstance.fetchArtwork(album.artwork, successHandler: { artwork in
+					if AppDB.sharedInstance.addArtwork(album.artwork, artwork: artwork!) {
+						self.selectedAlbum = album
+						self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+					}
+					}, errorHandler: {
+						self.handleError("Unable to download artwork!", message: "Please try again later.", error: API.Error.FailedToGetResource)
+				})
+				}, errorHandler: { (error) in
+					self.handleError("Failed to lookup album!", message: "Please try again later.", error: error)
+			})
 		}
 	}
 	

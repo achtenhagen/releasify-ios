@@ -18,8 +18,6 @@ class TabBarController: UITabBarController {
 	var subscriptionController: SubscriptionController!
 	var mediaQuery: MPMediaQuery!
 	var responseArtists: [NSDictionary]!
-	var selectedAlbum: Album!
-	var notificationAlbumID: Int?
 	var keyword: String!
 	
 	@IBAction func addSubscription(sender: AnyObject) {
@@ -49,8 +47,6 @@ class TabBarController: UITabBarController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromRemoteNotification:", name: "appActionPressed", object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscriptionFromShortcutItem", name: "addSubscriptionShortcutItem", object: nil)
 		
 		let logo = UIImage(named: "icon_navbar.png")
@@ -71,7 +67,7 @@ class TabBarController: UITabBarController {
 		}
 		
 		if  subscriptionController == nil {
-			 subscriptionController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") as! SubscriptionController
+			subscriptionController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") as! SubscriptionController
 		}
 		
 		self.setViewControllers([streamController, subscriptionController], animated: true)
@@ -86,27 +82,6 @@ class TabBarController: UITabBarController {
 			}
 		}
 		
-		// Process remote notification payload
-		if let remoteContent = appDelegate.remoteNotificationPayload {
-			processRemoteNotificationPayload(remoteContent)
-		}
-		
-		// Process local notification payload
-		if let localContent = appDelegate.localNotificationPayload?["albumID"] as? Int {
-			notificationAlbumID = localContent
-			if AppDB.sharedInstance.albums != nil {
-				for album in AppDB.sharedInstance.albums as[Album]! {
-					if album.ID == notificationAlbumID! {
-						selectedAlbum = album
-						break
-					}
-				}
-				if selectedAlbum.ID == notificationAlbumID! {
-					self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-				}
-			}
-		}
-		
 		for item in self.tabBar.items! {
 			item.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 		}
@@ -115,51 +90,6 @@ class TabBarController: UITabBarController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-	
-	// MARK: - Open album from a local notification
-	func showAlbumFromNotification(notification: NSNotification) {
-		if let AlbumID = notification.userInfo!["albumID"]! as? Int {
-			notificationAlbumID = AlbumID
-			for album in AppDB.sharedInstance.albums as [Album]! {
-				if album.ID != notificationAlbumID! { continue }
-				selectedAlbum = album
-				break
-			}
-			guard let album = selectedAlbum else { return }
-			if album.ID == notificationAlbumID! {
-				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-			}
-		}
-	}
-	
-	// MARK: - Open album from a remote notification
-	func showAlbumFromRemoteNotification(notification: NSNotification) {
-		processRemoteNotificationPayload(notification.userInfo!)
-	}
-	
-	// MARK: - Process remote notification payload
-	func processRemoteNotificationPayload(userInfo: NSDictionary) {
-		UIApplication.sharedApplication().applicationIconBadgeNumber--
-		if let albumID = userInfo["aps"]?["albumID"] as? Int {
-			API.sharedInstance.lookupAlbum(albumID, successHandler: { album in
-				if AppDB.sharedInstance.addAlbum(album) == 0 {
-					self.selectedAlbum = album
-					self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-					return
-				}
-				API.sharedInstance.fetchArtwork(album.artwork, successHandler: { artwork in
-					if AppDB.sharedInstance.addArtwork(album.artwork, artwork: artwork!) {
-						self.selectedAlbum = album
-						self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-					}
-					}, errorHandler: {
-						self.handleError("Unable to download artwork!", message: "Please try again later.", error: API.Error.FailedToGetResource)
-				})
-				}, errorHandler: { (error) in
-					self.handleError("Failed to lookup album!", message: "Please try again later.", error: error)
-			})
-		}
-	}
 	
 	// MARK: - Handle 3D Touch quick action
 	func addSubscriptionFromShortcutItem() {

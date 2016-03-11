@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 		}
 		
-		// Read App Settings
+		// App Settings
 		userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
@@ -79,6 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		// Theme settings
 		Theme.sharedInstance.style = NSUserDefaults.standardUserDefaults().integerForKey("theme") == 0 ? .dark : .light
+		Theme.sharedInstance.set()
 		UIApplication.sharedApplication().statusBarStyle = Theme.sharedInstance.statusBarStyle
 		let navBarAppearance = UINavigationBar.appearance()
 		navBarAppearance.barStyle = Theme.sharedInstance.navBarStyle
