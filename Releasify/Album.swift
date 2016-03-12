@@ -28,7 +28,6 @@ struct Album {
 	// MARK: - Return the formatted date posted
 	func getFormattedDatePosted (dateAdded: Int) -> String {
 		var timeDiff = Int(NSDate().timeIntervalSince1970) - dateAdded
-		
 		if timeDiff < 60 {
 			if timeDiff == 1 {
 				return "1 second ago"
@@ -59,7 +58,6 @@ struct Album {
 				return "\(timeDiff) days ago"
 			}
 		}
-		
 		return "a while ago"
 	}
 	
@@ -72,7 +70,6 @@ struct Album {
 			let hours   = component(Double(timeDiff),      v: 60 * 60) % 24
 			let minutes = component(Double(timeDiff),           v: 60) % 60
 			let seconds = component(Double(timeDiff),            v: 1) % 60
-			
 			if Int(weeks) > 0 {
 				return Int(weeks) == 1 ? "\(Int(weeks)) week" : "\(Int(weeks)) weeks"
 			} else if Int(days) > 0 && Int(days) <= 7 {

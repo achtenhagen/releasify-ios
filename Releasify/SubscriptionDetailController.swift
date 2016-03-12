@@ -29,7 +29,7 @@ class SubscriptionDetailController: UIViewController {
 					self.handleError("Failed to remove subscription!", message: "Please try again later.", error: API.Error.FailedRequest)
 					return
 				}
-				AppDB.sharedInstance.deleteArtist(self.artist!.ID, completion: { albumIDs in
+				AppDB.sharedInstance.deleteArtist(self.artist!.ID, completion: { (albumIDs) in
 					for ID in albumIDs {
 						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
 							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
@@ -135,6 +135,7 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell		
 		cell.albumArtwork.image = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork)
+		cell.timeLeft.text = albums![indexPath.row].getFormattedReleaseDate()
 		cell.albumTitle.text = albums![indexPath.row].title
 		cell.artistTitle.text = artist!.title
 		return cell

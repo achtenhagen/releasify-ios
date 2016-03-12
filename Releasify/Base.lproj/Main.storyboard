@@ -111,7 +111,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="m9L-hV-Pbw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1872.75" y="-161.625"/>
+            <point key="canvasLocation" x="1641.75" y="-161.625"/>
         </scene>
         <!--Search Results View-->
         <scene sceneID="FQB-CE-TmJ">
@@ -514,7 +514,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Fh-ui-yPz" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="eZw-O1-6pW" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1872.75" y="445.875"/>
+            <point key="canvasLocation" x="1641.75" y="445.875"/>
         </scene>
         <!--Artist Picker View-->
         <scene sceneID="TAN-hE-HYX">
@@ -2328,7 +2328,7 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="i1c-0T-qib"/>
+        <segue reference="2xf-M1-LZa"/>
         <segue reference="cZg-RQ-l62"/>
         <segue reference="Iyy-Lr-QfG"/>
     </inferredMetricsTieBreakers>

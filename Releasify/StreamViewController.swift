@@ -61,11 +61,6 @@ class StreamViewController: UITableViewController {
 		
 		// Handle first run
 		if self.appDelegate.firstRun {
-			let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
-			notification.title.text = "Welcome to Releasify!"
-			notification.subtitle.text = "Swipe left to manage your subscriptions."
-			self.delegate?.addNotificationView(notification)
-			NotificationQueue.sharedInstance.add(notification)
 			self.appDelegate.firstRun = false
 		}
 		
@@ -110,17 +105,10 @@ class StreamViewController: UITableViewController {
 			self.streamTable.reloadData()
 			self.refreshControl!.endRefreshing()
 			if newItems.count > 0 {
-				let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
-				notification.title.text = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
-				notification.subtitle.text = "\(newItems.count == 1 ? "has been added to your stream." : "have been added to your stream.")"
-				let artwork = UIImageView(frame: CGRect(x: notification.frame.width - 50, y: 5, width: 45, height: 45))
-				artwork.contentMode = .ScaleToFill
-				artwork.layer.masksToBounds = true
-				artwork.layer.cornerRadius = 2
-				notification.notificationView.addSubview(artwork)
-				if self.delegate != nil {
-					self.delegate?.addNotificationView(notification)
-				}
+				let notificationTitle = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
+				let notification = Notification(frame: CGRect(x: 0, y: 0, width: 140, height: 140), title: notificationTitle, icon: .notify)
+				notification.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 50)
+				self.delegate?.addNotificationView(notification)
 				NotificationQueue.sharedInstance.add(notification)
 			}
 			},

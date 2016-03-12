@@ -48,9 +48,6 @@ public class Theme {
 	// Refresh control appearance
 	var refreshControlTintColor: UIColor!
 	
-	// Notifications
-	var notificationBlurEffectStyle: UIBlurEffectStyle!
-	
 	func set() {
 		switch style {
 		case .dark:
@@ -69,8 +66,6 @@ public class Theme {
 			keyboardStyle = .Dark
 			
 			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
-			
-			notificationBlurEffectStyle = .Dark
 		case .light:
 			statusBarStyle = .Default
 			navBarStyle = .Default
@@ -87,11 +82,10 @@ public class Theme {
 			keyboardStyle = .Light
 			
 			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
-			
-			notificationBlurEffectStyle = .ExtraLight
 		}
 	}
 	
+	// Background gradient for dark theme
 	func gradient() -> CAGradientLayer {
 		let gradient = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]

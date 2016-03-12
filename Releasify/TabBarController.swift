@@ -24,10 +24,10 @@ class TabBarController: UITabBarController {
 		mediaQuery.groupingType = .AlbumArtist
 		if mediaQuery.collections!.count > 0 {
 			let controller = UIAlertController(title: "How would you like to add your subscription?", message: nil, preferredStyle: .ActionSheet)
-			let importAction = UIAlertAction(title: "Music Library", style: .Default, handler: { action in
+			let importAction = UIAlertAction(title: "Music Library", style: .Default, handler: { (action) in
 				self.performSegueWithIdentifier("ArtistPickerSegue", sender: self)
 			})
-			let addAction = UIAlertAction(title: "Enter Artist Title", style: .Default, handler: { action in
+			let addAction = UIAlertAction(title: "Enter Artist Title", style: .Default, handler: { (action) in
 				self.addSubscription({ (error) in
 					self.handleAddSubscriptionError(error)
 				})
@@ -105,7 +105,7 @@ class TabBarController: UITabBarController {
 		let actionSheetController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
 		let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
 		actionSheetController.addAction(cancelAction)
-		let addAction = UIAlertAction(title: "Confirm", style: .Default) { action in
+		let addAction = UIAlertAction(title: "Confirm", style: .Default) { (action) in
 			let textField = actionSheetController.textFields![0]
 			if !textField.text!.isEmpty {
 				let artist = textField.text!.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
@@ -142,11 +142,10 @@ class TabBarController: UITabBarController {
 						}
 					}
 					
-					for artist in failedArtists {
-						let title = (artist["title"] as? String)!
-						let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
-						notification.title.text = title
-						notification.subtitle.text = "was not found on iTunes."
+					if failedArtists.count > 0 {
+						let notificationTitle = "Not Found!"
+						let notification = Notification(frame: CGRect(x: 0, y: 0, width: 140, height: 140), title: notificationTitle, icon: .error)
+						notification.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 50)
 						self.view.addSubview(notification)
 						NotificationQueue.sharedInstance.add(notification)
 					}
@@ -156,9 +155,9 @@ class TabBarController: UITabBarController {
 					}
 					
 					if artistFound && self.responseArtists.count == 0 {
-						let notification = Notification(frame: CGRect(x: 0, y: self.view.bounds.height, width: self.view.bounds.width, height: 55))
-						notification.title.text = "Unable to add subscription"
-						notification.subtitle.text = "you are already subscribed to this artist."
+						let notificationTitle = "Already Subscribed"
+						let notification = Notification(frame: CGRect(x: 0, y: 0, width: 140, height: 140), title: notificationTitle, icon: .warning)
+						notification.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 50)
 						self.view.addSubview(notification)
 						NotificationQueue.sharedInstance.add(notification)
 					}
@@ -170,7 +169,7 @@ class TabBarController: UITabBarController {
 			}
 		}
 		actionSheetController.addAction(addAction)
-		actionSheetController.addTextFieldWithConfigurationHandler { textField in
+		actionSheetController.addTextFieldWithConfigurationHandler { (textField) in
 			textField.keyboardAppearance = Theme.sharedInstance.keyboardStyle
 			textField.autocapitalizationType = .Words
 			textField.placeholder = "e.g., Armin van Buuren"
@@ -185,7 +184,7 @@ class TabBarController: UITabBarController {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
 			alert.title = "You're Offline!"
 			alert.message = "Please make sure you are connected to the internet, then try again."
-			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		default:
@@ -203,7 +202,7 @@ class TabBarController: UITabBarController {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
 			alert.title = "You're Offline!"
 			alert.message = "Please make sure you are connected to the internet, then try again."
-			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		default:
