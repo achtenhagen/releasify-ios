@@ -237,9 +237,8 @@ final class API {
 		if hash.isEmpty { errorHandler(); return }
 		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
 		// Check for dev or production domain
-		// Determine artwork size based on iPhone modell
+		// Determine artwork size based on iPhone model
 		let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(hash)_large.jpg"
-		print("fetchArtwork: \(albumURL)")
 		guard let checkedURL = NSURL(string: albumURL) else { errorHandler(); return }
 		let request = NSURLRequest(URL: checkedURL)
 		NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
@@ -248,6 +247,23 @@ final class API {
 			if HTTPResponse.statusCode != 200 { errorHandler(); return }
 			guard let imageData = UIImage(data: data!) else { errorHandler(); return }
 			successHandler(image: imageData)
+		})
+	}
+	
+	// MARK: - Unsubscribe album
+	func unsubscribeAlbum(iTunesUniqueID: Int, successHandler: (() -> Void)?, errorHandler: (error: ErrorType) -> Void) {
+		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
+		API.sharedInstance.sendRequest(API.Endpoint.removeAlbum.url(), postString: postString, successHandler: { (statusCode, data) in
+			if statusCode != 204 {
+				errorHandler(error: API.Error.FailedRequest)
+				return
+			}
+			if let handler: Void = successHandler?() {
+				handler
+			}
+			},
+			errorHandler: { (error) in
+				errorHandler(error: error)
 		})
 	}
 	

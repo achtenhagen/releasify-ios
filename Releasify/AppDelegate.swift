@@ -78,8 +78,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		
 		// Theme settings
-		Theme.sharedInstance.style = NSUserDefaults.standardUserDefaults().integerForKey("theme") == 0 ? .dark : .light
-		// Theme.sharedInstance.style = .light
+		// Theme.sharedInstance.style = NSUserDefaults.standardUserDefaults().integerForKey("theme") == 0 ? .dark : .light
+		Theme.sharedInstance.style = .light
 		Theme.sharedInstance.set()
 		UIApplication.sharedApplication().statusBarStyle = Theme.sharedInstance.statusBarStyle
 		let navBarAppearance = UINavigationBar.appearance()

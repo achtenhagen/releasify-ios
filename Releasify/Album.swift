@@ -26,7 +26,7 @@ struct Album {
 	}
 	
 	// MARK: - Return the formatted date posted
-	func getFormattedDatePosted (dateAdded: Int) -> String {
+	func getFormattedDatePosted(dateAdded: Int) -> String {
 		var timeDiff = Int(NSDate().timeIntervalSince1970) - dateAdded
 		if timeDiff < 60 {
 			if timeDiff == 1 {
@@ -62,7 +62,7 @@ struct Album {
 	}
 	
 	// MARK: - Return the formatted release date
-	func getFormattedReleaseDate () -> String {
+	func getFormattedReleaseDate() -> String {
 		let timeDiff = releaseDate - NSDate().timeIntervalSince1970
 		if timeDiff > 0 {
 			let weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
@@ -97,7 +97,7 @@ struct Album {
 	}
 	
 	// MARK: - Return the boolean value whether the album has been released
-	func isAvailable() -> Bool {
+	func isReleased() -> Bool {
 		return releaseDate - NSDate().timeIntervalSince1970 > 0 ? false : true
 	}
 }

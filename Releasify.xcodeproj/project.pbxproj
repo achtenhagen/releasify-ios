@@ -32,6 +32,9 @@
 		51B09ED61B112D23007F871C /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B09ED51B112D23007F871C /* SearchResultCell.swift */; };
 		51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B988C31AF1674C00E1A796 /* AlbumDetailController.swift */; };
 		51C337F51BEAA0AC003B0E20 /* NotificationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C337F41BEAA0AC003B0E20 /* NotificationQueue.swift */; };
+		51C39AC01C950B7A0059CA01 /* FavoritesListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C39ABF1C950B7A0059CA01 /* FavoritesListController.swift */; };
+		51C39AC21C95111D0059CA01 /* FavoritesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C39AC11C95111D0059CA01 /* FavoritesListCell.swift */; };
+		51C39AC41C9512690059CA01 /* FavoritesListSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C39AC31C9512690059CA01 /* FavoritesListSegue.swift */; };
 		51CB15891C14D776006AEFFF /* SubscriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CB15881C14D776006AEFFF /* SubscriptionCell.swift */; };
 		51CB158B1C14F092006AEFFF /* SubscriptionDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CB158A1C14F092006AEFFF /* SubscriptionDetailController.swift */; };
 		51D776AA1B29FC9300D252A5 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D776A91B29FC9300D252A5 /* API.swift */; };
@@ -76,6 +79,9 @@
 		51B09ED51B112D23007F871C /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		51B988C31AF1674C00E1A796 /* AlbumDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumDetailController.swift; sourceTree = "<group>"; };
 		51C337F41BEAA0AC003B0E20 /* NotificationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationQueue.swift; sourceTree = "<group>"; };
+		51C39ABF1C950B7A0059CA01 /* FavoritesListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesListController.swift; sourceTree = "<group>"; };
+		51C39AC11C95111D0059CA01 /* FavoritesListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesListCell.swift; sourceTree = "<group>"; };
+		51C39AC31C9512690059CA01 /* FavoritesListSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesListSegue.swift; sourceTree = "<group>"; };
 		51CB15881C14D776006AEFFF /* SubscriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionCell.swift; sourceTree = "<group>"; };
 		51CB158A1C14F092006AEFFF /* SubscriptionDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionDetailController.swift; sourceTree = "<group>"; };
 		51D776A91B29FC9300D252A5 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = API.swift; sourceTree = "<group>"; };
@@ -188,6 +194,16 @@
 			name = Notifications;
 			sourceTree = "<group>";
 		};
+		51C39ABE1C949A9C0059CA01 /* Favorites List */ = {
+			isa = PBXGroup;
+			children = (
+				51C39AC11C95111D0059CA01 /* FavoritesListCell.swift */,
+				51C39AC31C9512690059CA01 /* FavoritesListSegue.swift */,
+				51C39ABF1C950B7A0059CA01 /* FavoritesListController.swift */,
+			);
+			name = "Favorites List";
+			sourceTree = "<group>";
+		};
 		51D5732F1ACC1A9F00273D0D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,6 +246,7 @@
 				51F84DD31AB750A100D51E0C /* LaunchScreen.xib */,
 				513E09B41BD877EA00E6062C /* Intro */,
 				513E09B51BD8783700E6062C /* Main */,
+				51C39ABE1C949A9C0059CA01 /* Favorites List */,
 				51386CCE1C80C649006F7E60 /* AddSubscriptionController */,
 				513E09B71BD878B000E6062C /* Album */,
 				513E09B81BD878EE00E6062C /* Subscription Controller */,
@@ -362,6 +379,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51C39AC01C950B7A0059CA01 /* FavoritesListController.swift in Sources */,
 				518907971B46D67500F0E037 /* SearchResultsHeader.swift in Sources */,
 				51DD31C61C6E560E005BAE85 /* TabBarController.swift in Sources */,
 				5186CCF21BD7E59400371F91 /* IntroPageController.swift in Sources */,
@@ -376,6 +394,8 @@
 				516126581B9A7B6E00171A93 /* NotificationCell.swift in Sources */,
 				51F84DCD1AB750A000D51E0C /* SubscriptionController.swift in Sources */,
 				519CE9581BD6AA260078B270 /* Intro01Controller.swift in Sources */,
+				51C39AC21C95111D0059CA01 /* FavoritesListCell.swift in Sources */,
+				51C39AC41C9512690059CA01 /* FavoritesListSegue.swift in Sources */,
 				519CE95A1BD7039B0078B270 /* Intro02Controller.swift in Sources */,
 				51B09ED61B112D23007F871C /* SearchResultCell.swift in Sources */,
 				51CB15891C14D776006AEFFF /* SubscriptionCell.swift in Sources */,

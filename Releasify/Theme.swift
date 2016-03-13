@@ -15,8 +15,8 @@ public class Theme {
 	
 	var style: Styles = .dark
 	
-	// Default App tint color
-	let tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
+	// Global App tint color
+	var globalTintColor: UIColor!
 	
 	// Common colors (Green alternative: #00D897)
 	let blueColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
@@ -42,46 +42,56 @@ public class Theme {
 	var tabTintColor: UIColor!
 	var tabBarTintColor: UIColor!
 	
+	// Tab bar top border color
+	var tabBarTopBorderColor: UIColor!
+	
 	// Keyboard appearance
 	var keyboardStyle: UIKeyboardAppearance!
 	
 	// Refresh control appearance
 	var refreshControlTintColor: UIColor!
 	
+	// MARK: - Set the theme
 	func set() {
 		switch style {
 		case .dark:
+			globalTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
 			statusBarStyle = .LightContent
 			navBarStyle = .Black
 			navBarTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
-			navTintColor = blueColor
-			navTextColor = blueColor
+			navTintColor = globalTintColor
+			navTextColor = globalTintColor
 			
 			searchBarStyle = .Black
-			searchBarTintColor = blueColor
+			searchBarTintColor = globalTintColor
 			
 			tabTintColor = blueColor
 			tabBarTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
+			
+			tabBarTopBorderColor = blueColor
 			
 			keyboardStyle = .Dark
 			
 			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 		case .light:
+			globalTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0)
 			statusBarStyle = .Default
 			navBarStyle = .Default
-			navBarTintColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
-			navTintColor = blueColor
-			navTextColor = blueColor
+			navBarTintColor = UIColor.whiteColor()
+			navTintColor = globalTintColor
+			navTextColor = globalTintColor
 			
 			searchBarStyle = .Default
-			searchBarTintColor = blueColor
+			searchBarTintColor = globalTintColor
 			
-			tabTintColor = blueColor
-			tabBarTintColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+			tabTintColor = globalTintColor
+			tabBarTintColor = UIColor.whiteColor()
+			
+			tabBarTopBorderColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
 			
 			keyboardStyle = .Light
 			
-			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
+			refreshControlTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 0.5)
 		}
 	}
 	

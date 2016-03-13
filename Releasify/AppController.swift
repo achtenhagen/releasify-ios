@@ -37,7 +37,7 @@ final class AppController: UINavigationController {
 		if tabBarController == nil {
 			tabController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("TabBarController") as! TabBarController
 			tabController.notificationDelegate = self
-		}
+		}		
 		
 		self.setViewControllers([tabController], animated: true)
 	}

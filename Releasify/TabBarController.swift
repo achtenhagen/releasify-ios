@@ -19,6 +19,8 @@ class TabBarController: UITabBarController {
 	var mediaQuery: MPMediaQuery!
 	var responseArtists: [NSDictionary]!
 	var keyword: String!
+	var favListBarBtn: UIBarButtonItem!
+	var addBarBtn: UIBarButtonItem!
 	
 	@IBAction func addSubscription(sender: AnyObject) {
 		mediaQuery.groupingType = .AlbumArtist
@@ -49,17 +51,25 @@ class TabBarController: UITabBarController {
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscriptionFromShortcutItem", name: "addSubscriptionShortcutItem", object: nil)
 		
-		let logo = UIImage(named: "icon_navbar.png")
+		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
+		favListBarBtn.tintColor = Theme.sharedInstance.globalTintColor
+		addBarBtn = self.navigationController?.navigationBar.items![0].rightBarButtonItem
+		addBarBtn.tintColor = Theme.sharedInstance.globalTintColor
+		
+		let logo = UIImage(named: Theme.sharedInstance.style == .dark ? "icon_navbar.png" : "icon_navbar_alt.png")
 		let imageView = UIImageView(image:logo)
 		self.navigationItem.titleView = imageView
 		
-		let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 2))
-		topBorder.backgroundColor = UIColor(red: 0, green: 216, blue: 255, alpha: 1.0)
-		self.tabBar.addSubview(topBorder)
-		
-		let gradient = Theme.sharedInstance.gradient()
-		gradient.frame = self.view.bounds
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		if Theme.sharedInstance.style == .dark {
+			let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 2))
+			topBorder.backgroundColor = Theme.sharedInstance.tabBarTopBorderColor
+			self.tabBar.addSubview(topBorder)
+			let gradient = Theme.sharedInstance.gradient()
+			gradient.frame = self.view.bounds
+			self.view.layer.insertSublayer(gradient, atIndex: 0)
+		} else {
+			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
+		}
 
 		if streamController == nil {
 			streamController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("StreamController") as! StreamViewController

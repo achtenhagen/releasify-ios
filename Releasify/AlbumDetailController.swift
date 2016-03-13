@@ -23,6 +23,7 @@ class AlbumDetailController: UIViewController {
 	var progress: Float = 0
 	var dateAdded: Double = 0
 	
+	@IBOutlet var shareActionBarBtn: UIBarButtonItem!
 	@IBOutlet weak var albumArtwork: UIImageView!
 	@IBOutlet weak var albumTitle: UITextView!
 	@IBOutlet weak var copyrightLabel: UILabel!
@@ -42,7 +43,9 @@ class AlbumDetailController: UIViewController {
 	}
 	
 	override func viewDidLoad() {
-		super.viewDidLoad()		
+		super.viewDidLoad()
+		
+		shareActionBarBtn.tintColor = Theme.sharedInstance.globalTintColor
 		
 		if let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) {
 			artwork = dbArtwork
@@ -57,11 +60,20 @@ class AlbumDetailController: UIViewController {
 		albumTitle.text = album!.title
 		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
 		albumTitle.textContainer.lineFragmentPadding = 0
-		albumTitle.textColor = theme.albumTitleColor
 		copyrightLabel.text = album!.copyright
-		progressBar.trackTintColor = theme.progressBarBackTintColor
-		timeDiff = album!.releaseDate - NSDate().timeIntervalSince1970
 		
+		// Theme Settings
+		albumTitle.textColor = theme.albumTitleColor
+		copyrightLabel.textColor = theme.footerLabelColor
+		progressBar.trackTintColor = theme.progressBarBackTintColor
+		firstDigitLabel.textColor = theme.digitLabelColor
+		secondDigitLabel.textColor = theme.digitLabelColor
+		thirdDigitLabel.textColor = theme.digitLabelColor
+		firstTimeLabel.textColor = theme.timeLabelColor
+		secondTimeLabel.textColor = theme.timeLabelColor
+		thirdTimeLabel.textColor = theme.timeLabelColor
+		
+		timeDiff = album!.releaseDate - NSDate().timeIntervalSince1970
 		if timeDiff > 0 {
 			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
 			progressBar.progress = album!.getProgressSinceDate(dateAdded)
@@ -111,9 +123,11 @@ class AlbumDetailController: UIViewController {
 			albumArtwork.contentMode = .ScaleToFill
 		}
 		
-		let gradient = Theme.sharedInstance.gradient()
-		gradient.frame = self.view.bounds
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		if Theme.sharedInstance.style == .dark {
+			let gradient = Theme.sharedInstance.gradient()
+			gradient.frame = self.view.bounds
+			self.view.layer.insertSublayer(gradient, atIndex: 0)
+		}
 	}
 	
 	override func viewDidDisappear(animated: Bool) {
@@ -220,9 +234,6 @@ class AlbumDetailController: UIViewController {
 			thirdDigitLabel.text = formatNumber(seconds)
 			thirdTimeLabel.text = "seconds"
 		}
-		firstTimeLabel.textColor = theme.timeLabelColor
-		secondTimeLabel.textColor = theme.timeLabelColor
-		thirdTimeLabel.textColor = theme.timeLabelColor
 		progress = album!.getProgressSinceDate(dateAdded)
 		progressBar.progress = progress
 	}
@@ -244,6 +255,8 @@ private class AlbumDetailControllerTheme: Theme {
 	var progressBarBackTintColor: UIColor!
 	var albumTitleColor: UIColor!
 	var timeLabelColor: UIColor!
+	var digitLabelColor: UIColor!
+	var footerLabelColor: UIColor!
 	
 	override init () {
 		switch Theme.sharedInstance.style {
@@ -251,9 +264,14 @@ private class AlbumDetailControllerTheme: Theme {
 			albumTitleColor = UIColor.whiteColor()
 			progressBarBackTintColor = UIColor(red: 0, green: 52/255, blue: 72/255, alpha: 1)
 			timeLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+			digitLabelColor = Theme.sharedInstance.blueColor
+			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 0.5)
 		case .light:
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			progressBarBackTintColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 0.2)
+			timeLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			digitLabelColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 1)
 		}
 	}
 }

@@ -11,12 +11,12 @@ import UIKit
 final class Notification: UIView {
 	
 	var titleLabel: UILabel!
-	var icon: iconType = .notify
+	var icon: IconType = .notify
 	var iconView: UIImageView!
 	var iconFile: String!
 	var viewFrame: CGRect!
 	
-	enum iconType {
+	enum IconType {
 		case checkmark
 		case error
 		case notify
@@ -24,7 +24,7 @@ final class Notification: UIView {
 		case warning
 	}
 	
-	init(frame: CGRect, title: String, icon: iconType) {
+	init(frame: CGRect, title: String, icon: IconType) {
 		super.init(frame: frame)
 		
 		self.layer.masksToBounds = true

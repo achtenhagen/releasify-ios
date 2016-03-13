@@ -51,7 +51,7 @@ class StreamViewController: UITableViewController {
 			if traitCollection.forceTouchCapability == .Available {
 				self.registerForPreviewingWithDelegate(self, sourceView: self.streamTable)
 			}
-		}
+		}		
 		
 		registerLongPressGesture()
 		
@@ -118,7 +118,7 @@ class StreamViewController: UITableViewController {
 		})
 	}
 	
-	// MARK: - Register long press gesture if 3D Touch is unavailable
+	// MARK: - Fallback if 3D Touch is unavailable
 	func registerLongPressGesture() {
 		let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
 		longPressGesture.minimumPressDuration = 1.0
@@ -183,21 +183,6 @@ class StreamViewController: UITableViewController {
 		}
 	}
 	
-	// MARK: - Handle unsubscribe album
-	func unsubscribe_album(iTunesUniqueID: Int, successHandler: () -> Void, errorHandler: (error: ErrorType) -> Void) {
-		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
-		API.sharedInstance.sendRequest(API.Endpoint.removeAlbum.url(), postString: postString, successHandler: { (statusCode, data) in
-			if statusCode != 204 {
-				errorHandler(error: API.Error.FailedRequest)
-				return
-			}
-			successHandler()
-			},
-			errorHandler: { (error) in
-				self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
-		})
-	}
-	
 	// MARK: - Return artwork image for each collection view cell
 	func getArtworkForCell(hash: String, completion: ((artwork: UIImage) -> Void)) {
 		
@@ -221,6 +206,18 @@ class StreamViewController: UITableViewController {
 			completion(artwork: self.tmpArtwork![hash]!)
 			}, errorHandler: {
 				completion(artwork: UIImage(named: "icon_artwork_placeholder")!)
+		})
+	}
+	
+	// MARK: - Unsubscribe from an album
+	func unsubscribeAlbum (album: Album, indexPath: NSIndexPath) {
+		AppDB.sharedInstance.deleteAlbum(album.ID, index: indexPath.row)
+		AppDB.sharedInstance.deleteArtwork(album.artwork)
+		self.tmpArtwork?.removeValueForKey(album.artwork)
+		self.tmpUrl?.removeValueForKey(album.ID)
+		self.streamTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+		API.sharedInstance.unsubscribeAlbum(album.iTunesUniqueID, successHandler: nil, errorHandler: { (error) in
+			self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
 		})
 	}
 	
@@ -308,6 +305,7 @@ class StreamViewController: UITableViewController {
 			// AppDB.sharedInstance.addFavorite(AppDB.sharedInstance.albums[indexPath.row].iTunesUniqueID)
 		})
 		starAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_star")!)
+		
 		let buyAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in
 			let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
 			guard let albumUrl = self.tmpUrl![albumID] else { return }
@@ -316,35 +314,20 @@ class StreamViewController: UITableViewController {
 			}
 		})
 		buyAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_buy")!)
+		
 		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
-			let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
-			if !AppDB.sharedInstance.albums[indexPath.row].isAvailable() {
+			let album = AppDB.sharedInstance.albums[indexPath.row]
+			if !album.isReleased() {
 				for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
 					let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
 					let ID = userInfoCurrent["albumID"]! as! Int
-					if ID == albumID {
+					if ID == album.ID {
 						UIApplication.sharedApplication().cancelLocalNotification(notification)
 						break
 					}
 				}
 			}
-			let iTunesUniqueID = AppDB.sharedInstance.albums[indexPath.row].iTunesUniqueID
-			let hash = AppDB.sharedInstance.albums[indexPath.row].artwork
-			self.unsubscribe_album(iTunesUniqueID, successHandler: {
-				AppDB.sharedInstance.deleteAlbum(albumID, index: indexPath.row)
-				AppDB.sharedInstance.deleteArtwork(hash)
-				if AppDB.sharedInstance.albums.count == 0 {
-					if self.numberOfSectionsInTableView(self.streamTable) > 0 {
-						tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-					}
-				} else {
-					tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-				}
-				self.tmpArtwork?.removeValueForKey(hash)
-				tableView.reloadData()
-				}, errorHandler: { (error) in
-					self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
-			})
+			self.unsubscribeAlbum(album, indexPath: indexPath)
 		})
 		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete")!)
 		return [starAction, buyAction, removeAction]
@@ -366,7 +349,7 @@ class StreamViewController: UITableViewController {
 		footerLabel.textAlignment = NSTextAlignment.Center
 		footerLabel.adjustsFontSizeToFitWidth = true
 		footerLabel.sizeToFit()
-		footerLabel.center = CGPoint(x: self.view.frame.size.width / 2, y: 15)
+		footerLabel.center = CGPoint(x: self.view.frame.size.width / 2, y: 18)
 		footerView.addSubview(footerLabel)
 		return footerView
 	}
@@ -400,21 +383,7 @@ class StreamViewController: UITableViewController {
 // MARK: - StreamViewControllerDelegate
 extension StreamViewController: StreamViewControllerDelegate {
 	func removeAlbum(album: Album, indexPath: NSIndexPath) {
-		self.unsubscribe_album(album.iTunesUniqueID, successHandler: {
-			AppDB.sharedInstance.deleteAlbum(album.ID, index: indexPath.row)
-			AppDB.sharedInstance.deleteArtwork(album.artwork)
-			if AppDB.sharedInstance.albums.count == 0 {
-				if self.numberOfSectionsInTableView(self.streamTable) > 0 {
-					self.streamTable.deleteSections(NSIndexSet(index: 1), withRowAnimation: .Automatic)
-				}
-			} else {
-				self.streamTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-			}
-			self.tmpArtwork?.removeValueForKey(album.artwork)
-			self.streamTable.reloadData()
-			}, errorHandler: { (error) in
-				self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
-		})
+		self.unsubscribeAlbum(album, indexPath: indexPath)
 	}
 }
 
@@ -440,7 +409,6 @@ extension StreamViewController: UIViewControllerPreviewingDelegate {
 
 // MARK: - Theme Extension
 private class StreamViewControllerTheme: Theme {
-	
 	var streamTableBackgroundColor: UIColor!
 	var streamCellBackgroundColor: UIColor!
 	var streamCellAlbumTitleColor: UIColor!
@@ -454,10 +422,12 @@ private class StreamViewControllerTheme: Theme {
 			streamCellBackgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
 			streamCellAlbumTitleColor = UIColor.whiteColor()
 			streamCellArtistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-			streamCellFooterLabelColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.2)
+			streamCellFooterLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
 		case .light:
 			streamTableBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
 			streamCellBackgroundColor = UIColor.whiteColor()
+			streamCellAlbumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
+			streamCellArtistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
 			streamCellFooterLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 		}
 	}

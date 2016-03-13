@@ -31,15 +31,18 @@ class SubscriptionController: UITableViewController {
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
 		
-		subscriptionsTable.backgroundColor = theme.subscriptionsTableBackgroundColor
-		subscriptionsTable.backgroundView = UIView(frame: self.subscriptionsTable.bounds)
-		subscriptionsTable.backgroundView?.userInteractionEnabled = false
+		theme.style = Theme.sharedInstance.style
+		theme.set()
+		
+		self.subscriptionsTable.backgroundColor = theme.subscriptionsTableBackgroundColor
+		self.subscriptionsTable.backgroundView = UIView(frame: self.subscriptionsTable.bounds)
+		self.subscriptionsTable.backgroundView?.userInteractionEnabled = false
 		
 		refreshControl = UIRefreshControl()
 		refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
-		refreshControl!.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
-		subscriptionsTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
-		subscriptionsTable.addSubview(refreshControl!)
+		refreshControl!.tintColor = Theme.sharedInstance.refreshControlTintColor
+		self.subscriptionsTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
+		self.subscriptionsTable.addSubview(refreshControl!)
 		
 		searchController = UISearchController(searchResultsController: nil)
 		searchController.delegate = self
@@ -50,16 +53,17 @@ class SubscriptionController: UITableViewController {
 		searchController.searchBar.searchBarStyle = .Minimal
 		searchController.searchBar.barStyle = .Black
 		searchController.searchBar.barTintColor = UIColor.clearColor()
-		searchController.searchBar.tintColor = Theme.sharedInstance.blueColor
+		searchController.searchBar.tintColor = theme.searchBarTintColor
 		searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
 		searchController.searchBar.layer.borderWidth = 1
 		searchController.searchBar.translucent = false
 		searchController.searchBar.autocapitalizationType = .Words
-		searchController.searchBar.keyboardAppearance = .Dark
+		searchController.searchBar.keyboardAppearance = theme.keyboardStyle
 		searchController.searchBar.sizeToFit()
-		subscriptionsTable.tableHeaderView = searchController.searchBar
+		self.subscriptionsTable.tableHeaderView = searchController.searchBar
+		definesPresentationContext = true
 		
-		definesPresentationContext = true		
+		self.subscriptionsTable.separatorColor = theme.cellSeparatorColor
 	}
 	
 	override func viewDidAppear(animated: Bool) {
@@ -132,9 +136,8 @@ class SubscriptionController: UITableViewController {
 		cell.subscriptionImage.image = UIImage(named: filteredData[indexPath.row].avatar)
 		cell.subscriptionTitle.text = filteredData[indexPath.row].title
 		cell.subscriptionTitle.textColor = theme.subscriptionTitleColor
-		
 		let bgColorView = UIView()
-		bgColorView.backgroundColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.1)
+		bgColorView.backgroundColor = theme.cellSeparatorColor
 		cell.selectedBackgroundView = bgColorView
 		cell.setNeedsLayout()
 		cell.layoutIfNeeded()
@@ -182,17 +185,22 @@ extension SubscriptionController: UISearchResultsUpdating {
 
 // MARK: - Theme Extension
 private class SubscriptionControllerTheme: Theme {
-	
 	var subscriptionsTableBackgroundColor: UIColor!
 	var subscriptionTitleColor: UIColor!
+	var cellHighlightColor: UIColor!
+	var cellSeparatorColor: UIColor!
 	
 	override init () {
 		switch Theme.sharedInstance.style {
 		case .dark:
 			subscriptionsTableBackgroundColor = UIColor.clearColor()
 			subscriptionTitleColor = UIColor.whiteColor()
+			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
+			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
 		case .light:
 			subscriptionTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
+			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
 		}
 	}
 }
