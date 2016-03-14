@@ -303,14 +303,19 @@ class StreamViewController: UITableViewController {
 	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
 		let starAction = UITableViewRowAction(style: .Normal, title: "        ", handler: { (action, indexPath) -> Void in
 			Favorites.sharedInstance.addFavorite(AppDB.sharedInstance.albums[indexPath.row])
+			tableView.editing = false
 		})
 		starAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_star")!)
 		
 		let buyAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in
 			let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
 			guard let albumUrl = self.tmpUrl![albumID] else { return }
-			if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumUrl)!) {
-				UIApplication.sharedApplication().openURL(NSURL(string: albumUrl)!)
+			tableView.editing = false
+			let time = dispatch_time(DISPATCH_TIME_NOW, Int64(0.4 * Double(NSEC_PER_SEC)))
+			dispatch_after(time, dispatch_get_main_queue()) {
+				if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumUrl)!) {
+					UIApplication.sharedApplication().openURL(NSURL(string: albumUrl)!)
+				}
 			}
 		})
 		buyAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_buy")!)

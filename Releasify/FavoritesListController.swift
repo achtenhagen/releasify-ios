@@ -12,6 +12,7 @@ class FavoritesListController: UIViewController {
 	
 	private let theme = FavoritesListControllerTheme()
 	var favorites: [Album]!
+	var selectedAlbum: Album!
 
 	@IBOutlet var favoritesTable: UITableView!
 	
@@ -23,6 +24,13 @@ class FavoritesListController: UIViewController {
         super.viewDidLoad()
 		favorites = Favorites.sharedInstance.list
     }
+	
+	override func viewWillAppear(animated: Bool) {
+		let indexPath = self.favoritesTable.indexPathForSelectedRow
+		if indexPath != nil {
+			self.favoritesTable.deselectRowAtIndexPath(indexPath!, animated: true)
+		}
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -30,7 +38,10 @@ class FavoritesListController: UIViewController {
 	
     // MARK: - Navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
+		if segue.identifier == "FavoritesListAlbumSegue" {
+			let detailController = segue.destinationViewController as! AlbumDetailController
+			detailController.album = selectedAlbum
+		}
     }
 }
 
@@ -46,11 +57,10 @@ extension FavoritesListController: UITableViewDataSource {
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("favoritesCell", forIndexPath: indexPath) as! FavoritesListCell
-		cell.artwork.image = AppDB.sharedInstance.getArtwork("2322f6dbbf5ff9cd4eda0292f5bf6ec6")
+		cell.artwork.image = AppDB.sharedInstance.getArtwork(favorites[indexPath.row].artwork)
 		cell.numberLabel.text = "\(indexPath.row + 1)"
 		cell.albumTitle.text = favorites[indexPath.row].title
 		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(favorites[indexPath.row].ID)!
-		cell.artwork.image = AppDB.sharedInstance.getArtwork(favorites[indexPath.row].artwork)
 		let bgColorView = UIView()
 		bgColorView.backgroundColor = theme.cellSeparatorColor
 		cell.selectedBackgroundView = bgColorView
@@ -70,12 +80,18 @@ extension FavoritesListController: UITableViewDataSource {
 extension FavoritesListController: UITableViewDelegate {
 	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		
+		selectedAlbum = favorites[indexPath.row]
+		self.performSegueWithIdentifier("FavoritesListAlbumSegue", sender: self)
 	}
 	
 	func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
 		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
-
+			self.favorites.removeAtIndex(indexPath.row)
+			Favorites.sharedInstance.deleteFavorite(indexPath.row)
+			tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+			if self.favorites.count == 0 {
+				// Show placeholder for empty view
+			}
 		})
 		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete_small")!)
 		let buyAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in

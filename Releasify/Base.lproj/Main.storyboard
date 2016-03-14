@@ -514,7 +514,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Fh-ui-yPz" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="eZw-O1-6pW" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1641.75" y="445.875"/>
+            <point key="canvasLocation" x="2522.25" y="445.875"/>
         </scene>
         <!--Artist Picker View-->
         <scene sceneID="TAN-hE-HYX">
@@ -685,35 +685,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bIB-9b-Wke">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="lkm-CL-TlU">
-                                        <variation key="heightClass=regular-widthClass=compact" constant="64"/>
-                                    </constraint>
-                                </constraints>
-                                <items>
-                                    <navigationItem title="Favorites" id="pFW-St-jsT">
-                                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="bhA-d3-Had">
-                                            <color key="tintColor" red="0.0" green="0.13333333333333333" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <connections>
-                                                <action selector="dismissViewController:" destination="ndp-Pd-N3R" id="Fmc-BE-dCt"/>
-                                            </connections>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="lkm-CL-TlU"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=regular-widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="lkm-CL-TlU"/>
-                                    </mask>
-                                </variation>
-                            </navigationBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Rkt-JF-j8p">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -858,53 +829,50 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="leading" secondItem="bIB-9b-Wke" secondAttribute="leading" id="Eu0-Er-QPZ"/>
-                            <constraint firstItem="bIB-9b-Wke" firstAttribute="top" secondItem="CL7-BU-52b" secondAttribute="top" id="O3t-fG-I22"/>
-                            <constraint firstAttribute="trailing" secondItem="bIB-9b-Wke" secondAttribute="trailing" id="XSq-yV-7wE"/>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="bottom" secondItem="8MR-zB-SkS" secondAttribute="top" id="ZBA-DA-3d4"/>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="trailing" secondItem="bIB-9b-Wke" secondAttribute="trailing" id="cC5-cY-b7M"/>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="top" secondItem="bIB-9b-Wke" secondAttribute="bottom" id="ibm-6e-Cw5"/>
-                            <constraint firstItem="bIB-9b-Wke" firstAttribute="leading" secondItem="CL7-BU-52b" secondAttribute="leading" id="t4V-xe-qN2"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="leading" secondItem="CL7-BU-52b" secondAttribute="leading" id="2nq-w2-P72"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="top" secondItem="UBb-cc-d8C" secondAttribute="bottom" id="5X4-BP-AuB"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="bottom" secondItem="8MR-zB-SkS" secondAttribute="top" id="eZb-F7-ufP"/>
+                            <constraint firstAttribute="trailing" secondItem="Rkt-JF-j8p" secondAttribute="trailing" id="iqe-KJ-ha0"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
-                                <exclude reference="bIB-9b-Wke"/>
                                 <exclude reference="Rkt-JF-j8p"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="O3t-fG-I22"/>
-                                <exclude reference="XSq-yV-7wE"/>
-                                <exclude reference="t4V-xe-qN2"/>
-                                <exclude reference="Eu0-Er-QPZ"/>
-                                <exclude reference="ZBA-DA-3d4"/>
-                                <exclude reference="cC5-cY-b7M"/>
-                                <exclude reference="ibm-6e-Cw5"/>
+                                <exclude reference="2nq-w2-P72"/>
+                                <exclude reference="5X4-BP-AuB"/>
+                                <exclude reference="eZb-F7-ufP"/>
+                                <exclude reference="iqe-KJ-ha0"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
-                                <include reference="bIB-9b-Wke"/>
                                 <include reference="Rkt-JF-j8p"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="O3t-fG-I22"/>
-                                <include reference="XSq-yV-7wE"/>
-                                <include reference="t4V-xe-qN2"/>
-                                <include reference="Eu0-Er-QPZ"/>
-                                <include reference="ZBA-DA-3d4"/>
-                                <include reference="cC5-cY-b7M"/>
-                                <include reference="ibm-6e-Cw5"/>
+                                <include reference="2nq-w2-P72"/>
+                                <include reference="5X4-BP-AuB"/>
+                                <include reference="eZb-F7-ufP"/>
+                                <include reference="iqe-KJ-ha0"/>
                             </mask>
                         </variation>
                     </view>
+                    <navigationItem key="navigationItem" title="Favorites" id="A5n-qT-573">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="dK8-B9-1Ik">
+                            <connections>
+                                <action selector="dismissViewController:" destination="ndp-Pd-N3R" id="kC3-ba-4wD"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="favoritesTable" destination="Rkt-JF-j8p" id="qgG-nN-C1c"/>
+                        <segue destination="ICV-6m-5Th" kind="show" identifier="FavoritesListAlbumSegue" id="zgf-W2-bDZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OwC-MP-t7h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-116.25" y="445.875"/>
+            <point key="canvasLocation" x="882.75" y="445.875"/>
         </scene>
         <!--Album Detail View-->
         <scene sceneID="Ej3-cx-eIi">
@@ -1278,7 +1246,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gf8-Gk-vWq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="882.75" y="445.875"/>
+            <point key="canvasLocation" x="1763.25" y="445.875"/>
         </scene>
         <!--Albums-->
         <scene sceneID="vZm-i9-Evi">
@@ -1403,7 +1371,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8wk-6E-uWp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3191.25" y="445.875"/>
+            <point key="canvasLocation" x="4071.75" y="445.875"/>
         </scene>
         <!--Intro Screen Page Controller-->
         <scene sceneID="gmD-nh-hfH">
@@ -2518,7 +2486,7 @@ Swipe to get started.</string>
                         <barButtonItem key="leftBarButtonItem" image="icon_favorites" id="2zg-bl-iCD">
                             <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
-                                <segue destination="ndp-Pd-N3R" kind="presentation" identifier="FavoritesListSegue" modalTransitionStyle="flipHorizontal" id="BUP-e2-90c"/>
+                                <segue destination="07F-WJ-48G" kind="presentation" identifier="FavoritesListSegue" modalTransitionStyle="flipHorizontal" id="BUP-e2-90c"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Da5-pS-Ult">
@@ -2550,6 +2518,25 @@ Swipe to get started.</string>
             </objects>
             <point key="canvasLocation" x="1641.75" y="-796.125"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="zbg-3C-b0a">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="07F-WJ-48G" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="oPe-Ja-KhK">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="ndp-Pd-N3R" kind="relationship" relationship="rootViewController" id="pJt-lW-x8P"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cDe-3V-qnN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-116.25" y="445.875"/>
+        </scene>
     </scenes>
     <resources>
         <image name="artist_02" width="145" height="145"/>
@@ -2565,9 +2552,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="i1c-0T-qib"/>
         <segue reference="cZg-RQ-l62"/>
-        <segue reference="Iyy-Lr-QfG"/>
+        <segue reference="i1c-0T-qib"/>
+        <segue reference="zgf-W2-bDZ"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

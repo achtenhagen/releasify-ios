@@ -87,13 +87,12 @@ class SubscriptionDetailController: UIViewController {
 			label.center = CGPoint(x: view.frame.size.width / 2, y: (view.frame.size.height / 2) - (label.frame.size.height))
 			self.view.addSubview(label)
 		}
-		let gradient: CAGradientLayer = CAGradientLayer()
-		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
-		gradient.locations = [0.0 , 1.0]
-		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
-		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: view.frame.size.width, height: view.frame.size.height)
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		
+		if Theme.sharedInstance.style == .dark {
+			let gradient = Theme.sharedInstance.gradient()
+			gradient.frame = self.view.bounds
+			self.view.layer.insertSublayer(gradient, atIndex: 0)
+		}
     }
 
     override func didReceiveMemoryWarning() {
@@ -134,7 +133,11 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell		
-		cell.albumArtwork.image = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork)
+		if let artwork = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork) {
+			cell.albumArtwork.image = artwork
+		} else {
+			cell.albumArtwork.image = UIImage(named: "icon_artwork_placeholder")!
+		}
 		cell.timeLeft.text = albums![indexPath.row].getFormattedReleaseDate()
 		cell.albumTitle.text = albums![indexPath.row].title
 		cell.artistTitle.text = artist!.title

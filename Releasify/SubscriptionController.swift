@@ -70,6 +70,13 @@ class SubscriptionController: UITableViewController {
 		reloadSubscriptions()
 	}
 	
+	override func viewWillAppear(animated: Bool) {
+		let indexPath = self.subscriptionsTable.indexPathForSelectedRow
+		if indexPath != nil {
+			self.subscriptionsTable.deselectRowAtIndexPath(indexPath!, animated: true)
+		}
+	}
+	
 	override func viewWillDisappear(animated: Bool) {
 		searchController.active = false
 	}

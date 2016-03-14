@@ -9,28 +9,23 @@
 import UIKit
 
 let objectFile = documents + "/favList.archive"
-final class Favorites : NSObject, NSCoding {
+final class Favorites {
 	static let sharedInstance = Favorites()
 	private let rootKey = "favList"
 	var list: [Album]!
 	
-	override init() {
-		
-	}
-	
-	required init(coder decoder: NSCoder) {
-		list = decoder.decodeObjectForKey(rootKey) as? [Album]
-		print(list)
-	}
-	
-	func encodeWithCoder(coder: NSCoder) {
-		if list != nil {
-			coder.encodeObject(list, forKey: rootKey)
-		}
-	}
-	
 	func addFavorite (album: Album) {
-		list.append(album)
+		var exists = false
+		for favorite in list {
+			if favorite.ID == album.ID {
+				exists = true
+				break
+			}
+		}
+		if !exists {
+			list.append(album)
+			print("Added new item")
+		}
 	}
 	
 	func deleteFavorite (index: Int) {
@@ -38,16 +33,17 @@ final class Favorites : NSObject, NSCoding {
 	}
 	
 	// MARK: - Get favorite albums
-	func getFavorites () {
+	func load () {
 		list = [Album]()
 		if let data = NSData(contentsOfFile: objectFile) {
 			let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
 			list = unarchiver.decodeObjectForKey(rootKey) as? [Album]
 			unarchiver.finishDecoding()
+			print(list)
 		}
 	}
 	
-	func storeFavorites () {
+	func save () {
 		let data = NSMutableData()
 		let archiver = NSKeyedArchiver(forWritingWithMutableData: data)
 		
