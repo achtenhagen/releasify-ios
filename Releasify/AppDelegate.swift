@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String) + " (" + (NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as! String) + ")"
 		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")		
 		
-		// Handle Reset Case
+		// Handle reset case
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
 		if reset {
 			AppDB.sharedInstance.reset()
@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 		}
 		
-		// App Settings
+		// App settings
 		userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
@@ -76,6 +76,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     			}
 			}
 		}
+		
+		// Favorites list
+		Favorites.sharedInstance.getFavorites()		
 		
 		// Theme settings
 		// Theme.sharedInstance.style = NSUserDefaults.standardUserDefaults().integerForKey("theme") == 0 ? .dark : .light
@@ -211,9 +214,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	func applicationWillResignActive(application: UIApplication) {
-		// Sent when the application is about to move from active to inactive state.
-		// This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-		// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+		Favorites.sharedInstance.storeFavorites()
 	}
 	
 	func applicationDidEnterBackground(application: UIApplication) {
@@ -230,6 +231,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	func applicationWillTerminate(application: UIApplication) {
-		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+		
 	}
 }

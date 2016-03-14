@@ -302,7 +302,7 @@ class StreamViewController: UITableViewController {
 	
 	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
 		let starAction = UITableViewRowAction(style: .Normal, title: "        ", handler: { (action, indexPath) -> Void in
-			// AppDB.sharedInstance.addFavorite(AppDB.sharedInstance.albums[indexPath.row].iTunesUniqueID)
+			Favorites.sharedInstance.addFavorite(AppDB.sharedInstance.albums[indexPath.row])
 		})
 		starAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_star")!)
 		

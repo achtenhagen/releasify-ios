@@ -9,16 +9,19 @@
 import UIKit
 
 class FavoritesListCell: UITableViewCell {
-
-    override func awakeFromNib() {
+	
+	@IBOutlet var artwork: UIImageView!
+	@IBOutlet var numberLabel: UILabel!
+	@IBOutlet var albumTitle: UILabel!
+	@IBOutlet var artistTitle: UILabel!
+	
+	override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+		artwork.layer.cornerRadius = 2
+		artwork.layer.masksToBounds = true
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
-
 }

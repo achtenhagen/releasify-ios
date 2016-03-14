@@ -45,8 +45,8 @@ final class AppDB {
 		query = "CREATE TABLE IF NOT EXISTS pending_artists (id INTEGER PRIMARY KEY, created int(11) NOT NULL)"
 		sqlite3_exec(database, query, nil, nil, &errMsg)
 		
-		query = "CREATE TABLE IF NOT EXISTS album_favorites (id INTEGER PRIMARY KEY, albumID int(11) NOT NULL)"
-		sqlite3_exec(database, query, nil, nil, &errMsg)
+		// query = "CREATE TABLE IF NOT EXISTS album_favorites (id INTEGER PRIMARY KEY, albumID int(11) NOT NULL)"
+		// sqlite3_exec(database, query, nil, nil, &errMsg)
 		
 		if !NSFileManager.defaultManager().fileExistsAtPath(artworkDirectoryPath) {
 			do {
@@ -168,7 +168,7 @@ final class AppDB {
 		if let upcomingAlbums = getAlbumsComponent(query) {
 			albums.appendContentsOf(upcomingAlbums)
 		}
-		query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 AND release_date - \(timestamp) > -2592000 ORDER BY release_date DESC LIMIT 50"
+		query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 ORDER BY release_date DESC LIMIT 50"
 		if let releasedAlbums = getAlbumsComponent(query) {
 			albums.appendContentsOf(releasedAlbums)
 		}
@@ -532,12 +532,6 @@ final class AppDB {
 		disconnect()
 		return pendingArtists
 	}
-	
-	
-	// -- Favorites -- //
-	
-	func addFavorite (uniqueID: Int) {}
-	func deleteFavorite (uniqueID: Int) {}
 	
 	// -- Artwork -- //
 	

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Album {
+class Album: NSObject, NSCoding {
 	var ID: Int
 	var title: String
 	var artistID: Int
@@ -19,6 +19,46 @@ struct Album {
 	var iTunesUniqueID: Int
 	var iTunesUrl: String
 	var created: Int
+	
+	init(ID: Int, title: String, artistID: Int, releaseDate: Double, artwork: String, explicit: Int,
+		copyright: String, iTunesUniqueID: Int, iTunesUrl: String, created: Int) {
+			self.ID = ID
+			self.title = title
+			self.artistID = artistID
+			self.releaseDate = releaseDate
+			self.artwork = artwork
+			self.explicit = explicit
+			self.copyright = copyright
+			self.iTunesUniqueID = iTunesUniqueID
+			self.iTunesUrl = iTunesUrl
+			self.created = created
+	}
+	
+	required init(coder decoder: NSCoder) {
+		self.ID = decoder.decodeObjectForKey("ID") as! Int
+		self.title = decoder.decodeObjectForKey("title") as! String
+		self.artistID = decoder.decodeObjectForKey("artistID") as! Int
+		self.releaseDate = decoder.decodeObjectForKey("releaseDate") as! Double
+		self.artwork = decoder.decodeObjectForKey("artwork") as! String
+		self.explicit = decoder.decodeObjectForKey("explicit") as! Int
+		self.copyright = decoder.decodeObjectForKey("copyright") as! String
+		self.iTunesUniqueID = decoder.decodeObjectForKey("iTunesUniqueID") as! Int
+		self.iTunesUrl = decoder.decodeObjectForKey("iTunesUrl") as! String
+		self.created = decoder.decodeObjectForKey("created") as! Int
+	}
+	
+	func encodeWithCoder(coder: NSCoder) {
+		coder.encodeObject(ID, forKey: "ID")
+		coder.encodeObject(title, forKey: "title")
+		coder.encodeObject(artistID, forKey: "artistID")
+		coder.encodeObject(releaseDate, forKey: "releaseDate")
+		coder.encodeObject(artwork, forKey: "artwork")
+		coder.encodeObject(explicit, forKey: "explicit")
+		coder.encodeObject(copyright, forKey: "copyright")
+		coder.encodeObject(iTunesUniqueID, forKey: "iTunesUniqueID")
+		coder.encodeObject(iTunesUrl, forKey: "iTunesUrl")
+		coder.encodeObject(created, forKey: "created")
+	}
 	
 	// MARK: - Return the decimal progress relative to the date added
 	func getProgressSinceDate(dateAdded: Double) -> Float {

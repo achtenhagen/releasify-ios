@@ -2,94 +2,132 @@
 //  FavoritesListController.swift
 //  Releasify
 //
-//  Created by Maurice Achtenhagen on 3/12/16.
+//  Created by Maurice Achtenhagen on 3/13/16.
 //  Copyright © 2016 Fioware Studios, LLC. All rights reserved.
 //
 
 import UIKit
 
-class FavoritesListController: UITableViewController {
+class FavoritesListController: UIViewController {
+	
+	private let theme = FavoritesListControllerTheme()
+	var favorites: [Album]!
 
-    override func viewDidLoad() {
+	@IBOutlet var favoritesTable: UITableView!
+	
+	@IBAction func dismissViewController(sender: AnyObject) {
+		self.dismissViewControllerAnimated(true, completion: nil)
+	}
+	
+	override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+		favorites = Favorites.sharedInstance.list
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-
-    // MARK: - Table view data source
-
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
-
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
-
-    /*
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
-
-        // Configure the cell...
-
-        return cell
-    }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
+	
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension FavoritesListController: UITableViewDataSource {
+	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+		return 1
+	}
+	
+	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return favorites.count
+	}
+	
+	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		let cell = tableView.dequeueReusableCellWithIdentifier("favoritesCell", forIndexPath: indexPath) as! FavoritesListCell
+		cell.artwork.image = AppDB.sharedInstance.getArtwork("2322f6dbbf5ff9cd4eda0292f5bf6ec6")
+		cell.numberLabel.text = "\(indexPath.row + 1)"
+		cell.albumTitle.text = favorites[indexPath.row].title
+		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(favorites[indexPath.row].ID)!
+		cell.artwork.image = AppDB.sharedInstance.getArtwork(favorites[indexPath.row].artwork)
+		let bgColorView = UIView()
+		bgColorView.backgroundColor = theme.cellSeparatorColor
+		cell.selectedBackgroundView = bgColorView
+		return cell
+	}
+	
+	func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+		
+	}
+	
+	func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+		
+	}
+}
+
+// MARK: - UITableViewDelegate
+extension FavoritesListController: UITableViewDelegate {
+	
+	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		
+	}
+	
+	func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
+
+		})
+		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete_small")!)
+		let buyAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in
+
+		})
+		buyAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_buy_small")!)
+		return [removeAction, buyAction]
+	}
+	
+	func tableView(tableView: UITableView, willBeginEditingRowAtIndexPath indexPath: NSIndexPath) {
+	
+	}
+	
+	func tableView(tableView: UITableView, didEndEditingRowAtIndexPath indexPath: NSIndexPath) {
+		
+	}
+	
+	func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath {
+		return NSIndexPath()
+	}
+	
+	func tableView(tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
+		return true
+	}
+	
+	func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
+		
+	}
+}
+
+// MARK: - Theme Extension
+private class FavoritesListControllerTheme: Theme {
+	var tableBackgroundColor: UIColor!
+	var favoriteCellAlbumTitleColor: UIColor!
+	var favoriteCellArtistTitleColor: UIColor!
+	var cellHighlightColor: UIColor!
+	var cellSeparatorColor: UIColor!
+	
+	override init () {
+		switch Theme.sharedInstance.style {
+		case .dark:
+			tableBackgroundColor = UIColor.clearColor()
+			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
+			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
+			favoriteCellAlbumTitleColor = UIColor.whiteColor()
+			favoriteCellArtistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+		case .light:
+			tableBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
+			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
+			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
+			favoriteCellAlbumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
+			favoriteCellArtistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
+		}
+	}
 }
