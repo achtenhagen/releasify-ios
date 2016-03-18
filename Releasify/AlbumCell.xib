@@ -20,33 +20,33 @@
                         <rect key="frame" x="0.0" y="172" width="172" height="45"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6mT-3R-UAJ">
-                                <rect key="frame" x="2" y="4" width="167" height="21"/>
+                                <rect key="frame" x="5" y="4" width="162" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="eIu-jP-49n"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="12"/>
+                                <color key="textColor" red="0.25098039215686274" green="0.25098039215686274" blue="0.25098039215686274" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Album Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KE7-1C-faa">
-                                <rect key="frame" x="2" y="20" width="167" height="21"/>
+                                <rect key="frame" x="5" y="20" width="162" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="OaB-mD-GRa"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="KE7-1C-faa" firstAttribute="leading" secondItem="dtU-Tz-6MX" secondAttribute="leading" constant="2" id="BA2-GP-OAi"/>
-                            <constraint firstItem="6mT-3R-UAJ" firstAttribute="leading" secondItem="dtU-Tz-6MX" secondAttribute="leading" constant="2" id="D4z-6o-0Ui"/>
+                            <constraint firstItem="KE7-1C-faa" firstAttribute="leading" secondItem="dtU-Tz-6MX" secondAttribute="leading" constant="5" id="BA2-GP-OAi"/>
+                            <constraint firstItem="6mT-3R-UAJ" firstAttribute="leading" secondItem="dtU-Tz-6MX" secondAttribute="leading" constant="5" id="D4z-6o-0Ui"/>
                             <constraint firstItem="6mT-3R-UAJ" firstAttribute="top" secondItem="dtU-Tz-6MX" secondAttribute="top" constant="4" id="GBE-dZ-3th"/>
-                            <constraint firstAttribute="trailing" secondItem="KE7-1C-faa" secondAttribute="trailing" constant="3" id="gWf-HQ-VmV"/>
+                            <constraint firstAttribute="trailing" secondItem="KE7-1C-faa" secondAttribute="trailing" constant="5" id="gWf-HQ-VmV"/>
                             <constraint firstAttribute="height" constant="45" id="lIX-gZ-yAE"/>
-                            <constraint firstAttribute="trailing" secondItem="6mT-3R-UAJ" secondAttribute="trailing" constant="3" id="s7a-tO-eFD"/>
+                            <constraint firstAttribute="trailing" secondItem="6mT-3R-UAJ" secondAttribute="trailing" constant="5" id="s7a-tO-eFD"/>
                             <constraint firstItem="KE7-1C-faa" firstAttribute="top" secondItem="6mT-3R-UAJ" secondAttribute="bottom" constant="-5" id="zbV-aB-MRL"/>
                         </constraints>
                     </view>

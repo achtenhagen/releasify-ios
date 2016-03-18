@@ -23,6 +23,15 @@ class FavoritesListController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		favorites = Favorites.sharedInstance.list
+		favoritesTable.backgroundColor = theme.tableBackgroundColor
+		favoritesTable.separatorColor = theme.cellSeparatorColor
+		if Theme.sharedInstance.style == .dark {
+			let gradient = Theme.sharedInstance.gradient()
+			gradient.frame = self.view.bounds
+			self.view.layer.insertSublayer(gradient, atIndex: 0)
+		} else {
+			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
+		}
     }
 	
 	override func viewWillAppear(animated: Bool) {
@@ -61,6 +70,9 @@ extension FavoritesListController: UITableViewDataSource {
 		cell.numberLabel.text = "\(indexPath.row + 1)"
 		cell.albumTitle.text = favorites[indexPath.row].title
 		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(favorites[indexPath.row].ID)!
+		cell.backgroundColor = theme.cellBackgroundColor
+		cell.albumTitle.textColor = theme.albumTitleColor
+		cell.artistTitle.textColor = theme.artistTitleColor
 		let bgColorView = UIView()
 		bgColorView.backgroundColor = theme.cellSeparatorColor
 		cell.selectedBackgroundView = bgColorView
@@ -125,8 +137,9 @@ extension FavoritesListController: UITableViewDelegate {
 // MARK: - Theme Extension
 private class FavoritesListControllerTheme: Theme {
 	var tableBackgroundColor: UIColor!
-	var favoriteCellAlbumTitleColor: UIColor!
-	var favoriteCellArtistTitleColor: UIColor!
+	var cellBackgroundColor: UIColor!
+	var albumTitleColor: UIColor!
+	var artistTitleColor: UIColor!
 	var cellHighlightColor: UIColor!
 	var cellSeparatorColor: UIColor!
 	
@@ -134,16 +147,18 @@ private class FavoritesListControllerTheme: Theme {
 		switch Theme.sharedInstance.style {
 		case .dark:
 			tableBackgroundColor = UIColor.clearColor()
+			cellBackgroundColor = UIColor.clearColor()
 			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
 			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
-			favoriteCellAlbumTitleColor = UIColor.whiteColor()
-			favoriteCellArtistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+			albumTitleColor = UIColor.whiteColor()
+			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 		case .light:
-			tableBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
+			tableBackgroundColor = UIColor.whiteColor()
+			cellBackgroundColor = UIColor.whiteColor()
 			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
 			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
-			favoriteCellAlbumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
-			favoriteCellArtistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
+			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
+			artistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
 		}
 	}
 }

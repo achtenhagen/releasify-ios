@@ -23,27 +23,28 @@ class TabBarController: UITabBarController {
 	var addBarBtn: UIBarButtonItem!
 	
 	@IBAction func addSubscription(sender: AnyObject) {
-		mediaQuery.groupingType = .AlbumArtist
-		if mediaQuery.collections!.count > 0 {
-			let controller = UIAlertController(title: "How would you like to add your subscription?", message: nil, preferredStyle: .ActionSheet)
-			let importAction = UIAlertAction(title: "Music Library", style: .Default, handler: { (action) in
-				self.performSegueWithIdentifier("ArtistPickerSegue", sender: self)
-			})
-			let addAction = UIAlertAction(title: "Enter Artist Title", style: .Default, handler: { (action) in
-				self.addSubscription({ (error) in
-					self.handleAddSubscriptionError(error)
-				})
-			})
-			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-			controller.addAction(addAction)
-			controller.addAction(importAction)
-			controller.addAction(cancelAction)
-			self.presentViewController(controller, animated: true, completion: nil)
-		} else {
-			self.addSubscription({ (error) in
-				self.handleAddSubscriptionError(error)
-			})
-		}
+		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
+//		mediaQuery.groupingType = .AlbumArtist
+//		if mediaQuery.collections!.count > 0 {
+//			let controller = UIAlertController(title: "How would you like to add your subscription?", message: nil, preferredStyle: .ActionSheet)
+//			let importAction = UIAlertAction(title: "Music Library", style: .Default, handler: { (action) in
+//				self.performSegueWithIdentifier("ArtistPickerSegue", sender: self)
+//			})
+//			let addAction = UIAlertAction(title: "Enter Artist Title", style: .Default, handler: { (action) in
+//				self.addSubscription({ (error) in
+//					self.handleAddSubscriptionError(error)
+//				})
+//			})
+//			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+//			controller.addAction(addAction)
+//			controller.addAction(importAction)
+//			controller.addAction(cancelAction)
+//			self.presentViewController(controller, animated: true, completion: nil)
+//		} else {
+//			self.addSubscription({ (error) in
+//				self.handleAddSubscriptionError(error)
+//			})
+//		}
 	}
 	
 	override func viewDidLoad() {

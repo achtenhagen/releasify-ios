@@ -45,9 +45,6 @@ final class AppDB {
 		query = "CREATE TABLE IF NOT EXISTS pending_artists (id INTEGER PRIMARY KEY, created int(11) NOT NULL)"
 		sqlite3_exec(database, query, nil, nil, &errMsg)
 		
-		// query = "CREATE TABLE IF NOT EXISTS album_favorites (id INTEGER PRIMARY KEY, albumID int(11) NOT NULL)"
-		// sqlite3_exec(database, query, nil, nil, &errMsg)
-		
 		if !NSFileManager.defaultManager().fileExistsAtPath(artworkDirectoryPath) {
 			do {
 				try NSFileManager.defaultManager().createDirectoryAtPath(artworkDirectoryPath, withIntermediateDirectories: false, attributes: nil)

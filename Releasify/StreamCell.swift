@@ -46,7 +46,7 @@ class StreamCell: UITableViewCell {
 		var gradientLayerView: UIView!
 		switch UIScreen.mainScreen().bounds.width {
 		case 320:
-			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, 104))
+			gradientLayerView = UIView(frame: CGRectMake(0, 130, 320, 104))
 		case 375:
 			gradientLayerView = UIView(frame: CGRectMake(0, 130, 355, 104))
 		case 414:

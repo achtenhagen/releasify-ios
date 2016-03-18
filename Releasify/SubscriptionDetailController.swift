@@ -10,6 +10,8 @@ import UIKit
 
 class SubscriptionDetailController: UIViewController {
 	
+	private let theme = SubscriptionDetailControllerTheme()
+	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let albumCellReuseIdentifier = "AlbumCell"	
 	var artist: Artist?
@@ -54,7 +56,15 @@ class SubscriptionDetailController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		self.navigationItem.title = artist!.title		
+		self.navigationItem.title = artist!.title
+		
+		self.view.backgroundColor = theme.viewBackgroundColor
+		if Theme.sharedInstance.style == .dark {
+			let gradient = Theme.sharedInstance.gradient()
+			gradient.frame = self.view.bounds
+			self.view.layer.insertSublayer(gradient, atIndex: 0)
+		}
+		
 		subscriptionAlbumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
 		let defaultItemSize = CGSize(width: 145, height: 190)
 		detailFlowLayout = UICollectionViewFlowLayout()
@@ -141,6 +151,8 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 		cell.timeLeft.text = albums![indexPath.row].getFormattedReleaseDate()
 		cell.albumTitle.text = albums![indexPath.row].title
 		cell.artistTitle.text = artist!.title
+		cell.albumTitle.textColor = theme.albumTitleColor
+		cell.artistTitle.textColor = theme.artistTitleColor
 		return cell
 	}
 }
@@ -158,5 +170,25 @@ extension SubscriptionDetailController: UICollectionViewDelegate {
 	
 	func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
 		collectionView.cellForItemAtIndexPath(indexPath)?.alpha = 1.0
+	}
+}
+
+private class SubscriptionDetailControllerTheme : Theme {
+	
+	var viewBackgroundColor: UIColor!
+	var albumTitleColor: UIColor!
+	var artistTitleColor: UIColor!
+	
+	override init () {
+		switch Theme.sharedInstance.style {
+		case .dark:
+			viewBackgroundColor = UIColor.clearColor()
+			albumTitleColor = UIColor.whiteColor()
+			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+		case .light:
+			viewBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
+			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			artistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+		}
 	}
 }
