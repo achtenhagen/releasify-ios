@@ -61,6 +61,8 @@ class AlbumDetailController: UIViewController {
 		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
 		albumTitle.textContainer.lineFragmentPadding = 0
 		copyrightLabel.text = album!.copyright
+
+		self.navigationController?.navigationBar.shadowImage = UIImage()
 		
 		// Theme Settings
 		albumTitle.textColor = theme.albumTitleColor

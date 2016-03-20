@@ -272,7 +272,7 @@ class ArtistsPicker: UIViewController {
 		filteredArtists.removeAll(keepCapacity: true)
 		filteredCheckedStates.removeAll(keepCapacity: true)
 		if !searchText.isEmpty {
-			let filter: String -> Bool = { artist in
+			let filter: String -> Bool = { (artist) in
 				let range = artist.rangeOfString(searchText, options: .CaseInsensitiveSearch)
 				return range != nil
 			}

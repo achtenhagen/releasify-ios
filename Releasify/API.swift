@@ -38,6 +38,7 @@ final class API {
 		case register
 		case removeAlbum
 		case removeArtist
+		case search
 		case searchArtist
 		case submitArtist
 		case updateContent
@@ -56,6 +57,8 @@ final class API {
 				return sharedInstance.baseURL.URLByAppendingPathComponent("unsubscribe_album.php")
 			case .removeArtist:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("unsubscribe_artist.php")
+			case .search:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("search.php")
 			case .searchArtist:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("search_artist.php")
 			case .submitArtist:
@@ -233,7 +236,7 @@ final class API {
 	}
 	
 	// MARK: - Fetch Artwork
-	func fetchArtwork(hash: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
+	func fetchArtwork (hash: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
 		if hash.isEmpty { errorHandler(); return }
 		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
 		// Check for dev or production domain
@@ -251,7 +254,7 @@ final class API {
 	}
 	
 	// MARK: - Unsubscribe album
-	func unsubscribeAlbum(iTunesUniqueID: Int, successHandler: (() -> Void)?, errorHandler: (error: ErrorType) -> Void) {
+	func unsubscribeAlbum (iTunesUniqueID: Int, successHandler: (() -> Void)?, errorHandler: (error: ErrorType) -> Void) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
 		API.sharedInstance.sendRequest(API.Endpoint.removeAlbum.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 204 {

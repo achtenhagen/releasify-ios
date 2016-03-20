@@ -87,7 +87,7 @@ public class Theme {
 			tabTintColor = globalTintColor
 			tabBarTintColor = UIColor.whiteColor()
 			
-			tabBarTopBorderColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
+			tabBarTopBorderColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0)
 			
 			keyboardStyle = .Light
 			

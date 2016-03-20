@@ -140,7 +140,7 @@ class SubscriptionController: UITableViewController {
 	
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("subscriptionCell", forIndexPath: indexPath) as! SubscriptionCell
-		cell.subscriptionImage.image = UIImage(named: filteredData[indexPath.row].avatar)
+		cell.subscriptionImage.image = UIImage(named: filteredData[indexPath.row].avatar!)
 		cell.subscriptionTitle.text = filteredData[indexPath.row].title
 		cell.subscriptionTitle.textColor = theme.subscriptionTitleColor
 		let bgColorView = UIView()

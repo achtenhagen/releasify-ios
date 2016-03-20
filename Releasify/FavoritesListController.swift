@@ -25,6 +25,7 @@ class FavoritesListController: UIViewController {
 		favorites = Favorites.sharedInstance.list
 		favoritesTable.backgroundColor = theme.tableBackgroundColor
 		favoritesTable.separatorColor = theme.cellSeparatorColor
+
 		if Theme.sharedInstance.style == .dark {
 			let gradient = Theme.sharedInstance.gradient()
 			gradient.frame = self.view.bounds
@@ -74,7 +75,7 @@ extension FavoritesListController: UITableViewDataSource {
 		cell.albumTitle.textColor = theme.albumTitleColor
 		cell.artistTitle.textColor = theme.artistTitleColor
 		let bgColorView = UIView()
-		bgColorView.backgroundColor = theme.cellSeparatorColor
+		bgColorView.backgroundColor = theme.cellHighlightColor
 		cell.selectedBackgroundView = bgColorView
 		return cell
 	}

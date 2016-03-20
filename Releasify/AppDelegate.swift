@@ -37,11 +37,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			application.cancelAllLocalNotifications()
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
-			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "theme")
 			NSUserDefaults.standardUserDefaults().setValue(nil, forKey: "contentHash")
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "reset")
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "removeExpiredAlbums")
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
+			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "theme")
 		}
 		
 		// App settings
@@ -60,7 +60,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		} else {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 		}
+		if let themeVal = NSUserDefaults.standardUserDefaults().valueForKey("theme") as? Bool {
+			Theme.sharedInstance.style = themeVal == true ? .dark : .light
+		} else {
+			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "theme")
+		}
 		
+		// Launch options
 		if let launchOpts = launchOptions {
 			if let remotePayload = launchOpts[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
 				remoteNotificationPayload = remotePayload
@@ -81,14 +87,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		Favorites.sharedInstance.load()
 		
 		// Theme settings
-		// Theme.sharedInstance.style = NSUserDefaults.standardUserDefaults().integerForKey("theme") == 0 ? .dark : .light
-		Theme.sharedInstance.style = .light
 		Theme.sharedInstance.set()
 		UIApplication.sharedApplication().statusBarStyle = Theme.sharedInstance.statusBarStyle
 		let navBarAppearance = UINavigationBar.appearance()
 		navBarAppearance.barStyle = Theme.sharedInstance.navBarStyle
 		navBarAppearance.barTintColor = Theme.sharedInstance.navBarTintColor
-		navBarAppearance.shadowImage = UIImage()
+		if Theme.sharedInstance.style == .dark {
+			navBarAppearance.shadowImage = UIImage()
+		}
 		navBarAppearance.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
 		navBarAppearance.tintColor = Theme.sharedInstance.navTintColor
 		navBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: Theme.sharedInstance.navTextColor]

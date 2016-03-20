@@ -45,6 +45,8 @@
 		51DD31C61C6E560E005BAE85 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DD31C51C6E560E005BAE85 /* TabBarController.swift */; };
 		51E21F171BE69F2C0099FB27 /* AlbumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51E21F161BE69F2C0099FB27 /* AlbumCell.xib */; };
 		51E9F0781BA6414C00E67DAC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */; };
+		51F80F0F1C9DB10100BB4624 /* SearchResultArtistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F80F0D1C9DB10100BB4624 /* SearchResultArtistCell.swift */; };
+		51F80F101C9DB10100BB4624 /* SearchResultArtistCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F80F0E1C9DB10100BB4624 /* SearchResultArtistCell.xib */; };
 		51F84DCB1AB750A000D51E0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F84DCA1AB750A000D51E0C /* AppDelegate.swift */; };
 		51F84DCD1AB750A000D51E0C /* SubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F84DCC1AB750A000D51E0C /* SubscriptionController.swift */; };
 		51F84DD01AB750A100D51E0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51F84DCE1AB750A100D51E0C /* Main.storyboard */; };
@@ -92,6 +94,8 @@
 		51DD31C51C6E560E005BAE85 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		51E21F161BE69F2C0099FB27 /* AlbumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumCell.xib; sourceTree = "<group>"; };
 		51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		51F80F0D1C9DB10100BB4624 /* SearchResultArtistCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultArtistCell.swift; sourceTree = "<group>"; };
+		51F80F0E1C9DB10100BB4624 /* SearchResultArtistCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchResultArtistCell.xib; sourceTree = "<group>"; };
 		51F84DC51AB750A000D51E0C /* Releasify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Releasify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51F84DC91AB750A000D51E0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51F84DCA1AB750A000D51E0C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; usesTabs = 1; };
@@ -117,6 +121,8 @@
 			isa = PBXGroup;
 			children = (
 				51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */,
+				51F80F0D1C9DB10100BB4624 /* SearchResultArtistCell.swift */,
+				51F80F0E1C9DB10100BB4624 /* SearchResultArtistCell.xib */,
 			);
 			name = AddSubscriptionController;
 			sourceTree = "<group>";
@@ -353,6 +359,7 @@
 				518B76881B0ECFA90009F138 /* Images.xcassets in Resources */,
 				51F84DD51AB750A100D51E0C /* LaunchScreen.xib in Resources */,
 				518907951B46D61100F0E037 /* SearchResultsHeader.xib in Resources */,
+				51F80F101C9DB10100BB4624 /* SearchResultArtistCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,6 +409,7 @@
 				51F84DCB1AB750A000D51E0C /* AppDelegate.swift in Sources */,
 				518FAEEF1C665A5000499A17 /* Theme.swift in Sources */,
 				51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */,
+				51F80F0F1C9DB10100BB4624 /* SearchResultArtistCell.swift in Sources */,
 				51D864AF1B99D22400C3713F /* NotificationsController.swift in Sources */,
 				516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */,
 				519C8ACF1C653819006114EC /* StreamCell.swift in Sources */,

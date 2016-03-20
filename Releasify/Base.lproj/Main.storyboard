@@ -2258,14 +2258,21 @@ Swipe to get started.</string>
                     <view key="view" contentMode="scaleToFill" id="uBI-Jh-qML">
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="CTa-Df-9mc">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="64" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="CTa-Df-9mc">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="g3t-R2-LdD" id="ucO-5T-AuZ"/>
+                                    <outlet property="delegate" destination="g3t-R2-LdD" id="eK6-aM-hpI"/>
+                                </connections>
                             </tableView>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="huP-SZ-eeH">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="M6p-xg-3fG"/>
+                                    <constraint firstAttribute="height" constant="64" id="M6p-xg-3fG">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="64"/>
+                                    </constraint>
                                 </constraints>
                                 <items>
                                     <navigationItem id="o41-cJ-gAp"/>
@@ -2281,7 +2288,7 @@ Swipe to get started.</string>
                                     </mask>
                                 </variation>
                             </navigationBar>
-                            <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="Search artists &amp; albums" showsCancelButton="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a4O-fF-qBG">
+                            <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="Search" showsCancelButton="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a4O-fF-qBG">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="search"/>
@@ -2292,16 +2299,16 @@ Swipe to get started.</string>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="a4O-fF-qBG" firstAttribute="top" secondItem="ydn-Hu-GpD" secondAttribute="bottom" id="3ek-9V-NEb"/>
                             <constraint firstItem="CTa-Df-9mc" firstAttribute="top" secondItem="huP-SZ-eeH" secondAttribute="bottom" id="4bc-xG-o8j"/>
                             <constraint firstAttribute="trailing" secondItem="CTa-Df-9mc" secondAttribute="trailing" id="4hZ-Za-dSw"/>
                             <constraint firstItem="CTa-Df-9mc" firstAttribute="trailing" secondItem="huP-SZ-eeH" secondAttribute="trailing" id="FIN-fQ-JEC"/>
-                            <constraint firstItem="a4O-fF-qBG" firstAttribute="leading" secondItem="huP-SZ-eeH" secondAttribute="leading" id="GnB-2k-Lin"/>
                             <constraint firstItem="CTa-Df-9mc" firstAttribute="leading" secondItem="huP-SZ-eeH" secondAttribute="leading" id="Izs-hX-078"/>
                             <constraint firstItem="CTa-Df-9mc" firstAttribute="leading" secondItem="uBI-Jh-qML" secondAttribute="leading" id="QoK-AG-fQd"/>
+                            <constraint firstItem="a4O-fF-qBG" firstAttribute="trailing" secondItem="huP-SZ-eeH" secondAttribute="trailing" id="Wg4-8c-5Sb"/>
                             <constraint firstItem="CTa-Df-9mc" firstAttribute="bottom" secondItem="TsZ-RM-hoC" secondAttribute="top" id="c1d-Qr-H8l"/>
-                            <constraint firstItem="a4O-fF-qBG" firstAttribute="trailing" secondItem="huP-SZ-eeH" secondAttribute="trailing" id="dN0-U0-FcO"/>
                             <constraint firstItem="huP-SZ-eeH" firstAttribute="top" secondItem="uBI-Jh-qML" secondAttribute="top" id="f2E-Xa-SIm"/>
+                            <constraint firstItem="a4O-fF-qBG" firstAttribute="leading" secondItem="huP-SZ-eeH" secondAttribute="leading" id="sIt-4M-dDd"/>
+                            <constraint firstItem="a4O-fF-qBG" firstAttribute="top" secondItem="ydn-Hu-GpD" secondAttribute="bottom" id="tOd-yp-jmj"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
@@ -2311,9 +2318,9 @@ Swipe to get started.</string>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="f2E-Xa-SIm"/>
-                                <exclude reference="3ek-9V-NEb"/>
-                                <exclude reference="GnB-2k-Lin"/>
-                                <exclude reference="dN0-U0-FcO"/>
+                                <exclude reference="Wg4-8c-5Sb"/>
+                                <exclude reference="sIt-4M-dDd"/>
+                                <exclude reference="tOd-yp-jmj"/>
                                 <exclude reference="4bc-xG-o8j"/>
                                 <exclude reference="4hZ-Za-dSw"/>
                                 <exclude reference="FIN-fQ-JEC"/>
@@ -2330,9 +2337,9 @@ Swipe to get started.</string>
                             </mask>
                             <mask key="constraints">
                                 <include reference="f2E-Xa-SIm"/>
-                                <include reference="3ek-9V-NEb"/>
-                                <include reference="GnB-2k-Lin"/>
-                                <include reference="dN0-U0-FcO"/>
+                                <include reference="Wg4-8c-5Sb"/>
+                                <include reference="sIt-4M-dDd"/>
+                                <include reference="tOd-yp-jmj"/>
                                 <include reference="4bc-xG-o8j"/>
                                 <include reference="4hZ-Za-dSw"/>
                                 <include reference="FIN-fQ-JEC"/>

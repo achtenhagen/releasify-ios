@@ -16,7 +16,7 @@ class TabBarController: UITabBarController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var streamController: StreamViewController!
 	var subscriptionController: SubscriptionController!
-	var mediaQuery: MPMediaQuery!
+	var mediaQuery: MPMediaQuery!	
 	var responseArtists: [NSDictionary]!
 	var keyword: String!
 	var favListBarBtn: UIBarButtonItem!
@@ -24,33 +24,13 @@ class TabBarController: UITabBarController {
 	
 	@IBAction func addSubscription(sender: AnyObject) {
 		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
-//		mediaQuery.groupingType = .AlbumArtist
-//		if mediaQuery.collections!.count > 0 {
-//			let controller = UIAlertController(title: "How would you like to add your subscription?", message: nil, preferredStyle: .ActionSheet)
-//			let importAction = UIAlertAction(title: "Music Library", style: .Default, handler: { (action) in
-//				self.performSegueWithIdentifier("ArtistPickerSegue", sender: self)
-//			})
-//			let addAction = UIAlertAction(title: "Enter Artist Title", style: .Default, handler: { (action) in
-//				self.addSubscription({ (error) in
-//					self.handleAddSubscriptionError(error)
-//				})
-//			})
-//			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-//			controller.addAction(addAction)
-//			controller.addAction(importAction)
-//			controller.addAction(cancelAction)
-//			self.presentViewController(controller, animated: true, completion: nil)
-//		} else {
-//			self.addSubscription({ (error) in
-//				self.handleAddSubscriptionError(error)
-//			})
-//		}
 	}
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscriptionFromShortcutItem", name: "addSubscriptionShortcutItem", object: nil)
+		mediaQuery = MPMediaQuery.artistsQuery()
 		
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		favListBarBtn.tintColor = Theme.sharedInstance.globalTintColor
@@ -83,8 +63,7 @@ class TabBarController: UITabBarController {
 		
 		self.setViewControllers([streamController, subscriptionController], animated: true)
 		
-		mediaQuery = MPMediaQuery.artistsQuery()
-		
+		// 3D Touch quick action while app is not running
 		if let shortcutItem = appDelegate.shortcutKeyDescription {
 			if shortcutItem == "add-subscription" {
 				self.addSubscription({ (error) in
@@ -225,13 +204,6 @@ class TabBarController: UITabBarController {
 	}
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-		if segue.identifier == "ArtistPickerSegue" {
-			let artistPickerController = segue.destinationViewController as! ArtistsPicker
-			artistPickerController.collection = mediaQuery.collections!
-		} else if segue.identifier == "ArtistSelectionSegue" {
-			let selectionController = segue.destinationViewController as! SearchResultsController
-			selectionController.artists = responseArtists
-			selectionController.keyword = keyword
-		}
+
 	}
 }

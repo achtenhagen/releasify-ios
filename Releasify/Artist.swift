@@ -12,5 +12,5 @@ struct Artist {
 	var ID: Int
 	var title: String
 	var iTunesUniqueID: Int
-	var avatar: String
+	var avatar: String?
 }

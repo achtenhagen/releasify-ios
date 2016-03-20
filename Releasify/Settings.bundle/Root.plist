@@ -46,6 +46,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Use Dark Theme</string>
+			<key>Key</key>
+			<string>theme</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Reset App Next Launch</string>
 			<key>Key</key>
 			<string>reset</string>
