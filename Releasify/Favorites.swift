@@ -39,7 +39,6 @@ final class Favorites {
 			let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
 			list = unarchiver.decodeObjectForKey(rootKey) as? [Album]
 			unarchiver.finishDecoding()
-			print(list)
 		}
 	}
 	

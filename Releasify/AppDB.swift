@@ -272,7 +272,7 @@ final class AppDB {
 		var albumList = String()
 		var albumIndex = 0
 		for album in expiredAlbums {
-			albumIndex++
+			albumIndex += 1
 			deleteArtwork(album.1)
 			albumList += String(album.0)
 			if albumIndex != expiredAlbums.count { albumList += ", " }

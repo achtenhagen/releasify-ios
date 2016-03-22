@@ -29,7 +29,7 @@ class TabBarController: UITabBarController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"addSubscriptionFromShortcutItem", name: "addSubscriptionShortcutItem", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(TabBarController.addSubscriptionFromShortcutItem), name: "addSubscriptionShortcutItem", object: nil)
 		mediaQuery = MPMediaQuery.artistsQuery()
 		
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
@@ -201,9 +201,5 @@ class TabBarController: UITabBarController {
 		}
 		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
-	}
-	
-	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
 	}
 }

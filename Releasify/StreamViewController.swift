@@ -39,9 +39,9 @@ class StreamViewController: UITableViewController {
 		
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"refresh", name: "refreshContent", object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromRemoteNotification:", name: "appActionPressed", object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"showAlbumFromNotification:", name: "showAlbum", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(StreamViewController.refresh), name: "refreshContent", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(StreamViewController.showAlbumFromRemoteNotification(_:)), name: "appActionPressed", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(StreamViewController.showAlbumFromNotification(_:)), name: "showAlbum", object: nil)
 		
 		self.streamTable.backgroundColor = theme.streamTableBackgroundColor
 		self.streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
@@ -55,7 +55,7 @@ class StreamViewController: UITableViewController {
 		
 		registerLongPressGesture()
 		
-		refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+		refreshControl!.addTarget(self, action: #selector(StreamViewController.refresh), forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = Theme.sharedInstance.refreshControlTintColor
 		self.streamTable.addSubview(refreshControl!)
 		
@@ -120,7 +120,7 @@ class StreamViewController: UITableViewController {
 	
 	// MARK: - Fallback if 3D Touch is unavailable
 	func registerLongPressGesture() {
-		let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("longPressGestureRecognized:"))
+		let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(StreamViewController.longPressGestureRecognized(_:)))
 		longPressGesture.minimumPressDuration = 1.0
 		self.streamTable.addGestureRecognizer(longPressGesture)
 	}
@@ -161,7 +161,7 @@ class StreamViewController: UITableViewController {
 	
 	// MARK: - Process remote notification payload
 	func processRemoteNotificationPayload(userInfo: NSDictionary) {
-		UIApplication.sharedApplication().applicationIconBadgeNumber--
+		UIApplication.sharedApplication().applicationIconBadgeNumber -= 1
 		if let albumID = userInfo["aps"]?["albumID"] as? Int {
 			API.sharedInstance.lookupAlbum(albumID, successHandler: { album in
 				if AppDB.sharedInstance.addAlbum(album) == 0 {

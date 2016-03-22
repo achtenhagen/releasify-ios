@@ -59,9 +59,11 @@ class StreamCell: UITableViewCell {
 		gradient.frame = gradientLayerView.bounds
 		gradient.colors = [AnyObject]()
 		gradient.colors!.append(UIColor.clearColor().CGColor)
-		for var i = 0.0; i < 0.85; i += 0.05 {
-			gradient.colors!.append(UIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(i)).CGColor)
+
+		for index in 0...17 {
+			gradient.colors!.append(UIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(Double(index) * 0.05)).CGColor)
 		}
+
 		gradient.cornerRadius = 4
 		gradientLayerView.layer.insertSublayer(gradient, atIndex: 0)
 		artworkContainer.addSubview(gradientLayerView)

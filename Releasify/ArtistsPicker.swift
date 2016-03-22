@@ -124,11 +124,11 @@ class ArtistsPicker: UIViewController {
 		for (section, values) in checkedStates {
 			for (index, state) in values {
 				if state == true || hasSelectedAll {
-					totalItems++
+					totalItems += 1
 					var artist = artists[section]![index]
 					artist = artist.stringByAddingPercentEncodingForURLQueryValue()!
 					currentBatch = currentBatch.stringByAppendingString("&title[]=\(artist)")
-					batchCount++
+					batchCount += 1
 					if batchCount == batchSize {
 						batches.append(postString.stringByAppendingString(currentBatch))
 						currentBatch = String()
@@ -177,7 +177,7 @@ class ArtistsPicker: UIViewController {
 							}
 						}
 					}
-					batchesProcessed++
+					batchesProcessed += 1
 					if self.appDelegate.debug { print("Processed batches: \(batchesProcessed)") }
 					let batchProgress = Float(Double(batchesProcessed) / Double(batches.count))
 					self.progressBar.setProgress(batchProgress, animated: true)

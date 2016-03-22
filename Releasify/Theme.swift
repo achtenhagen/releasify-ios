@@ -51,7 +51,7 @@ public class Theme {
 	// Refresh control appearance
 	var refreshControlTintColor: UIColor!
 	
-	// MARK: - Set the theme
+	// MARK: - Set theme
 	func set() {
 		switch style {
 		case .dark:

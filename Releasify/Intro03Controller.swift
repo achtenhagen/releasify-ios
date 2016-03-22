@@ -50,7 +50,7 @@ class Intro03Controller: UIViewController {
 			importButton.layer.opacity = 0.5
 		}
 		mediaQuery = MPMediaQuery.artistsQuery()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishIntro", name: "finishIntroStep", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(Intro03Controller.finishIntro), name: "finishIntroStep", object: nil)
     }
 	
 	override func viewDidAppear(animated: Bool) {

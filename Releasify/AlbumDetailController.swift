@@ -79,12 +79,12 @@ class AlbumDetailController: UIViewController {
 		if timeDiff > 0 {
 			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
 			progressBar.progress = album!.getProgressSinceDate(dateAdded)
-			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("update"), userInfo: nil, repeats: true)
+			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(AlbumDetailController.update), userInfo: nil, repeats: true)
 		} else {
 			progressBar.hidden = true
 		}
 		
-		let doubleTapGesture = UITapGestureRecognizer(target: self, action: Selector("shareAlbum"))
+		let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(AlbumDetailController.shareAlbum as (AlbumDetailController) -> () -> ()))
 		doubleTapGesture.numberOfTapsRequired = 2
 		albumArtwork.addGestureRecognizer(doubleTapGesture)
 		

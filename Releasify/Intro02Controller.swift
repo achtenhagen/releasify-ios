@@ -45,7 +45,7 @@ class Intro02Controller: UIViewController {
 	
 	// MARK: - Notification settings
 	@IBAction func permissionBtn(sender: UIButton) {
-		if UIApplication.sharedApplication().respondsToSelector("registerUserNotificationSettings:") {			
+		if UIApplication.sharedApplication().respondsToSelector(#selector(UIApplication.registerUserNotificationSettings(_:))) {			
 			let appAction = UIMutableUserNotificationAction()
 			appAction.identifier = "APP_ACTION"
 			appAction.title = "Open in App"
@@ -98,7 +98,7 @@ class Intro02Controller: UIViewController {
 		} else if view.bounds.height == 568 {
 			imageTopLayoutConstraint.constant = 260
 		}
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishRegister", name: "finishNotificationRegister", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(Intro02Controller.finishRegister), name: "finishNotificationRegister", object: nil)
     }
 
     override func didReceiveMemoryWarning() {

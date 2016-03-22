@@ -169,7 +169,7 @@ final class API {
 					notification.timeZone = NSTimeZone.localTimeZone()
 					notification.alertBody = "\(albumItem.title) is now available."
 					notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
-					notification.applicationIconBadgeNumber++
+					notification.applicationIconBadgeNumber += 1
 					notification.soundName = UILocalNotificationDefaultSoundName
 					notification.userInfo = ["albumID": albumItem.ID, "iTunesUrl": albumItem.iTunesUrl]
 					UIApplication.sharedApplication().scheduleLocalNotification(notification)

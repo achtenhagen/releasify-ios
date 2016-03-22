@@ -103,7 +103,7 @@ extension IntroPageController: UIPageViewControllerDataSource {
 		let identifier = viewController.restorationIdentifier
 		var index = indexForRestorationIdentifier(identifier!)
 		if index == 3 { return nil }
-		index++
+		index += 1
 		return viewControllerAtIndex(index)
 	}
 	
@@ -111,7 +111,7 @@ extension IntroPageController: UIPageViewControllerDataSource {
 		let identifier = viewController.restorationIdentifier
 		var index = indexForRestorationIdentifier(identifier!)
 		if index == 0 { return nil }
-		index--
+		index -= 1
 		return viewControllerAtIndex(index)
 	}
 	

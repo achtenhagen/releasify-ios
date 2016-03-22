@@ -29,7 +29,7 @@ class SubscriptionController: UITableViewController {
 
 		filteredData = AppDB.sharedInstance.artists
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SubscriptionController.reloadSubscriptions), name: "refreshSubscriptions", object: nil)
 		
 		theme.style = Theme.sharedInstance.style
 		theme.set()
@@ -39,7 +39,7 @@ class SubscriptionController: UITableViewController {
 		self.subscriptionsTable.backgroundView?.userInteractionEnabled = false
 		
 		refreshControl = UIRefreshControl()
-		refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+		refreshControl!.addTarget(self, action: #selector(SubscriptionController.refresh), forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = Theme.sharedInstance.refreshControlTintColor
 		self.subscriptionsTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
 		self.subscriptionsTable.addSubview(refreshControl!)
@@ -162,7 +162,7 @@ class SubscriptionController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-		return action == Selector("copy:")
+		return action == #selector(NSObject.copy(_:))
 	}
 	
 	override func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {

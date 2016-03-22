@@ -166,7 +166,7 @@ extension SearchResultsController: UITableViewDelegate {
 		headerView.contentView.backgroundColor = UIColor.clearColor()
 		headerView.artistLabel.text = artists[section]["title"] as? String
 		headerView.confirmBtn.tag = section		
-		headerView.confirmBtn.addTarget(self, action: "confirmArtist:", forControlEvents: .TouchUpInside)
+		headerView.confirmBtn.addTarget(self, action: #selector(SearchResultsController.confirmArtist(_:)), forControlEvents: .TouchUpInside)
 		if selectedArtists.containsObject(artistID) {
 			headerView.confirmBtn.enabled = false
 			headerView.confirmBtn.setImage(UIImage(named: "icon_confirm"), forState: .Disabled)

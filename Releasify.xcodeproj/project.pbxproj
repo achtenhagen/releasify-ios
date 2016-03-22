@@ -10,14 +10,12 @@
 		5101C43F1BDB239100E5ABA8 /* Intro04Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5101C43E1BDB239100E5ABA8 /* Intro04Controller.swift */; };
 		512B69241BE6FCB3003752A8 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512B69231BE6FCB3003752A8 /* Notification.swift */; };
 		51386CCD1C80C63D006F7E60 /* AddSubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */; };
-		5142037B1B840517008891F9 /* AppPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5142037A1B840517008891F9 /* AppPageController.swift */; };
 		514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 514BCA761AED68CE00A1A18C /* Settings.bundle */; };
 		51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51557C591B9E073C00D980F9 /* Artist.swift */; };
 		516126581B9A7B6E00171A93 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516126561B9A7B6E00171A93 /* NotificationCell.swift */; };
 		516126591B9A7B6E00171A93 /* NotificationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 516126571B9A7B6E00171A93 /* NotificationCell.xib */; };
 		5161265C1B9A7D3000171A93 /* AlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5161265A1B9A7D3000171A93 /* AlbumCell.swift */; };
 		516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516AEE581ACAD61D0065B567 /* AppDB.swift */; };
-		517C23641B80DDE0002F1479 /* AlbumController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517C23631B80DDE0002F1479 /* AlbumController.swift */; };
 		517D6E0D1B6585DC002EC864 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517D6E0C1B6585DC002EC864 /* AppController.swift */; };
 		5186CCF21BD7E59400371F91 /* IntroPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5186CCF11BD7E59400371F91 /* IntroPageController.swift */; };
 		518907951B46D61100F0E037 /* SearchResultsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 518907941B46D61100F0E037 /* SearchResultsHeader.xib */; };
@@ -58,14 +56,12 @@
 		5101C43E1BDB239100E5ABA8 /* Intro04Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro04Controller.swift; sourceTree = "<group>"; };
 		512B69231BE6FCB3003752A8 /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSubscriptionController.swift; sourceTree = "<group>"; };
-		5142037A1B840517008891F9 /* AppPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppPageController.swift; sourceTree = "<group>"; };
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		51557C591B9E073C00D980F9 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		516126561B9A7B6E00171A93 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		516126571B9A7B6E00171A93 /* NotificationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationCell.xib; sourceTree = "<group>"; };
 		5161265A1B9A7D3000171A93 /* AlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCell.swift; sourceTree = "<group>"; };
 		516AEE581ACAD61D0065B567 /* AppDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = AppDB.swift; sourceTree = "<group>"; tabWidth = 4; usesTabs = 1; wrapsLines = 0; };
-		517C23631B80DDE0002F1479 /* AlbumController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumController.swift; sourceTree = "<group>"; };
 		517D6E0C1B6585DC002EC864 /* AppController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		5186CCF11BD7E59400371F91 /* IntroPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroPageController.swift; sourceTree = "<group>"; };
 		518907941B46D61100F0E037 /* SearchResultsHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchResultsHeader.xib; sourceTree = "<group>"; };
@@ -142,7 +138,6 @@
 		513E09B51BD8783700E6062C /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				5142037A1B840517008891F9 /* AppPageController.swift */,
 				517D6E0C1B6585DC002EC864 /* AppController.swift */,
 				51DD31C51C6E560E005BAE85 /* TabBarController.swift */,
 			);
@@ -163,7 +158,6 @@
 		513E09B71BD878B000E6062C /* Album */ = {
 			isa = PBXGroup;
 			children = (
-				517C23631B80DDE0002F1479 /* AlbumController.swift */,
 				51D8753D1B1B264B00353347 /* Album.swift */,
 				5161265A1B9A7D3000171A93 /* AlbumCell.swift */,
 				51E21F161BE69F2C0099FB27 /* AlbumCell.xib */,
@@ -391,12 +385,10 @@
 				51DD31C61C6E560E005BAE85 /* TabBarController.swift in Sources */,
 				5186CCF21BD7E59400371F91 /* IntroPageController.swift in Sources */,
 				51F84DED1AB7A91B00D51E0C /* ArtistsPicker.swift in Sources */,
-				5142037B1B840517008891F9 /* AppPageController.swift in Sources */,
 				517D6E0D1B6585DC002EC864 /* AppController.swift in Sources */,
 				51386CCD1C80C63D006F7E60 /* AddSubscriptionController.swift in Sources */,
 				51CB158B1C14F092006AEFFF /* SubscriptionDetailController.swift in Sources */,
 				519CE95C1BD703A90078B270 /* Intro03Controller.swift in Sources */,
-				517C23641B80DDE0002F1479 /* AlbumController.swift in Sources */,
 				51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */,
 				516126581B9A7B6E00171A93 /* NotificationCell.swift in Sources */,
 				51F84DCD1AB750A000D51E0C /* SubscriptionController.swift in Sources */,
