@@ -14,19 +14,21 @@ class Album: NSObject, NSCoding {
 	var artistID: Int
 	var releaseDate: Double
 	var artwork: String
+	var artworkUrl: String
 	var explicit: Int
 	var copyright: String
 	var iTunesUniqueID: Int
 	var iTunesUrl: String
 	var created: Int
 	
-	init(ID: Int, title: String, artistID: Int, releaseDate: Double, artwork: String, explicit: Int,
-		copyright: String, iTunesUniqueID: Int, iTunesUrl: String, created: Int) {
+	init(ID: Int, title: String, artistID: Int, releaseDate: Double, artwork: String, artworkUrl: String,
+	     explicit: Int, copyright: String, iTunesUniqueID: Int, iTunesUrl: String, created: Int) {
 			self.ID = ID
 			self.title = title
 			self.artistID = artistID
 			self.releaseDate = releaseDate
 			self.artwork = artwork
+			self.artworkUrl = artworkUrl
 			self.explicit = explicit
 			self.copyright = copyright
 			self.iTunesUniqueID = iTunesUniqueID
@@ -40,6 +42,7 @@ class Album: NSObject, NSCoding {
 		self.artistID = decoder.decodeObjectForKey("artistID") as! Int
 		self.releaseDate = decoder.decodeObjectForKey("releaseDate") as! Double
 		self.artwork = decoder.decodeObjectForKey("artwork") as! String
+		self.artworkUrl = decoder.decodeObjectForKey("artworkUrl") as! String
 		self.explicit = decoder.decodeObjectForKey("explicit") as! Int
 		self.copyright = decoder.decodeObjectForKey("copyright") as! String
 		self.iTunesUniqueID = decoder.decodeObjectForKey("iTunesUniqueID") as! Int
@@ -53,6 +56,7 @@ class Album: NSObject, NSCoding {
 		coder.encodeObject(artistID, forKey: "artistID")
 		coder.encodeObject(releaseDate, forKey: "releaseDate")
 		coder.encodeObject(artwork, forKey: "artwork")
+		coder.encodeObject(artworkUrl, forKey: "artworkUrl")
 		coder.encodeObject(explicit, forKey: "explicit")
 		coder.encodeObject(copyright, forKey: "copyright")
 		coder.encodeObject(iTunesUniqueID, forKey: "iTunesUniqueID")

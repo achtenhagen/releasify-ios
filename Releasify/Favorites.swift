@@ -14,7 +14,7 @@ final class Favorites {
 	private let rootKey = "favList"
 	var list: [Album]!
 	
-	func addFavorite (album: Album) {
+	func addFavorite(album: Album) {
 		var exists = false
 		for favorite in list {
 			if favorite.ID == album.ID {
@@ -28,12 +28,12 @@ final class Favorites {
 		}
 	}
 	
-	func deleteFavorite (index: Int) {
+	func deleteFavorite(index: Int) {
 		list.removeAtIndex(index)
 	}
 	
 	// MARK: - Get favorite albums
-	func load () {
+	func load() {
 		list = [Album]()
 		if let data = NSData(contentsOfFile: objectFile) {
 			let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
@@ -42,7 +42,7 @@ final class Favorites {
 		}
 	}
 	
-	func save () {
+	func save() {
 		let data = NSMutableData()
 		let archiver = NSKeyedArchiver(forWritingWithMutableData: data)
 		

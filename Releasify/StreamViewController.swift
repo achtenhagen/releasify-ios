@@ -25,6 +25,7 @@ class StreamViewController: UITableViewController {
 	var notificationAlbumID: Int?
 	var tmpArtwork: [String:UIImage]?
 	var tmpUrl: [Int:String]?
+	var iTunesFeed: [Album]?
 	var footerLabel: UILabel!
 	var favListBarBtn: UIBarButtonItem!
 
@@ -51,7 +52,7 @@ class StreamViewController: UITableViewController {
 			if traitCollection.forceTouchCapability == .Available {
 				self.registerForPreviewingWithDelegate(self, sourceView: self.streamTable)
 			}
-		}		
+		}
 		
 		registerLongPressGesture()
 		
@@ -87,6 +88,17 @@ class StreamViewController: UITableViewController {
 		
 		if !appDelegate.completedRefresh {
 			refresh()
+		}
+
+		// Get iTunes Feed if no local content is available
+		if AppDB.sharedInstance.albums.count == 0 {
+			iTunesFeed = [Album]()
+			API.sharedInstance.getiTunesFeed({ (feed) in
+				self.iTunesFeed = feed
+			},
+			errorHandler: { (error) in
+				// handle error
+			})
 		}
 	}
 	
@@ -184,8 +196,7 @@ class StreamViewController: UITableViewController {
 	}
 	
 	// MARK: - Return artwork image for each collection view cell
-	func getArtworkForCell(hash: String, completion: ((artwork: UIImage) -> Void)) {
-		
+	func getArtworkForCell(url: String, hash: String, completion: ((artwork: UIImage) -> Void)) {
 		// Artwork is cached in dictionary, return it
 		if tmpArtwork![hash] != nil {
 			completion(artwork: tmpArtwork![hash]!)
@@ -200,7 +211,8 @@ class StreamViewController: UITableViewController {
 		}
 		
 		// Artwork was not found, so download it
-		API.sharedInstance.fetchArtwork(hash, successHandler: { artwork in
+		print(url)
+		API.sharedInstance.fetchArtwork(url, successHandler: { artwork in
 			AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
 			self.tmpArtwork![hash] = artwork
 			completion(artwork: self.tmpArtwork![hash]!)
@@ -265,7 +277,7 @@ class StreamViewController: UITableViewController {
 		cell.albumTitle.textColor = theme.streamCellAlbumTitleColor
 		cell.artistTitle.textColor = theme.streamCellArtistTitleColor
 		
-		getArtworkForCell(album.artwork, completion: { (artwork) in
+		getArtworkForCell(album.artworkUrl, hash: album.artwork, completion: { (artwork) in
 			cell.artwork.image = artwork
 		})
 		
@@ -420,7 +432,7 @@ private class StreamViewControllerTheme: Theme {
 	var streamCellArtistTitleColor: UIColor!
 	var streamCellFooterLabelColor: UIColor!
 	
-	override init () {
+	override init() {
 		switch Theme.sharedInstance.style {
 		case .dark:
 			streamTableBackgroundColor = UIColor.clearColor()

@@ -18,9 +18,11 @@ final class AppController: UINavigationController {
 	
 	@IBOutlet weak var navBar: UINavigationBar!
 	
-	override func viewDidLoad () {
+	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		AppDB.sharedInstance.upgrade_db_v2()
+
 		AppDB.sharedInstance.getAlbums()
 		AppDB.sharedInstance.getArtists()
 		AppDB.sharedInstance.getPendingArtists()
@@ -42,7 +44,7 @@ final class AppController: UINavigationController {
 		self.setViewControllers([tabController], animated: true)
 	}
 	
-	override func didReceiveMemoryWarning () {
+	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 	}
 }
@@ -54,12 +56,11 @@ extension AppController: AppControllerDelegate {
 	}
 }
 
-// Mark: - UIView fade in/out extension
+// MARK: - UIView fade in/out extension
 extension UIView {
 	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
 		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 1.0 }, completion: completion)
 	}
-	
 	func fadeOut(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
 		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 0.0 }, completion: completion)
 	}

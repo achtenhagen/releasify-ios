@@ -27,6 +27,7 @@ final class API {
 		case NetworkConnectionLost
 		case NoInternetConnection
 		case RequestEntityTooLarge
+		case ServerDownForMaintenance
 		case Unauthorized
 		case UnknownError
 	}
@@ -43,7 +44,7 @@ final class API {
 		case submitArtist
 		case updateContent
 		
-		func url () -> NSURL {
+		func url() -> NSURL {
 			switch self {
 			case .confirmArtist:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("confirm_artist.php")
@@ -68,9 +69,53 @@ final class API {
 			}
 		}
 	}
+
+	// Return Error for status code
+	func getErrorFor(statusCode: Int) -> ErrorType {
+		switch statusCode {
+		case 400:
+			return Error.BadRequest
+		case 403:
+			return Error.Unauthorized
+		case 404:
+			return Error.FileNotFound
+		case 413:
+			return Error.RequestEntityTooLarge
+		case 500:
+			return Error.InternalServerError
+		case 503:
+			return Error.ServerDownForMaintenance
+		default:
+			return Error.UnknownError
+		}
+	}
+
+	// MARK: - iTunes feed
+	func getiTunesFeed(successHandler: ([Album] -> Void), errorHandler: ((error: ErrorType) -> Void)) {
+		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
+		sendRequest(Endpoint.feed.url(), postString: postString, successHandler: { (statusCode, data) in
+			if statusCode != 200 {
+				errorHandler(error: self.getErrorFor(statusCode))
+				return
+			}		
+
+			guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [NSDictionary] else {
+				errorHandler(error: Error.FailedToParseJSON)
+				return
+			}
+
+			if let handler: Void = successHandler(self.parseAlbumsFrom(json!)) {
+				handler
+				return
+			}
+
+			}, errorHandler: { (error) in
+				errorHandler(error: error)
+		})
+	}
 	
 	// MARK: - Refresh Content
-	func refreshContent (successHandler: ([String] -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
+	func refreshContent(successHandler: ([String] -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
 		newItems = [String]()
 		var postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(appDelegate.allowExplicitContent ? 1 : 0)"
 		if appDelegate.userDeviceToken != nil {
@@ -81,21 +126,13 @@ final class API {
 		}
 		sendRequest(Endpoint.updateContent.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 200 {
-				switch statusCode {
-				case 204:
-					if let handler: Void = successHandler?(self.newItems) { handler }
-				case 400:
-					// Request new ID (v1.1)
-					break
-				case 403:
-					errorHandler(error: Error.Unauthorized)
-				case 404:
-					errorHandler(error: Error.FileNotFound)
-				case 500:
-					errorHandler(error: Error.InternalServerError)
-				default:
-					errorHandler(error: Error.UnknownError)
+				if statusCode == 204 {
+					if let handler: Void = successHandler?(self.newItems) {
+						handler
+						return
+					}
 				}
+				errorHandler(error: self.getErrorFor(statusCode))
 				return
 			}
 			
@@ -121,7 +158,7 @@ final class API {
 			
 			self.processContent(content)
 			self.processSubscriptions(subscriptions)
-			
+
 			NSUserDefaults.standardUserDefaults().setValue(contentHash, forKey: "contentHash")
 			self.appDelegate.contentHash = contentHash
 			
@@ -135,21 +172,46 @@ final class API {
 				handler
 			}
 			},
-			errorHandler: { (error) -> Void in
+			errorHandler: { (error) in
 				errorHandler(error: error)
 		})
 	}
-	
+
 	// MARK: - Process downloaded JSON data
-	func processContent (json: [NSDictionary]) {
+	func parseAlbumsFrom(json: [NSDictionary]) -> [Album] {
+		var albums = [Album]()
+		for item in json {
+			let hash = md5(item["artworkUrl"] as! String)
+			let albumItem = Album(
+				ID: item["ID"] as! Int,
+				title: item["title"] as! String,
+				artistID: item["artistID"] as! Int,
+				releaseDate: item["releaseDate"] as! Double,
+				artwork: hash,
+				artworkUrl: (string: item["artworkUrl"] as! String),
+				explicit: item["explicit"] as! Int,
+				copyright: item["copyright"] as! String,
+				iTunesUniqueID: item["iTunesUniqueID"] as! Int,
+				iTunesUrl: item["iTunesUrl"] as! String,
+				created: Int(NSDate().timeIntervalSince1970)
+			)
+			albums.append(albumItem)
+		}
+		return albums
+	}
+
+	// MARK: - Process downloaded JSON data
+	func processContent(json: [NSDictionary]) {
 		for item in json {
 			let releaseDate = item["releaseDate"] as! Double
+			let hash = md5(item["artworkUrl"] as! String)
 			let albumItem = Album(
 				ID: item["ID"] as! Int,
 				title: item["title"] as! String,
 				artistID: item["artistID"] as! Int,
 				releaseDate: releaseDate,
-				artwork: (string: item["artwork"] as! String),
+				artwork: hash,
+				artworkUrl: (string: item["artworkUrl"] as! String),
 				explicit: item["explicit"] as! Int,
 				copyright: item["copyright"] as! String,
 				iTunesUniqueID: item["iTunesUniqueID"] as! Int,
@@ -179,7 +241,7 @@ final class API {
 	}
 	
 	// MARK: - Process downloaded JSON data
-	func processSubscriptions (json: [NSDictionary]) {
+	func processSubscriptions(json: [NSDictionary]) {
 		for item in json {
 			let artistID = item["artistID"] as! Int
 			let artistTitle = (item["title"] as? String)!
@@ -188,47 +250,34 @@ final class API {
 		}
 	}
 	
-	// MARK: - Get iTunes feed
-	func getFeed () -> [Album] {
-		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
-		let albums = [Album]()
-		sendRequest(Endpoint.feed.url(), postString: postString, successHandler: { (statusCode, data) in
-			
-			}, errorHandler: { error in
-				
-		})
-		
-		return albums
-	}
-	
 	// MARK: - Album lookup
-	func lookupAlbum (albumID: Int, successHandler: ((album: Album) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
+	func lookupAlbum(albumID: Int, successHandler: ((album: Album) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&itemID=\(albumID)"
 		sendRequest(Endpoint.itemLookup.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 200 {
-				errorHandler(error: Error.BadRequest)
+				errorHandler(error: self.getErrorFor(statusCode))
 				return
 			}
 			guard let item = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? NSDictionary else {
 				errorHandler(error: Error.FailedToParseJSON)
 				return
 			}
-			
 			let releaseDate = item!["releaseDate"] as! Double
+			let hash = self.md5(item!["artworkUrl"] as! String)
 			let album = Album(
 				ID: item!["ID"] as! Int,
 				title: item!["title"] as! String,
 				artistID: item!["artistID"] as! Int,
 				releaseDate: releaseDate,
-				artwork: (string: item!["artwork"] as! String),
+				artwork: hash,
+				artworkUrl: (string: item!["artworkUrl"] as! String),
 				explicit: item!["explicit"] as! Int,
 				copyright: item!["copyright"] as! String,
 				iTunesUniqueID: item!["iTunesUniqueID"] as! Int,
 				iTunesUrl: item!["iTunesUrl"] as! String,
 				created: Int(NSDate().timeIntervalSince1970)
 			)
-			
-			successHandler(album: album)			
+			successHandler(album: album)
 			},
 			errorHandler: { (error) in
 				errorHandler(error: error)
@@ -236,13 +285,11 @@ final class API {
 	}
 	
 	// MARK: - Fetch Artwork
-	func fetchArtwork (hash: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
-		if hash.isEmpty { errorHandler(); return }
-		let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
-		// Check for dev or production domain
-		// Determine artwork size based on iPhone model
-		let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(hash)_large.jpg"
-		guard let checkedURL = NSURL(string: albumURL) else { errorHandler(); return }
+	func fetchArtwork(url: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
+		if url.isEmpty { errorHandler(); return }
+		print(url)
+		let albumUrl = url.stringByReplacingOccurrencesOfString("100x100", withString: "600x600", options: .LiteralSearch, range: nil)
+		guard let checkedURL = NSURL(string: albumUrl) else { errorHandler(); return }
 		let request = NSURLRequest(URL: checkedURL)
 		NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
 			if error != nil { errorHandler(); return }
@@ -254,11 +301,11 @@ final class API {
 	}
 	
 	// MARK: - Unsubscribe album
-	func unsubscribeAlbum (iTunesUniqueID: Int, successHandler: (() -> Void)?, errorHandler: (error: ErrorType) -> Void) {
+	func unsubscribeAlbum(iTunesUniqueID: Int, successHandler: (() -> Void)?, errorHandler: (error: ErrorType) -> Void) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
 		API.sharedInstance.sendRequest(API.Endpoint.removeAlbum.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 204 {
-				errorHandler(error: API.Error.FailedRequest)
+				errorHandler(error: self.getErrorFor(statusCode))
 				return
 			}
 			if let handler: Void = successHandler?() {
@@ -271,7 +318,7 @@ final class API {
 	}
 	
 	// MARK: - Device Registration
-	func register (allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
+	func register(allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let UUID = NSUUID().UUIDString
 		var explicitValue = 1
 		if !allowExplicitContent { explicitValue = 0 }
@@ -279,7 +326,7 @@ final class API {
 		if deviceToken != nil { postString += "&deviceToken=\(deviceToken!)" }
 		sendRequest(Endpoint.register.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 201 {
-				errorHandler(error: Error.BadRequest)
+				errorHandler(error: self.getErrorFor(statusCode))
 				return
 			}
 			guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? NSDictionary else {
@@ -297,7 +344,7 @@ final class API {
 	}
 
 	// MARK: - Handle network requests
-	func sendRequest (url: NSURL, postString: String, successHandler: ((statusCode: Int!, data: NSData!) -> Void), errorHandler: (error: ErrorType) -> Void) {
+	func sendRequest(url: NSURL, postString: String, successHandler: ((statusCode: Int!, data: NSData!) -> Void), errorHandler: (error: ErrorType) -> Void) {
 		var appVersion = "Unknown"
 		if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {
 			appVersion = version
@@ -339,5 +386,20 @@ final class API {
 			if self.appDelegate.debug { print("HTTP status code: \(response.statusCode)") }
 			successHandler(statusCode: response.statusCode, data: data)
 		})
+	}
+
+	// MARK: - MD5 digestion extension
+	func md5(string: String) -> String {
+		var digest = [UInt8](count: Int(CC_MD5_DIGEST_LENGTH), repeatedValue: 0)
+		if let data = string.dataUsingEncoding(NSUTF8StringEncoding) {
+			CC_MD5(data.bytes, CC_LONG(data.length), &digest)
+		}
+
+		var digestHex = ""
+		for index in 0..<Int(CC_MD5_DIGEST_LENGTH) {
+			digestHex += String(format: "%02x", digest[index])
+		}
+
+		return digestHex
 	}
 }

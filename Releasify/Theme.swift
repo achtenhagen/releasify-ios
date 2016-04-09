@@ -55,47 +55,67 @@ public class Theme {
 	func set() {
 		switch style {
 		case .dark:
+			// Global App tint color
 			globalTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
+
+			// Status bar appearance
 			statusBarStyle = .LightContent
+
+			// Navigation bar appearance
 			navBarStyle = .Black
 			navBarTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
 			navTintColor = globalTintColor
 			navTextColor = globalTintColor
 			
+			// Search bar appearance
 			searchBarStyle = .Black
 			searchBarTintColor = globalTintColor
 			
+			// Tab bar appearance
 			tabTintColor = blueColor
 			tabBarTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
 			
+			// Tab bar top border color
 			tabBarTopBorderColor = blueColor
 			
+			// Keyboard appearance
 			keyboardStyle = .Dark
-			
+
+			// Refresh control appearance
 			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 		case .light:
+			// Global App tint color
 			globalTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0)
+
+			// Status bar appearance
 			statusBarStyle = .Default
+
+			// Navigation bar appearance
 			navBarStyle = .Default
 			navBarTintColor = UIColor.whiteColor()
 			navTintColor = globalTintColor
 			navTextColor = globalTintColor
 			
+			// Search bar appearance
 			searchBarStyle = .Default
 			searchBarTintColor = globalTintColor
 			
+			// Tab bar appearance
 			tabTintColor = globalTintColor
 			tabBarTintColor = UIColor.whiteColor()
 			
+			// Tab bar top border color
 			tabBarTopBorderColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0)
 			
+			// Keyboard appearance
 			keyboardStyle = .Light
 			
+			// Refresh control appearance
 			refreshControlTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 0.5)
 		}
 	}
 	
-	// Background gradient for dark theme
+	// View gradient for dark theme
 	func gradient() -> CAGradientLayer {
 		let gradient = CAGradientLayer()
 		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]

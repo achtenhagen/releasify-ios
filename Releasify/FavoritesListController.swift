@@ -91,7 +91,6 @@ extension FavoritesListController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 extension FavoritesListController: UITableViewDelegate {
-	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		selectedAlbum = favorites[indexPath.row]
 		self.performSegueWithIdentifier("FavoritesListAlbumSegue", sender: self)
@@ -107,11 +106,7 @@ extension FavoritesListController: UITableViewDelegate {
 			}
 		})
 		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete_small")!)
-		let buyAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in
-
-		})
-		buyAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_buy_small")!)
-		return [removeAction, buyAction]
+		return [removeAction]
 	}
 	
 	func tableView(tableView: UITableView, willBeginEditingRowAtIndexPath indexPath: NSIndexPath) {
@@ -144,7 +139,7 @@ private class FavoritesListControllerTheme: Theme {
 	var cellHighlightColor: UIColor!
 	var cellSeparatorColor: UIColor!
 	
-	override init () {
+	override init() {
 		switch Theme.sharedInstance.style {
 		case .dark:
 			tableBackgroundColor = UIColor.clearColor()

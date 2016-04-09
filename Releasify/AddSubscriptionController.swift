@@ -37,6 +37,13 @@ class AddSubscriptionController: UIViewController {
 		searchBar.keyboardAppearance = Theme.sharedInstance.keyboardStyle
 		searchBar.becomeFirstResponder()
 
+		// Theme dependent gradient
+		if Theme.sharedInstance.style == .dark {
+			let gradient = Theme.sharedInstance.gradient()
+			gradient.frame = self.view.bounds
+			self.view.layer.insertSublayer(gradient, atIndex: 0)
+		}
+
 		// Configure search table
 		searchTable.backgroundColor = theme.tableBackgroundColor
 		searchTable.separatorColor = theme.cellSeparatorColor
@@ -47,7 +54,7 @@ class AddSubscriptionController: UIViewController {
         super.didReceiveMemoryWarning()
     }
 
-	func performSearchFor (keyword: String) {
+	func performSearchFor(keyword: String, errorHandler: ((error: ErrorType) -> Void)) {
 		isBusy = true
 		let keyword = keyword.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
 		let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&keyword=\(keyword)"
@@ -55,17 +62,17 @@ class AddSubscriptionController: UIViewController {
 		dispatch_after(dispatchTime, dispatch_get_main_queue(), {
 			API.sharedInstance.sendRequest(API.Endpoint.search.url(), postString: postString, successHandler: { (statusCode, data) in
 				if statusCode != 200 {
-					// errorHandler(error: API.Error.BadRequest)
+					errorHandler(error: API.sharedInstance.getErrorFor(statusCode))
 					return
 				}
 
 				guard let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary else {
-					// errorHandler(error: API.Error.FailedToParseJSON)
+					errorHandler(error: API.Error.FailedToParseJSON)
 					return
 				}
 
 				guard let artists: [NSDictionary] = json["artists"] as? [NSDictionary] else {
-					// errorHandler(error: API.Error.FailedToParseJSON)
+					errorHandler(error: API.Error.FailedToParseJSON)
 					return
 				}
 
@@ -75,7 +82,7 @@ class AddSubscriptionController: UIViewController {
 						title: (artist["title"] as? String)!,
 						iTunesUniqueID: artist["iTunesUniqueID"] as! Int,
 						avatar: nil
-						))
+					))
 				}
 
 				self.searchTable.reloadData()
@@ -85,6 +92,24 @@ class AddSubscriptionController: UIViewController {
 					self.isBusy = false
 			})
 		})
+	}
+
+	// MARK: - Error Message Handler
+	func handleError(title: String, message: String, error: ErrorType) {
+		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+		switch (error) {
+		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+			alert.title = "You're Offline!"
+			alert.message = "Please make sure you are connected to the internet, then try again."
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+			}))
+		default:
+			alert.title = title
+			alert.message = message
+		}
+		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		self.presentViewController(alert, animated: true, completion: nil)
 	}
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -125,7 +150,9 @@ extension AddSubscriptionController: UISearchBarDelegate {
 			searchResults = [Artist]()
 			self.searchTable.reloadData()
 			if !searchBar.text!.isEmpty {
-				performSearchFor(searchBar.text!)
+				performSearchFor(searchBar.text!, errorHandler: { (error) in
+					// show error dialog
+				})
 			}
 		}
 	}

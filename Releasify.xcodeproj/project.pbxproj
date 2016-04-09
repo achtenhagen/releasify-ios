@@ -155,14 +155,14 @@
 			name = "Search Results";
 			sourceTree = "<group>";
 		};
-		513E09B71BD878B000E6062C /* Album */ = {
+		513E09B71BD878B000E6062C /* Albums */ = {
 			isa = PBXGroup;
 			children = (
 				51D8753D1B1B264B00353347 /* Album.swift */,
 				5161265A1B9A7D3000171A93 /* AlbumCell.swift */,
 				51E21F161BE69F2C0099FB27 /* AlbumCell.xib */,
 			);
-			name = Album;
+			name = Albums;
 			sourceTree = "<group>";
 		};
 		513E09B81BD878EE00E6062C /* Subscription Controller */ = {
@@ -248,7 +248,7 @@
 				513E09B51BD8783700E6062C /* Main */,
 				51C39ABE1C949A9C0059CA01 /* Favorites List */,
 				51386CCE1C80C649006F7E60 /* AddSubscriptionController */,
-				513E09B71BD878B000E6062C /* Album */,
+				513E09B71BD878B000E6062C /* Albums */,
 				513E09B81BD878EE00E6062C /* Subscription Controller */,
 				513E09B61BD8786400E6062C /* Search Results */,
 				513E09B91BD879CD00E6062C /* Notifications View */,
