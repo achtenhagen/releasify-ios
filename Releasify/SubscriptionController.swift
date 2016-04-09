@@ -195,20 +195,14 @@ extension SubscriptionController: UISearchResultsUpdating {
 private class SubscriptionControllerTheme: Theme {
 	var subscriptionsTableBackgroundColor: UIColor!
 	var subscriptionTitleColor: UIColor!
-	var cellHighlightColor: UIColor!
-	var cellSeparatorColor: UIColor!
 	
 	override init () {
 		switch Theme.sharedInstance.style {
 		case .dark:
 			subscriptionsTableBackgroundColor = UIColor.clearColor()
 			subscriptionTitleColor = UIColor.whiteColor()
-			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
-			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
 		case .light:
 			subscriptionTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
-			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
-			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
 		}
 	}
 }

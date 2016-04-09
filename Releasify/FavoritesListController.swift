@@ -23,8 +23,8 @@ class FavoritesListController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		favorites = Favorites.sharedInstance.list
-		favoritesTable.backgroundColor = theme.tableBackgroundColor
-		favoritesTable.separatorColor = theme.cellSeparatorColor
+		self.favoritesTable.backgroundColor = theme.tableBackgroundColor
+		self.favoritesTable.separatorColor = theme.cellSeparatorColor
 
 		if Theme.sharedInstance.style == .dark {
 			let gradient = Theme.sharedInstance.gradient()
@@ -136,23 +136,17 @@ private class FavoritesListControllerTheme: Theme {
 	var cellBackgroundColor: UIColor!
 	var albumTitleColor: UIColor!
 	var artistTitleColor: UIColor!
-	var cellHighlightColor: UIColor!
-	var cellSeparatorColor: UIColor!
 	
 	override init() {
 		switch Theme.sharedInstance.style {
 		case .dark:
 			tableBackgroundColor = UIColor.clearColor()
 			cellBackgroundColor = UIColor.clearColor()
-			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
-			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
 			albumTitleColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 		case .light:
 			tableBackgroundColor = UIColor.whiteColor()
 			cellBackgroundColor = UIColor.whiteColor()
-			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
-			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
 			artistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
 		}

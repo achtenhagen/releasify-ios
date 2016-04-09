@@ -182,14 +182,14 @@ class AlbumDetailController: UIViewController {
 	}
 	
 	// MARK: - Handle album share sheet
-	func shareAlbum () {
+	func shareAlbum() {
 		let shareActivityItem = "Buy this album on iTunes:\n\(album!.iTunesUrl)"
 		let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 		self.presentViewController(activityViewController, animated: true, completion: nil)
 	}
 	
 	// MARK: - Selector action for timer to update progress
-	func update () {
+	func update() {
 		timeLeft(album!.releaseDate - NSDate().timeIntervalSince1970)
 	}
 	

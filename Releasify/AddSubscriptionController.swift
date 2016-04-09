@@ -13,8 +13,8 @@ class AddSubscriptionController: UIViewController {
 	private let theme = AddSubscriptionControllerTheme()
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var searchResults: [Artist]!
-	var isBusy = false
 	var artistCellReuseIdentifier = "artistCell"
+	var delayTimer: NSTimer!
 	
 	@IBOutlet var navBar: UINavigationBar!
 	@IBOutlet var searchBar: UISearchBar!
@@ -54,8 +54,15 @@ class AddSubscriptionController: UIViewController {
         super.didReceiveMemoryWarning()
     }
 
-	func performSearchFor(keyword: String, errorHandler: ((error: ErrorType) -> Void)) {
-		isBusy = true
+	func delayTimerPerformSearch(userInfo: AnyObject) {
+		let timer = userInfo as? NSTimer
+		let keyword = timer?.userInfo as! String
+		searchFor(keyword, errorHandler: { (error) in
+			self.handleError("Oops!", message: "There was an error performing your search request. Please try again later.", error: error)
+		})
+	}
+
+	func searchFor(keyword: String, errorHandler: ((error: ErrorType) -> Void)) {
 		let keyword = keyword.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
 		let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&keyword=\(keyword)"
 		let dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(0.2 * Double(NSEC_PER_SEC)))
@@ -76,6 +83,7 @@ class AddSubscriptionController: UIViewController {
 					return
 				}
 
+				self.searchResults = [Artist]()
 				for artist in artists {
 					self.searchResults.append(Artist(
 						ID: artist["ID"] as! Int,
@@ -84,12 +92,8 @@ class AddSubscriptionController: UIViewController {
 						avatar: nil
 					))
 				}
-
 				self.searchTable.reloadData()
-				self.isBusy = false
-
 				}, errorHandler: { (error) in
-					self.isBusy = false
 			})
 		})
 	}
@@ -147,14 +151,15 @@ extension AddSubscriptionController: UITableViewDelegate {
 // MARK: - UISearchBarDelegate
 extension AddSubscriptionController: UISearchBarDelegate {
 	func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-		if !isBusy {
+		if delayTimer != nil {
+			delayTimer.invalidate()
+			delayTimer = nil
+		}
+		if !searchBar.text!.isEmpty {
+			delayTimer = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(delayTimerPerformSearch(_:)), userInfo: searchBar.text, repeats: false)
+		} else {
 			searchResults = [Artist]()
 			self.searchTable.reloadData()
-			if !searchBar.text!.isEmpty {
-				performSearchFor(searchBar.text!, errorHandler: { (error) in
-					// show error dialog
-				})
-			}
 		}
 	}
 
@@ -171,8 +176,6 @@ extension AddSubscriptionController: UISearchBarDelegate {
 private class AddSubscriptionControllerTheme: Theme {
 	var tableBackgroundColor: UIColor!
 	var cellBackgroundColor: UIColor!
-	var cellHighlightColor: UIColor!
-	var cellSeparatorColor: UIColor!
 	var artistTitleColor: UIColor!
 	
 	override init() {
@@ -184,8 +187,6 @@ private class AddSubscriptionControllerTheme: Theme {
 		case .light:
 			tableBackgroundColor = UIColor.whiteColor()
 			cellBackgroundColor = UIColor.whiteColor()
-			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
-			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
 			artistTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
 		}
 	}

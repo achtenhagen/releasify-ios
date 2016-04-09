@@ -57,7 +57,7 @@ class TabBarController: UITabBarController {
 			streamController.delegate = notificationDelegate
 		}
 		
-		if  subscriptionController == nil {
+		if subscriptionController == nil {
 			subscriptionController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") as! SubscriptionController
 		}
 		

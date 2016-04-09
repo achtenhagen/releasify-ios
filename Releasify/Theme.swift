@@ -50,6 +50,10 @@ public class Theme {
 	
 	// Refresh control appearance
 	var refreshControlTintColor: UIColor!
+
+	// Table view appearance
+	var cellHighlightColor: UIColor!
+	var cellSeparatorColor: UIColor!
 	
 	// MARK: - Set theme
 	func set() {
@@ -83,6 +87,10 @@ public class Theme {
 
 			// Refresh control appearance
 			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
+
+			// Table view appearance
+			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
+			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
 		case .light:
 			// Global App tint color
 			globalTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0)
@@ -112,6 +120,10 @@ public class Theme {
 			
 			// Refresh control appearance
 			refreshControlTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 0.5)
+
+			// Table view appearance
+			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
+			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
 		}
 	}
 	

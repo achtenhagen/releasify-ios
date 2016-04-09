@@ -33,7 +33,7 @@ final class AppController: UINavigationController {
 		
 		if appDelegate.debug {
 			print("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications!.count)")
-			print("App Controller loaded.")			
+			print("App Controller loaded.")
 		}
 
 		if tabBarController == nil {
