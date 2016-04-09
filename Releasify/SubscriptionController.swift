@@ -37,6 +37,7 @@ class SubscriptionController: UITableViewController {
 		self.subscriptionsTable.backgroundColor = theme.subscriptionsTableBackgroundColor
 		self.subscriptionsTable.backgroundView = UIView(frame: self.subscriptionsTable.bounds)
 		self.subscriptionsTable.backgroundView?.userInteractionEnabled = false
+		self.subscriptionsTable.separatorColor = theme.cellSeparatorColor
 		
 		refreshControl = UIRefreshControl()
 		refreshControl!.addTarget(self, action: #selector(SubscriptionController.refresh), forControlEvents: .ValueChanged)
@@ -202,8 +203,8 @@ private class SubscriptionControllerTheme: Theme {
 		case .dark:
 			subscriptionsTableBackgroundColor = UIColor.clearColor()
 			subscriptionTitleColor = UIColor.whiteColor()
-			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
-			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
+			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
+			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
 		case .light:
 			subscriptionTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)

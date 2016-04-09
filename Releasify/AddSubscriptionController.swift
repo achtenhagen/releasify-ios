@@ -130,6 +130,7 @@ extension AddSubscriptionController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier(artistCellReuseIdentifier, forIndexPath: indexPath) as! SearchResultArtistCell
 		cell.artistTitle.text = searchResults[indexPath.row].title
+		cell.artistTitle.textColor = theme.artistTitleColor
 		cell.backgroundColor = theme.cellBackgroundColor
 		let bgColorView = UIView()
 		bgColorView.backgroundColor = theme.cellHighlightColor
@@ -172,17 +173,20 @@ private class AddSubscriptionControllerTheme: Theme {
 	var cellBackgroundColor: UIColor!
 	var cellHighlightColor: UIColor!
 	var cellSeparatorColor: UIColor!
+	var artistTitleColor: UIColor!
 	
 	override init() {
 		switch Theme.sharedInstance.style {
 		case .dark:
 			tableBackgroundColor = UIColor.clearColor()
 			cellBackgroundColor = UIColor.clearColor()
+			artistTitleColor = UIColor.whiteColor()
 		case .light:
 			tableBackgroundColor = UIColor.whiteColor()
 			cellBackgroundColor = UIColor.whiteColor()
 			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
 			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
+			artistTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
 		}
 	}
 }

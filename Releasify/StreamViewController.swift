@@ -211,7 +211,6 @@ class StreamViewController: UITableViewController {
 		}
 		
 		// Artwork was not found, so download it
-		print(url)
 		API.sharedInstance.fetchArtwork(url, successHandler: { artwork in
 			AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
 			self.tmpArtwork![hash] = artwork
@@ -277,7 +276,7 @@ class StreamViewController: UITableViewController {
 		cell.albumTitle.textColor = theme.streamCellAlbumTitleColor
 		cell.artistTitle.textColor = theme.streamCellArtistTitleColor
 		
-		getArtworkForCell(album.artworkUrl, hash: album.artwork, completion: { (artwork) in
+		getArtworkForCell(album.artworkUrl!, hash: album.artwork, completion: { (artwork) in
 			cell.artwork.image = artwork
 		})
 		

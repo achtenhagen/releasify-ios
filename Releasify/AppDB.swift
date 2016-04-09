@@ -101,7 +101,7 @@ final class AppDB {
 				sqlite3_bind_text(statement, 2, (albumItem.title as NSString).UTF8String, -1, nil)
 				sqlite3_bind_int(statement, 3, Int32(albumItem.releaseDate))
 				sqlite3_bind_text(statement, 4, (albumItem.artwork as NSString).UTF8String, -1, nil)
-				sqlite3_bind_text(statement, 5, (albumItem.artworkUrl as NSString).UTF8String, -1, nil)
+				sqlite3_bind_text(statement, 5, (albumItem.artworkUrl! as NSString).UTF8String, -1, nil)
 				sqlite3_bind_int(statement, 6, Int32(albumItem.explicit))
 				sqlite3_bind_text(statement, 7, (albumItem.copyright as NSString).UTF8String, -1, nil)
 				sqlite3_bind_int(statement, 8, Int32(albumItem.iTunesUniqueID))

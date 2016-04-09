@@ -14,7 +14,7 @@ class Album: NSObject, NSCoding {
 	var artistID: Int
 	var releaseDate: Double
 	var artwork: String
-	var artworkUrl: String
+	var artworkUrl: String?
 	var explicit: Int
 	var copyright: String
 	var iTunesUniqueID: Int
@@ -42,7 +42,7 @@ class Album: NSObject, NSCoding {
 		self.artistID = decoder.decodeObjectForKey("artistID") as! Int
 		self.releaseDate = decoder.decodeObjectForKey("releaseDate") as! Double
 		self.artwork = decoder.decodeObjectForKey("artwork") as! String
-		self.artworkUrl = decoder.decodeObjectForKey("artworkUrl") as! String
+		if let url = decoder.decodeObjectForKey("artworkUrl") as? String { self.artworkUrl = url }
 		self.explicit = decoder.decodeObjectForKey("explicit") as! Int
 		self.copyright = decoder.decodeObjectForKey("copyright") as! String
 		self.iTunesUniqueID = decoder.decodeObjectForKey("iTunesUniqueID") as! Int
