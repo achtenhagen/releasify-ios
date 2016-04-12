@@ -21,7 +21,7 @@ final class AppController: UINavigationController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		AppDB.sharedInstance.upgrade_db_v2()
+		// AppDB.sharedInstance.upgrade_db_v2()
 
 		AppDB.sharedInstance.getAlbums()
 		AppDB.sharedInstance.getArtists()

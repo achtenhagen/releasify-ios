@@ -16,7 +16,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T3e-JG-tx2">
-                        <rect key="frame" x="15" y="21" width="297" height="21"/>
+                        <rect key="frame" x="15" y="21" width="290" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                         <color key="textColor" red="0.25098039215686274" green="0.25098039215686274" blue="0.25098039215686274" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
@@ -24,7 +24,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="T3e-JG-tx2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="13" id="JSX-MZ-KYq"/>
-                    <constraint firstItem="T3e-JG-tx2" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="JYc-gV-BHn"/>
+                    <constraint firstItem="T3e-JG-tx2" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" constant="-7" id="JYc-gV-BHn"/>
                     <constraint firstItem="T3e-JG-tx2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="7" id="m7f-tz-msE"/>
                     <constraint firstItem="T3e-JG-tx2" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="oyR-VZ-ThV"/>
                 </constraints>

@@ -17,11 +17,17 @@ class FavoritesListController: UIViewController {
 	@IBOutlet var favoritesTable: UITableView!
 	
 	@IBAction func dismissViewController(sender: AnyObject) {
+		Favorites.sharedInstance.save()
 		self.dismissViewControllerAnimated(true, completion: nil)
 	}
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+
+		// Set theme
+		theme.style = Theme.sharedInstance.style
+		theme.set()
+
 		favorites = Favorites.sharedInstance.list
 		self.favoritesTable.backgroundColor = theme.tableBackgroundColor
 		self.favoritesTable.separatorColor = theme.cellSeparatorColor

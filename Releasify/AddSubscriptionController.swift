@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MediaPlayer
 
 class AddSubscriptionController: UIViewController {
 	
@@ -14,13 +15,21 @@ class AddSubscriptionController: UIViewController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var searchResults: [Artist]!
 	var artistCellReuseIdentifier = "artistCell"
+	var mediaQuery: MPMediaQuery!
 	var delayTimer: NSTimer!
 	
 	@IBOutlet var navBar: UINavigationBar!
 	@IBOutlet var searchBar: UISearchBar!
+	@IBOutlet var importContainer: UIView!
+	@IBOutlet var importBtn: UIButton!
 	@IBOutlet var searchTable: UITableView!
 	
-    override func viewDidLoad() {
+
+	@IBAction func ImportArtists(sender: AnyObject) {
+		self.performSegueWithIdentifier("ImportArtistsFromSearchResultsSegue", sender: self)
+	}
+
+	override func viewDidLoad() {
         super.viewDidLoad()
 
 		searchResults = [Artist]()
@@ -44,10 +53,22 @@ class AddSubscriptionController: UIViewController {
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
 
+		// Add 1px bottom border to import container
+		let topBorder = UIView(frame: CGRect(x: 0, y: 55, width: self.view.bounds.width, height: 1))
+		topBorder.backgroundColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
+		self.importContainer.addSubview(topBorder)
+
 		// Configure search table
 		searchTable.backgroundColor = theme.tableBackgroundColor
 		searchTable.separatorColor = theme.cellSeparatorColor
 		searchTable.registerNib(UINib(nibName: "SearchResultArtistCell", bundle: nil), forCellReuseIdentifier: artistCellReuseIdentifier)
+
+		// Query music library
+		mediaQuery = MPMediaQuery.artistsQuery()
+		mediaQuery.groupingType = .AlbumArtist
+		if mediaQuery.collections!.count > 0 {
+			importBtn.enabled = true
+		}
     }
 
     override func didReceiveMemoryWarning() {
@@ -65,36 +86,33 @@ class AddSubscriptionController: UIViewController {
 	func searchFor(keyword: String, errorHandler: ((error: ErrorType) -> Void)) {
 		let keyword = keyword.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
 		let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&keyword=\(keyword)"
-		let dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(0.2 * Double(NSEC_PER_SEC)))
-		dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-			API.sharedInstance.sendRequest(API.Endpoint.search.url(), postString: postString, successHandler: { (statusCode, data) in
-				if statusCode != 200 {
-					errorHandler(error: API.sharedInstance.getErrorFor(statusCode))
-					return
-				}
+		API.sharedInstance.sendRequest(API.Endpoint.search.url(), postString: postString, successHandler: { (statusCode, data) in
+			if statusCode != 200 {
+				errorHandler(error: API.sharedInstance.getErrorFor(statusCode))
+				return
+			}
 
-				guard let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary else {
-					errorHandler(error: API.Error.FailedToParseJSON)
-					return
-				}
+			guard let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary else {
+				errorHandler(error: API.Error.FailedToParseJSON)
+				return
+			}
 
-				guard let artists: [NSDictionary] = json["artists"] as? [NSDictionary] else {
-					errorHandler(error: API.Error.FailedToParseJSON)
-					return
-				}
+			guard let artists: [NSDictionary] = json["artists"] as? [NSDictionary] else {
+				errorHandler(error: API.Error.FailedToParseJSON)
+				return
+			}
 
-				self.searchResults = [Artist]()
-				for artist in artists {
-					self.searchResults.append(Artist(
-						ID: artist["ID"] as! Int,
-						title: (artist["title"] as? String)!,
-						iTunesUniqueID: artist["iTunesUniqueID"] as! Int,
-						avatar: nil
+			self.searchResults = [Artist]()
+			for artist in artists {
+				self.searchResults.append(Artist(
+					ID: artist["ID"] as! Int,
+					title: (artist["title"] as? String)!,
+					iTunesUniqueID: artist["iTunesUniqueID"] as! Int,
+					avatar: nil
 					))
-				}
-				self.searchTable.reloadData()
-				}, errorHandler: { (error) in
-			})
+			}
+			self.searchTable.reloadData()
+			}, errorHandler: { (error) in
 		})
 	}
 
@@ -105,7 +123,7 @@ class AddSubscriptionController: UIViewController {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
 			alert.title = "You're Offline!"
 			alert.message = "Please make sure you are connected to the internet, then try again."
-			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		default:
@@ -117,8 +135,11 @@ class AddSubscriptionController: UIViewController {
 	}
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
-    }
+		if segue.identifier == "ImportArtistsFromSearchResultsSegue" {
+			let artistPickerController = segue.destinationViewController as! ArtistsPicker
+			artistPickerController.collection = mediaQuery.collections!
+		}
+	}
 }
 
 // MARK: - UITableViewDataSource
@@ -145,7 +166,9 @@ extension AddSubscriptionController: UITableViewDataSource {
 
 // MARK: - UITableViewDataDelegate
 extension AddSubscriptionController: UITableViewDelegate {
-	
+	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+
+	}
 }
 
 // MARK: - UISearchBarDelegate

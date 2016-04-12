@@ -94,6 +94,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		navBarAppearance.barTintColor = Theme.sharedInstance.navBarTintColor
 		if Theme.sharedInstance.style == .dark {
 			navBarAppearance.shadowImage = UIImage()
+		} else {
+			navBarAppearance.shadowImage = UIImage(named: "navbar_shadow")
 		}
 		navBarAppearance.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
 		navBarAppearance.tintColor = Theme.sharedInstance.navTintColor
@@ -219,9 +221,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	func applicationWillResignActive(application: UIApplication) {
-		Favorites.sharedInstance.save()
-	}
+	func applicationWillResignActive(application: UIApplication) {}
 	
 	func applicationDidEnterBackground(application: UIApplication) {}
 	

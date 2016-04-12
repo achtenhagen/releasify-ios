@@ -41,6 +41,7 @@ class TabBarController: UITabBarController {
 		let imageView = UIImageView(image:logo)
 		self.navigationItem.titleView = imageView
 		
+		// Add 1px border to tab bar
 		if Theme.sharedInstance.style == .dark {
 			let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 2))
 			topBorder.backgroundColor = Theme.sharedInstance.tabBarTopBorderColor
