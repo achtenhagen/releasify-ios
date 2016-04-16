@@ -459,7 +459,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tj9-YK-Fkb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3191.25" y="-161.625"/>
+            <point key="canvasLocation" x="2417.25" y="-161.625"/>
         </scene>
         <!--Subscription Detail View-->
         <scene sceneID="u0K-cP-Fcy">
@@ -549,12 +549,12 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Fh-ui-yPz" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="eZw-O1-6pW" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2522.25" y="445.875"/>
+            <point key="canvasLocation" x="2417.25" y="445.875"/>
         </scene>
         <!--Artist Picker View-->
         <scene sceneID="TAN-hE-HYX">
             <objects>
-                <viewController storyboardIdentifier="ArtistPicker" title="Artist Picker View" id="5Wn-lw-nVy" customClass="ArtistsPicker" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ArtistPicker" title="Artist Picker View" id="5Wn-lw-nVy" customClass="ArtistPicker" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="cb5-Rm-cLE"/>
                         <viewControllerLayoutGuide type="bottom" id="ogT-gm-u5s"/>
@@ -569,9 +569,9 @@
                                     <constraint firstAttribute="height" constant="64" id="bYT-Ea-NAL"/>
                                     <constraint firstAttribute="height" constant="64" id="pQh-5r-5mZ"/>
                                 </constraints>
-                                <color key="barTintColor" red="0.0" green="0.086274509803921567" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="barTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <textAttributes key="titleTextAttributes">
-                                    <color key="textColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="textColor" red="0.0" green="0.086274509803921567" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
                                 </textAttributes>
                                 <items>
                                     <navigationItem title="Music Library" id="3k5-Ba-uwZ">
@@ -582,7 +582,7 @@
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" systemItem="done" id="rjC-tE-qPq">
                                             <connections>
-                                                <action selector="closeArtistsPicker:" destination="5Wn-lw-nVy" id="nSh-HN-BQR"/>
+                                                <action selector="closeArtistPicker:" destination="5Wn-lw-nVy" id="ekq-kY-drt"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -606,7 +606,7 @@
                             </progressView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="54" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Ql3-f0-j8c">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
-                                <color key="backgroundColor" red="0.0039215686274509803" green="0.10588235294117647" blue="0.14901960784313725" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" red="1" green="1" blue="1" alpha="0.080000000000000002" colorSpace="calibratedRGB"/>
                                 <color key="sectionIndexColor" red="0.0" green="0.94901960780000005" blue="0.75294117650000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -623,12 +623,11 @@
                                                     <rect key="frame" x="15" y="0.0" width="345" height="53"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                    <color key="textColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="textColor" red="0.25098039215686274" green="0.25098039215686274" blue="0.25098039215686274" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" red="0.0039215686274509803" green="0.10588235294117647" blue="0.14901960784313725" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
                                 </prototypes>
                                 <sections/>
@@ -706,7 +705,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4S3-1h-WrK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3191.25" y="-796.125"/>
+            <point key="canvasLocation" x="2417.25" y="-817.125"/>
         </scene>
         <!--Favorites List View-->
         <scene sceneID="zZa-sc-6ZQ">
@@ -1282,131 +1281,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gf8-Gk-vWq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1641.75" y="445.875"/>
-        </scene>
-        <!--Albums-->
-        <scene sceneID="vZm-i9-Evi">
-            <objects>
-                <viewController storyboardIdentifier="AlbumController" title="Albums" useStoryboardIdentifierAsRestorationIdentifier="YES" id="sGZ-AU-DNR" customClass="AlbumController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="z6t-wj-o6j"/>
-                        <viewControllerLayoutGuide type="bottom" id="AIC-ES-XLk"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="RtE-o2-wm0">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You have no subscriptions yet." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Li-3e-Whz">
-                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="233" id="Fyj-Xp-Tv4">
-                                        <variation key="heightClass=regular-widthClass=compact" constant="250"/>
-                                    </constraint>
-                                    <constraint firstAttribute="height" constant="21" id="XOO-i8-Osy"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <color key="textColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="Fyj-Xp-Tv4"/>
-                                        <exclude reference="XOO-i8-Osy"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=regular-widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="Fyj-Xp-Tv4"/>
-                                        <include reference="XOO-i8-Osy"/>
-                                    </mask>
-                                </variation>
-                            </label>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap the + button above to add one." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w1V-E0-QIg">
-                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" indicatorStyle="black" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="udo-fW-4sn">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="o2A-pX-adF">
-                                    <size key="itemSize" width="145" height="190"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells/>
-                                <connections>
-                                    <outlet property="dataSource" destination="sGZ-AU-DNR" id="6sZ-9H-hfD"/>
-                                    <outlet property="delegate" destination="sGZ-AU-DNR" id="fZd-8F-Cs8"/>
-                                </connections>
-                            </collectionView>
-                        </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="udo-fW-4sn" secondAttribute="trailing" id="EPW-vn-7Oj"/>
-                            <constraint firstItem="2Li-3e-Whz" firstAttribute="centerX" secondItem="RtE-o2-wm0" secondAttribute="centerX" id="EQa-Ft-THa"/>
-                            <constraint firstItem="udo-fW-4sn" firstAttribute="bottom" secondItem="AIC-ES-XLk" secondAttribute="top" id="INL-IV-Gv2"/>
-                            <constraint firstItem="udo-fW-4sn" firstAttribute="top" secondItem="z6t-wj-o6j" secondAttribute="bottom" id="VNV-1B-QnG">
-                                <variation key="heightClass=regular-widthClass=compact" constant="50"/>
-                            </constraint>
-                            <constraint firstItem="w1V-E0-QIg" firstAttribute="centerX" secondItem="RtE-o2-wm0" secondAttribute="centerX" id="WSI-oV-dWH">
-                                <variation key="heightClass=regular-widthClass=compact" constant="1"/>
-                            </constraint>
-                            <constraint firstItem="2Li-3e-Whz" firstAttribute="centerY" secondItem="RtE-o2-wm0" secondAttribute="centerY" id="YFH-eR-quv">
-                                <variation key="heightClass=regular-widthClass=compact" constant="1"/>
-                            </constraint>
-                            <constraint firstItem="w1V-E0-QIg" firstAttribute="top" secondItem="2Li-3e-Whz" secondAttribute="bottom" constant="-1" id="qKn-Rj-JRm">
-                                <variation key="heightClass=regular-widthClass=compact" constant="4"/>
-                            </constraint>
-                            <constraint firstItem="udo-fW-4sn" firstAttribute="leading" secondItem="RtE-o2-wm0" secondAttribute="leading" id="ytt-VS-bdk"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="subviews">
-                                <exclude reference="2Li-3e-Whz"/>
-                                <exclude reference="w1V-E0-QIg"/>
-                                <exclude reference="udo-fW-4sn"/>
-                            </mask>
-                            <mask key="constraints">
-                                <exclude reference="EQa-Ft-THa"/>
-                                <exclude reference="YFH-eR-quv"/>
-                                <exclude reference="WSI-oV-dWH"/>
-                                <exclude reference="qKn-Rj-JRm"/>
-                                <exclude reference="EPW-vn-7Oj"/>
-                                <exclude reference="INL-IV-Gv2"/>
-                                <exclude reference="VNV-1B-QnG"/>
-                                <exclude reference="ytt-VS-bdk"/>
-                            </mask>
-                        </variation>
-                        <variation key="heightClass=regular-widthClass=compact">
-                            <mask key="subviews">
-                                <include reference="2Li-3e-Whz"/>
-                                <include reference="w1V-E0-QIg"/>
-                                <include reference="udo-fW-4sn"/>
-                            </mask>
-                            <mask key="constraints">
-                                <include reference="EQa-Ft-THa"/>
-                                <include reference="YFH-eR-quv"/>
-                                <include reference="WSI-oV-dWH"/>
-                                <include reference="qKn-Rj-JRm"/>
-                                <include reference="EPW-vn-7Oj"/>
-                                <include reference="INL-IV-Gv2"/>
-                                <include reference="VNV-1B-QnG"/>
-                                <include reference="ytt-VS-bdk"/>
-                            </mask>
-                        </variation>
-                    </view>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
-                    <connections>
-                        <outlet property="albumCollectionView" destination="udo-fW-4sn" id="yvO-9f-GtX"/>
-                        <outlet property="emptySubtitle" destination="w1V-E0-QIg" id="KS2-5P-sgm"/>
-                        <outlet property="emptyTitle" destination="2Li-3e-Whz" id="6QL-yN-d3u"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="8wk-6E-uWp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4071.75" y="445.875"/>
         </scene>
         <!--Intro Screen Page Controller-->
         <scene sceneID="gmD-nh-hfH">
@@ -2245,7 +2119,7 @@ Swipe to get started.</string>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YnA-Jo-x40" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="882.75" y="-796.125"/>
+            <point key="canvasLocation" x="882.75" y="-817.125"/>
         </scene>
         <!--Add Subscription View-->
         <scene sceneID="Di7-71-I8y">
@@ -2385,10 +2259,12 @@ Swipe to get started.</string>
                                 <exclude reference="WG8-lO-To2"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="f2E-Xa-SIm"/>
                                 <exclude reference="Wg4-8c-5Sb"/>
                                 <exclude reference="sIt-4M-dDd"/>
                                 <exclude reference="tOd-yp-jmj"/>
+                                <exclude reference="f2E-Xa-SIm"/>
+                                <exclude reference="KMe-E2-xpL"/>
+                                <exclude reference="Y22-yp-NZH"/>
                                 <exclude reference="3Yb-tv-hQS"/>
                                 <exclude reference="5l3-Z2-xs4"/>
                                 <exclude reference="QPR-UF-UqU"/>
@@ -2396,8 +2272,6 @@ Swipe to get started.</string>
                                 <exclude reference="paR-0K-1jM"/>
                                 <exclude reference="zIn-f3-PfM"/>
                                 <exclude reference="za9-Px-uvr"/>
-                                <exclude reference="KMe-E2-xpL"/>
-                                <exclude reference="Y22-yp-NZH"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -2408,10 +2282,12 @@ Swipe to get started.</string>
                                 <include reference="WG8-lO-To2"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="f2E-Xa-SIm"/>
                                 <include reference="Wg4-8c-5Sb"/>
                                 <include reference="sIt-4M-dDd"/>
                                 <include reference="tOd-yp-jmj"/>
+                                <include reference="f2E-Xa-SIm"/>
+                                <include reference="KMe-E2-xpL"/>
+                                <include reference="Y22-yp-NZH"/>
                                 <include reference="3Yb-tv-hQS"/>
                                 <include reference="5l3-Z2-xs4"/>
                                 <include reference="QPR-UF-UqU"/>
@@ -2419,8 +2295,6 @@ Swipe to get started.</string>
                                 <include reference="paR-0K-1jM"/>
                                 <include reference="zIn-f3-PfM"/>
                                 <include reference="za9-Px-uvr"/>
-                                <include reference="KMe-E2-xpL"/>
-                                <include reference="Y22-yp-NZH"/>
                             </mask>
                         </variation>
                     </view>
@@ -2436,7 +2310,7 @@ Swipe to get started.</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iRH-rV-jzy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-116.25" y="-161.625"/>
+            <point key="canvasLocation" x="-95.25" y="-161.625"/>
         </scene>
         <!--Stream View-->
         <scene sceneID="D05-Vo-lUd">
@@ -2445,7 +2319,7 @@ Swipe to get started.</string>
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="310" sectionHeaderHeight="28" sectionFooterHeight="40" id="YfH-dM-XsL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" shouldIndentWhileEditing="NO" reuseIdentifier="streamCell" id="Ouo-aw-Qgp" customClass="StreamCell" customModule="Releasify" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="310"/>
@@ -2720,7 +2594,7 @@ Swipe to get started.</string>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d8R-wZ-Eqs" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1641.75" y="-796.125"/>
+            <point key="canvasLocation" x="1641.75" y="-817.125"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zbg-3C-b0a">
@@ -2739,7 +2613,7 @@ Swipe to get started.</string>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cDe-3V-qnN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-116.25" y="445.875"/>
+            <point key="canvasLocation" x="-95.25" y="445.875"/>
         </scene>
     </scenes>
     <resources>
@@ -2757,9 +2631,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="i1c-0T-qib"/>
         <segue reference="gux-gb-W3x"/>
-        <segue reference="zgf-W2-bDZ"/>
+        <segue reference="2xf-M1-LZa"/>
+        <segue reference="6ln-2C-qu7"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

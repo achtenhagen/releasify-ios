@@ -15,7 +15,7 @@ protocol StreamViewControllerDelegate: class {
 
 class StreamViewController: UITableViewController {
 	
-	private let theme = StreamViewControllerTheme()
+	private var theme: StreamViewControllerTheme!
 	weak var delegate: AppControllerDelegate?
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -37,16 +37,20 @@ class StreamViewController: UITableViewController {
 		
 		tmpArtwork = [String:UIImage]()
 		tmpUrl = [Int:String]()
+		theme = StreamViewControllerTheme(style: appDelegate.theme.style)
 		
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(StreamViewController.refresh), name: "refreshContent", object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(StreamViewController.showAlbumFromRemoteNotification(_:)), name: "appActionPressed", object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(StreamViewController.showAlbumFromNotification(_:)), name: "showAlbum", object: nil)
-		
-		self.streamTable.backgroundColor = theme.streamTableBackgroundColor
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(refresh), name: "refreshContent", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(showAlbumFromRemoteNotification(_:)), name: "appActionPressed", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(showAlbumFromNotification(_:)), name: "showAlbum", object: nil)
+
+		// Theme customization
+		self.streamTable.backgroundColor = theme.tableViewBackgroundColor
 		self.streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
 		self.streamTable.backgroundView?.userInteractionEnabled = false
+		self.streamTable.separatorStyle = theme.style == .dark ? .None : .SingleLine
+		self.streamTable.separatorColor = theme.cellSeparatorColor
 		
 		if #available(iOS 9.0, *) {
 			if traitCollection.forceTouchCapability == .Available {
@@ -57,7 +61,7 @@ class StreamViewController: UITableViewController {
 		registerLongPressGesture()
 		
 		refreshControl!.addTarget(self, action: #selector(StreamViewController.refresh), forControlEvents: .ValueChanged)
-		refreshControl!.tintColor = Theme.sharedInstance.refreshControlTintColor
+		refreshControl!.tintColor = theme.refreshControlTintColor
 		self.streamTable.addSubview(refreshControl!)
 		
 		// Handle first run
@@ -99,6 +103,12 @@ class StreamViewController: UITableViewController {
 			errorHandler: { (error) in
 				// handle error
 			})
+		}
+	}
+
+	override func viewWillAppear(animated: Bool) {
+		if theme.style == .light {
+			self.navigationController?.navigationBar.shadowImage = UIImage(named: "navbar_shadow")
 		}
 	}
 	
@@ -425,22 +435,20 @@ extension StreamViewController: UIViewControllerPreviewingDelegate {
 
 // MARK: - Theme Extension
 private class StreamViewControllerTheme: Theme {
-	var streamTableBackgroundColor: UIColor!
 	var streamCellBackgroundColor: UIColor!
 	var streamCellAlbumTitleColor: UIColor!
 	var streamCellArtistTitleColor: UIColor!
 	var streamCellFooterLabelColor: UIColor!
-	
-	override init() {
-		switch Theme.sharedInstance.style {
+
+	override init(style: Styles) {
+		super.init(style: style)
+		switch style {
 		case .dark:
-			streamTableBackgroundColor = UIColor.clearColor()
 			streamCellBackgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
 			streamCellAlbumTitleColor = UIColor.whiteColor()
 			streamCellArtistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 			streamCellFooterLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
 		case .light:
-			streamTableBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
 			streamCellBackgroundColor = UIColor.whiteColor()
 			streamCellAlbumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
 			streamCellArtistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)

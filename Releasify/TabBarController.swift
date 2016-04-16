@@ -12,8 +12,8 @@ import MediaPlayer
 class TabBarController: UITabBarController {
 	
 	weak var notificationDelegate: AppControllerDelegate?
-	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	var theme: Theme!
 	var streamController: StreamViewController!
 	var subscriptionController: SubscriptionController!
 	var mediaQuery: MPMediaQuery!	
@@ -28,25 +28,27 @@ class TabBarController: UITabBarController {
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+
+		theme = appDelegate.theme
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(TabBarController.addSubscriptionFromShortcutItem), name: "addSubscriptionShortcutItem", object: nil)
 		mediaQuery = MPMediaQuery.artistsQuery()
 		
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
-		favListBarBtn.tintColor = Theme.sharedInstance.globalTintColor
+		favListBarBtn.tintColor = theme.globalTintColor
 		addBarBtn = self.navigationController?.navigationBar.items![0].rightBarButtonItem
-		addBarBtn.tintColor = Theme.sharedInstance.globalTintColor
+		addBarBtn.tintColor = theme.globalTintColor
 		
-		let logo = UIImage(named: Theme.sharedInstance.style == .dark ? "icon_navbar.png" : "icon_navbar_alt.png")
+		let logo = UIImage(named: theme.style == .dark ? "icon_navbar.png" : "icon_navbar_alt.png")
 		let imageView = UIImageView(image:logo)
 		self.navigationItem.titleView = imageView
 		
 		// Add 1px border to tab bar
-		if Theme.sharedInstance.style == .dark {
+		if theme.style == .dark {
 			let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 2))
-			topBorder.backgroundColor = Theme.sharedInstance.tabBarTopBorderColor
+			topBorder.backgroundColor = theme.tabBarTopBorderColor
 			self.tabBar.addSubview(topBorder)
-			let gradient = Theme.sharedInstance.gradient()
+			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		} else {
@@ -162,7 +164,7 @@ class TabBarController: UITabBarController {
 		}
 		actionSheetController.addAction(addAction)
 		actionSheetController.addTextFieldWithConfigurationHandler { (textField) in
-			textField.keyboardAppearance = Theme.sharedInstance.keyboardStyle
+			textField.keyboardAppearance = self.theme.keyboardStyle
 			textField.autocapitalizationType = .Words
 			textField.placeholder = "e.g., Armin van Buuren"
 		}

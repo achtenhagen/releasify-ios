@@ -9,7 +9,6 @@
 import UIKit
 
 public class Theme {
-	static let sharedInstance = Theme()
 	
 	enum Styles { case dark, light }
 	
@@ -52,8 +51,16 @@ public class Theme {
 	var refreshControlTintColor: UIColor!
 
 	// Table view appearance
+	var tableViewBackgroundColor: UIColor!
 	var cellHighlightColor: UIColor!
 	var cellSeparatorColor: UIColor!
+
+	init() {}
+
+	init(style: Styles) {
+		self.style = style
+		set()
+	}
 	
 	// MARK: - Set theme
 	func set() {
@@ -89,11 +96,12 @@ public class Theme {
 			refreshControlTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
 
 			// Table view appearance
+			tableViewBackgroundColor = UIColor.clearColor()
 			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
 			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
 		case .light:
 			// Global App tint color
-			globalTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0)
+			globalTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1)
 
 			// Status bar appearance
 			statusBarStyle = .Default
@@ -113,15 +121,16 @@ public class Theme {
 			tabBarTintColor = UIColor.whiteColor()
 			
 			// Tab bar top border color
-			tabBarTopBorderColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0)
+			tabBarTopBorderColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1)
 			
 			// Keyboard appearance
 			keyboardStyle = .Light
 			
 			// Refresh control appearance
-			refreshControlTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 0.5)
+			refreshControlTintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
 
 			// Table view appearance
+			tableViewBackgroundColor = UIColor.whiteColor()
 			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
 			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
 		}
@@ -131,7 +140,7 @@ public class Theme {
 	func gradient() -> CAGradientLayer {
 		let gradient = CAGradientLayer()
 		gradient.colors = [
-			UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor,
+			UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1).CGColor,
 			UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor
 		]
 		gradient.locations = [0.0 , 1.0]

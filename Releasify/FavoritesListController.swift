@@ -10,7 +10,8 @@ import UIKit
 
 class FavoritesListController: UIViewController {
 	
-	private let theme = FavoritesListControllerTheme()
+	private var theme: FavoritesListControllerTheme!
+	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var favorites: [Album]!
 	var selectedAlbum: Album!
 
@@ -24,16 +25,14 @@ class FavoritesListController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 
-		// Set theme
-		theme.style = Theme.sharedInstance.style
-		theme.set()
+		theme = FavoritesListControllerTheme(style: appDelegate.theme.style)
 
 		favorites = Favorites.sharedInstance.list
 		self.favoritesTable.backgroundColor = theme.tableBackgroundColor
 		self.favoritesTable.separatorColor = theme.cellSeparatorColor
 
-		if Theme.sharedInstance.style == .dark {
-			let gradient = Theme.sharedInstance.gradient()
+		if theme.style == .dark {
+			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		} else {
@@ -143,8 +142,9 @@ private class FavoritesListControllerTheme: Theme {
 	var albumTitleColor: UIColor!
 	var artistTitleColor: UIColor!
 	
-	override init() {
-		switch Theme.sharedInstance.style {
+	override init(style: Styles) {
+		super.init(style: style)
+		switch style {
 		case .dark:
 			tableBackgroundColor = UIColor.clearColor()
 			cellBackgroundColor = UIColor.clearColor()

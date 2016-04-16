@@ -10,7 +10,7 @@ import UIKit
 
 class SubscriptionDetailController: UIViewController {
 	
-	private let theme = SubscriptionDetailControllerTheme()
+	private var theme: SubscriptionDetailControllerTheme!
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let albumCellReuseIdentifier = "AlbumCell"	
@@ -55,12 +55,14 @@ class SubscriptionDetailController: UIViewController {
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+
+		theme = SubscriptionDetailControllerTheme(style: appDelegate.theme.style)
 		
 		self.navigationItem.title = artist!.title
 		
 		self.view.backgroundColor = theme.viewBackgroundColor
-		if Theme.sharedInstance.style == .dark {
-			let gradient = Theme.sharedInstance.gradient()
+		if theme.style == .dark {
+			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
@@ -98,8 +100,8 @@ class SubscriptionDetailController: UIViewController {
 			self.view.addSubview(label)
 		}
 		
-		if Theme.sharedInstance.style == .dark {
-			let gradient = Theme.sharedInstance.gradient()
+		if theme.style == .dark {
+			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
@@ -173,14 +175,14 @@ extension SubscriptionDetailController: UICollectionViewDelegate {
 	}
 }
 
-private class SubscriptionDetailControllerTheme : Theme {
-	
+private class SubscriptionDetailControllerTheme: Theme {
 	var viewBackgroundColor: UIColor!
 	var albumTitleColor: UIColor!
 	var artistTitleColor: UIColor!
 	
-	override init () {
-		switch Theme.sharedInstance.style {
+	override init (style: Styles) {
+		super.init(style: style)
+		switch style {
 		case .dark:
 			viewBackgroundColor = UIColor.clearColor()
 			albumTitleColor = UIColor.whiteColor()

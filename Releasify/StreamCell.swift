@@ -9,6 +9,8 @@
 import UIKit
 
 class StreamCell: UITableViewCell {
+
+	var theme: Theme!
 	
 	@IBOutlet var containerView: UIView!
 	@IBOutlet var artistImg: UIImageView!
@@ -27,6 +29,8 @@ class StreamCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+
+		theme = Theme()
 		
 		artworkContainer.clipsToBounds = true
 		artworkContainer.layer.masksToBounds = true
@@ -78,12 +82,12 @@ class StreamCell: UITableViewCell {
 			label = UILabel(frame: CGRect(x: 292, y: 260, width: 50, height: 26))
 			label.text = "NEW"
 			label.font = UIFont(name: label.font.fontName, size: 12)
-			label.textColor = Theme.sharedInstance.orangeColor
+			label.textColor = theme.orangeColor
 			label.textAlignment = NSTextAlignment.Center
 			label.layer.masksToBounds = true
 			label.layer.cornerRadius = 4
 			label.layer.borderWidth = 1
-			label.layer.borderColor = Theme.sharedInstance.orangeColor.CGColor
+			label.layer.borderColor = theme.orangeColor.CGColor
 			self.addSubview(label)
 		}
 	}

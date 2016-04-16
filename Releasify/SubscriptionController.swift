@@ -10,7 +10,7 @@ import UIKit
 
 class SubscriptionController: UITableViewController {
 	
-	private let theme = SubscriptionControllerTheme()
+	private var theme: SubscriptionControllerTheme!
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var searchController: UISearchController!
@@ -27,21 +27,19 @@ class SubscriptionController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		theme = SubscriptionControllerTheme(style: appDelegate.theme.style)
 		filteredData = AppDB.sharedInstance.artists
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SubscriptionController.reloadSubscriptions), name: "refreshSubscriptions", object: nil)
 		
-		theme.style = Theme.sharedInstance.style
-		theme.set()
-		
-		self.subscriptionsTable.backgroundColor = theme.subscriptionsTableBackgroundColor
+		self.subscriptionsTable.backgroundColor = theme.tableViewBackgroundColor
 		self.subscriptionsTable.backgroundView = UIView(frame: self.subscriptionsTable.bounds)
 		self.subscriptionsTable.backgroundView?.userInteractionEnabled = false
 		self.subscriptionsTable.separatorColor = theme.cellSeparatorColor
 		
 		refreshControl = UIRefreshControl()
 		refreshControl!.addTarget(self, action: #selector(SubscriptionController.refresh), forControlEvents: .ValueChanged)
-		refreshControl!.tintColor = Theme.sharedInstance.refreshControlTintColor
+		refreshControl!.tintColor = theme.refreshControlTintColor
 		self.subscriptionsTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
 		self.subscriptionsTable.addSubview(refreshControl!)
 		
@@ -175,7 +173,7 @@ class SubscriptionController: UITableViewController {
 // MARK: - UISearchControllerDelegate
 extension SubscriptionController: UISearchControllerDelegate {
 	func willPresentSearchController(searchController: UISearchController) {
-		searchController.searchBar.backgroundColor = Theme.sharedInstance.navBarTintColor
+		searchController.searchBar.backgroundColor = theme.navBarTintColor
 	}
 	
 	func willDismissSearchController(searchController: UISearchController) {
@@ -193,13 +191,12 @@ extension SubscriptionController: UISearchResultsUpdating {
 
 // MARK: - Theme Extension
 private class SubscriptionControllerTheme: Theme {
-	var subscriptionsTableBackgroundColor: UIColor!
 	var subscriptionTitleColor: UIColor!
 	
-	override init () {
-		switch Theme.sharedInstance.style {
+	override init (style: Styles) {
+		super.init(style: style)
+		switch style {
 		case .dark:
-			subscriptionsTableBackgroundColor = UIColor.clearColor()
 			subscriptionTitleColor = UIColor.whiteColor()
 		case .light:
 			subscriptionTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)

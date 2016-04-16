@@ -75,7 +75,7 @@ class Intro03Controller: UIViewController {
 	
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "importFromIntroSegue" {
-			let artistPickerController = segue.destinationViewController as! ArtistsPicker
+			let artistPickerController = segue.destinationViewController as! ArtistPicker
 			artistPickerController.collection = mediaQuery.collections!
 			artistPickerController.isIntro = true
 		}

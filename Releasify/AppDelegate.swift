@@ -12,6 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	let debug = true
 	var window: UIWindow?
+	var theme: Theme!
 	var userID = 0
 	var userDeviceToken: String?
 	var userUUID: String!
@@ -60,12 +61,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		} else {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 		}
+
+		// Theme settings & customizations
 		if let themeVal = NSUserDefaults.standardUserDefaults().valueForKey("theme") as? Bool {
-			Theme.sharedInstance.style = themeVal == true ? .dark : .light
+			theme = Theme(style: themeVal == true ? .dark : .light)
 		} else {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "theme")
 		}
-		
+		UIApplication.sharedApplication().statusBarStyle = theme.statusBarStyle
+		let navBarAppearance = UINavigationBar.appearance()
+		navBarAppearance.barStyle = theme.navBarStyle
+		navBarAppearance.barTintColor = theme.navBarTintColor
+		if theme.style == .dark {
+			navBarAppearance.shadowImage = UIImage()
+		} else {	
+			navBarAppearance.shadowImage = UIImage(named: "navbar_shadow")
+		}
+		navBarAppearance.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+		navBarAppearance.tintColor = theme.navTintColor
+		navBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: theme.navTextColor]
+		navBarAppearance.translucent = false
+		let tabBarAppearance = UITabBar.appearance()
+		tabBarAppearance.barTintColor = theme.tabBarTintColor
+		tabBarAppearance.tintColor = theme.tabTintColor
+		tabBarAppearance.backgroundColor = UIColor.clearColor()
+
 		// Launch options
 		if let launchOpts = launchOptions {
 			if let remotePayload = launchOpts[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
@@ -86,26 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Favorites list
 		Favorites.sharedInstance.load()
 		
-		// Theme settings
-		Theme.sharedInstance.set()
-		UIApplication.sharedApplication().statusBarStyle = Theme.sharedInstance.statusBarStyle
-		let navBarAppearance = UINavigationBar.appearance()
-		navBarAppearance.barStyle = Theme.sharedInstance.navBarStyle
-		navBarAppearance.barTintColor = Theme.sharedInstance.navBarTintColor
-		if Theme.sharedInstance.style == .dark {
-			navBarAppearance.shadowImage = UIImage()
-		} else {
-			navBarAppearance.shadowImage = UIImage(named: "navbar_shadow")
-		}
-		navBarAppearance.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-		navBarAppearance.tintColor = Theme.sharedInstance.navTintColor
-		navBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: Theme.sharedInstance.navTextColor]
-		navBarAppearance.translucent = false
-		let tabBarAppearance = UITabBar.appearance()
-		tabBarAppearance.barTintColor = Theme.sharedInstance.tabBarTintColor
-		tabBarAppearance.tintColor = Theme.sharedInstance.tabTintColor
-		tabBarAppearance.backgroundColor = UIColor.clearColor()
-		
+		// Set initial view controller
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
 		if userID == 0 {
 			firstRun = true

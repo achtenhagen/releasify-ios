@@ -11,7 +11,7 @@ import MediaPlayer
 
 class AddSubscriptionController: UIViewController {
 	
-	private let theme = AddSubscriptionControllerTheme()
+	private var theme: AddSubscriptionControllerTheme!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var searchResults: [Artist]!
 	var artistCellReuseIdentifier = "artistCell"
@@ -33,22 +33,19 @@ class AddSubscriptionController: UIViewController {
         super.viewDidLoad()
 
 		searchResults = [Artist]()
-		
-		// Set theme
-		theme.style = Theme.sharedInstance.style
-		theme.set()
+		theme = AddSubscriptionControllerTheme(style: appDelegate.theme.style)
 
 		// Configure search bar
 		searchBar.layer.borderColor = UIColor.clearColor().CGColor
 		searchBar.layer.borderWidth = 1
-		searchBar.tintColor = Theme.sharedInstance.searchBarTintColor
-		searchBar.barStyle = Theme.sharedInstance.searchBarStyle
-		searchBar.keyboardAppearance = Theme.sharedInstance.keyboardStyle
+		searchBar.tintColor = theme.searchBarTintColor
+		searchBar.barStyle = theme.searchBarStyle
+		searchBar.keyboardAppearance = theme.keyboardStyle
 		searchBar.becomeFirstResponder()
 
 		// Theme dependent gradient
-		if Theme.sharedInstance.style == .dark {
-			let gradient = Theme.sharedInstance.gradient()
+		if theme.style == .dark {
+			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
@@ -59,7 +56,7 @@ class AddSubscriptionController: UIViewController {
 		self.importContainer.addSubview(topBorder)
 
 		// Configure search table
-		searchTable.backgroundColor = theme.tableBackgroundColor
+		searchTable.backgroundColor = theme.tableViewBackgroundColor
 		searchTable.separatorColor = theme.cellSeparatorColor
 		searchTable.registerNib(UINib(nibName: "SearchResultArtistCell", bundle: nil), forCellReuseIdentifier: artistCellReuseIdentifier)
 
@@ -136,7 +133,7 @@ class AddSubscriptionController: UIViewController {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "ImportArtistsFromSearchResultsSegue" {
-			let artistPickerController = segue.destinationViewController as! ArtistsPicker
+			let artistPickerController = segue.destinationViewController as! ArtistPicker
 			artistPickerController.collection = mediaQuery.collections!
 		}
 	}
@@ -197,18 +194,16 @@ extension AddSubscriptionController: UISearchBarDelegate {
 }
 
 private class AddSubscriptionControllerTheme: Theme {
-	var tableBackgroundColor: UIColor!
 	var cellBackgroundColor: UIColor!
 	var artistTitleColor: UIColor!
 	
-	override init() {
-		switch Theme.sharedInstance.style {
+	override init(style: Styles) {
+		super.init(style: style)
+		switch style {
 		case .dark:
-			tableBackgroundColor = UIColor.clearColor()
 			cellBackgroundColor = UIColor.clearColor()
 			artistTitleColor = UIColor.whiteColor()
 		case .light:
-			tableBackgroundColor = UIColor.whiteColor()
 			cellBackgroundColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
 		}

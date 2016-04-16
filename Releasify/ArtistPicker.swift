@@ -9,7 +9,9 @@
 import UIKit
 import MediaPlayer
 
-class ArtistsPicker: UIViewController {
+class ArtistPicker: UIViewController {
+
+	private var theme: ArtistPickerTheme!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let blacklist: NSArray = ["Various Artists", "Verschiedene Interpreten"]
 	let keys: [String] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"]
@@ -47,7 +49,7 @@ class ArtistsPicker: UIViewController {
 		artistsTable.reloadData()
 	}
 	
-	@IBAction func closeArtistsPicker(sender: UIBarButtonItem) {
+	@IBAction func closeArtistPicker(sender: UIBarButtonItem) {
 		if searchController.active {
 			searchController.dismissViewControllerAnimated(true, completion: nil)
 		}
@@ -59,6 +61,8 @@ class ArtistsPicker: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		theme = ArtistPickerTheme(style: appDelegate.theme.style)
 		
 		var previousArtist = ""
 		for artist in collection {
@@ -83,6 +87,11 @@ class ArtistsPicker: UIViewController {
 				sections.append(section)
 			}
 		}
+
+		// Table view customization
+		self.artistsTable.backgroundColor = theme.artistsTableViewBackgroundColor
+		self.artistsTable.separatorColor = theme.cellSeparatorColor
+		self.artistsTable.sectionIndexColor = theme.tableViewSectionIndexColor
 		
 		setupSearchController()
 	}
@@ -303,14 +312,14 @@ class ArtistsPicker: UIViewController {
 		searchController.searchResultsUpdater = self
 		searchController.searchBar.placeholder = "Search Artists"
 		searchController.searchBar.searchBarStyle = .Default
-		searchController.searchBar.barStyle = .Black
-		searchController.searchBar.barTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
-		searchController.searchBar.tintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
-		searchController.searchBar.layer.borderColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1).CGColor
+		searchController.searchBar.barStyle = theme.searchBarStyle
+		searchController.searchBar.barTintColor = UIColor.clearColor()
+		searchController.searchBar.tintColor = theme.searchBarTintColor
+		searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
 		searchController.searchBar.layer.borderWidth = 1
 		searchController.searchBar.translucent = false
 		searchController.searchBar.autocapitalizationType = .Words
-		searchController.searchBar.keyboardAppearance = .Dark
+		searchController.searchBar.keyboardAppearance = theme.keyboardStyle
 		searchController.searchBar.sizeToFit()
 		artistsTable.tableHeaderView = searchController.searchBar
 		let backgroundView = UIView(frame: view.bounds)
@@ -326,7 +335,7 @@ class ArtistsPicker: UIViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension ArtistsPicker: UITableViewDataSource {
+extension ArtistPicker: UITableViewDataSource {
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
 		return searchController.active ? 1 : sections.count
 	}
@@ -363,7 +372,7 @@ extension ArtistsPicker: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-extension ArtistsPicker: UITableViewDelegate {
+extension ArtistPicker: UITableViewDelegate {
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let headerView = UIView(frame: CGRectMake(0, 0, view.bounds.size.width, 30.0))
 		headerView.backgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
@@ -389,10 +398,28 @@ extension ArtistsPicker: UITableViewDelegate {
 }
 
 // MARK: - UISearchResultsUpdating
-extension ArtistsPicker: UISearchResultsUpdating {
+extension ArtistPicker: UISearchResultsUpdating {
 	func updateSearchResultsForSearchController(searchController: UISearchController) {
 		filterContentForSearchText(searchController.searchBar.text!)
 		artistsTable.reloadData()
+	}
+}
+
+// MARK: - Theme Extension
+private class ArtistPickerTheme: Theme {
+	var artistsTableViewBackgroundColor: UIColor!
+	var tableViewSectionIndexColor: UIColor!
+
+	override init (style: Styles) {
+		super.init(style: style)
+		switch style {
+		case .dark:
+			artistsTableViewBackgroundColor = UIColor(red: 1/255, green: 27/255, blue: 38/255, alpha: 1)
+			tableViewSectionIndexColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1)
+		case .light:
+			artistsTableViewBackgroundColor = UIColor.whiteColor()
+			tableViewSectionIndexColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+		}
 	}
 }
 
