@@ -73,10 +73,10 @@ class StreamCell: UITableViewCell {
 		artworkContainer.addSubview(gradientLayerView)
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)		
-    }
-	
+	override func setSelected(selected: Bool, animated: Bool) {
+		super.setSelected(selected, animated: animated)
+	}
+
 	func addNewItemLabel () {
 		if label == nil {
 			label = UILabel(frame: CGRect(x: 292, y: 260, width: 50, height: 26))

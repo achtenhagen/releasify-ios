@@ -20,7 +20,7 @@ public class Theme {
 	// Common colors (Green alternative: #00D897)
 	let blueColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
 	let greenColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1)
-	let redColor = UIColor(red: 252/255, green: 77/255, blue: 119/255, alpha: 1)
+	let redColor = UIColor(red: 1, green: 40/255, blue: 81/255, alpha: 1)
 	let orangeColor = UIColor(red: 1, green: 85/255, blue: 80/255, alpha: 1)
 	let orangeAltColor = UIColor(red: 248/255, green: 65/255, blue: 48/255, alpha: 1)
 	
@@ -131,7 +131,7 @@ public class Theme {
 
 			// Table view appearance
 			tableViewBackgroundColor = UIColor.whiteColor()
-			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
+			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
 			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
 		}
 	}

@@ -2426,7 +2426,7 @@ Swipe to get started.</string>
                                                     </variation>
                                                 </label>
                                             </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstItem="ABq-iP-Xku" firstAttribute="trailing" secondItem="Y3b-VB-l9E" secondAttribute="trailing" id="02N-dl-ium"/>
                                                 <constraint firstItem="UJR-7C-vU8" firstAttribute="top" secondItem="WJZ-Ia-6KF" secondAttribute="top" constant="10" id="1uY-HE-4uU"/>
@@ -2631,9 +2631,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="6ln-2C-qu7"/>
         <segue reference="gux-gb-W3x"/>
         <segue reference="2xf-M1-LZa"/>
-        <segue reference="6ln-2C-qu7"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

@@ -9,6 +9,11 @@
 import UIKit
 import MediaPlayer
 
+protocol TabControllerDelegate: class {
+	func animateTitleView()
+	func changeTitleViewText(title: String)
+}
+
 class TabBarController: UITabBarController {
 	
 	weak var notificationDelegate: AppControllerDelegate?
@@ -31,18 +36,25 @@ class TabBarController: UITabBarController {
 
 		theme = appDelegate.theme
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(TabBarController.addSubscriptionFromShortcutItem), name: "addSubscriptionShortcutItem", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(addSubscriptionFromShortcutItem), name: "addSubscriptionShortcutItem", object: nil)
 		mediaQuery = MPMediaQuery.artistsQuery()
 		
+		// Navigation bar items
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		favListBarBtn.tintColor = theme.globalTintColor
 		addBarBtn = self.navigationController?.navigationBar.items![0].rightBarButtonItem
 		addBarBtn.tintColor = theme.globalTintColor
 		
-		let logo = UIImage(named: theme.style == .dark ? "icon_navbar.png" : "icon_navbar_alt.png")
-		let imageView = UIImageView(image:logo)
-		self.navigationItem.titleView = imageView
-		
+		// Navigation item title view
+		let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
+		titleLabel.backgroundColor = UIColor.clearColor()
+		titleLabel.textAlignment = NSTextAlignment.Center
+		titleLabel.textColor = theme.globalTintColor
+		titleLabel.font = UIFont.systemFontOfSize(17)
+		titleLabel.adjustsFontSizeToFitWidth = true
+		titleLabel.text = "Releasify"
+		self.navigationItem.titleView = titleLabel
+
 		// Add 1px border to tab bar
 		if theme.style == .dark {
 			let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 2))
@@ -52,12 +64,14 @@ class TabBarController: UITabBarController {
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		} else {
-			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
+			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1)
 		}
 
+		// Initialize view controllers
 		if streamController == nil {
 			streamController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("StreamController") as! StreamViewController
 			streamController.delegate = notificationDelegate
+			streamController.tabBarDelegate = self
 		}
 		
 		if subscriptionController == nil {
@@ -79,7 +93,7 @@ class TabBarController: UITabBarController {
 		for item in self.tabBar.items! {
 			item.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 		}
-    }
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -205,5 +219,34 @@ class TabBarController: UITabBarController {
 		}
 		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
+	}
+}
+
+// MARK: - TabControllerDelegate
+extension TabBarController: TabControllerDelegate {
+	func animateTitleView() {
+		let animation = CATransition()
+		animation.delegate = self
+		animation.duration = 0.25
+		animation.removedOnCompletion = false
+		animation.type = kCATransitionPush
+		animation.subtype = kCATransitionFromTop
+		animation.beginTime = CACurrentMediaTime() + 1
+		animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+		animation.setValue("titleView", forKey: "animationKey")
+		self.navigationItem.titleView!.layer.addAnimation(animation, forKey: "changeTitle")
+	}
+
+	func changeTitleViewText(title: String) {
+		 let label = self.navigationItem.titleView as! UILabel
+		 label.text = title
+	}
+
+	override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+		let value = anim.valueForKey("animationKey") as! String
+		if value == "titleView" {
+			changeTitleViewText("Releasify")
+			return
+		}
 	}
 }

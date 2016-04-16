@@ -62,8 +62,6 @@ class AlbumDetailController: UIViewController {
 		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
 		albumTitle.textContainer.lineFragmentPadding = 0
 		copyrightLabel.text = album!.copyright
-
-		self.navigationController?.navigationBar.shadowImage = UIImage()
 		
 		// Theme Settings
 		albumTitle.textColor = theme.albumTitleColor
@@ -78,10 +76,14 @@ class AlbumDetailController: UIViewController {
 		
 		timeDiff = album!.releaseDate - NSDate().timeIntervalSince1970
 		if timeDiff > 0 {
+			self.navigationController?.navigationBar.shadowImage = UIImage()
 			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
 			progressBar.progress = album!.getProgressSinceDate(dateAdded)
 			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(update), userInfo: nil, repeats: true)
 		} else {
+			if theme.style == .light {
+				self.navigationController?.navigationBar.shadowImage = UIImage(named: "navbar_shadow")
+			}
 			progressBar.hidden = true
 		}
 		
@@ -272,7 +274,7 @@ private class AlbumDetailControllerTheme: Theme {
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 0.5)
 		case .light:
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
-			progressBarBackTintColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 0.2)
+			progressBarBackTintColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
 			timeLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 			digitLabelColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 1)

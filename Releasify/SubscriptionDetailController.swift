@@ -188,7 +188,7 @@ private class SubscriptionDetailControllerTheme: Theme {
 			albumTitleColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 		case .light:
-			viewBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
+			viewBackgroundColor = UIColor.whiteColor()
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			artistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 		}

@@ -68,6 +68,10 @@ class AddSubscriptionController: UIViewController {
 		}
     }
 
+	override func viewDidAppear(animated: Bool) {
+		searchBar.becomeFirstResponder()
+	}
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }

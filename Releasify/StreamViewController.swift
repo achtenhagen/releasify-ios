@@ -17,6 +17,7 @@ class StreamViewController: UITableViewController {
 	
 	private var theme: StreamViewControllerTheme!
 	weak var delegate: AppControllerDelegate?
+	weak var tabBarDelegate: TabControllerDelegate?
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let reuseIdentifier = "streamCell"
@@ -50,7 +51,7 @@ class StreamViewController: UITableViewController {
 		self.streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
 		self.streamTable.backgroundView?.userInteractionEnabled = false
 		self.streamTable.separatorStyle = theme.style == .dark ? .None : .SingleLine
-		self.streamTable.separatorColor = theme.cellSeparatorColor
+		self.streamTable.separatorColor = theme.cellSeparatorColor		
 		
 		if #available(iOS 9.0, *) {
 			if traitCollection.forceTouchCapability == .Available {
@@ -60,7 +61,7 @@ class StreamViewController: UITableViewController {
 		
 		registerLongPressGesture()
 		
-		refreshControl!.addTarget(self, action: #selector(StreamViewController.refresh), forControlEvents: .ValueChanged)
+		refreshControl!.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = theme.refreshControlTintColor
 		self.streamTable.addSubview(refreshControl!)
 		
@@ -95,15 +96,15 @@ class StreamViewController: UITableViewController {
 		}
 
 		// Get iTunes Feed if no local content is available
-		if AppDB.sharedInstance.albums.count == 0 {
-			iTunesFeed = [Album]()
-			API.sharedInstance.getiTunesFeed({ (feed) in
-				self.iTunesFeed = feed
-			},
-			errorHandler: { (error) in
-				// handle error
-			})
-		}
+//		if AppDB.sharedInstance.albums.count == 0 {
+//			iTunesFeed = [Album]()
+//			API.sharedInstance.getiTunesFeed({ (feed) in
+//				self.iTunesFeed = feed
+//			},
+//			errorHandler: { (error) in
+//				// handle error
+//			})
+//		}
 	}
 
 	override func viewWillAppear(animated: Bool) {
@@ -123,7 +124,8 @@ class StreamViewController: UITableViewController {
 	
 	// MARK: - Refresh Content
 	func refresh() {
-		API.sharedInstance.refreshContent({ (newItems) in
+		tabBarDelegate?.animateTitleView()
+		API.sharedInstance.refreshContent({ (newItems) in			
 			self.streamTable.reloadData()
 			self.refreshControl!.endRefreshing()
 			if newItems.count > 0 {
@@ -133,6 +135,7 @@ class StreamViewController: UITableViewController {
 				self.delegate?.addNotificationView(notification)
 				NotificationQueue.sharedInstance.add(notification)
 			}
+			self.tabBarDelegate!.animateTitleView()
 			},
 			errorHandler: { (error) in
 				self.refreshControl!.endRefreshing()
@@ -339,7 +342,7 @@ class StreamViewController: UITableViewController {
 				}
 			}
 		})
-		buyAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_buy")!)
+		buyAction.backgroundColor = theme.style == .dark ? UIColor(patternImage: UIImage(named: "row_action_buy_alt")!) : UIColor(patternImage: UIImage(named: "row_action_buy")!)
 		
 		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
 			let album = AppDB.sharedInstance.albums[indexPath.row]
@@ -356,7 +359,7 @@ class StreamViewController: UITableViewController {
 			self.unsubscribeAlbum(album, indexPath: indexPath)
 		})
 		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete")!)
-		return [starAction, buyAction, removeAction]
+		return [buyAction]
 	}
 	
 	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -449,7 +452,7 @@ private class StreamViewControllerTheme: Theme {
 			streamCellArtistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 			streamCellFooterLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
 		case .light:
-			streamCellBackgroundColor = UIColor.whiteColor()
+			streamCellBackgroundColor = UIColor.clearColor()
 			streamCellAlbumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
 			streamCellArtistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
 			streamCellFooterLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)

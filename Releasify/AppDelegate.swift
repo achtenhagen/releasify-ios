@@ -69,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "theme")
 		}
 		UIApplication.sharedApplication().statusBarStyle = theme.statusBarStyle
-		let navBarAppearance = UINavigationBar.appearance()
+		let navBarAppearance = UINavigationBar.appearance()		
 		navBarAppearance.barStyle = theme.navBarStyle
 		navBarAppearance.barTintColor = theme.navBarTintColor
 		if theme.style == .dark {
