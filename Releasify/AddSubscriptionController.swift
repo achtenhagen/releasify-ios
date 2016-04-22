@@ -51,7 +51,7 @@ class AddSubscriptionController: UIViewController {
 		}
 
 		// Add 1px bottom border to import container
-		let topBorder = UIView(frame: CGRect(x: 0, y: 55, width: self.view.bounds.width, height: 1))
+		let topBorder = UIView(frame: CGRect(x: 0, y: 59, width: self.view.bounds.width, height: 1))
 		topBorder.backgroundColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
 		self.importContainer.addSubview(topBorder)
 

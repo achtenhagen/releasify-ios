@@ -42,6 +42,7 @@ class StreamViewController: UITableViewController {
 		
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		
+		// Observers
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(refresh), name: "refreshContent", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(showAlbumFromRemoteNotification(_:)), name: "appActionPressed", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(showAlbumFromNotification(_:)), name: "showAlbum", object: nil)
@@ -165,17 +166,9 @@ class StreamViewController: UITableViewController {
 	
 	// MARK: - Open album from a local notification
 	func showAlbumFromNotification(notification: NSNotification) {
-		if let AlbumID = notification.userInfo!["albumID"]! as? Int {
-			notificationAlbumID = AlbumID
-			for album in AppDB.sharedInstance.albums as [Album]! {
-				if album.ID != notificationAlbumID! { continue }
-				selectedAlbum = album
-				break
-			}
-			guard let album = selectedAlbum else { return }
-			if album.ID == notificationAlbumID! {
-				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-			}
+		if let album = notification.userInfo!["album"]! as? Album {
+			selectedAlbum = album
+			self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 		}
 	}
 	
@@ -215,14 +208,12 @@ class StreamViewController: UITableViewController {
 			completion(artwork: tmpArtwork![hash]!)
 			return
 		}
-		
 		// Artwork is either not yet cached or needs to be downloaded first
 		if AppDB.sharedInstance.checkArtwork(hash) {
 			tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
 			completion(artwork: tmpArtwork![hash]!)
 			return
 		}
-		
 		// Artwork was not found, so download it
 		API.sharedInstance.fetchArtwork(url, successHandler: { artwork in
 			AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
@@ -270,10 +261,6 @@ class StreamViewController: UITableViewController {
 		let tableHeight = self.streamTable.bounds.size.height + cellFrameInTable.size.height
 		let cellOffsetFactor = cellOffset / tableHeight
 		cell.setBackgroundOffset(cellOffsetFactor)
-	}
-	
-	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		return 1
 	}
 	
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

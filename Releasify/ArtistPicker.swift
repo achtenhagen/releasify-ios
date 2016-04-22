@@ -91,7 +91,7 @@ class ArtistPicker: UIViewController {
 		// Table view customization
 		self.artistsTable.backgroundColor = theme.artistsTableViewBackgroundColor
 		self.artistsTable.separatorColor = theme.cellSeparatorColor
-		self.artistsTable.sectionIndexColor = theme.tableViewSectionIndexColor
+		self.artistsTable.sectionIndexColor = theme.tableViewSectionIndexColor		
 		
 		setupSearchController()
 	}
@@ -375,10 +375,10 @@ extension ArtistPicker: UITableViewDataSource {
 extension ArtistPicker: UITableViewDelegate {
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let headerView = UIView(frame: CGRectMake(0, 0, view.bounds.size.width, 30.0))
-		headerView.backgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
+		headerView.backgroundColor = theme.sectionHeaderBackgroundColor
 		let lbl = UILabel(frame: CGRectMake(15, 1, 150, 20))
 		lbl.font = UIFont(name: lbl.font.fontName, size: 16)
-		lbl.textColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1.0)
+		lbl.textColor = theme.sectionHeaderTextColor
 		headerView.addSubview(lbl)
 		lbl.text = sections[section]
 		if searchController.active { lbl.text = "Results (\(filteredArtists.count))" }

@@ -54,6 +54,8 @@ public class Theme {
 	var tableViewBackgroundColor: UIColor!
 	var cellHighlightColor: UIColor!
 	var cellSeparatorColor: UIColor!
+	var sectionHeaderBackgroundColor: UIColor!
+	var sectionHeaderTextColor: UIColor!
 
 	init() {}
 
@@ -99,6 +101,8 @@ public class Theme {
 			tableViewBackgroundColor = UIColor.clearColor()
 			cellHighlightColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
 			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
+			sectionHeaderBackgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
+			sectionHeaderTextColor = greenColor
 		case .light:
 			// Global App tint color
 			globalTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1)
@@ -133,6 +137,8 @@ public class Theme {
 			tableViewBackgroundColor = UIColor.whiteColor()
 			cellHighlightColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
 			cellSeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
+			sectionHeaderBackgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
+			sectionHeaderTextColor = globalTintColor
 		}
 	}
 	

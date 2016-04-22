@@ -233,7 +233,8 @@ final class API {
 					notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
 					notification.applicationIconBadgeNumber += 1
 					notification.soundName = UILocalNotificationDefaultSoundName
-					notification.userInfo = ["albumID": albumItem.ID, "iTunesUrl": albumItem.iTunesUrl]
+					notification.userInfo = ["album": albumItem]
+					// notification.userInfo = ["albumID": albumItem.ID, "iTunesUrl": albumItem.iTunesUrl]
 					UIApplication.sharedApplication().scheduleLocalNotification(notification)
 				}
 			}

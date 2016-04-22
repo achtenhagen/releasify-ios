@@ -204,13 +204,6 @@
 			name = "Favorites List";
 			sourceTree = "<group>";
 		};
-		51D5732F1ACC1A9F00273D0D /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
 		51D959461C64391B004B16AB /* Stream View */ = {
 			isa = PBXGroup;
 			children = (
@@ -241,7 +234,6 @@
 		51F84DC71AB750A000D51E0C /* Releasify */ = {
 			isa = PBXGroup;
 			children = (
-				51D5732F1ACC1A9F00273D0D /* Resources */,
 				51F84DCE1AB750A100D51E0C /* Main.storyboard */,
 				51F84DD31AB750A100D51E0C /* LaunchScreen.xib */,
 				513E09B41BD877EA00E6062C /* Intro */,
