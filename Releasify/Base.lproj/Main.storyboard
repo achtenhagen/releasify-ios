@@ -240,7 +240,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="icon_artwork_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="I57-Gh-IjT">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I57-Gh-IjT">
                                                     <rect key="frame" x="10" y="10" width="70" height="70"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="45" id="pSb-Mc-aCo"/>
@@ -604,6 +604,7 @@
                                     <constraint firstAttribute="height" constant="64" id="bYT-Ea-NAL"/>
                                     <constraint firstAttribute="height" constant="64" id="pQh-5r-5mZ"/>
                                 </constraints>
+                                <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="barTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <textAttributes key="titleTextAttributes">
                                     <color key="textColor" red="0.0" green="0.086274509803921567" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
@@ -957,7 +958,7 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F0U-3z-n2R">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <subviews>
-                                    <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_artwork_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="JAd-qz-y0g">
+                                    <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JAd-qz-y0g">
                                         <rect key="frame" x="20" y="84" width="280" height="280"/>
                                         <gestureRecognizers/>
                                         <constraints>
@@ -1287,7 +1288,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Details" id="VHb-mT-Yu7">
                         <barButtonItem key="rightBarButtonItem" systemItem="action" id="c0p-cX-tDU">
-                            <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="shareAlbum:" destination="ICV-6m-5Th" id="6gx-lH-gbi"/>
                             </connections>
@@ -2142,9 +2143,10 @@ Swipe to get started.</string>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="Xbp-AH-7Ic">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="barTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                         <textAttributes key="titleTextAttributes">
-                            <color key="textColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" red="0.0" green="0.086274509803921567" blue="0.12549019607843137" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -2247,12 +2249,16 @@ Swipe to get started.</string>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="7RK-wx-Lfm" firstAttribute="top" secondItem="WG8-lO-To2" secondAttribute="top" constant="10" id="8fn-ew-iGv"/>
+                                    <constraint firstItem="7RK-wx-Lfm" firstAttribute="top" secondItem="WG8-lO-To2" secondAttribute="top" constant="10" id="8fn-ew-iGv">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="8"/>
+                                    </constraint>
                                     <constraint firstAttribute="trailing" secondItem="QJc-dA-J7h" secondAttribute="trailing" constant="15" id="Dz1-8M-Kvf"/>
                                     <constraint firstItem="7RK-wx-Lfm" firstAttribute="leading" secondItem="t4G-JB-NHq" secondAttribute="leading" id="NZW-iM-oMr"/>
                                     <constraint firstAttribute="height" constant="60" id="U6X-Yv-a1Q"/>
                                     <constraint firstItem="QJc-dA-J7h" firstAttribute="leading" secondItem="t4G-JB-NHq" secondAttribute="trailing" constant="44" id="brI-8d-Dlp"/>
-                                    <constraint firstAttribute="bottom" secondItem="t4G-JB-NHq" secondAttribute="bottom" constant="7" id="bzD-IW-OXl"/>
+                                    <constraint firstAttribute="bottom" secondItem="t4G-JB-NHq" secondAttribute="bottom" constant="7" id="bzD-IW-OXl">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="9"/>
+                                    </constraint>
                                     <constraint firstItem="QJc-dA-J7h" firstAttribute="centerY" secondItem="WG8-lO-To2" secondAttribute="centerY" id="iQk-u5-1FQ"/>
                                     <constraint firstItem="t4G-JB-NHq" firstAttribute="top" secondItem="7RK-wx-Lfm" secondAttribute="bottom" constant="1" id="luc-4c-i4U"/>
                                 </constraints>
@@ -2622,13 +2628,13 @@ Swipe to get started.</string>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="j1T-C0-eOR">
                         <barButtonItem key="leftBarButtonItem" image="icon_favorites" id="2zg-bl-iCD">
-                            <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <segue destination="07F-WJ-48G" kind="presentation" identifier="FavoritesListSegue" modalTransitionStyle="flipHorizontal" id="BUP-e2-90c"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Da5-pS-Ult">
-                            <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="addSubscription:" destination="SCy-74-9E0" id="gjQ-wt-F4q"/>
                             </connections>
@@ -2656,14 +2662,15 @@ Swipe to get started.</string>
             </objects>
             <point key="canvasLocation" x="1641.75" y="-817.125"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Favorites Navigation Controller-->
         <scene sceneID="zbg-3C-b0a">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="07F-WJ-48G" sceneMemberID="viewController">
+                <navigationController title="Favorites Navigation Controller" automaticallyAdjustsScrollViewInsets="NO" id="07F-WJ-48G" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="oPe-Ja-KhK">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="barTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -2680,7 +2687,6 @@ Swipe to get started.</string>
         <image name="artist_02" width="145" height="145"/>
         <image name="icon_app_notifications" width="120" height="120"/>
         <image name="icon_arrow" width="70" height="70"/>
-        <image name="icon_artwork_placeholder" width="145" height="145"/>
         <image name="icon_cloud" width="25" height="25"/>
         <image name="icon_favorites" width="22" height="22"/>
         <image name="icon_import" width="30" height="30"/>
@@ -2691,8 +2697,8 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="gux-gb-W3x"/>
-        <segue reference="2xf-M1-LZa"/>
+        <segue reference="cZg-RQ-l62"/>
+        <segue reference="i1c-0T-qib"/>
         <segue reference="zgf-W2-bDZ"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

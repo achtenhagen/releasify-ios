@@ -148,7 +148,8 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 		if let artwork = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork) {
 			cell.albumArtwork.image = artwork
 		} else {
-			cell.albumArtwork.image = UIImage(named: "icon_artwork_placeholder")!
+			let filename = theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
+			cell.albumArtwork.image = UIImage(named: filename)!
 		}
 		cell.timeLeft.text = albums![indexPath.row].getFormattedReleaseDate()
 		cell.albumTitle.text = albums![indexPath.row].title

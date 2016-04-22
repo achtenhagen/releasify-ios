@@ -85,6 +85,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		tabBarAppearance.barTintColor = theme.tabBarTintColor
 		tabBarAppearance.tintColor = theme.tabTintColor
 		tabBarAppearance.backgroundColor = UIColor.clearColor()
+		tabBarAppearance.shadowImage = UIImage()
+		tabBarAppearance.backgroundImage = UIImage()
 
 		// Launch options
 		if let launchOpts = launchOptions {

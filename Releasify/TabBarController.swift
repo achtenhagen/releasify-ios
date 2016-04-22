@@ -55,17 +55,19 @@ class TabBarController: UITabBarController {
 		titleLabel.text = "Releasify"
 		self.navigationItem.titleView = titleLabel
 
-		// Add 1px border to tab bar
+		// Theme customizations
 		if theme.style == .dark {
-			let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 2))
-			topBorder.backgroundColor = theme.tabBarTopBorderColor
-			self.tabBar.addSubview(topBorder)
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		} else {
 			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1)
 		}
+
+		// Add 1px border to top of tab bar
+		let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 1))
+		topBorder.backgroundColor = theme.tabBarTopBorderColor
+		self.tabBar.addSubview(topBorder)
 
 		// Initialize view controllers
 		if streamController == nil {

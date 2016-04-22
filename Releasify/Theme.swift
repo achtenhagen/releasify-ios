@@ -125,7 +125,7 @@ public class Theme {
 			tabBarTintColor = UIColor.whiteColor()
 			
 			// Tab bar top border color
-			tabBarTopBorderColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1)
+			tabBarTopBorderColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
 			
 			// Keyboard appearance
 			keyboardStyle = .Light
@@ -142,7 +142,7 @@ public class Theme {
 		}
 	}
 	
-	// View gradient for dark theme
+	// MARK: - View gradient for dark theme
 	func gradient() -> CAGradientLayer {
 		let gradient = CAGradientLayer()
 		gradient.colors = [

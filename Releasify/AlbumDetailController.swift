@@ -51,7 +51,8 @@ class AlbumDetailController: UIViewController {
 		if let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) {
 			artwork = dbArtwork
 		} else {
-			artwork = UIImage(named: "icon_artwork_placeholder")!
+			let filename = theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
+			artwork = UIImage(named: filename)!
 		}
 		
 		albumArtwork.image = artwork

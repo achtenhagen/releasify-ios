@@ -220,7 +220,8 @@ class StreamViewController: UITableViewController {
 			self.tmpArtwork![hash] = artwork
 			completion(artwork: self.tmpArtwork![hash]!)
 			}, errorHandler: {
-				completion(artwork: UIImage(named: "icon_artwork_placeholder")!)
+				let filename = self.theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
+				completion(artwork: UIImage(named: filename)!)
 		})
 	}
 	

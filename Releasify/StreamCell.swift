@@ -44,7 +44,7 @@ class StreamCell: UITableViewCell {
 		
 		artistImg.layer.masksToBounds = true
 		artistImg.layer.cornerRadius = 17.5
-		artistImg.layer.borderColor = UIColor.whiteColor().CGColor
+		artistImg.layer.borderColor = UIColor.clearColor().CGColor
 		artistImg.layer.borderWidth = 2
 		
 		var gradientLayerView: UIView!

@@ -12,8 +12,6 @@
 		51386CCD1C80C63D006F7E60 /* AddSubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */; };
 		514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 514BCA761AED68CE00A1A18C /* Settings.bundle */; };
 		51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51557C591B9E073C00D980F9 /* Artist.swift */; };
-		516126581B9A7B6E00171A93 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516126561B9A7B6E00171A93 /* NotificationCell.swift */; };
-		516126591B9A7B6E00171A93 /* NotificationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 516126571B9A7B6E00171A93 /* NotificationCell.xib */; };
 		5161265C1B9A7D3000171A93 /* AlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5161265A1B9A7D3000171A93 /* AlbumCell.swift */; };
 		516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516AEE581ACAD61D0065B567 /* AppDB.swift */; };
 		517D6E0D1B6585DC002EC864 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517D6E0C1B6585DC002EC864 /* AppController.swift */; };
@@ -36,7 +34,6 @@
 		51CB15891C14D776006AEFFF /* SubscriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CB15881C14D776006AEFFF /* SubscriptionCell.swift */; };
 		51CB158B1C14F092006AEFFF /* SubscriptionDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CB158A1C14F092006AEFFF /* SubscriptionDetailController.swift */; };
 		51D776AA1B29FC9300D252A5 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D776A91B29FC9300D252A5 /* API.swift */; };
-		51D864AF1B99D22400C3713F /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D864AE1B99D22400C3713F /* NotificationsController.swift */; };
 		51D8753E1B1B264B00353347 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753D1B1B264B00353347 /* Album.swift */; };
 		51D875401B1B2AD900353347 /* Devices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753F1B1B2AD900353347 /* Devices.swift */; };
 		51D959481C643965004B16AB /* StreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D959471C643965004B16AB /* StreamViewController.swift */; };
@@ -58,8 +55,6 @@
 		51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSubscriptionController.swift; sourceTree = "<group>"; };
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		51557C591B9E073C00D980F9 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
-		516126561B9A7B6E00171A93 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
-		516126571B9A7B6E00171A93 /* NotificationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationCell.xib; sourceTree = "<group>"; };
 		5161265A1B9A7D3000171A93 /* AlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCell.swift; sourceTree = "<group>"; };
 		516AEE581ACAD61D0065B567 /* AppDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = AppDB.swift; sourceTree = "<group>"; tabWidth = 4; usesTabs = 1; wrapsLines = 0; };
 		517D6E0C1B6585DC002EC864 /* AppController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
@@ -83,7 +78,6 @@
 		51CB15881C14D776006AEFFF /* SubscriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionCell.swift; sourceTree = "<group>"; };
 		51CB158A1C14F092006AEFFF /* SubscriptionDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionDetailController.swift; sourceTree = "<group>"; };
 		51D776A91B29FC9300D252A5 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = API.swift; sourceTree = "<group>"; };
-		51D864AE1B99D22400C3713F /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
 		51D8753D1B1B264B00353347 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		51D8753F1B1B2AD900353347 /* Devices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Devices.swift; sourceTree = "<group>"; };
 		51D959471C643965004B16AB /* StreamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewController.swift; sourceTree = "<group>"; };
@@ -175,16 +169,6 @@
 			name = "Subscription Controller";
 			sourceTree = "<group>";
 		};
-		513E09B91BD879CD00E6062C /* Notifications View */ = {
-			isa = PBXGroup;
-			children = (
-				51D864AE1B99D22400C3713F /* NotificationsController.swift */,
-				516126561B9A7B6E00171A93 /* NotificationCell.swift */,
-				516126571B9A7B6E00171A93 /* NotificationCell.xib */,
-			);
-			name = "Notifications View";
-			sourceTree = "<group>";
-		};
 		51C337F61BEAA0B5003B0E20 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
@@ -243,7 +227,6 @@
 				513E09B71BD878B000E6062C /* Albums */,
 				513E09B81BD878EE00E6062C /* Subscription Controller */,
 				513E09B61BD8786400E6062C /* Search Results */,
-				513E09B91BD879CD00E6062C /* Notifications View */,
 				51C337F61BEAA0B5003B0E20 /* Notifications */,
 				51D959461C64391B004B16AB /* Stream View */,
 				51D776A91B29FC9300D252A5 /* API.swift */,
@@ -339,7 +322,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */,
-				516126591B9A7B6E00171A93 /* NotificationCell.xib in Resources */,
 				51F84DD01AB750A100D51E0C /* Main.storyboard in Resources */,
 				51E21F171BE69F2C0099FB27 /* AlbumCell.xib in Resources */,
 				518B76881B0ECFA90009F138 /* Images.xcassets in Resources */,
@@ -382,7 +364,6 @@
 				51CB158B1C14F092006AEFFF /* SubscriptionDetailController.swift in Sources */,
 				519CE95C1BD703A90078B270 /* Intro03Controller.swift in Sources */,
 				51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */,
-				516126581B9A7B6E00171A93 /* NotificationCell.swift in Sources */,
 				51F84DCD1AB750A000D51E0C /* SubscriptionController.swift in Sources */,
 				519CE9581BD6AA260078B270 /* Intro01Controller.swift in Sources */,
 				51C39AC21C95111D0059CA01 /* FavoritesListCell.swift in Sources */,
@@ -394,7 +375,6 @@
 				518FAEEF1C665A5000499A17 /* Theme.swift in Sources */,
 				51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */,
 				51F80F0F1C9DB10100BB4624 /* SearchResultArtistCell.swift in Sources */,
-				51D864AF1B99D22400C3713F /* NotificationsController.swift in Sources */,
 				516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */,
 				519C8ACF1C653819006114EC /* StreamCell.swift in Sources */,
 				51D959481C643965004B16AB /* StreamViewController.swift in Sources */,
