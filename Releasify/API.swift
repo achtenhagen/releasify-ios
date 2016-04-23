@@ -233,8 +233,7 @@ final class API {
 					notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
 					notification.applicationIconBadgeNumber += 1
 					notification.soundName = UILocalNotificationDefaultSoundName
-					notification.userInfo = ["album": albumItem]
-					// notification.userInfo = ["albumID": albumItem.ID, "iTunesUrl": albumItem.iTunesUrl]
+					notification.userInfo = ["albumID": newAlbumID, "iTunesUrl": albumItem.iTunesUrl]
 					UIApplication.sharedApplication().scheduleLocalNotification(notification)
 				}
 			}
@@ -318,7 +317,8 @@ final class API {
 	}
 	
 	// MARK: - Device Registration
-	func register(allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
+	func register(allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void),
+	              errorHandler: ((error: ErrorType) -> Void)) {
 		let UUID = NSUUID().UUIDString
 		var explicitValue = 1
 		if !allowExplicitContent { explicitValue = 0 }

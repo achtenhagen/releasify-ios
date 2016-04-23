@@ -55,7 +55,7 @@ final class AppDB {
 		disconnect()		
 	}
 
-	// Upgrade database to 1.1
+	// Upgrade database to version 2
 	func upgrade_db_v2() {
 		if !connected() { fatalError("Unable to connect to database") }
 		if debug { print("Begin upgrade") }
@@ -189,7 +189,7 @@ final class AppDB {
 		if let upcomingAlbums = getAlbumsComponent(query) {
 			albums.appendContentsOf(upcomingAlbums)
 		}
-		query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 ORDER BY release_date DESC LIMIT 50"
+		query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 ORDER BY release_date DESC LIMIT 1000"
 		if let releasedAlbums = getAlbumsComponent(query) {
 			albums.appendContentsOf(releasedAlbums)
 		}

@@ -77,18 +77,10 @@ class StreamViewController: UITableViewController {
 		}
 		
 		// Process local notification payload
-		if let localContent = appDelegate.localNotificationPayload?["albumID"] as? Int {
-			notificationAlbumID = localContent
-			if AppDB.sharedInstance.albums != nil {
-				for album in AppDB.sharedInstance.albums as[Album]! {
-					if album.ID == notificationAlbumID! {
-						selectedAlbum = album
-						break
-					}
-				}
-				if selectedAlbum.ID == notificationAlbumID! {
-					self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-				}
+		if let notificationAlbumID = appDelegate.localNotificationPayload?["albumID"] as? Int {
+			if let album = AppDB.sharedInstance.getAlbum(notificationAlbumID) {
+				selectedAlbum = album
+				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
 		}
 		
@@ -166,9 +158,11 @@ class StreamViewController: UITableViewController {
 	
 	// MARK: - Open album from a local notification
 	func showAlbumFromNotification(notification: NSNotification) {
-		if let album = notification.userInfo!["album"]! as? Album {
-			selectedAlbum = album
-			self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+		if let notificationAlbumID = notification.userInfo!["albumID"] as? Int {
+			if let album = AppDB.sharedInstance.getAlbum(notificationAlbumID) {
+				selectedAlbum = album
+				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
+			}
 		}
 	}
 	
@@ -262,6 +256,13 @@ class StreamViewController: UITableViewController {
 		let tableHeight = self.streamTable.bounds.size.height + cellFrameInTable.size.height
 		let cellOffsetFactor = cellOffset / tableHeight
 		cell.setBackgroundOffset(cellOffsetFactor)
+	}
+
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		if segue.identifier == "AlbumViewSegue" {
+			let detailController = segue.destinationViewController as! AlbumDetailController
+			detailController.album = selectedAlbum
+		}
 	}
 	
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -388,13 +389,6 @@ class StreamViewController: UITableViewController {
 		}
 		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
-	}
-	
-	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-		if segue.identifier == "AlbumViewSegue" {
-			let detailController = segue.destinationViewController as! AlbumDetailController
-			detailController.album = selectedAlbum
-		}
 	}
 }
 

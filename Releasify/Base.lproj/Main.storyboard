@@ -133,9 +133,10 @@
                                     <constraint firstAttribute="height" constant="64" id="D78-7Q-VFL"/>
                                     <constraint firstAttribute="height" constant="64" id="fny-uK-DDr"/>
                                 </constraints>
-                                <color key="barTintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <textAttributes key="titleTextAttributes">
-                                    <color key="textColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="textColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </textAttributes>
                                 <items>
                                     <navigationItem title="Search Results" id="uZJ-JB-SkS">
@@ -176,7 +177,7 @@
                                             </constraint>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.25098039215686274" green="0.25098039215686274" blue="0.25098039215686274" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                         <variation key="default">
                                             <mask key="constraints">
@@ -195,7 +196,6 @@
                                         </variation>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.086274509803921567" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="WpK-5c-lYH" secondAttribute="trailing" id="Gm7-O4-a6r"/>
                                     <constraint firstAttribute="bottom" secondItem="WpK-5c-lYH" secondAttribute="bottom" id="Wti-WS-UYo"/>
@@ -256,7 +256,7 @@
                                                         </mask>
                                                     </variation>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Album Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vKx-Gw-3ic">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Album Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vKx-Gw-3ic">
                                                     <rect key="frame" x="88" y="10" width="220" height="24"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="19" id="iVu-p3-E9X"/>
@@ -275,7 +275,7 @@
                                                         </mask>
                                                     </variation>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="2015" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EZT-FJ-fEi">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="2015" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EZT-FJ-fEi">
                                                     <rect key="frame" x="88" y="60" width="220" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -2271,13 +2271,13 @@ Swipe to get started.</string>
                                     </mask>
                                     <mask key="constraints">
                                         <exclude reference="U6X-Yv-a1Q"/>
+                                        <exclude reference="Dz1-8M-Kvf"/>
+                                        <exclude reference="brI-8d-Dlp"/>
+                                        <exclude reference="iQk-u5-1FQ"/>
                                         <exclude reference="8fn-ew-iGv"/>
                                         <exclude reference="NZW-iM-oMr"/>
                                         <exclude reference="bzD-IW-OXl"/>
                                         <exclude reference="luc-4c-i4U"/>
-                                        <exclude reference="Dz1-8M-Kvf"/>
-                                        <exclude reference="brI-8d-Dlp"/>
-                                        <exclude reference="iQk-u5-1FQ"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=compact">
@@ -2288,13 +2288,13 @@ Swipe to get started.</string>
                                     </mask>
                                     <mask key="constraints">
                                         <include reference="U6X-Yv-a1Q"/>
+                                        <include reference="Dz1-8M-Kvf"/>
+                                        <include reference="brI-8d-Dlp"/>
+                                        <include reference="iQk-u5-1FQ"/>
                                         <include reference="8fn-ew-iGv"/>
                                         <include reference="NZW-iM-oMr"/>
                                         <include reference="bzD-IW-OXl"/>
                                         <include reference="luc-4c-i4U"/>
-                                        <include reference="Dz1-8M-Kvf"/>
-                                        <include reference="brI-8d-Dlp"/>
-                                        <include reference="iQk-u5-1FQ"/>
                                     </mask>
                                 </variation>
                             </view>
@@ -2324,20 +2324,20 @@ Swipe to get started.</string>
                                 <exclude reference="WG8-lO-To2"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="tOd-yp-jmj"/>
                                 <exclude reference="7fx-IJ-RS2"/>
                                 <exclude reference="Qch-Gy-E2Q"/>
                                 <exclude reference="q8w-EV-DR1"/>
                                 <exclude reference="z3h-Yj-mae"/>
-                                <exclude reference="tOd-yp-jmj"/>
+                                <exclude reference="00S-h9-rJM"/>
+                                <exclude reference="Ty6-KM-e7c"/>
+                                <exclude reference="a71-6W-lMq"/>
+                                <exclude reference="rNj-Vb-q2B"/>
                                 <exclude reference="AWw-wh-b88"/>
                                 <exclude reference="Lg7-Df-A8n"/>
                                 <exclude reference="jHJ-yg-8BI"/>
                                 <exclude reference="qGI-Cr-PWV"/>
                                 <exclude reference="rPD-wN-qnV"/>
-                                <exclude reference="00S-h9-rJM"/>
-                                <exclude reference="Ty6-KM-e7c"/>
-                                <exclude reference="a71-6W-lMq"/>
-                                <exclude reference="rNj-Vb-q2B"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -2348,20 +2348,20 @@ Swipe to get started.</string>
                                 <include reference="WG8-lO-To2"/>
                             </mask>
                             <mask key="constraints">
+                                <include reference="tOd-yp-jmj"/>
                                 <include reference="7fx-IJ-RS2"/>
                                 <include reference="Qch-Gy-E2Q"/>
                                 <include reference="q8w-EV-DR1"/>
                                 <include reference="z3h-Yj-mae"/>
-                                <include reference="tOd-yp-jmj"/>
+                                <include reference="00S-h9-rJM"/>
+                                <include reference="Ty6-KM-e7c"/>
+                                <include reference="a71-6W-lMq"/>
+                                <include reference="rNj-Vb-q2B"/>
                                 <include reference="AWw-wh-b88"/>
                                 <include reference="Lg7-Df-A8n"/>
                                 <include reference="jHJ-yg-8BI"/>
                                 <include reference="qGI-Cr-PWV"/>
                                 <include reference="rPD-wN-qnV"/>
-                                <include reference="00S-h9-rJM"/>
-                                <include reference="Ty6-KM-e7c"/>
-                                <include reference="a71-6W-lMq"/>
-                                <include reference="rNj-Vb-q2B"/>
                             </mask>
                         </variation>
                     </view>
@@ -2383,7 +2383,7 @@ Swipe to get started.</string>
         <scene sceneID="D05-Vo-lUd">
             <objects>
                 <tableViewController storyboardIdentifier="StreamController" title="Stream View" useStoryboardIdentifierAsRestorationIdentifier="YES" id="equ-hM-XdW" customClass="StreamViewController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="310" sectionHeaderHeight="28" sectionFooterHeight="40" id="YfH-dM-XsL">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="310" sectionHeaderHeight="28" sectionFooterHeight="40" id="YfH-dM-XsL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -2700,7 +2700,7 @@ Swipe to get started.</string>
     <inferredMetricsTieBreakers>
         <segue reference="cZg-RQ-l62"/>
         <segue reference="2xf-M1-LZa"/>
-        <segue reference="zgf-W2-bDZ"/>
+        <segue reference="6ln-2C-qu7"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>
