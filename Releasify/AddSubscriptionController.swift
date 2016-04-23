@@ -50,6 +50,8 @@ class AddSubscriptionController: UIViewController {
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
 
+		importContainer.backgroundColor = theme.navBarTintColor
+
 		// Add 1px bottom border to import container
 		let topBorder = UIView(frame: CGRect(x: 0, y: 59, width: self.view.bounds.width, height: 1))
 		topBorder.backgroundColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)

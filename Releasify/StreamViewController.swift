@@ -277,6 +277,7 @@ class StreamViewController: UITableViewController {
 		cell.albumTitle.textColor = theme.streamCellAlbumTitleColor
 		cell.artistTitle.textColor = theme.streamCellArtistTitleColor
 		
+		cell.artwork.image = UIImage()
 		getArtworkForCell(album.artworkUrl!, hash: album.artwork, completion: { (artwork) in
 			cell.artwork.image = artwork
 		})

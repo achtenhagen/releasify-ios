@@ -91,8 +91,7 @@ class ArtistPicker: UIViewController {
 		// Table view customization
 		self.artistsTable.backgroundColor = theme.artistsTableViewBackgroundColor
 		self.artistsTable.separatorColor = theme.cellSeparatorColor
-		self.artistsTable.sectionIndexColor = theme.tableViewSectionIndexColor		
-		
+		self.artistsTable.sectionIndexColor = theme.tableViewSectionIndexColor
 		setupSearchController()
 	}
 	
@@ -308,8 +307,7 @@ class ArtistPicker: UIViewController {
 	// MARK: - Initialize search controller
 	func setupSearchController () {
 		searchController = UISearchController(searchResultsController: nil)
-		searchController.searchResultsUpdater = self
-		searchController.delegate = self
+		searchController.searchResultsUpdater = self	
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.hidesNavigationBarDuringPresentation = false
 		searchController.searchBar.placeholder = "Search Artists"
@@ -317,6 +315,7 @@ class ArtistPicker: UIViewController {
 		searchController.searchBar.barStyle = theme.searchBarStyle
 		searchController.searchBar.barTintColor = UIColor.clearColor()
 		searchController.searchBar.tintColor = theme.searchBarTintColor
+		searchController.searchBar.backgroundColor = theme.navBarTintColor
 		searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
 		searchController.searchBar.layer.borderWidth = 1
 		searchController.searchBar.translucent = false
@@ -354,6 +353,7 @@ extension ArtistPicker: UITableViewDataSource {
 		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as UITableViewCell!
 		let section = sections[indexPath.section]
 		cell.textLabel?.text = searchController.active ? filteredArtists[indexPath.row] : artists[section]![indexPath.row]
+		cell.textLabel?.textColor = theme.cellTextColor
 		cell.accessoryType = .None
 		if searchController.active {
 			if hasSelectedAll || filteredCheckedStates[indexPath.row] == true {
@@ -398,17 +398,6 @@ extension ArtistPicker: UITableViewDelegate {
 	}
 }
 
-// MARK: - UISearchControllerDelegate
-extension ArtistPicker: UISearchControllerDelegate {
-	func willPresentSearchController(searchController: UISearchController) {
-		searchController.searchBar.backgroundColor = theme.navBarTintColor
-	}
-
-	func willDismissSearchController(searchController: UISearchController) {
-		searchController.searchBar.backgroundColor = UIColor.clearColor()
-	}
-}
-
 // MARK: - UISearchResultsUpdating
 extension ArtistPicker: UISearchResultsUpdating {
 	func updateSearchResultsForSearchController(searchController: UISearchController) {
@@ -421,6 +410,7 @@ extension ArtistPicker: UISearchResultsUpdating {
 private class ArtistPickerTheme: Theme {
 	var artistsTableViewBackgroundColor: UIColor!
 	var tableViewSectionIndexColor: UIColor!
+	var cellTextColor: UIColor!
 
 	override init (style: Styles) {
 		super.init(style: style)
@@ -428,9 +418,11 @@ private class ArtistPickerTheme: Theme {
 		case .dark:
 			artistsTableViewBackgroundColor = UIColor(red: 1/255, green: 27/255, blue: 38/255, alpha: 1)
 			tableViewSectionIndexColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1)
+			cellTextColor = blueColor
 		case .light:
 			artistsTableViewBackgroundColor = UIColor.whiteColor()
 			tableViewSectionIndexColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			cellTextColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 		}
 	}
 }
