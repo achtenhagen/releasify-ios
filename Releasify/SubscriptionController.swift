@@ -14,7 +14,8 @@ class SubscriptionController: UITableViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var searchController: UISearchController!
-	var filteredData: [Artist]!
+	var artists: [Artist]!
+	var filteredArtists: [Artist]!
 	var selectedArtist: Artist?
 	
 	@IBOutlet var subscriptionsTable: UITableView!
@@ -28,29 +29,32 @@ class SubscriptionController: UITableViewController {
 		super.viewDidLoad()
 
 		theme = SubscriptionControllerTheme(style: appDelegate.theme.style)
-		filteredData = AppDB.sharedInstance.artists
+		artists = AppDB.sharedInstance.artists
+		filteredArtists = [Artist]()
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SubscriptionController.reloadSubscriptions), name: "refreshSubscriptions", object: nil)
 		
+		// Table view customizations
 		self.subscriptionsTable.backgroundColor = theme.tableViewBackgroundColor
 		self.subscriptionsTable.backgroundView = UIView(frame: self.subscriptionsTable.bounds)
 		self.subscriptionsTable.backgroundView?.userInteractionEnabled = false
 		self.subscriptionsTable.separatorColor = theme.cellSeparatorColor
 		
+		// Refresh control
 		refreshControl = UIRefreshControl()
 		refreshControl!.addTarget(self, action: #selector(SubscriptionController.refresh), forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = theme.refreshControlTintColor
-		self.subscriptionsTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
 		self.subscriptionsTable.addSubview(refreshControl!)
 		
+		// Search controller customizations
 		searchController = UISearchController(searchResultsController: nil)
-		searchController.delegate = self
 		searchController.searchResultsUpdater = self
+		searchController.delegate = self
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.hidesNavigationBarDuringPresentation = false
 		searchController.searchBar.placeholder = "Search Artists"
 		searchController.searchBar.searchBarStyle = .Minimal
-		searchController.searchBar.barStyle = .Black
+		searchController.searchBar.barStyle = theme.searchBarStyle
 		searchController.searchBar.barTintColor = UIColor.clearColor()
 		searchController.searchBar.tintColor = theme.searchBarTintColor
 		searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
@@ -61,8 +65,6 @@ class SubscriptionController: UITableViewController {
 		searchController.searchBar.sizeToFit()
 		self.subscriptionsTable.tableHeaderView = searchController.searchBar
 		definesPresentationContext = true
-		
-		self.subscriptionsTable.separatorColor = theme.cellSeparatorColor
 	}
 	
 	override func viewDidAppear(animated: Bool) {
@@ -85,7 +87,8 @@ class SubscriptionController: UITableViewController {
 	}
 	
 	func reloadSubscriptions() {
-		filteredData = AppDB.sharedInstance.artists
+		artists = AppDB.sharedInstance.artists
+		filteredArtists = [Artist]()
 		subscriptionsTable.reloadData()
 	}
 	
@@ -121,9 +124,12 @@ class SubscriptionController: UITableViewController {
 	
 	// MARK: - Search function for UISearchResultsUpdating
 	func filterContentForSearchText(searchText: String) {
-		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({ (artist: Artist) -> Bool in
-			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
-		})
+		filteredArtists.removeAll(keepCapacity: true)
+		if !searchText.isEmpty {
+			filteredArtists = AppDB.sharedInstance.artists.filter({ (artist: Artist) -> Bool in
+				return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+			})
+		}
 	}
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -134,13 +140,18 @@ class SubscriptionController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return filteredData.count
+		return searchController.active ? filteredArtists.count : artists.count
 	}
 	
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("subscriptionCell", forIndexPath: indexPath) as! SubscriptionCell
-		cell.subscriptionImage.image = UIImage(named: filteredData[indexPath.row].avatar!)
-		cell.subscriptionTitle.text = filteredData[indexPath.row].title
+		if searchController.active {
+			cell.subscriptionImage.image = UIImage(named: filteredArtists[indexPath.row].avatar!)
+			cell.subscriptionTitle.text = filteredArtists[indexPath.row].title
+		} else {
+			cell.subscriptionImage.image = UIImage(named: artists[indexPath.row].avatar!)
+			cell.subscriptionTitle.text = artists[indexPath.row].title
+		}
 		cell.subscriptionTitle.textColor = theme.subscriptionTitleColor
 		cell.borderColor = theme.cellBorderColor
 		let bgColorView = UIView()
@@ -152,8 +163,11 @@ class SubscriptionController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		selectedArtist = filteredData[indexPath.row]
-		searchController.active = false
+		if searchController.active {
+			selectedArtist = filteredArtists[indexPath.row]
+		} else {
+			selectedArtist = artists[indexPath.row]
+		}
 		self.performSegueWithIdentifier("SubscriptionDetailSegue", sender: self)
 	}
 	

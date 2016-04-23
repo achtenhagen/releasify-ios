@@ -308,10 +308,12 @@ class ArtistPicker: UIViewController {
 	// MARK: - Initialize search controller
 	func setupSearchController () {
 		searchController = UISearchController(searchResultsController: nil)
-		searchController.dimsBackgroundDuringPresentation = false
 		searchController.searchResultsUpdater = self
+		searchController.delegate = self
+		searchController.dimsBackgroundDuringPresentation = false
+		searchController.hidesNavigationBarDuringPresentation = false
 		searchController.searchBar.placeholder = "Search Artists"
-		searchController.searchBar.searchBarStyle = .Default
+		searchController.searchBar.searchBarStyle = .Minimal
 		searchController.searchBar.barStyle = theme.searchBarStyle
 		searchController.searchBar.barTintColor = UIColor.clearColor()
 		searchController.searchBar.tintColor = theme.searchBarTintColor
@@ -325,7 +327,7 @@ class ArtistPicker: UIViewController {
 		let backgroundView = UIView(frame: view.bounds)
 		backgroundView.backgroundColor = UIColor.clearColor()
 		artistsTable.backgroundView = backgroundView
-		self.definesPresentationContext = true
+		definesPresentationContext = true
 		if #available(iOS 9.0, *) {
 			self.searchController.loadViewIfNeeded()
 		} else {
@@ -353,7 +355,6 @@ extension ArtistPicker: UITableViewDataSource {
 		let section = sections[indexPath.section]
 		cell.textLabel?.text = searchController.active ? filteredArtists[indexPath.row] : artists[section]![indexPath.row]
 		cell.accessoryType = .None
-		
 		if searchController.active {
 			if hasSelectedAll || filteredCheckedStates[indexPath.row] == true {
 				cell.accessoryType = .Checkmark
@@ -394,6 +395,17 @@ extension ArtistPicker: UITableViewDelegate {
 			checkedStates[section]![indexPath.row]! = !checkedStates[section]![indexPath.row]!
 		}
 		artistsTable.reloadData()
+	}
+}
+
+// MARK: - UISearchControllerDelegate
+extension ArtistPicker: UISearchControllerDelegate {
+	func willPresentSearchController(searchController: UISearchController) {
+		searchController.searchBar.backgroundColor = theme.navBarTintColor
+	}
+
+	func willDismissSearchController(searchController: UISearchController) {
+		searchController.searchBar.backgroundColor = UIColor.clearColor()
 	}
 }
 

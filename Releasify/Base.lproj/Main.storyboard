@@ -2698,7 +2698,7 @@ Swipe to get started.</string>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="cZg-RQ-l62"/>
-        <segue reference="i1c-0T-qib"/>
+        <segue reference="2xf-M1-LZa"/>
         <segue reference="zgf-W2-bDZ"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
