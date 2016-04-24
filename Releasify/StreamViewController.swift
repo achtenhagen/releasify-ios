@@ -299,14 +299,19 @@ class StreamViewController: UITableViewController {
 		let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! StreamCell
 		let album = AppDB.sharedInstance.albums[indexPath.row]
 		let posted = album.getFormattedDatePosted(album.created)
-		
+		let albumWillFadeIn = tmpArtwork![album.artwork] == nil ? true : false
+		cell.alpha = 0
 		cell.containerView.backgroundColor = theme.streamCellBackgroundColor
 		cell.albumTitle.textColor = theme.streamCellAlbumTitleColor
 		cell.artistTitle.textColor = theme.streamCellArtistTitleColor
-		
 		cell.artwork.image = UIImage()
 		getArtworkForCell(album.artworkUrl!, hash: album.artwork, completion: { (artwork) in
 			cell.artwork.image = artwork
+			if albumWillFadeIn {
+				cell.fadeIn()
+			} else {
+				cell.alpha = 1
+			}
 		})
 		
 		cell.albumTitle.text = album.title
