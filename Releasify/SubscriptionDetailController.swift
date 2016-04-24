@@ -11,9 +11,9 @@ import UIKit
 class SubscriptionDetailController: UIViewController {
 	
 	private var theme: SubscriptionDetailControllerTheme!
+	private let albumCellReuseIdentifier = "AlbumCell"
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	let albumCellReuseIdentifier = "AlbumCell"	
 	var artist: Artist?
 	var albums: [Album]?
 	var selectedAlbum: Album!
@@ -60,6 +60,7 @@ class SubscriptionDetailController: UIViewController {
 		
 		self.navigationItem.title = artist!.title
 		
+		// Theme customizations
 		self.view.backgroundColor = theme.viewBackgroundColor
 		if theme.style == .dark {
 			let gradient = theme.gradient()
@@ -67,6 +68,7 @@ class SubscriptionDetailController: UIViewController {
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
 		
+		// Collection view customizations
 		subscriptionAlbumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
 		let defaultItemSize = CGSize(width: 145, height: 190)
 		detailFlowLayout = UICollectionViewFlowLayout()
@@ -98,12 +100,6 @@ class SubscriptionDetailController: UIViewController {
 			label.sizeToFit()
 			label.center = CGPoint(x: view.frame.size.width / 2, y: (view.frame.size.height / 2) - (label.frame.size.height))
 			self.view.addSubview(label)
-		}
-		
-		if theme.style == .dark {
-			let gradient = theme.gradient()
-			gradient.frame = self.view.bounds
-			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
     }
 

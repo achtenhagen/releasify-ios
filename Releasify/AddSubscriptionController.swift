@@ -13,17 +13,21 @@ class AddSubscriptionController: UIViewController {
 	
 	private var theme: AddSubscriptionControllerTheme!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	var searchBar: UISearchBar!
 	var searchResults: [Artist]!
+	var selectedArtist: Artist!
 	var artistCellReuseIdentifier = "artistCell"
 	var mediaQuery: MPMediaQuery!
 	var delayTimer: NSTimer!
-	
-	@IBOutlet var navBar: UINavigationBar!
-	@IBOutlet var searchBar: UISearchBar!
+
 	@IBOutlet var importContainer: UIView!
 	@IBOutlet var importBtn: UIButton!
 	@IBOutlet var searchTable: UITableView!
-	
+
+	@IBAction func UnwindToAddSubscriptionSegue(sender: UIStoryboardSegue) {
+		AppDB.sharedInstance.getArtists()
+		// reloadSubscriptions()
+	}
 
 	@IBAction func ImportArtists(sender: AnyObject) {
 		self.performSegueWithIdentifier("ImportArtistsFromSearchResultsSegue", sender: self)
@@ -35,12 +39,23 @@ class AddSubscriptionController: UIViewController {
 		searchResults = [Artist]()
 		theme = AddSubscriptionControllerTheme(style: appDelegate.theme.style)
 
-		// Configure search bar
+		// Search bar customizations
+		searchBar = UISearchBar()
+		searchBar.delegate = self
+		searchBar.placeholder = "Search"
+		searchBar.searchBarStyle = .Minimal
+		searchBar.barStyle = theme.searchBarStyle
+		searchBar.barTintColor = UIColor.clearColor()
+		searchBar.tintColor = theme.searchBarTintColor
 		searchBar.layer.borderColor = UIColor.clearColor().CGColor
 		searchBar.layer.borderWidth = 1
-		searchBar.tintColor = theme.searchBarTintColor
-		searchBar.barStyle = theme.searchBarStyle
+		searchBar.translucent = false
+		searchBar.autocapitalizationType = .Words
 		searchBar.keyboardAppearance = theme.keyboardStyle
+		searchBar.showsCancelButton = true
+		searchBar.returnKeyType = .Search
+		searchBar.sizeToFit()
+		self.navigationItem.titleView = searchBar
 		searchBar.becomeFirstResponder()
 
 		// Theme dependent gradient
@@ -74,6 +89,13 @@ class AddSubscriptionController: UIViewController {
 		searchBar.becomeFirstResponder()
 	}
 
+	override func viewWillAppear(animated: Bool) {
+		let indexPath = self.searchTable.indexPathForSelectedRow
+		if indexPath != nil {
+			self.searchTable.deselectRowAtIndexPath(indexPath!, animated: true)
+		}
+	}
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -86,6 +108,7 @@ class AddSubscriptionController: UIViewController {
 		})
 	}
 
+	// Perform search on server for keyword
 	func searchFor(keyword: String, errorHandler: ((error: ErrorType) -> Void)) {
 		let keyword = keyword.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
 		let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&keyword=\(keyword)"
@@ -107,12 +130,8 @@ class AddSubscriptionController: UIViewController {
 
 			self.searchResults = [Artist]()
 			for artist in artists {
-				self.searchResults.append(Artist(
-					ID: artist["ID"] as! Int,
-					title: (artist["title"] as? String)!,
-					iTunesUniqueID: artist["iTunesUniqueID"] as! Int,
-					avatar: nil
-					))
+				self.searchResults.append(Artist(ID: artist["ID"] as! Int, title: (artist["title"] as? String)!,
+					iTunesUniqueID: artist["iTunesUniqueID"] as! Int, avatar: nil))
 			}
 			self.searchTable.reloadData()
 			}, errorHandler: { (error) in
@@ -141,16 +160,17 @@ class AddSubscriptionController: UIViewController {
 		if segue.identifier == "ImportArtistsFromSearchResultsSegue" {
 			let artistPickerController = segue.destinationViewController as! ArtistPicker
 			artistPickerController.collection = mediaQuery.collections!
+		} else if segue.identifier == "addArtistDetailSegue" {
+			let addSubscriptionDetailView = segue.destinationViewController as! AddSubscriptionDetailView
+			addSubscriptionDetailView.artistTitle = selectedArtist.title
+			addSubscriptionDetailView.artistID = selectedArtist.ID
+			addSubscriptionDetailView.artistUniqueID = selectedArtist.iTunesUniqueID
 		}
 	}
 }
 
 // MARK: - UITableViewDataSource
 extension AddSubscriptionController: UITableViewDataSource {
-	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		return 1
-	}
-
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return searchResults.count
 	}
@@ -170,7 +190,9 @@ extension AddSubscriptionController: UITableViewDataSource {
 // MARK: - UITableViewDataDelegate
 extension AddSubscriptionController: UITableViewDelegate {
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-
+		selectedArtist = searchResults[indexPath.row]
+		searchBar.resignFirstResponder()
+		self.performSegueWithIdentifier("addArtistDetailSegue", sender: self)
 	}
 }
 
@@ -211,7 +233,7 @@ private class AddSubscriptionControllerTheme: Theme {
 			artistTitleColor = UIColor.whiteColor()
 		case .light:
 			cellBackgroundColor = UIColor.whiteColor()
-			artistTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
+			artistTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 		}
 	}
 }

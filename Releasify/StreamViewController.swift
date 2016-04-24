@@ -118,16 +118,42 @@ class StreamViewController: UITableViewController {
 	// MARK: - Refresh Content
 	func refresh() {
 		tabBarDelegate?.animateTitleView()
-		API.sharedInstance.refreshContent({ (newItems) in			
-			self.streamTable.reloadData()
-			self.refreshControl!.endRefreshing()
-			if newItems.count > 0 {
-				let notificationTitle = "\(newItems.count) Album\(newItems.count == 1 ? "" : "s")"
-				let notification = Notification(frame: CGRect(x: 0, y: 0, width: 140, height: 140), title: notificationTitle, icon: .notify)
-				notification.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 50)
-				self.delegate?.addNotificationView(notification)
-				NotificationQueue.sharedInstance.add(notification)
+		API.sharedInstance.refreshContent({ (newItems, contentHash) in
+			for album in newItems {
+				let newAlbumID = AppDB.sharedInstance.addAlbum(album)
+				if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications!.count < 64 {
+					let remaining = Double(album.releaseDate) - Double(NSDate().timeIntervalSince1970)
+					if remaining > 0 {
+						let notification = UILocalNotification()
+						if #available(iOS 8.2, *) { notification.alertTitle = "New Album Released" }
+						notification.category = "DEFAULT_CATEGORY"
+						notification.timeZone = NSTimeZone.localTimeZone()
+						notification.alertBody = "\(album.title) is now available."
+						notification.fireDate = NSDate(timeIntervalSince1970: album.releaseDate)
+						notification.applicationIconBadgeNumber += 1
+						notification.soundName = UILocalNotificationDefaultSoundName
+						notification.userInfo = ["albumID": newAlbumID, "iTunesUrl": album.iTunesUrl]
+						UIApplication.sharedApplication().scheduleLocalNotification(notification)
+					}
+				}
 			}
+
+			// Reload data
+			AppDB.sharedInstance.getArtists()
+			AppDB.sharedInstance.getAlbums()
+			self.streamTable.reloadData()
+
+			// Update content hash
+			NSUserDefaults.standardUserDefaults().setValue(contentHash, forKey: "contentHash")
+			self.appDelegate.contentHash = contentHash
+
+			// Set last updated
+			self.appDelegate.completedRefresh = true
+			NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
+
+			// Indicate availability of new content
+			self.refreshControl!.endRefreshing()
+			if newItems.count > 0 {}
 			self.tabBarDelegate!.animateTitleView()
 			},
 			errorHandler: { (error) in

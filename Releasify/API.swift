@@ -12,7 +12,6 @@ final class API {
 	static let sharedInstance = API()
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let baseURL = NSURL(string: "https://releasify.io/api/ios/v1.1/")!
-	var newItems: [String]!
 	
 	enum Error: ErrorType {
 		case BadRequest
@@ -21,6 +20,7 @@ final class API {
 		case FailedRequest
 		case FailedToGetResource
 		case FailedToParseJSON
+		case FailedToProcessJSON
 		case FileNotFound
 		case InternalServerError
 		case InvalidHTTPResponse
@@ -35,6 +35,7 @@ final class API {
 	enum Endpoint {
 		case confirmArtist
 		case feed
+		case getAlbumsByArtist
 		case itemLookup
 		case register
 		case removeAlbum
@@ -50,6 +51,8 @@ final class API {
 				return sharedInstance.baseURL.URLByAppendingPathComponent("confirm_artist.php")
 			case .feed:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("feed.php")
+			case .getAlbumsByArtist:
+				return sharedInstance.baseURL.URLByAppendingPathComponent("get_albums_by_artist.php")
 			case .itemLookup:
 				return sharedInstance.baseURL.URLByAppendingPathComponent("item.php")
 			case .register:
@@ -104,7 +107,7 @@ final class API {
 				return
 			}
 
-			if let handler: Void = successHandler(self.parseAlbumsFrom(json!)) {
+			if let handler: Void = successHandler(self.processAlbumsFrom(json!)!) {
 				handler
 				return
 			}
@@ -115,8 +118,8 @@ final class API {
 	}
 	
 	// MARK: - Refresh Content
-	func refreshContent(successHandler: ([String] -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
-		newItems = [String]()
+	func refreshContent(successHandler: ((newItems: [Album], contentHash: String) -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
+		var newItems = [Album]()
 		var postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(appDelegate.allowExplicitContent ? 1 : 0)"
 		if appDelegate.userDeviceToken != nil {
 			postString += "&token=\(appDelegate.userDeviceToken!)"
@@ -126,8 +129,9 @@ final class API {
 		}
 		sendRequest(Endpoint.updateContent.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 200 {
+				// No new content available
 				if statusCode == 204 {
-					if let handler: Void = successHandler?(self.newItems) {
+					if let handler: Void = successHandler?(newItems: newItems, contentHash: self.appDelegate.contentHash!) {
 						handler
 						return
 					}
@@ -155,20 +159,17 @@ final class API {
 				errorHandler(error: Error.FailedToParseJSON)
 				return
 			}
-			
-			self.processContent(content)
-			self.processSubscriptions(subscriptions)
 
-			NSUserDefaults.standardUserDefaults().setValue(contentHash, forKey: "contentHash")
-			self.appDelegate.contentHash = contentHash
+			// Process serialized JSON data
+			guard let albums = self.processAlbumsFrom(content) else {
+				errorHandler(error: Error.FailedToProcessJSON)
+				return
+			}
+			newItems = albums
+			self.processSubscriptions(subscriptions)
 			
-			AppDB.sharedInstance.getArtists()
-			AppDB.sharedInstance.getAlbums()
-			
-			self.appDelegate.completedRefresh = true
-			NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
-			
-			if let handler: Void = successHandler?(self.newItems) {
+			// Pass new content back thru the closure
+			if let handler: Void = successHandler?(newItems: newItems, contentHash: contentHash) {
 				handler
 			}
 			},
@@ -178,10 +179,11 @@ final class API {
 	}
 
 	// MARK: - Process downloaded JSON data
-	func parseAlbumsFrom(json: [NSDictionary]) -> [Album] {
+	func processAlbumsFrom(json: [NSDictionary]) -> [Album]? {
 		var albums = [Album]()
 		for item in json {
-			let hash = md5(item["artworkUrl"] as! String)
+			guard var hash = item["artworkUrl"] as? String else { return nil }
+			hash = md5(hash)
 			let albumItem = Album(
 				ID: item["ID"] as! Int,
 				title: item["title"] as! String,
@@ -199,46 +201,6 @@ final class API {
 		}
 		return albums
 	}
-
-	// MARK: - Process downloaded JSON data
-	func processContent(json: [NSDictionary]) {
-		for item in json {
-			let releaseDate = item["releaseDate"] as! Double
-			let hash = md5(item["artworkUrl"] as! String)
-			let albumItem = Album(
-				ID: item["ID"] as! Int,
-				title: item["title"] as! String,
-				artistID: item["artistID"] as! Int,
-				releaseDate: releaseDate,
-				artwork: hash,
-				artworkUrl: (string: item["artworkUrl"] as! String),
-				explicit: item["explicit"] as! Int,
-				copyright: item["copyright"] as! String,
-				iTunesUniqueID: item["iTunesUniqueID"] as! Int,
-				iTunesUrl: item["iTunesUrl"] as! String,
-				created: Int(NSDate().timeIntervalSince1970)
-			)
-			let newAlbumID = AppDB.sharedInstance.addAlbum(albumItem)
-			if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications!.count < 64 {
-				self.newItems.append(albumItem.artwork)
-				let remaining = Double(releaseDate) - Double(NSDate().timeIntervalSince1970)
-				if remaining > 0 {
-					let notification = UILocalNotification()
-					if #available(iOS 8.2, *) {
-						notification.alertTitle = "New Album Released"
-					}
-					notification.category = "DEFAULT_CATEGORY"
-					notification.timeZone = NSTimeZone.localTimeZone()
-					notification.alertBody = "\(albumItem.title) is now available."
-					notification.fireDate = NSDate(timeIntervalSince1970: item["releaseDate"] as! Double)
-					notification.applicationIconBadgeNumber += 1
-					notification.soundName = UILocalNotificationDefaultSoundName
-					notification.userInfo = ["albumID": newAlbumID, "iTunesUrl": albumItem.iTunesUrl]
-					UIApplication.sharedApplication().scheduleLocalNotification(notification)
-				}
-			}
-		}
-	}
 	
 	// MARK: - Process downloaded JSON data
 	func processSubscriptions(json: [NSDictionary]) {
@@ -248,6 +210,32 @@ final class API {
 			let artistUniqueID = item["iTunesUniqueID"] as! Int
 			AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 		}
+	}
+
+	// MARK: - Get artist albums for `AddSubscriptionDetailView`
+	func getAlbumsByArtist(artistUniqueID: Int, successHandler: ((albums: [Album]) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
+		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
+		sendRequest(Endpoint.getAlbumsByArtist.url(), postString: postString, successHandler: { (statusCode, data) in
+			if statusCode != 200 {
+				errorHandler(error: self.getErrorFor(statusCode))
+				return
+			}
+
+			guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [NSDictionary] else {
+				errorHandler(error: Error.FailedToParseJSON)
+				return
+			}
+
+			// Process serialized JSON data
+			guard let albums = self.processAlbumsFrom(json!) else {
+				errorHandler(error: Error.FailedToProcessJSON)
+				return
+			}
+
+			successHandler(albums: albums)
+		}, errorHandler: { (error) in
+				errorHandler(error: error)
+		})
 	}
 	
 	// MARK: - Album lookup
@@ -317,7 +305,7 @@ final class API {
 	}
 	
 	// MARK: - Device Registration
-	func register(allowExplicitContent: Bool = false, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void),
+	func register(allowExplicitContent: Bool = true, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void),
 	              errorHandler: ((error: ErrorType) -> Void)) {
 		let UUID = NSUUID().UUIDString
 		var explicitValue = 1
@@ -377,12 +365,10 @@ final class API {
 				}
 				return
 			}
-			
 			guard let response = response as? NSHTTPURLResponse else {
 				errorHandler(error: Error.InvalidHTTPResponse)
 				return
 			}
-			
 			if self.appDelegate.debug { print("HTTP status code: \(response.statusCode)") }
 			successHandler(statusCode: response.statusCode, data: data)
 		})
@@ -394,12 +380,10 @@ final class API {
 		if let data = string.dataUsingEncoding(NSUTF8StringEncoding) {
 			CC_MD5(data.bytes, CC_LONG(data.length), &digest)
 		}
-
 		var digestHex = ""
 		for index in 0..<Int(CC_MD5_DIGEST_LENGTH) {
 			digestHex += String(format: "%02x", digest[index])
 		}
-
 		return digestHex
 	}
 }

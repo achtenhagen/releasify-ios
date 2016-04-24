@@ -31,6 +31,7 @@
 		51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B988C31AF1674C00E1A796 /* AlbumDetailController.swift */; };
 		51C337F51BEAA0AC003B0E20 /* NotificationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C337F41BEAA0AC003B0E20 /* NotificationQueue.swift */; };
 		51C39AC21C95111D0059CA01 /* FavoritesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C39AC11C95111D0059CA01 /* FavoritesListCell.swift */; };
+		51C7E0221CCBDE4D001EA6A5 /* AddSubscriptionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C7E0211CCBDE4D001EA6A5 /* AddSubscriptionDetailView.swift */; };
 		51CB15891C14D776006AEFFF /* SubscriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CB15881C14D776006AEFFF /* SubscriptionCell.swift */; };
 		51CB158B1C14F092006AEFFF /* SubscriptionDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CB158A1C14F092006AEFFF /* SubscriptionDetailController.swift */; };
 		51D776AA1B29FC9300D252A5 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D776A91B29FC9300D252A5 /* API.swift */; };
@@ -75,6 +76,7 @@
 		51B988C31AF1674C00E1A796 /* AlbumDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumDetailController.swift; sourceTree = "<group>"; };
 		51C337F41BEAA0AC003B0E20 /* NotificationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationQueue.swift; sourceTree = "<group>"; };
 		51C39AC11C95111D0059CA01 /* FavoritesListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesListCell.swift; sourceTree = "<group>"; };
+		51C7E0211CCBDE4D001EA6A5 /* AddSubscriptionDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSubscriptionDetailView.swift; sourceTree = "<group>"; };
 		51CB15881C14D776006AEFFF /* SubscriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionCell.swift; sourceTree = "<group>"; };
 		51CB158A1C14F092006AEFFF /* SubscriptionDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionDetailController.swift; sourceTree = "<group>"; };
 		51D776A91B29FC9300D252A5 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = API.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */,
+				51C7E0211CCBDE4D001EA6A5 /* AddSubscriptionDetailView.swift */,
 				51F80F0D1C9DB10100BB4624 /* SearchResultArtistCell.swift */,
 				51F80F0E1C9DB10100BB4624 /* SearchResultArtistCell.xib */,
 			);
@@ -375,6 +378,7 @@
 				518FAEEF1C665A5000499A17 /* Theme.swift in Sources */,
 				51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */,
 				51F80F0F1C9DB10100BB4624 /* SearchResultArtistCell.swift in Sources */,
+				51C7E0221CCBDE4D001EA6A5 /* AddSubscriptionDetailView.swift in Sources */,
 				516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */,
 				519C8ACF1C653819006114EC /* StreamCell.swift in Sources */,
 				51D959481C643965004B16AB /* StreamViewController.swift in Sources */,

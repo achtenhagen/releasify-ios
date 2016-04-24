@@ -35,16 +35,10 @@ class SubscriptionController: UITableViewController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SubscriptionController.reloadSubscriptions), name: "refreshSubscriptions", object: nil)
 		
 		// Table view customizations
-		self.subscriptionsTable.backgroundColor = theme.tableViewBackgroundColor
-		self.subscriptionsTable.backgroundView = UIView(frame: self.subscriptionsTable.bounds)
-		self.subscriptionsTable.backgroundView?.userInteractionEnabled = false
-		self.subscriptionsTable.separatorColor = theme.cellSeparatorColor
-		
-		// Refresh control
-		refreshControl = UIRefreshControl()
-		refreshControl!.addTarget(self, action: #selector(SubscriptionController.refresh), forControlEvents: .ValueChanged)
-		refreshControl!.tintColor = theme.refreshControlTintColor
-		self.subscriptionsTable.addSubview(refreshControl!)
+		subscriptionsTable.backgroundColor = theme.tableViewBackgroundColor
+		subscriptionsTable.backgroundView = UIView(frame: self.subscriptionsTable.bounds)
+		subscriptionsTable.backgroundView?.userInteractionEnabled = false
+		subscriptionsTable.separatorColor = theme.cellSeparatorColor
 		
 		// Search controller customizations
 		searchController = UISearchController(searchResultsController: nil)
@@ -63,7 +57,7 @@ class SubscriptionController: UITableViewController {
 		searchController.searchBar.autocapitalizationType = .Words
 		searchController.searchBar.keyboardAppearance = theme.keyboardStyle
 		searchController.searchBar.sizeToFit()
-		self.subscriptionsTable.tableHeaderView = searchController.searchBar
+		subscriptionsTable.tableHeaderView = searchController.searchBar
 		definesPresentationContext = true
 	}
 	
@@ -74,7 +68,7 @@ class SubscriptionController: UITableViewController {
 	override func viewWillAppear(animated: Bool) {
 		let indexPath = self.subscriptionsTable.indexPathForSelectedRow
 		if indexPath != nil {
-			self.subscriptionsTable.deselectRowAtIndexPath(indexPath!, animated: true)
+			subscriptionsTable.deselectRowAtIndexPath(indexPath!, animated: true)
 		}
 	}
 	
@@ -90,18 +84,6 @@ class SubscriptionController: UITableViewController {
 		artists = AppDB.sharedInstance.artists
 		filteredArtists = [Artist]()
 		subscriptionsTable.reloadData()
-	}
-	
-	// MARK: - Handle refresh content
-	func refresh() {
-		API.sharedInstance.refreshContent({ newItems in
-			self.reloadSubscriptions()
-			self.refreshControl!.endRefreshing()
-			},
-			errorHandler: { (error) in
-				self.refreshControl!.endRefreshing()
-				self.handleError("Unable to update!", message: "Please try again later.", error: error)
-		})
 	}
 	
 	// MARK: - Handle error messages
