@@ -107,7 +107,7 @@ final class API {
 				return
 			}
 
-			if let handler: Void = successHandler(self.processAlbumsFrom(json!)!) {
+			if let handler: Void = successHandler(self.processAlbumsFrom(json!)) {
 				handler
 				return
 			}
@@ -160,15 +160,10 @@ final class API {
 				return
 			}
 
-			// Process serialized JSON data
-			guard let albums = self.processAlbumsFrom(content) else {
-				errorHandler(error: Error.FailedToProcessJSON)
-				return
-			}
-			newItems = albums
+			newItems = self.processAlbumsFrom(content)
 			self.processSubscriptions(subscriptions)
 			
-			// Pass new content back thru the closure
+			// Pass new content back thru closure
 			if let handler: Void = successHandler?(newItems: newItems, contentHash: contentHash) {
 				handler
 			}
@@ -179,22 +174,29 @@ final class API {
 	}
 
 	// MARK: - Process downloaded JSON data
-	func processAlbumsFrom(json: [NSDictionary]) -> [Album]? {
+	func processAlbumsFrom(json: [NSDictionary]) -> [Album] {
 		var albums = [Album]()
 		for item in json {
-			guard var hash = item["artworkUrl"] as? String else { return nil }
-			hash = md5(hash)
+			guard let ID = item["ID"] as? Int,
+				let title = item["title"] as? String,
+				let artistID = item["artistID"] as? Int,
+				let releaseDate = item["releaseDate"] as? Double,
+				let artworkUrl = item["artworkUrl"] as? String,
+				let explicit = item["explicit"] as? Int,
+				let copyright = item["copyright"] as? String,
+				let iTunesUniqueID = item["iTunesUniqueID"] as? Int,
+				let iTunesUrl = item["iTunesUrl"] as? String else { break }
 			let albumItem = Album(
-				ID: item["ID"] as! Int,
-				title: item["title"] as! String,
-				artistID: item["artistID"] as! Int,
-				releaseDate: item["releaseDate"] as! Double,
-				artwork: hash,
-				artworkUrl: (string: item["artworkUrl"] as! String),
-				explicit: item["explicit"] as! Int,
-				copyright: item["copyright"] as! String,
-				iTunesUniqueID: item["iTunesUniqueID"] as! Int,
-				iTunesUrl: item["iTunesUrl"] as! String,
+				ID: ID,
+				title: title,
+				artistID: artistID,
+				releaseDate: releaseDate,
+				artwork: md5(artworkUrl),
+				artworkUrl: artworkUrl,
+				explicit: explicit,
+				copyright: copyright,
+				iTunesUniqueID: iTunesUniqueID,
+				iTunesUrl: iTunesUrl,
 				created: Int(NSDate().timeIntervalSince1970)
 			)
 			albums.append(albumItem)
@@ -227,11 +229,7 @@ final class API {
 			}
 
 			// Process serialized JSON data
-			guard let albums = self.processAlbumsFrom(json!) else {
-				errorHandler(error: Error.FailedToProcessJSON)
-				return
-			}
-
+			let albums = self.processAlbumsFrom(json!)
 			successHandler(albums: albums)
 		}, errorHandler: { (error) in
 				errorHandler(error: error)

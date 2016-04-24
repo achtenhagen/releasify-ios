@@ -2252,14 +2252,14 @@ Swipe to get started.</string>
                                         <exclude reference="QJc-dA-J7h"/>
                                     </mask>
                                     <mask key="constraints">
+                                        <exclude reference="4s1-DB-gNY"/>
+                                        <exclude reference="d4U-MH-GcP"/>
+                                        <exclude reference="gOb-bo-nJZ"/>
                                         <exclude reference="8hA-c3-Ad6"/>
                                         <exclude reference="Ymk-K9-C6d"/>
                                         <exclude reference="aTd-Yi-YkI"/>
                                         <exclude reference="TTc-LU-meF"/>
                                         <exclude reference="tGj-0x-cn8"/>
-                                        <exclude reference="4s1-DB-gNY"/>
-                                        <exclude reference="d4U-MH-GcP"/>
-                                        <exclude reference="gOb-bo-nJZ"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=compact">
@@ -2269,14 +2269,14 @@ Swipe to get started.</string>
                                         <include reference="QJc-dA-J7h"/>
                                     </mask>
                                     <mask key="constraints">
+                                        <include reference="4s1-DB-gNY"/>
+                                        <include reference="d4U-MH-GcP"/>
+                                        <include reference="gOb-bo-nJZ"/>
                                         <include reference="8hA-c3-Ad6"/>
                                         <include reference="Ymk-K9-C6d"/>
                                         <include reference="aTd-Yi-YkI"/>
                                         <include reference="TTc-LU-meF"/>
                                         <include reference="tGj-0x-cn8"/>
-                                        <include reference="4s1-DB-gNY"/>
-                                        <include reference="d4U-MH-GcP"/>
-                                        <include reference="gOb-bo-nJZ"/>
                                     </mask>
                                 </variation>
                             </view>
@@ -2298,14 +2298,14 @@ Swipe to get started.</string>
                                 <exclude reference="WG8-lO-To2"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="MrF-fh-EjK"/>
-                                <exclude reference="WoT-2l-SUb"/>
-                                <exclude reference="YY0-Or-EQ1"/>
-                                <exclude reference="ajY-MQ-JNM"/>
                                 <exclude reference="2Vl-3B-iWk"/>
                                 <exclude reference="QRr-D3-KME"/>
                                 <exclude reference="XRn-yv-VcN"/>
                                 <exclude reference="axo-9K-sUC"/>
+                                <exclude reference="MrF-fh-EjK"/>
+                                <exclude reference="WoT-2l-SUb"/>
+                                <exclude reference="YY0-Or-EQ1"/>
+                                <exclude reference="ajY-MQ-JNM"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -2314,14 +2314,14 @@ Swipe to get started.</string>
                                 <include reference="WG8-lO-To2"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="MrF-fh-EjK"/>
-                                <include reference="WoT-2l-SUb"/>
-                                <include reference="YY0-Or-EQ1"/>
-                                <include reference="ajY-MQ-JNM"/>
                                 <include reference="2Vl-3B-iWk"/>
                                 <include reference="QRr-D3-KME"/>
                                 <include reference="XRn-yv-VcN"/>
                                 <include reference="axo-9K-sUC"/>
+                                <include reference="MrF-fh-EjK"/>
+                                <include reference="WoT-2l-SUb"/>
+                                <include reference="YY0-Or-EQ1"/>
+                                <include reference="ajY-MQ-JNM"/>
                             </mask>
                         </variation>
                     </view>
@@ -2344,9 +2344,10 @@ Swipe to get started.</string>
             <objects>
                 <collectionViewController id="CzP-Sg-Byz" customClass="AddSubscriptionDetailView" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="9ln-Z8-0s7">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="TWn-BX-mga">
-                            <size key="itemSize" width="170" height="192"/>
+                            <size key="itemSize" width="170" height="217"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                             <inset key="sectionInset" minX="10" minY="10" maxX="10" maxY="10"/>

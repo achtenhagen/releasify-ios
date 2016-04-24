@@ -8,16 +8,16 @@
 
 import UIKit
 
-private let albumCellReuseIdentifier = "AlbumCell"
-
 class AddSubscriptionDetailView: UICollectionViewController {
 
+	private let albumCellReuseIdentifier = "AlbumCell"
 	private var theme: AddSubscriptionDetailViewTheme!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var artistID: Int!
 	var artistUniqueID: Int!
 	var artistTitle: String!
 	var albums: [Album]!
+	var tmpArtwork: [String:UIImage]!
 	var spinner: UIActivityIndicatorView!
 
 	@IBAction func confirmArtist(sender: AnyObject) {
@@ -34,6 +34,7 @@ class AddSubscriptionDetailView: UICollectionViewController {
 
 		theme = AddSubscriptionDetailViewTheme(style: appDelegate.theme.style)
 		albums = [Album]()
+		tmpArtwork = [String: UIImage]()
 
 		self.navigationItem.title = artistTitle
 
@@ -75,6 +76,21 @@ class AddSubscriptionDetailView: UICollectionViewController {
 
     }
 
+	// MARK: - Return artwork image for each collection view cell
+	func getArtworkForCell(url: String, hash: String, completion: ((artwork: UIImage) -> Void)) {
+		if tmpArtwork![hash] != nil {
+			completion(artwork: tmpArtwork![hash]!)
+			return
+		}
+		API.sharedInstance.fetchArtwork(url, successHandler: { artwork in
+			self.tmpArtwork![hash] = artwork
+			completion(artwork: self.tmpArtwork![hash]!)
+			}, errorHandler: {
+				let filename = self.theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
+				completion(artwork: UIImage(named: filename)!)
+		})
+	}
+
     // MARK: UICollectionViewDataSource
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -83,11 +99,24 @@ class AddSubscriptionDetailView: UICollectionViewController {
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell
-		cell.timeLeft.text = albums![indexPath.row].getFormattedReleaseDate()
-		cell.albumTitle.text = albums[indexPath.row].title
+		let album = albums[indexPath.row]
+		let albumWillFadeIn = tmpArtwork![album.artwork] == nil ? true : false
+		cell.alpha = 0
+		cell.containerView.hidden = true
+		cell.timeLeft.text = album.getFormattedReleaseDate()
+		cell.albumTitle.text = album.title
 		cell.artistTitle.text = artistTitle
 		cell.albumTitle.textColor = theme.albumTitleColor
 		cell.artistTitle.textColor = theme.artistTitleColor
+		cell.albumArtwork.image = UIImage()
+		getArtworkForCell(album.artworkUrl!, hash: album.artwork, completion: { (artwork) in
+			cell.albumArtwork.image = artwork
+			if albumWillFadeIn {
+				cell.fadeIn()
+			} else {
+				cell.alpha = 1
+			}
+		})
         return cell
     }
 
