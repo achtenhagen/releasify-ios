@@ -17,12 +17,13 @@ public class Theme {
 	// Global App tint color
 	var globalTintColor: UIColor!
 	
-	// Common colors (Green alternative: #00D897)
-	let blueColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
-	let greenColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1)
-	let redColor = UIColor(red: 1, green: 40/255, blue: 81/255, alpha: 1)
-	let orangeColor = UIColor(red: 1, green: 85/255, blue: 80/255, alpha: 1)
-	let orangeAltColor = UIColor(red: 248/255, green: 65/255, blue: 48/255, alpha: 1)
+	// Common colors
+	let blueColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)				  // #00D8FF
+	let greenColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1)		  // #00F2C0
+	let greenAltColor = UIColor(red: 0, green: 216, blue: 151, alpha: 1)			  // #00D897
+	let redColor = UIColor(red: 1, green: 40/255, blue: 81/255, alpha: 1)			  // #FF2851
+	let orangeColor = UIColor(red: 1, green: 85/255, blue: 80/255, alpha: 1)		  // #FF5550
+	let orangeAltColor = UIColor(red: 248/255, green: 65/255, blue: 48/255, alpha: 1) // #F84130
 	
 	// Status bar appearance
 	var statusBarStyle: UIStatusBarStyle!

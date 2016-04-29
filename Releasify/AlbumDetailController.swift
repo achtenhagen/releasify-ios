@@ -48,11 +48,14 @@ class AlbumDetailController: UIViewController {
 		theme = AlbumDetailControllerTheme(style: appDelegate.theme.style)
 		shareActionBarBtn.tintColor = theme.globalTintColor
 		
-		if let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) {
-			artwork = dbArtwork
-		} else {
-			let filename = theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
-			artwork = UIImage(named: filename)!
+		// Check if remote artwork present, else load local file, else use placeholder
+		if artwork == nil {
+			if let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) {
+				artwork = dbArtwork
+			} else {
+				let filename = theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
+				artwork = UIImage(named: filename)!
+			}
 		}
 		
 		albumArtwork.image = artwork
