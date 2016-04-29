@@ -72,6 +72,7 @@ class AddSubscriptionController: UIViewController {
 		importContainer.backgroundColor = theme.navBarTintColor
 		importContainerTitle.textColor = theme.importContainerTitleColor
 		importContainerSubtitle.textColor = theme.importContainerSubtitle
+		importBtn.setImage(theme.style == .dark ? UIImage(named: "icon_import_dark") : UIImage(named: "icon_import"), forState: .Normal)
 
 		// Add 1px bottom border to import container
 		let topBorder = UIView(frame: CGRect(x: 0, y: 59, width: self.view.bounds.width, height: 1))
@@ -236,6 +237,7 @@ private class AddSubscriptionControllerTheme: Theme {
 	var importContainerBorderColor: UIColor!
 	var importContainerTitleColor: UIColor!
 	var importContainerSubtitle: UIColor!
+	var importContainerButtonColor: UIColor!
 	
 	override init(style: Styles) {
 		super.init(style: style)
@@ -246,12 +248,14 @@ private class AddSubscriptionControllerTheme: Theme {
 			importContainerBorderColor = cellSeparatorColor
 			importContainerTitleColor = UIColor.whiteColor()
 			importContainerSubtitle = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+			importContainerButtonColor = blueColor
 		case .light:
 			cellBackgroundColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			importContainerBorderColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
 			importContainerTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			importContainerSubtitle = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			importContainerButtonColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 		}
 	}
 }

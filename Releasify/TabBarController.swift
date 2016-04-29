@@ -85,9 +85,7 @@ class TabBarController: UITabBarController {
 		// Handle 3D Touch quick action while app is not running
 		if let shortcutItem = appDelegate.shortcutKeyDescription {
 			if shortcutItem == "add-subscription" {
-				self.addSubscription({ (error) in
-					self.handleAddSubscriptionError(error)
-				})
+				addSubscriptionFromShortcutItem()
 			}
 		}
 		
@@ -103,88 +101,7 @@ class TabBarController: UITabBarController {
 	
 	// MARK: - Handle 3D Touch quick action
 	func addSubscriptionFromShortcutItem() {
-		addSubscription({ (error) in
-			self.handleAddSubscriptionError(error)
-		})
-	}
-	
-	// MARK: - Show new subscription alert controller
-	func addSubscription(errorHandler: ((error: ErrorType) -> Void)) {
-		responseArtists = [NSDictionary]()
-		var artistFound = false
-		let actionSheetController = UIAlertController(title: "New Subscription", message: "Please enter the name of the artist you would like to be subscribed to.", preferredStyle: .Alert)
-		let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-		actionSheetController.addAction(cancelAction)
-		let addAction = UIAlertAction(title: "Confirm", style: .Default) { (action) in
-			let textField = actionSheetController.textFields![0]
-			if !textField.text!.isEmpty {
-				let artist = textField.text!.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
-				let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&title[]=\(artist)"
-				self.keyword = artist
-				API.sharedInstance.sendRequest(API.Endpoint.searchArtist.url(), postString: postString, successHandler: { (statusCode, data) in
-					if statusCode != 202 {
-						errorHandler(error: API.Error.BadRequest)
-						return
-					}
-					
-					guard let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary else {
-						errorHandler(error: API.Error.FailedToParseJSON)
-						return
-					}
-					
-					guard let pendingArtists: [NSDictionary] = json["pending"] as? [NSDictionary] else {
-						errorHandler(error: API.Error.FailedToParseJSON)
-						return
-					}
-					
-					guard let failedArtists: [NSDictionary] = json["failed"] as? [NSDictionary] else {
-						errorHandler(error: API.Error.FailedToParseJSON)
-						return
-					}
-					
-					for artist in pendingArtists {
-						if let uniqueID = artist["iTunesUniqueID"] as? Int {
-							if AppDB.sharedInstance.getArtistByUniqueID(uniqueID) > 0 {
-								artistFound = true
-								continue
-							}
-							self.responseArtists.append(artist)
-						}
-					}
-					
-					if failedArtists.count > 0 {
-						let notificationTitle = "Not Found!"
-						let notification = Notification(frame: CGRect(x: 0, y: 0, width: 140, height: 140), title: notificationTitle, icon: .error)
-						notification.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 50)
-						self.view.addSubview(notification)
-						NotificationQueue.sharedInstance.add(notification)
-					}
-					
-					if self.responseArtists.count > 0 {
-						self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
-					}
-					
-					if artistFound && self.responseArtists.count == 0 {
-						let notificationTitle = "Already Subscribed"
-						let notification = Notification(frame: CGRect(x: 0, y: 0, width: 140, height: 140), title: notificationTitle, icon: .warning)
-						notification.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 50)
-						self.view.addSubview(notification)
-						NotificationQueue.sharedInstance.add(notification)
-					}
-					
-					},
-					errorHandler: { (error) in
-						self.handleAddSubscriptionError(error)
-				})
-			}
-		}
-		actionSheetController.addAction(addAction)
-		actionSheetController.addTextFieldWithConfigurationHandler { (textField) in
-			textField.keyboardAppearance = self.theme.keyboardStyle
-			textField.autocapitalizationType = .Words
-			textField.placeholder = "e.g., Armin van Buuren"
-		}
-		self.presentViewController(actionSheetController, animated: true, completion: nil)
+		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
 	}
 	
 	// MARK: - Handle failed subscription
