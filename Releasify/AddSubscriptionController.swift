@@ -12,30 +12,33 @@ import MediaPlayer
 class AddSubscriptionController: UIViewController {
 	
 	private var theme: AddSubscriptionControllerTheme!
+	private var artistCellReuseIdentifier = "ArtistCell"
+	private var unwindSegueIdentifier = "ImportArtistsFromSearchResultsSegue"
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var searchBar: UISearchBar!
 	var searchResults: [Artist]!
 	var selectedArtist: Artist!
-	var artistCellReuseIdentifier = "artistCell"
 	var mediaQuery: MPMediaQuery!
 	var delayTimer: NSTimer!
 
 	@IBOutlet var importContainer: UIView!
+	@IBOutlet var importContainerTitle: UILabel!
+	@IBOutlet var importContainerSubtitle: UILabel!
 	@IBOutlet var importBtn: UIButton!
 	@IBOutlet var searchTable: UITableView!
 
 	@IBAction func UnwindToAddSubscriptionSegue(sender: UIStoryboardSegue) {
-		AppDB.sharedInstance.getArtists()
-		// reloadSubscriptions()
+		// Upon arrival of view
 	}
 
 	@IBAction func ImportArtists(sender: AnyObject) {
-		self.performSegueWithIdentifier("ImportArtistsFromSearchResultsSegue", sender: self)
+		self.performSegueWithIdentifier(unwindSegueIdentifier, sender: self)
 	}
 
 	override func viewDidLoad() {
         super.viewDidLoad()
 
+		// Initialization
 		searchResults = [Artist]()
 		theme = AddSubscriptionControllerTheme(style: appDelegate.theme.style)
 
@@ -65,11 +68,14 @@ class AddSubscriptionController: UIViewController {
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
 
+		// Import container customizations
 		importContainer.backgroundColor = theme.navBarTintColor
+		importContainerTitle.textColor = theme.importContainerTitleColor
+		importContainerSubtitle.textColor = theme.importContainerSubtitle
 
 		// Add 1px bottom border to import container
 		let topBorder = UIView(frame: CGRect(x: 0, y: 59, width: self.view.bounds.width, height: 1))
-		topBorder.backgroundColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
+		topBorder.backgroundColor = theme.importContainerBorderColor
 		self.importContainer.addSubview(topBorder)
 
 		// Configure search table
@@ -217,13 +223,19 @@ extension AddSubscriptionController: UISearchBarDelegate {
 	
 	func searchBarCancelButtonClicked(searchBar: UISearchBar) {
 		searchBar.resignFirstResponder()
-		self.dismissViewControllerAnimated(true, completion: nil)
+		// Only unwind segue if a new artist has been subscribed to
+		// self.dismissViewControllerAnimated(true, completion: nil)
+		self.performSegueWithIdentifier("UnwindToStreamViewSegue", sender: self)
 	}
 }
 
+// MARK: - AddSubscriptionControllerTheme
 private class AddSubscriptionControllerTheme: Theme {
 	var cellBackgroundColor: UIColor!
 	var artistTitleColor: UIColor!
+	var importContainerBorderColor: UIColor!
+	var importContainerTitleColor: UIColor!
+	var importContainerSubtitle: UIColor!
 	
 	override init(style: Styles) {
 		super.init(style: style)
@@ -231,9 +243,15 @@ private class AddSubscriptionControllerTheme: Theme {
 		case .dark:
 			cellBackgroundColor = UIColor.clearColor()
 			artistTitleColor = UIColor.whiteColor()
+			importContainerBorderColor = cellSeparatorColor
+			importContainerTitleColor = UIColor.whiteColor()
+			importContainerSubtitle = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 		case .light:
 			cellBackgroundColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			importContainerBorderColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
+			importContainerTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			importContainerSubtitle = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 		}
 	}
 }

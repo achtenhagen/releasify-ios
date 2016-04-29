@@ -149,40 +149,18 @@ class AlbumDetailController: UIViewController {
 	
 	@available(iOS 9.0, *)
 	override func previewActionItems() -> [UIPreviewActionItem] {
-		var previewItems: [UIPreviewActionItem] = [UIPreviewActionItem]()
-		var buyTitle = "Pre-Order"
-		if timeDiff <= 0 {
-			buyTitle = "Purchase"
-		}
+		let buyTitle = timeDiff <= 0 ? "Purchase" : "Pre-Order"
+		// 3D Touch purchase action
 		let purchaseAction = UIPreviewAction(title: buyTitle, style: .Default) { (action, viewController) -> Void in
 			if UIApplication.sharedApplication().canOpenURL(NSURL(string: (self.album?.iTunesUrl)!)!) {
 				UIApplication.sharedApplication().openURL(NSURL(string: (self.album?.iTunesUrl)!)!)
 			}
 		}
-		previewItems.append(purchaseAction)
-		
-		if timeDiff > 0 {
-			let deleteAction = UIPreviewAction(title: "Don't Notify", style: .Destructive) { (action, viewController) -> Void in
-				for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
-					let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-					let ID = userInfoCurrent["albumID"]! as! Int
-					if ID == self.album?.ID {
-						UIApplication.sharedApplication().cancelLocalNotification(notification)
-						self.navigationController?.navigationBar.items![0].leftBarButtonItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
-						break
-					}
-				}
-			}
-			previewItems.append(deleteAction)
-		} else {
-			let removeAction = UIPreviewAction(title: "Remove Album", style: .Destructive) { (action, viewController) -> Void in
-				if self.delegate != nil {
-					self.delegate?.removeAlbum(self.album!, indexPath: self.indexPath!)
-				}
-			}
-			previewItems.append(removeAction)
-		}
-		return previewItems
+		// 3D Touch favorites action
+		let favoriteAction = UIPreviewAction(title: "Add to Favorites...", style: .Default, handler: { (action, viewController) -> Void in
+			Favorites.sharedInstance.addFavorite(self.album!)
+		})
+		return [purchaseAction, favoriteAction]
 	}
 	
 	// MARK: - Handle album share sheet

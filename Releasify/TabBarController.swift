@@ -234,7 +234,7 @@ extension TabBarController: TabControllerDelegate {
 		animation.type = kCATransitionPush
 		animation.subtype = kCATransitionFromTop
 		animation.beginTime = CACurrentMediaTime() + 1
-		animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+		animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
 		animation.setValue("titleView", forKey: "animationKey")
 		self.navigationItem.titleView!.layer.addAnimation(animation, forKey: "changeTitle")
 	}

@@ -32,6 +32,10 @@ class StreamViewController: UITableViewController {
 
 	@IBOutlet var streamTabBarItem: UITabBarItem!
 	@IBOutlet var streamTable: UITableView!
+
+	@IBAction func UnwindToStreamViewSegue(sender: UIStoryboardSegue) {
+		refresh()
+	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -346,41 +350,29 @@ class StreamViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-		let starAction = UITableViewRowAction(style: .Normal, title: "        ", handler: { (action, indexPath) -> Void in
-			Favorites.sharedInstance.addFavorite(AppDB.sharedInstance.albums[indexPath.row])
-			tableView.editing = false
-		})
-		starAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_star")!)
-		
-		let buyAction = UITableViewRowAction(style: .Normal, title: "         ", handler: { (action, indexPath) -> Void in
-			let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
-			guard let albumUrl = self.tmpUrl![albumID] else { return }
-			tableView.editing = false
-			let time = dispatch_time(DISPATCH_TIME_NOW, Int64(0.4 * Double(NSEC_PER_SEC)))
-			dispatch_after(time, dispatch_get_main_queue()) {
-				if UIApplication.sharedApplication().canOpenURL(NSURL(string: albumUrl)!) {
-					UIApplication.sharedApplication().openURL(NSURL(string: albumUrl)!)
-				}
-			}
-		})
-		buyAction.backgroundColor = theme.style == .dark ? UIColor(patternImage: UIImage(named: "row_action_buy_alt")!) : UIColor(patternImage: UIImage(named: "row_action_buy")!)
-		
 		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
-			let album = AppDB.sharedInstance.albums[indexPath.row]
-			if !album.isReleased() {
-				for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
-					let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
-					let ID = userInfoCurrent["albumID"]! as! Int
-					if ID == album.ID {
-						UIApplication.sharedApplication().cancelLocalNotification(notification)
-						break
+			let alert = UIAlertController(title: "Remove Album?", message: "Please confirm that you want to remove this album.", preferredStyle: .Alert)
+			alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+			alert.addAction(UIAlertAction(title: "Remove", style: .Destructive, handler: { action in
+				let album = AppDB.sharedInstance.albums[indexPath.row]
+				if !album.isReleased() {
+					for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
+						let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
+						let ID = userInfoCurrent["albumID"]! as! Int
+						if ID == album.ID {
+							UIApplication.sharedApplication().cancelLocalNotification(notification)
+							break
+						}
 					}
 				}
-			}
-			self.unsubscribeAlbum(album, indexPath: indexPath)
+				self.unsubscribeAlbum(album, indexPath: indexPath)
+			}))
+			self.presentViewController(alert, animated: true, completion: nil)
 		})
-		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete")!)
-		return [buyAction]
+		let action_img = UIImage(named: "row_action_delete")
+		let action_img_dark = UIImage(named: "row_action_delete_dark")
+		removeAction.backgroundColor = theme.style == .dark ? UIColor(patternImage: action_img_dark!) : UIColor(patternImage: action_img!)
+		return [removeAction]
 	}
 	
 	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -440,7 +432,7 @@ extension StreamViewController: UIViewControllerPreviewingDelegate {
 		albumDetailVC.delegate = self
 		albumDetailVC.album = album
 		albumDetailVC.indexPath = indexPath
-		albumDetailVC.preferredContentSize = CGSize(width: 0.0, height: 0.0)
+		albumDetailVC.preferredContentSize = CGSizeZero
 		previewingContext.sourceRect = cell.frame
 		return albumDetailVC
 	}
@@ -467,8 +459,8 @@ private class StreamViewControllerTheme: Theme {
 			streamCellFooterLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
 		case .light:
 			streamCellBackgroundColor = UIColor.clearColor()
-			streamCellAlbumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
-			streamCellArtistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
+			streamCellAlbumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			streamCellArtistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 			streamCellFooterLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 		}
 	}

@@ -61,6 +61,7 @@ class SubscriptionDetailController: UIViewController {
 		self.navigationItem.title = artist!.title
 		
 		// Theme customizations
+		self.navigationItem.rightBarButtonItem?.tintColor = theme.style == .dark ? theme.redColor : theme.globalTintColor
 		self.view.backgroundColor = theme.viewBackgroundColor
 		if theme.style == .dark {
 			let gradient = theme.gradient()
@@ -89,6 +90,8 @@ class SubscriptionDetailController: UIViewController {
 		}
 		
 		subscriptionAlbumCollectionView.setCollectionViewLayout(detailFlowLayout, animated: false)
+
+
 		albums = AppDB.sharedInstance.getAlbumsByArtist(artist!.ID)
 		if albums == nil || albums?.count == 0 {
 			let label = UILabel()

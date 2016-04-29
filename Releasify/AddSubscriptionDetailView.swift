@@ -19,6 +19,7 @@ class AddSubscriptionDetailView: UICollectionViewController {
 	var albums: [Album]!
 	var tmpArtwork: [String:UIImage]!
 	var spinner: UIActivityIndicatorView!
+	var selectedAlbum: Album!
 
 	@IBAction func confirmArtist(sender: AnyObject) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID[]=\(artistUniqueID)"
@@ -34,9 +35,14 @@ class AddSubscriptionDetailView: UICollectionViewController {
 
 		theme = AddSubscriptionDetailViewTheme(style: appDelegate.theme.style)
 		albums = [Album]()
-		tmpArtwork = [String: UIImage]()
+		tmpArtwork = [String:UIImage]()
 
 		self.navigationItem.title = artistTitle
+
+		// Check whether user is already subscribed to artist
+		if AppDB.sharedInstance.getArtistByUniqueID(artistUniqueID) > 0 {
+			self.navigationItem.rightBarButtonItem?.enabled = false
+		}
 
         // Register cell class
         self.collectionView!.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
@@ -49,6 +55,9 @@ class AddSubscriptionDetailView: UICollectionViewController {
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
 
+		// Theme customizations
+		self.navigationItem.rightBarButtonItem?.tintColor = theme.style == .dark ? theme.greenColor : theme.globalTintColor
+
 		// Show spinner while albums are fetched
 		spinner = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
 		spinner.color = theme.globalTintColor
@@ -59,6 +68,7 @@ class AddSubscriptionDetailView: UICollectionViewController {
 		self.view.addSubview(spinner)
 		spinner.startAnimating()
 
+		// Fetch albums by artist
 		API.sharedInstance.getAlbumsByArtist(artistUniqueID, successHandler: { (albums) in
 			self.albums = albums
 			self.collectionView?.reloadData()
@@ -73,10 +83,13 @@ class AddSubscriptionDetailView: UICollectionViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-
+		if segue.identifier == "ArtistDetailAlbumsSegue" {
+			let detailController = segue.destinationViewController as! AlbumDetailController
+			detailController.album = selectedAlbum
+		}
     }
 
-	// MARK: - Return artwork image for each collection view cell
+	// MARK: - Return artwork for each collection view cell
 	func getArtworkForCell(url: String, hash: String, completion: ((artwork: UIImage) -> Void)) {
 		if tmpArtwork![hash] != nil {
 			completion(artwork: tmpArtwork![hash]!)
@@ -121,6 +134,19 @@ class AddSubscriptionDetailView: UICollectionViewController {
     }
 
     // MARK: UICollectionViewDelegate
+
+	override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+		selectedAlbum = albums![indexPath.row]
+		self.performSegueWithIdentifier("ArtistDetailAlbumsSegue", sender: self)
+	}
+
+	override func collectionView(collectionView: UICollectionView, didHighlightItemAtIndexPath indexPath: NSIndexPath) {
+		collectionView.cellForItemAtIndexPath(indexPath)?.alpha = 0.8
+	}
+
+	override func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
+		collectionView.cellForItemAtIndexPath(indexPath)?.alpha = 1.0
+	}
 
     /*
     // Uncomment this method to specify if the specified item should be highlighted during tracking
