@@ -31,13 +31,8 @@ class FavoritesListController: UIViewController {
 		self.favoritesTable.backgroundColor = theme.tableBackgroundColor
 		self.favoritesTable.separatorColor = theme.cellSeparatorColor
 
-		if theme.style == .dark {
-			let gradient = theme.gradient()
-			gradient.frame = self.view.bounds
-			self.view.layer.insertSublayer(gradient, atIndex: 0)
-		} else {
-			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1.0)
-		}
+		// Theme customizations
+		self.view.backgroundColor = theme.navBarTintColor
     }
 	
 	override func viewWillAppear(animated: Bool) {

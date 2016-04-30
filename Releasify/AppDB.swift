@@ -11,13 +11,13 @@ import UIKit
 let debug = true
 let documents = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, .UserDomainMask, true)[0] as String
 let databasePath = documents + "/db.sqlite"
-let artworkDirectoryPath = documents + "/artwork"
+let artworkDirectoryPath = documents + "/Caches"
 
 final class AppDB {
 	static let sharedInstance = AppDB()
-	var database:COpaquePointer = nil
-	var artists:[Artist]!
-	var albums:[Album]!
+	var database: COpaquePointer = nil
+	var artists: [Artist]!
+	var albums: [Album]!
 	
 	private func connected() -> Bool {
 		return sqlite3_open(databasePath, &database) == SQLITE_OK
@@ -48,15 +48,18 @@ final class AppDB {
 		if !NSFileManager.defaultManager().fileExistsAtPath(artworkDirectoryPath) {
 			do {
 				try NSFileManager.defaultManager().createDirectoryAtPath(artworkDirectoryPath, withIntermediateDirectories: false, attributes: nil)
-			} catch _ {
+			} catch {
 				if debug { print("Error: Unable to create artwork directory!") }
 			}
 		}
-		disconnect()		
+		disconnect()
 	}
 
 	// Upgrade database to version 2
 	func upgrade_db_v2() {
+
+		// TODO: Delete old artwork in Library/artwork
+
 		if !connected() { fatalError("Unable to connect to database") }
 		if debug { print("Begin upgrade") }
 		var errMsg: UnsafeMutablePointer<Int8> = nil

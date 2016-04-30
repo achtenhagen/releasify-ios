@@ -2186,47 +2186,44 @@ Swipe to get started.</string>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Import..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7RK-wx-Lfm">
                                         <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="21" id="TS1-vk-Slo"/>
-                                            <constraint firstAttribute="width" constant="91" id="yv2-wU-btS"/>
+                                            <constraint firstAttribute="height" constant="21" id="djZ-iH-2H6"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.25098039215686274" green="0.25098039215686274" blue="0.25098039215686274" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                         <variation key="default">
                                             <mask key="constraints">
-                                                <exclude reference="TS1-vk-Slo"/>
-                                                <exclude reference="yv2-wU-btS"/>
+                                                <exclude reference="djZ-iH-2H6"/>
                                             </mask>
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
                                             <mask key="constraints">
-                                                <include reference="TS1-vk-Slo"/>
-                                                <include reference="yv2-wU-btS"/>
+                                                <include reference="djZ-iH-2H6"/>
                                             </mask>
                                         </variation>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="From your music library" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t4G-JB-NHq">
                                         <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="883-pJ-8RN"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QJc-dA-J7h">
-                                        <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="30" id="zda-QE-iBJ"/>
-                                        </constraints>
-                                        <state key="normal" image="icon_import"/>
                                         <variation key="default">
                                             <mask key="constraints">
-                                                <exclude reference="zda-QE-iBJ"/>
+                                                <exclude reference="883-pJ-8RN"/>
                                             </mask>
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
                                             <mask key="constraints">
-                                                <include reference="zda-QE-iBJ"/>
+                                                <include reference="883-pJ-8RN"/>
                                             </mask>
                                         </variation>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QJc-dA-J7h">
+                                        <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                        <state key="normal" image="icon_import"/>
                                         <connections>
                                             <action selector="ImportArtists:" destination="g3t-R2-LdD" eventType="touchUpInside" id="jtH-eC-iGt"/>
                                         </connections>
@@ -2234,14 +2231,17 @@ Swipe to get started.</string>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="QJc-dA-J7h" firstAttribute="centerY" secondItem="WG8-lO-To2" secondAttribute="centerY" id="4s1-DB-gNY"/>
-                                    <constraint firstItem="7RK-wx-Lfm" firstAttribute="top" secondItem="WG8-lO-To2" secondAttribute="topMargin" id="8hA-c3-Ad6"/>
-                                    <constraint firstItem="t4G-JB-NHq" firstAttribute="top" secondItem="7RK-wx-Lfm" secondAttribute="bottom" constant="1" id="TTc-LU-meF"/>
-                                    <constraint firstItem="7RK-wx-Lfm" firstAttribute="leading" secondItem="WG8-lO-To2" secondAttribute="leading" constant="12" id="Ymk-K9-C6d"/>
-                                    <constraint firstItem="7RK-wx-Lfm" firstAttribute="leading" secondItem="t4G-JB-NHq" secondAttribute="leading" id="aTd-Yi-YkI"/>
-                                    <constraint firstItem="QJc-dA-J7h" firstAttribute="leading" secondItem="t4G-JB-NHq" secondAttribute="trailing" constant="44" id="d4U-MH-GcP"/>
-                                    <constraint firstAttribute="trailing" secondItem="QJc-dA-J7h" secondAttribute="trailing" constant="15" id="gOb-bo-nJZ"/>
-                                    <constraint firstAttribute="bottom" secondItem="t4G-JB-NHq" secondAttribute="bottom" constant="9" id="tGj-0x-cn8"/>
+                                    <constraint firstAttribute="height" constant="60" id="9Xl-0i-wN6"/>
+                                    <constraint firstItem="7RK-wx-Lfm" firstAttribute="top" secondItem="WG8-lO-To2" secondAttribute="top" constant="8" id="Wdk-Qp-jWf"/>
+                                    <constraint firstItem="7RK-wx-Lfm" firstAttribute="leading" secondItem="WG8-lO-To2" secondAttribute="leading" constant="12" id="dWp-yY-EDH"/>
+                                    <constraint firstItem="QJc-dA-J7h" firstAttribute="centerY" secondItem="WG8-lO-To2" secondAttribute="centerY" id="fNc-du-Yfr"/>
+                                    <constraint firstAttribute="trailing" secondItem="7RK-wx-Lfm" secondAttribute="trailing" constant="272" id="gY3-Ky-AnL">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="89"/>
+                                    </constraint>
+                                    <constraint firstItem="t4G-JB-NHq" firstAttribute="leading" secondItem="WG8-lO-To2" secondAttribute="leading" constant="12" id="jwJ-Zk-Pdb"/>
+                                    <constraint firstAttribute="trailing" secondItem="t4G-JB-NHq" secondAttribute="trailing" constant="89" id="vCV-W2-4OE"/>
+                                    <constraint firstAttribute="trailing" secondItem="QJc-dA-J7h" secondAttribute="trailing" constant="15" id="wiB-ql-SRf"/>
+                                    <constraint firstItem="t4G-JB-NHq" firstAttribute="top" secondItem="7RK-wx-Lfm" secondAttribute="bottom" constant="1" id="yV4-d3-XiD"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="subviews">
@@ -2250,14 +2250,15 @@ Swipe to get started.</string>
                                         <exclude reference="QJc-dA-J7h"/>
                                     </mask>
                                     <mask key="constraints">
-                                        <exclude reference="4s1-DB-gNY"/>
-                                        <exclude reference="d4U-MH-GcP"/>
-                                        <exclude reference="gOb-bo-nJZ"/>
-                                        <exclude reference="8hA-c3-Ad6"/>
-                                        <exclude reference="Ymk-K9-C6d"/>
-                                        <exclude reference="aTd-Yi-YkI"/>
-                                        <exclude reference="TTc-LU-meF"/>
-                                        <exclude reference="tGj-0x-cn8"/>
+                                        <exclude reference="9Xl-0i-wN6"/>
+                                        <exclude reference="Wdk-Qp-jWf"/>
+                                        <exclude reference="dWp-yY-EDH"/>
+                                        <exclude reference="gY3-Ky-AnL"/>
+                                        <exclude reference="jwJ-Zk-Pdb"/>
+                                        <exclude reference="vCV-W2-4OE"/>
+                                        <exclude reference="yV4-d3-XiD"/>
+                                        <exclude reference="fNc-du-Yfr"/>
+                                        <exclude reference="wiB-ql-SRf"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=compact">
@@ -2267,14 +2268,15 @@ Swipe to get started.</string>
                                         <include reference="QJc-dA-J7h"/>
                                     </mask>
                                     <mask key="constraints">
-                                        <include reference="4s1-DB-gNY"/>
-                                        <include reference="d4U-MH-GcP"/>
-                                        <include reference="gOb-bo-nJZ"/>
-                                        <include reference="8hA-c3-Ad6"/>
-                                        <include reference="Ymk-K9-C6d"/>
-                                        <include reference="aTd-Yi-YkI"/>
-                                        <include reference="TTc-LU-meF"/>
-                                        <include reference="tGj-0x-cn8"/>
+                                        <include reference="9Xl-0i-wN6"/>
+                                        <include reference="Wdk-Qp-jWf"/>
+                                        <include reference="dWp-yY-EDH"/>
+                                        <include reference="gY3-Ky-AnL"/>
+                                        <include reference="jwJ-Zk-Pdb"/>
+                                        <include reference="vCV-W2-4OE"/>
+                                        <include reference="yV4-d3-XiD"/>
+                                        <include reference="fNc-du-Yfr"/>
+                                        <include reference="wiB-ql-SRf"/>
                                     </mask>
                                 </variation>
                             </view>
@@ -2284,7 +2286,6 @@ Swipe to get started.</string>
                             <constraint firstItem="CTa-Df-9mc" firstAttribute="top" secondItem="WG8-lO-To2" secondAttribute="bottom" id="2Vl-3B-iWk"/>
                             <constraint firstAttribute="trailing" secondItem="WG8-lO-To2" secondAttribute="trailing" id="MrF-fh-EjK"/>
                             <constraint firstItem="CTa-Df-9mc" firstAttribute="trailing" secondItem="WG8-lO-To2" secondAttribute="trailing" id="QRr-D3-KME"/>
-                            <constraint firstAttribute="bottom" secondItem="WG8-lO-To2" secondAttribute="bottom" constant="542" id="WoT-2l-SUb"/>
                             <constraint firstItem="CTa-Df-9mc" firstAttribute="leading" secondItem="WG8-lO-To2" secondAttribute="leading" id="XRn-yv-VcN"/>
                             <constraint firstItem="WG8-lO-To2" firstAttribute="leading" secondItem="uBI-Jh-qML" secondAttribute="leading" id="YY0-Or-EQ1"/>
                             <constraint firstItem="WG8-lO-To2" firstAttribute="top" secondItem="ydn-Hu-GpD" secondAttribute="bottom" constant="1" id="ajY-MQ-JNM"/>
@@ -2301,7 +2302,6 @@ Swipe to get started.</string>
                                 <exclude reference="XRn-yv-VcN"/>
                                 <exclude reference="axo-9K-sUC"/>
                                 <exclude reference="MrF-fh-EjK"/>
-                                <exclude reference="WoT-2l-SUb"/>
                                 <exclude reference="YY0-Or-EQ1"/>
                                 <exclude reference="ajY-MQ-JNM"/>
                             </mask>
@@ -2317,7 +2317,6 @@ Swipe to get started.</string>
                                 <include reference="XRn-yv-VcN"/>
                                 <include reference="axo-9K-sUC"/>
                                 <include reference="MrF-fh-EjK"/>
-                                <include reference="WoT-2l-SUb"/>
                                 <include reference="YY0-Or-EQ1"/>
                                 <include reference="ajY-MQ-JNM"/>
                             </mask>
@@ -2630,7 +2629,7 @@ Swipe to get started.</string>
                         <barButtonItem key="leftBarButtonItem" image="icon_favorites" id="2zg-bl-iCD">
                             <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
-                                <segue destination="07F-WJ-48G" kind="presentation" identifier="FavoritesListSegue" modalTransitionStyle="flipHorizontal" id="BUP-e2-90c"/>
+                                <segue destination="07F-WJ-48G" kind="custom" identifier="FavoritesListSegue" customClass="FavoritesListSegue" customModule="Releasify" customModuleProvider="target" id="BUP-e2-90c"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Da5-pS-Ult">
@@ -2717,9 +2716,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="6ln-2C-qu7"/>
         <segue reference="i1c-0T-qib"/>
         <segue reference="gux-gb-W3x"/>
+        <segue reference="zgf-W2-bDZ"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

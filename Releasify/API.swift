@@ -271,7 +271,7 @@ final class API {
 	}
 	
 	// MARK: - Fetch Artwork
-	func fetchArtwork(url: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {
+	func fetchArtwork(url: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {		
 		if url.isEmpty { errorHandler(); return }
 		let albumUrl = url.stringByReplacingOccurrencesOfString("100x100", withString: "600x600", options: .LiteralSearch, range: nil)
 		guard let checkedURL = NSURL(string: albumUrl) else { errorHandler(); return }

@@ -243,7 +243,7 @@ class StreamViewController: UITableViewController {
 			AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
 			self.tmpArtwork![hash] = artwork
 			completion(artwork: self.tmpArtwork![hash]!)
-			}, errorHandler: {
+			}, errorHandler: {				
 				let filename = self.theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
 				completion(artwork: UIImage(named: filename)!)
 		})
