@@ -71,26 +71,7 @@ class SubscriptionDetailController: UIViewController {
 		
 		// Collection view customizations
 		subscriptionAlbumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
-		let defaultItemSize = CGSize(width: 145, height: 190)
-		detailFlowLayout = UICollectionViewFlowLayout()
-		detailFlowLayout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-		detailFlowLayout.itemSize = defaultItemSize
-		detailFlowLayout.minimumLineSpacing = 10
-		detailFlowLayout.minimumInteritemSpacing = 10
-		
-		switch UIScreen.mainScreen().bounds.width {
-		case 320:
-			detailFlowLayout.itemSize = defaultItemSize
-		case 375:
-			detailFlowLayout.itemSize = CGSize(width: 172.5, height: 217.5)
-		case 414:
-			detailFlowLayout.itemSize = CGSize(width: 192, height: 237)
-		default:
-			detailFlowLayout.itemSize = defaultItemSize
-		}
-		
-		subscriptionAlbumCollectionView.setCollectionViewLayout(detailFlowLayout, animated: false)
-
+		subscriptionAlbumCollectionView.setCollectionViewLayout(AlbumCollectionViewLayout(), animated: false)
 
 		albums = AppDB.sharedInstance.getAlbumsByArtist(artist!.ID)
 		if albums == nil || albums?.count == 0 {

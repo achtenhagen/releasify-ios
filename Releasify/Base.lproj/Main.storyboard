@@ -512,7 +512,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <inset key="scrollIndicatorInsets" minX="1" minY="1" maxX="1" maxY="1"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="sLj-07-5DV">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="sLj-07-5DV" customClass="AlbumCollectionViewLayout" customModule="Releasify" customModuleProvider="target">
                                     <size key="itemSize" width="172" height="190"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -2347,7 +2347,7 @@ Swipe to get started.</string>
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" id="9ln-Z8-0s7">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="TWn-BX-mga">
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="TWn-BX-mga" customClass="AlbumCollectionViewLayout" customModule="Releasify" customModuleProvider="target">
                             <size key="itemSize" width="170" height="217"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -2718,7 +2718,7 @@ Swipe to get started.</string>
     <inferredMetricsTieBreakers>
         <segue reference="i1c-0T-qib"/>
         <segue reference="gux-gb-W3x"/>
-        <segue reference="zgf-W2-bDZ"/>
+        <segue reference="Iyy-Lr-QfG"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

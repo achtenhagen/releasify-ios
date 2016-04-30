@@ -48,6 +48,7 @@ class AddSubscriptionDetailView: UICollectionViewController {
         self.collectionView!.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
 
 		// Collection view customizations
+		self.collectionView?.setCollectionViewLayout(AlbumCollectionViewLayout(), animated: false)
 		self.collectionView?.backgroundColor = theme.viewBackgroundColor
 		if theme.style == .dark {
 			let gradient = theme.gradient()
