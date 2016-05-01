@@ -33,6 +33,11 @@ class FavoritesListController: UIViewController {
 
 		// Theme customizations
 		self.view.backgroundColor = theme.navBarTintColor
+		if theme.style == .dark {
+			let gradient = theme.gradient()
+			gradient.frame = self.view.bounds
+			self.view.layer.insertSublayer(gradient, atIndex: 0)
+		}
     }
 	
 	override func viewWillAppear(animated: Bool) {
@@ -132,6 +137,7 @@ extension FavoritesListController: UITableViewDelegate {
 
 // MARK: - Theme Extension
 private class FavoritesListControllerTheme: Theme {
+	var viewBackgroundColor: UIColor!
 	var tableBackgroundColor: UIColor!
 	var cellBackgroundColor: UIColor!
 	var albumTitleColor: UIColor!
@@ -141,11 +147,13 @@ private class FavoritesListControllerTheme: Theme {
 		super.init(style: style)
 		switch style {
 		case .dark:
+			viewBackgroundColor = UIColor.clearColor()
 			tableBackgroundColor = UIColor.clearColor()
 			cellBackgroundColor = UIColor.clearColor()
 			albumTitleColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 		case .light:
+			viewBackgroundColor = UIColor.whiteColor()
 			tableBackgroundColor = UIColor.whiteColor()
 			cellBackgroundColor = UIColor.whiteColor()
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)

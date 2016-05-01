@@ -747,7 +747,7 @@
         <!--Favorites List View-->
         <scene sceneID="zZa-sc-6ZQ">
             <objects>
-                <viewController title="Favorites List View" id="ndp-Pd-N3R" customClass="FavoritesListController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="favoritesList" title="Favorites List View" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ndp-Pd-N3R" customClass="FavoritesListController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="UBb-cc-d8C"/>
                         <viewControllerLayoutGuide type="bottom" id="8MR-zB-SkS"/>
@@ -897,33 +897,63 @@
                                     <outlet property="delegate" destination="ndp-Pd-N3R" id="pqP-29-sz8"/>
                                 </connections>
                             </tableView>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rdz-hY-PG6">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="blx-xf-TiU"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="Favorites" id="Uan-ol-hqc"/>
+                                </items>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="blx-xf-TiU"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="blx-xf-TiU"/>
+                                    </mask>
+                                </variation>
+                            </navigationBar>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="leading" secondItem="CL7-BU-52b" secondAttribute="leading" id="2nq-w2-P72"/>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="top" secondItem="UBb-cc-d8C" secondAttribute="bottom" id="5X4-BP-AuB"/>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="bottom" secondItem="8MR-zB-SkS" secondAttribute="top" id="eZb-F7-ufP"/>
-                            <constraint firstAttribute="trailing" secondItem="Rkt-JF-j8p" secondAttribute="trailing" id="iqe-KJ-ha0"/>
+                            <constraint firstAttribute="trailing" secondItem="Rkt-JF-j8p" secondAttribute="trailing" id="HUl-vL-dCJ"/>
+                            <constraint firstItem="rdz-hY-PG6" firstAttribute="top" secondItem="CL7-BU-52b" secondAttribute="top" id="Nyz-tS-cI3"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="top" secondItem="rdz-hY-PG6" secondAttribute="bottom" id="ZQM-gY-uyJ"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="leading" secondItem="CL7-BU-52b" secondAttribute="leading" id="ajc-ht-iQv"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="leading" secondItem="rdz-hY-PG6" secondAttribute="leading" id="c1X-nb-h5l"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="bottom" secondItem="8MR-zB-SkS" secondAttribute="top" id="m3h-uB-peY"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="trailing" secondItem="rdz-hY-PG6" secondAttribute="trailing" id="zYu-gY-tdx"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="Rkt-JF-j8p"/>
+                                <exclude reference="rdz-hY-PG6"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="2nq-w2-P72"/>
-                                <exclude reference="5X4-BP-AuB"/>
-                                <exclude reference="eZb-F7-ufP"/>
-                                <exclude reference="iqe-KJ-ha0"/>
+                                <exclude reference="Nyz-tS-cI3"/>
+                                <exclude reference="HUl-vL-dCJ"/>
+                                <exclude reference="ZQM-gY-uyJ"/>
+                                <exclude reference="ajc-ht-iQv"/>
+                                <exclude reference="c1X-nb-h5l"/>
+                                <exclude reference="m3h-uB-peY"/>
+                                <exclude reference="zYu-gY-tdx"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
                                 <include reference="Rkt-JF-j8p"/>
+                                <include reference="rdz-hY-PG6"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="2nq-w2-P72"/>
-                                <include reference="5X4-BP-AuB"/>
-                                <include reference="eZb-F7-ufP"/>
-                                <include reference="iqe-KJ-ha0"/>
+                                <include reference="Nyz-tS-cI3"/>
+                                <include reference="HUl-vL-dCJ"/>
+                                <include reference="ZQM-gY-uyJ"/>
+                                <include reference="ajc-ht-iQv"/>
+                                <include reference="c1X-nb-h5l"/>
+                                <include reference="m3h-uB-peY"/>
+                                <include reference="zYu-gY-tdx"/>
                             </mask>
                         </variation>
                     </view>
@@ -942,7 +972,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OwC-MP-t7h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="714.75" y="445.875"/>
+            <point key="canvasLocation" x="-95.5" y="613.5"/>
         </scene>
         <!--Album Detail View-->
         <scene sceneID="Ej3-cx-eIi">
@@ -2251,14 +2281,14 @@ Swipe to get started.</string>
                                     </mask>
                                     <mask key="constraints">
                                         <exclude reference="9Xl-0i-wN6"/>
+                                        <exclude reference="fNc-du-Yfr"/>
+                                        <exclude reference="wiB-ql-SRf"/>
                                         <exclude reference="Wdk-Qp-jWf"/>
                                         <exclude reference="dWp-yY-EDH"/>
                                         <exclude reference="gY3-Ky-AnL"/>
                                         <exclude reference="jwJ-Zk-Pdb"/>
                                         <exclude reference="vCV-W2-4OE"/>
                                         <exclude reference="yV4-d3-XiD"/>
-                                        <exclude reference="fNc-du-Yfr"/>
-                                        <exclude reference="wiB-ql-SRf"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=compact">
@@ -2269,14 +2299,14 @@ Swipe to get started.</string>
                                     </mask>
                                     <mask key="constraints">
                                         <include reference="9Xl-0i-wN6"/>
+                                        <include reference="fNc-du-Yfr"/>
+                                        <include reference="wiB-ql-SRf"/>
                                         <include reference="Wdk-Qp-jWf"/>
                                         <include reference="dWp-yY-EDH"/>
                                         <include reference="gY3-Ky-AnL"/>
                                         <include reference="jwJ-Zk-Pdb"/>
                                         <include reference="vCV-W2-4OE"/>
                                         <include reference="yV4-d3-XiD"/>
-                                        <include reference="fNc-du-Yfr"/>
-                                        <include reference="wiB-ql-SRf"/>
                                     </mask>
                                 </variation>
                             </view>
@@ -2629,7 +2659,7 @@ Swipe to get started.</string>
                         <barButtonItem key="leftBarButtonItem" image="icon_favorites" id="2zg-bl-iCD">
                             <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
-                                <segue destination="07F-WJ-48G" kind="custom" identifier="FavoritesListSegue" customClass="FavoritesListSegue" customModule="Releasify" customModuleProvider="target" id="BUP-e2-90c"/>
+                                <action selector="showFavoritesList:" destination="SCy-74-9E0" id="jzP-g1-Bke"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Da5-pS-Ult">
@@ -2660,26 +2690,6 @@ Swipe to get started.</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d8R-wZ-Eqs" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1641.75" y="-817.125"/>
-        </scene>
-        <!--Favorites Navigation Controller-->
-        <scene sceneID="zbg-3C-b0a">
-            <objects>
-                <navigationController title="Favorites Navigation Controller" automaticallyAdjustsScrollViewInsets="NO" id="07F-WJ-48G" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="oPe-Ja-KhK">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <color key="barTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="ndp-Pd-N3R" kind="relationship" relationship="rootViewController" id="pJt-lW-x8P"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="cDe-3V-qnN" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-95.25" y="445.875"/>
         </scene>
         <!--Add Subscription Navigation Controller-->
         <scene sceneID="Yh9-Mx-IOC">
@@ -2716,9 +2726,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="zgf-W2-bDZ"/>
         <segue reference="i1c-0T-qib"/>
-        <segue reference="gux-gb-W3x"/>
-        <segue reference="Iyy-Lr-QfG"/>
+        <segue reference="cZg-RQ-l62"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

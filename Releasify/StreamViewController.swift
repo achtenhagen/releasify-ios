@@ -69,6 +69,11 @@ class StreamViewController: UITableViewController {
 		refreshControl!.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = theme.refreshControlTintColor
 		self.streamTable.addSubview(refreshControl!)
+
+		// Double tap gesture on tab bar
+		let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(scrollListToTop))
+		doubleTapGesture.numberOfTapsRequired = 2
+		self.tabBarController?.tabBar.addGestureRecognizer(doubleTapGesture)
 		
 		// Handle first run
 		if self.appDelegate.firstRun {
@@ -88,6 +93,7 @@ class StreamViewController: UITableViewController {
 			}
 		}
 		
+		// Handle initial launch
 		if !appDelegate.completedRefresh {
 			refresh()
 		}
@@ -164,6 +170,10 @@ class StreamViewController: UITableViewController {
 				self.refreshControl!.endRefreshing()
 				self.handleError("Unable to update!", message: "Please try again later.", error: error)	
 		})
+	}
+
+	func scrollListToTop() {
+		self.streamTable.setContentOffset(CGPointZero, animated: true)
 	}
 	
 	// MARK: - Fallback if 3D Touch is unavailable

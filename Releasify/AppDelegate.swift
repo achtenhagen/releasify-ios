@@ -12,6 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	let debug = true
 	var window: UIWindow?
+	var backWindow: UIWindow?
 	var theme: Theme!
 	var userID = 0
 	var userDeviceToken: String?
@@ -115,7 +116,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			UIApplication.sharedApplication().cancelAllLocalNotifications()
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
-			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController			
+			let back = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesListController
+			self.backWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+			self.backWindow!.rootViewController = back
+			backWindow?.makeKeyAndVisible()
+			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
 		}
 		window?.makeKeyAndVisible()
 		

@@ -18,6 +18,7 @@ class TabBarController: UITabBarController {
 	
 	weak var notificationDelegate: AppControllerDelegate?
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	var navController = AppController()
 	var theme: Theme!
 	var streamController: StreamViewController!
 	var subscriptionController: SubscriptionController!
@@ -27,6 +28,10 @@ class TabBarController: UITabBarController {
 	var favListBarBtn: UIBarButtonItem!
 	var addBarBtn: UIBarButtonItem!
 	
+	@IBAction func showFavoritesList(sender: UIBarButtonItem) {
+		menuPressed()
+	}
+
 	@IBAction func addSubscription(sender: AnyObject) {
 		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
 	}
@@ -38,7 +43,10 @@ class TabBarController: UITabBarController {
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(addSubscriptionFromShortcutItem), name: "addSubscriptionShortcutItem", object: nil)
 		mediaQuery = MPMediaQuery.artistsQuery()
-		
+
+		// Navigation bar setup
+		navController = self.navigationController as! AppController
+
 		// Navigation bar items
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		favListBarBtn.tintColor = theme.globalTintColor
@@ -93,12 +101,38 @@ class TabBarController: UITabBarController {
 		for item in self.tabBar.items! {
 			item.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 		}
+
+		// Gestures for swipe down menu
+		let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(_:)))
+		swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+		navController.view.addGestureRecognizer(swipeDown)
+		let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(_:)))
+		swipeUp.direction = UISwipeGestureRecognizerDirection.Up
+		navController.view.addGestureRecognizer(swipeUp)
 	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-	
+
+	// MARK: - Handle swipe gestures
+	func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+		if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+			switch swipeGesture.direction {
+			case UISwipeGestureRecognizerDirection.Down:
+				menuPressed()
+			case UISwipeGestureRecognizerDirection.Up:
+				menuPressed()
+			default:
+				break
+			}
+		}
+	}
+
+	func menuPressed() {
+		navController.openAndCloseMenu()
+	}
+
 	// MARK: - Handle 3D Touch quick action
 	func addSubscriptionFromShortcutItem() {
 		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
