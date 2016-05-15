@@ -45,6 +45,7 @@ final class AppController: UINavigationController {
 			print("App Controller loaded.")
 		}
 
+		// Instantiate tab bar controller
 		if tabBarController == nil {
 			tabController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("TabBarController") as! TabBarController
 			tabController.notificationDelegate = self

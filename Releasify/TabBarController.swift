@@ -8,6 +8,7 @@
 
 import UIKit
 import MediaPlayer
+import StoreKit
 
 protocol TabControllerDelegate: class {
 	func animateTitleView()
@@ -44,6 +45,16 @@ class TabBarController: UITabBarController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(addSubscriptionFromShortcutItem), name: "addSubscriptionShortcutItem", object: nil)
 		mediaQuery = MPMediaQuery.artistsQuery()
 
+		// StoreKit API
+		StorefrontAssistant.countryCode { (countryCode, error) in
+			if let error = error {
+				print("Error: \(error)")
+			}
+			if let countryCode = countryCode {
+				print("Country code: \(countryCode)")
+			}
+		}
+
 		// Navigation bar setup
 		navController = self.navigationController as! AppController
 
@@ -71,6 +82,12 @@ class TabBarController: UITabBarController {
 		} else {
 			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1)
 		}
+
+		// Tab bar customizations
+//		if theme.style == .dark {
+//			let bgImageColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+//			self.tabBar.backgroundImage = onePixelImageFromColor(bgImageColor)
+//		}
 
 		// Add 1px border to top of tab bar
 		let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 1))
@@ -101,33 +118,11 @@ class TabBarController: UITabBarController {
 		for item in self.tabBar.items! {
 			item.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 		}
-
-		// Gestures for swipe down menu
-		let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(_:)))
-		swipeDown.direction = UISwipeGestureRecognizerDirection.Down
-		navController.view.addGestureRecognizer(swipeDown)
-		let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(_:)))
-		swipeUp.direction = UISwipeGestureRecognizerDirection.Up
-		navController.view.addGestureRecognizer(swipeUp)
 	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-
-	// MARK: - Handle swipe gestures
-	func respondToSwipeGesture(gesture: UIGestureRecognizer) {
-		if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-			switch swipeGesture.direction {
-			case UISwipeGestureRecognizerDirection.Down:
-				menuPressed()
-			case UISwipeGestureRecognizerDirection.Up:
-				menuPressed()
-			default:
-				break
-			}
-		}
-	}
 
 	func menuPressed() {
 		navController.openAndCloseMenu()
@@ -172,6 +167,17 @@ class TabBarController: UITabBarController {
 		}
 		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
+	}
+
+	// Create 1px image from color component
+	func onePixelImageFromColor(color: UIColor) -> UIImage {
+		let colorSpace = CGColorSpaceCreateDeviceRGB()
+		let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedLast.rawValue)
+		let context = CGBitmapContextCreate(nil, 1, 1, 8, 0, colorSpace, bitmapInfo.rawValue)
+		CGContextSetFillColorWithColor(context, color.CGColor)
+		CGContextFillRect(context, CGRectMake(0, 0, 1, 1))
+		let image = UIImage(CGImage: CGBitmapContextCreateImage(context)!)
+		return image
 	}
 }
 
