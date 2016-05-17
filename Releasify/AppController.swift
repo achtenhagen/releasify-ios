@@ -67,7 +67,6 @@ final class AppController: UINavigationController {
 
 	func activateSwipeToOpenMenu(onlyNavigation: Bool) {
 		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(_:)))
-
 		if onlyNavigation == true {
 			self.navigationBar.addGestureRecognizer(panGesture)
 		} else {
@@ -78,7 +77,6 @@ final class AppController: UINavigationController {
 	func openAndCloseMenu() {
 		var finalOrigin = CGPoint()
 		var f = CGRect()
-
 		f = window.frame
 		if f.origin.y == CGPointZero.y {
 			finalOrigin.y = CGRectGetHeight(UIScreen.mainScreen().bounds) - kHeaderHeight

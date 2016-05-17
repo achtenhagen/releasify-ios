@@ -216,19 +216,9 @@ class StreamViewController: UITableViewController {
 		UIApplication.sharedApplication().applicationIconBadgeNumber -= 1
 		if let albumID = userInfo["aps"]?["albumID"] as? Int {
 			API.sharedInstance.lookupAlbum(albumID, successHandler: { album in
-				if AppDB.sharedInstance.addAlbum(album) == 0 {
-					self.selectedAlbum = album
-					self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-					return
-				}
-				API.sharedInstance.fetchArtwork(album.artwork, successHandler: { artwork in
-					if AppDB.sharedInstance.addArtwork(album.artwork, artwork: artwork!) {
-						self.selectedAlbum = album
-						self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
-					}
-					}, errorHandler: {
-						self.handleError("Unable to download artwork!", message: "Please try again later.", error: API.Error.FailedToGetResource)
-				})
+				AppDB.sharedInstance.addAlbum(album)
+				self.selectedAlbum = album
+				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 				}, errorHandler: { (error) in
 					self.handleError("Failed to lookup album!", message: "Please try again later.", error: error)
 			})

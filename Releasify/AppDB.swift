@@ -569,11 +569,10 @@ final class AppDB {
 	// MARK: - Add album artwork
 	func addArtwork(hash: String, artwork: UIImage) -> Bool {
 		let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
-		if !NSFileManager.defaultManager().fileExistsAtPath(artworkPath) {
-			UIImageJPEGRepresentation(artwork, 1.0)!.writeToFile(artworkPath, atomically: true)
-			return true
+		if NSFileManager.defaultManager().fileExistsAtPath(artworkPath) {
+			deleteArtwork(hash)
 		}
-		return false
+		return UIImageJPEGRepresentation(artwork, 1.0)!.writeToFile(artworkPath, atomically: true)
 	}
 	
 	// MARK: - Delete album artwork

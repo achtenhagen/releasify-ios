@@ -125,6 +125,7 @@ class TabBarController: UITabBarController {
     }
 
 	func menuPressed() {
+		addBarBtn.enabled = !addBarBtn.enabled
 		navController.openAndCloseMenu()
 	}
 

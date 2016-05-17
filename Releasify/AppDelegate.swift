@@ -116,7 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			UIApplication.sharedApplication().cancelAllLocalNotifications()
 			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
-			let back = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesListController
+			let back = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("favoritesList") as! UINavigationController
 			self.backWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
 			self.backWindow!.rootViewController = back
 			backWindow?.makeKeyAndVisible()

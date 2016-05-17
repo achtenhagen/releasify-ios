@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import MediaPlayer
+import StoreKit
 
 class AlbumDetailController: UIViewController {
 	
@@ -14,6 +16,8 @@ class AlbumDetailController: UIViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	private var theme: AlbumDetailControllerTheme!
+	var canAddToLibrary = false
+	var mediaLibrary: MPMediaLibrary!
 	var album: Album?
 	var indexPath: NSIndexPath?
 	var artist: String?
@@ -58,10 +62,12 @@ class AlbumDetailController: UIViewController {
 			}
 		}
 		
+		// Set album artwork
 		albumArtwork.image = artwork
 		albumArtwork.layer.masksToBounds = true
 		albumArtwork.layer.cornerRadius = 2.0
 		artist = AppDB.sharedInstance.getAlbumArtist(album!.ID)!
+		self.navigationItem.title = artist
 		albumTitle.text = album!.title
 		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
 		albumTitle.textContainer.lineFragmentPadding = 0
@@ -91,9 +97,10 @@ class AlbumDetailController: UIViewController {
 			progressBar.hidden = true
 		}
 		
-		let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(AlbumDetailController.shareAlbum as (AlbumDetailController) -> () -> ()))
-		doubleTapGesture.numberOfTapsRequired = 2
-		albumArtwork.addGestureRecognizer(doubleTapGesture)
+		// Triple tap gesture
+		let tripleTapGesture = UITapGestureRecognizer(target: self, action: #selector(AlbumDetailController.downloadArtwork as (AlbumDetailController) -> () -> ()))
+		tripleTapGesture.numberOfTapsRequired = 3
+		albumArtwork.addGestureRecognizer(tripleTapGesture)
 		
 		switch UIScreen.mainScreen().bounds.height {
 		case 667:
@@ -108,25 +115,7 @@ class AlbumDetailController: UIViewController {
 		}
 		
 		if AppDB.sharedInstance.getArtwork(album!.artwork) == nil {
-			let subDir = (album!.artwork as NSString).substringWithRange(NSRange(location: 0, length: 2))
-			let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(album!.artwork)_large.jpg"
-			if let checkedURL = NSURL(string: albumURL) {
-				let request = NSURLRequest(URL: checkedURL)
-				UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-				NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
-					if error == nil {
-						if let HTTPResponse = response as? NSHTTPURLResponse {
-							if HTTPResponse.statusCode == 200 {
-								let image = UIImage(data: data!)
-								AppDB.sharedInstance.addArtwork(self.album!.artwork, artwork: image!)
-								self.albumArtwork.contentMode = .ScaleToFill
-								self.albumArtwork.image = image
-							}
-						}
-					}
-					UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-				})
-			}
+			downloadArtwork()
 		} else {
 			albumArtwork.image = AppDB.sharedInstance.getArtwork(album!.artwork)
 			albumArtwork.contentMode = .ScaleToFill
@@ -137,8 +126,20 @@ class AlbumDetailController: UIViewController {
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
+
+		// Check users media library capabilities
+		if #available(iOS 9.3, *) {
+			if SKCloudServiceController.authorizationStatus() == .Authorized {
+				let controller = SKCloudServiceController()
+				controller.requestCapabilitiesWithCompletionHandler { (capability, error) in
+					if capability.rawValue >= 256 {
+						self.canAddToLibrary = true
+					}
+				}
+			}
+		}
 	}
-	
+
 	override func viewDidDisappear(animated: Bool) {
 		if timer != nil {
 			timer.invalidate()
@@ -149,14 +150,40 @@ class AlbumDetailController: UIViewController {
 		super.didReceiveMemoryWarning()
 		timer.invalidate()
 	}
+
+	// Download album artwork
+	func downloadArtwork() {
+		guard let url = album?.artworkUrl else { return }
+		API.sharedInstance.fetchArtwork(url, successHandler: { (artwork) in
+				self.albumArtwork.contentMode = .ScaleToFill
+				self.albumArtwork.image = artwork
+				AppDB.sharedInstance.addArtwork(self.album!.artwork, artwork: artwork!)				
+			}, errorHandler: {
+				let alert = UIAlertController(title: "Error", message: "Failed to download album artwork.", preferredStyle: .Alert)
+				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+				self.presentViewController(alert, animated: true, completion: nil)
+		})
+	}
 	
 	@available(iOS 9.0, *)
 	override func previewActionItems() -> [UIPreviewActionItem] {
-		let buyTitle = timeDiff <= 0 ? "Purchase" : "Pre-Order"
+		var buyTitle = "Pre-Order"
+		if timeDiff <= 0 {
+			buyTitle = canAddToLibrary ? "Add to Library..." : "Purchase"
+		}
 		// 3D Touch purchase action
 		let purchaseAction = UIPreviewAction(title: buyTitle, style: .Default) { (action, viewController) -> Void in
-			if UIApplication.sharedApplication().canOpenURL(NSURL(string: (self.album?.iTunesUrl)!)!) {
-				UIApplication.sharedApplication().openURL(NSURL(string: (self.album?.iTunesUrl)!)!)
+			if #available(iOS 9.3, *) {
+				if self.canAddToLibrary {
+//					self.mediaLibrary = MPMediaLibrary()
+//					self.mediaLibrary.addItemWithProductID("255991760", completionHandler: { (entity, error) in
+//						print(entity)
+//					})
+				}
+			} else {
+				if UIApplication.sharedApplication().canOpenURL(NSURL(string: (self.album?.iTunesUrl)!)!) {
+					UIApplication.sharedApplication().openURL(NSURL(string: (self.album?.iTunesUrl)!)!)
+				}
 			}
 		}
 		// 3D Touch favorites action
