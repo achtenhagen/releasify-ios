@@ -26,10 +26,11 @@ class AlbumDetailController: UIViewController {
 	var timer: NSTimer!
 	var progress: Float = 0
 	var dateAdded: Double = 0
-	
-	@IBOutlet var shareActionBarBtn: UIBarButtonItem!
+
 	@IBOutlet weak var albumArtwork: UIImageView!
-	@IBOutlet weak var albumTitle: UITextView!
+	@IBOutlet var artworkOverlay: UIVisualEffectView!
+	@IBOutlet var albumTitle: UILabel!
+	@IBOutlet var artistTitle: UILabel!
 	@IBOutlet weak var copyrightLabel: UILabel!
 	@IBOutlet weak var firstDigitLabel: UILabel!
 	@IBOutlet weak var secondDigitLabel: UILabel!
@@ -39,9 +40,35 @@ class AlbumDetailController: UIViewController {
 	@IBOutlet weak var thirdTimeLabel: UILabel!
 	@IBOutlet weak var progressBar: UIProgressView!
 	@IBOutlet weak var detailContainer: UIView!
-	@IBOutlet weak var labelTopLayoutConstraint: NSLayoutConstraint!
-	@IBOutlet weak var detailContainerTopConstraint: NSLayoutConstraint!
+	@IBOutlet var buyBtn: UIButton!
+	@IBOutlet var favoriteBtn: UIButton!
+	@IBOutlet var shareBtn: UIButton!
+
+	// Dynamic constraints (default values correspond to iPhone 6)
+	@IBOutlet var leftDigitLeadingConstraint: NSLayoutConstraint!	   // 56
+	@IBOutlet var rightDigitLeadingConstraint: NSLayoutConstraint!	   // 56
+	@IBOutlet var leftTimeLabelLeadingConstraint: NSLayoutConstraint!  // 32
+	@IBOutlet var rightTimeLabelLeadingConstraint: NSLayoutConstraint! // 32
+	@IBOutlet var buyBtnTopConstraint: NSLayoutConstraint!			   // 60
+	@IBOutlet var buyBtnLeadingConstraint: NSLayoutConstraint!		   // 50
+	@IBOutlet var favoriteBtnTopConstraint: NSLayoutConstraint!		   // 67
+	@IBOutlet var shareBtnTopConstraint: NSLayoutConstraint!		   // 67
+	@IBOutlet var buyBtnTrailingConstraint: NSLayoutConstraint!		   // 50
+	@IBOutlet var copyrightLabelTopConstraint: NSLayoutConstraint!	   // 70
 	
+	// Button actions
+	@IBAction func buyAlbum(sender: AnyObject) {
+		if UIApplication.sharedApplication().canOpenURL(NSURL(string: (self.album?.iTunesUrl)!)!) {
+			UIApplication.sharedApplication().openURL(NSURL(string: (self.album?.iTunesUrl)!)!)
+		}
+	}
+
+	@IBAction func favoriteAlbum(sender: AnyObject) {
+		// Add to favorites list
+		Favorites.sharedInstance.addFavorite(album!)
+		Favorites.sharedInstance.save()
+	}
+
 	@IBAction func shareAlbum(sender: AnyObject) {
 		shareAlbum()
 	}
@@ -50,7 +77,6 @@ class AlbumDetailController: UIViewController {
 		super.viewDidLoad()
 
 		theme = AlbumDetailControllerTheme(style: appDelegate.theme.style)
-		shareActionBarBtn.tintColor = theme.globalTintColor
 		
 		// Check if remote artwork present, else load local file, else use placeholder
 		if artwork == nil {
@@ -61,20 +87,42 @@ class AlbumDetailController: UIViewController {
 				artwork = UIImage(named: filename)!
 			}
 		}
-		
+
+		// Dynamic constraints to supported other screen sizes
+		switch UIScreen.mainScreen().bounds.height {
+		case 568: // iPhone 5
+			leftDigitLeadingConstraint.constant = 48
+			rightDigitLeadingConstraint.constant = leftDigitLeadingConstraint.constant
+			leftTimeLabelLeadingConstraint.constant = 24
+			rightTimeLabelLeadingConstraint.constant = leftTimeLabelLeadingConstraint.constant
+			favoriteBtnTopConstraint.constant = 47
+			shareBtnTopConstraint.constant = favoriteBtnTopConstraint.constant
+			buyBtnTopConstraint.constant = 40
+			buyBtnLeadingConstraint.constant = 43
+			buyBtnTrailingConstraint.constant = buyBtnLeadingConstraint.constant
+			copyrightLabelTopConstraint.constant = 45
+		case 736: // iPhone 6+
+			copyrightLabelTopConstraint.constant = 98
+		default:
+			break
+		}
+
 		// Set album artwork
 		albumArtwork.image = artwork
 		albumArtwork.layer.masksToBounds = true
 		albumArtwork.layer.cornerRadius = 2.0
 		artist = AppDB.sharedInstance.getAlbumArtist(album!.ID)!
-		self.navigationItem.title = artist
+		artistTitle.text = artist
 		albumTitle.text = album!.title
-		albumTitle.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 0, right: 0)
-		albumTitle.textContainer.lineFragmentPadding = 0
 		copyrightLabel.text = album!.copyright
-		
-		// Theme Settings
+
+		// Artwork overlay
+		artworkOverlay.layer.masksToBounds = true
+		artworkOverlay.layer.cornerRadius = 2.0
+
+		// Theme settings
 		albumTitle.textColor = theme.albumTitleColor
+		artistTitle.textColor = theme.artistTitleColor
 		copyrightLabel.textColor = theme.footerLabelColor
 		progressBar.trackTintColor = theme.progressBarBackTintColor
 		firstDigitLabel.textColor = theme.digitLabelColor
@@ -83,37 +131,40 @@ class AlbumDetailController: UIViewController {
 		firstTimeLabel.textColor = theme.timeLabelColor
 		secondTimeLabel.textColor = theme.timeLabelColor
 		thirdTimeLabel.textColor = theme.timeLabelColor
+
+		// Buy button
+		buyBtn.layer.cornerRadius = 4
+		buyBtn.layer.borderColor = theme.globalTintColor.CGColor
+		buyBtn.layer.borderWidth = 1
 		
+		// Configure things based on album availability
 		timeDiff = album!.releaseDate - NSDate().timeIntervalSince1970
 		if timeDiff > 0 {
-			self.navigationController?.navigationBar.shadowImage = UIImage()
+			self.navigationController?.navigationBar.shadowImage = UIImage()			
 			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
 			progressBar.progress = album!.getProgressSinceDate(dateAdded)
+			buyBtn.setTitle("Pre-Order", forState: .Normal)
+			buyBtn.tintColor = theme.preOrderBtnColor
+			buyBtn.layer.borderColor = theme.preOrderBtnColor.CGColor
+			if theme.style == .dark {
+				favoriteBtn.setImage(UIImage(named: "icon_favorite_pre"), forState: .Normal)
+				shareBtn.setImage(UIImage(named: "icon_share_pre"), forState: .Normal)
+			}
 			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(update), userInfo: nil, repeats: true)
 		} else {
 			if theme.style == .light {
 				self.navigationController?.navigationBar.shadowImage = UIImage(named: "navbar_shadow")
 			}
-			progressBar.hidden = true
+			progressBar.hidden = true			
+			artworkOverlay.hidden = true
 		}
 		
-		// Triple tap gesture
+		// Triple tap gesture to re-download artwork
 		let tripleTapGesture = UITapGestureRecognizer(target: self, action: #selector(AlbumDetailController.downloadArtwork as (AlbumDetailController) -> () -> ()))
 		tripleTapGesture.numberOfTapsRequired = 3
 		albumArtwork.addGestureRecognizer(tripleTapGesture)
-		
-		switch UIScreen.mainScreen().bounds.height {
-		case 667:
-			detailContainerTopConstraint.constant = 30
-			labelTopLayoutConstraint.constant = 70
-		case 736:
-			detailContainerTopConstraint.constant = 60
-			labelTopLayoutConstraint.constant = 70
-		default:
-			detailContainerTopConstraint.constant = 15
-			labelTopLayoutConstraint.constant = 45
-		}
-		
+
+		// Fetch artwork if not available
 		if AppDB.sharedInstance.getArtwork(album!.artwork) == nil {
 			downloadArtwork()
 		} else {
@@ -121,6 +172,7 @@ class AlbumDetailController: UIViewController {
 			albumArtwork.contentMode = .ScaleToFill
 		}
 		
+		// Insert background gradient depending on theme
 		if theme.style == .dark {
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
@@ -268,24 +320,30 @@ class AlbumDetailController: UIViewController {
 private class AlbumDetailControllerTheme: Theme {
 	var progressBarBackTintColor: UIColor!
 	var albumTitleColor: UIColor!
+	var artistTitleColor: UIColor!
 	var timeLabelColor: UIColor!
 	var digitLabelColor: UIColor!
 	var footerLabelColor: UIColor!
+	var preOrderBtnColor: UIColor!
 	
 	override init (style: Styles) {
 		super.init(style: style)
 		switch style {
 		case .dark:
-			albumTitleColor = UIColor.whiteColor()
 			progressBarBackTintColor = UIColor(red: 0, green: 52/255, blue: 72/255, alpha: 1)
-			timeLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-			digitLabelColor = blueColor
+			albumTitleColor = UIColor.whiteColor()
+			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+			digitLabelColor = UIColor.whiteColor()
+			timeLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.6)
+			preOrderBtnColor = orangeColor
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 0.5)
 		case .light:
-			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			progressBarBackTintColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
-			timeLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 			digitLabelColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			timeLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			preOrderBtnColor = orangeColor
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 1)
 		}
 	}
