@@ -31,15 +31,16 @@ final class AppController: UINavigationController {
 		super.viewDidLoad()
 		
 		// AppDB.sharedInstance.upgrade_db_v2()
+		// Favorites.sharedInstance.clearList()
 
-		AppDB.sharedInstance.getAlbums()
-		AppDB.sharedInstance.getArtists()
+		// Get pending artists waiting to be removed
 		AppDB.sharedInstance.getPendingArtists()
 		
 		if appDelegate.removeExpiredAlbums {
 			AppDB.sharedInstance.removeExpiredAlbums()
 		}
 		
+		// Print debug info
 		if appDelegate.debug {
 			print("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications!.count)")
 			print("App Controller loaded.")

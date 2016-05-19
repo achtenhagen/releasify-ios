@@ -12,7 +12,6 @@ class FavoritesListController: UIViewController {
 	
 	private var theme: FavoritesListControllerTheme!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	var favorites: [Album]!
 	var selectedAlbum: Album!
 
 	@IBOutlet var favoritesTable: UITableView!
@@ -27,17 +26,21 @@ class FavoritesListController: UIViewController {
 
 		theme = FavoritesListControllerTheme(style: appDelegate.theme.style)
 
-		favorites = Favorites.sharedInstance.list
-		self.favoritesTable.backgroundColor = theme.tableBackgroundColor
-		self.favoritesTable.separatorColor = theme.cellSeparatorColor
+		// Observers
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(reloadFavoritesList), name: "reloadFavList", object: nil)
 
 		// Theme customizations
 		self.view.backgroundColor = theme.navBarTintColor
+		self.favoritesTable.backgroundColor = theme.tableBackgroundColor
+		self.favoritesTable.separatorColor = theme.cellSeparatorColor
 		if theme.style == .dark {
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
+
+		// Workaround for when the both navbar buttons are pressed at the same time
+		self.resignFirstResponder()
     }
 	
 	override func viewWillAppear(animated: Bool) {
@@ -50,6 +53,10 @@ class FavoritesListController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+
+	func reloadFavoritesList() {		
+		self.favoritesTable.reloadData()
+	}
 	
     // MARK: - Navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -67,11 +74,12 @@ extension FavoritesListController: UITableViewDataSource {
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return favorites.count
+		return Favorites.sharedInstance.list.count
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("favoritesCell", forIndexPath: indexPath) as! FavoritesListCell
+		let favorites = Favorites.sharedInstance.list
 		cell.artwork.image = AppDB.sharedInstance.getArtwork(favorites[indexPath.row].artwork)
 		cell.numberLabel.text = "\(indexPath.row + 1)"
 		cell.albumTitle.text = favorites[indexPath.row].title
@@ -97,16 +105,15 @@ extension FavoritesListController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension FavoritesListController: UITableViewDelegate {
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		selectedAlbum = favorites[indexPath.row]
+		selectedAlbum = Favorites.sharedInstance.list[indexPath.row]
 		self.performSegueWithIdentifier("FavoritesListAlbumSegue", sender: self)
 	}
 	
 	func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
 		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
-			self.favorites.removeAtIndex(indexPath.row)
-			Favorites.sharedInstance.deleteFavorite(indexPath.row)
+			Favorites.sharedInstance.removeFavorite(indexPath.row)
 			tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-			if self.favorites.count == 0 {
+			if Favorites.sharedInstance.list.count == 0 {
 				// Show placeholder for empty view
 			}
 		})

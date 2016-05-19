@@ -36,6 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
 		if reset {
 			AppDB.sharedInstance.reset()
+			Favorites.sharedInstance.clearList()
 			application.cancelAllLocalNotifications()
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")

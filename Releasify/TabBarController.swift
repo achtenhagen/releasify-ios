@@ -30,6 +30,7 @@ class TabBarController: UITabBarController {
 	var addBarBtn: UIBarButtonItem!
 	
 	@IBAction func showFavoritesList(sender: UIBarButtonItem) {
+		Favorites.sharedInstance.load()
 		menuPressed()
 	}
 

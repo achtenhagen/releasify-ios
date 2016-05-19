@@ -15,6 +15,7 @@
 		5161265C1B9A7D3000171A93 /* AlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5161265A1B9A7D3000171A93 /* AlbumCell.swift */; };
 		516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516AEE581ACAD61D0065B567 /* AppDB.swift */; };
 		517D6E0D1B6585DC002EC864 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517D6E0C1B6585DC002EC864 /* AppController.swift */; };
+		517EF0CE1CECAA1400DF84E7 /* StorefrontCountries.plist in Resources */ = {isa = PBXBuildFile; fileRef = 517EF0CD1CECAA1400DF84E7 /* StorefrontCountries.plist */; };
 		5186CCF21BD7E59400371F91 /* IntroPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5186CCF11BD7E59400371F91 /* IntroPageController.swift */; };
 		518907951B46D61100F0E037 /* SearchResultsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 518907941B46D61100F0E037 /* SearchResultsHeader.xib */; };
 		518907971B46D67500F0E037 /* SearchResultsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518907961B46D67500F0E037 /* SearchResultsHeader.swift */; };
@@ -26,7 +27,6 @@
 		519CE95A1BD7039B0078B270 /* Intro02Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519CE9591BD7039B0078B270 /* Intro02Controller.swift */; };
 		519CE95C1BD703A90078B270 /* Intro03Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519CE95B1BD703A90078B270 /* Intro03Controller.swift */; };
 		51A81C211CE8D7AA005F83E6 /* StorefrontAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A81C201CE8D7AA005F83E6 /* StorefrontAssistant.swift */; };
-		51A81C231CE8D81A005F83E6 /* StorefrontCountries.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A81C221CE8D81A005F83E6 /* StorefrontCountries.plist */; };
 		51B09ED61B112D23007F871C /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B09ED51B112D23007F871C /* SearchResultCell.swift */; };
 		51B45D231C95A70800734CE4 /* FavoritesListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B45D221C95A70800734CE4 /* FavoritesListController.swift */; };
 		51B45D251C95C35700734CE4 /* Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B45D241C95C35700734CE4 /* Favorites.swift */; };
@@ -62,6 +62,7 @@
 		5161265A1B9A7D3000171A93 /* AlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCell.swift; sourceTree = "<group>"; };
 		516AEE581ACAD61D0065B567 /* AppDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = AppDB.swift; sourceTree = "<group>"; tabWidth = 4; usesTabs = 1; wrapsLines = 0; };
 		517D6E0C1B6585DC002EC864 /* AppController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
+		517EF0CD1CECAA1400DF84E7 /* StorefrontCountries.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = StorefrontCountries.plist; sourceTree = "<group>"; };
 		5186CCF11BD7E59400371F91 /* IntroPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroPageController.swift; sourceTree = "<group>"; };
 		518907941B46D61100F0E037 /* SearchResultsHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchResultsHeader.xib; sourceTree = "<group>"; };
 		518907961B46D67500F0E037 /* SearchResultsHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsHeader.swift; sourceTree = "<group>"; };
@@ -73,7 +74,6 @@
 		519CE9591BD7039B0078B270 /* Intro02Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro02Controller.swift; sourceTree = "<group>"; };
 		519CE95B1BD703A90078B270 /* Intro03Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro03Controller.swift; sourceTree = "<group>"; };
 		51A81C201CE8D7AA005F83E6 /* StorefrontAssistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorefrontAssistant.swift; sourceTree = "<group>"; };
-		51A81C221CE8D81A005F83E6 /* StorefrontCountries.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = StorefrontCountries.plist; path = ../../../../../Downloads/StorefrontCountries.plist; sourceTree = "<group>"; };
 		51A830481AC2EB70006BCF1B /* Releasify.Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Releasify.Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		51B09ED51B112D23007F871C /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		51B45D221C95A70800734CE4 /* FavoritesListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesListController.swift; sourceTree = "<group>"; };
@@ -248,7 +248,7 @@
 				518FAEEE1C665A5000499A17 /* Theme.swift */,
 				51D8753F1B1B2AD900353347 /* Devices.swift */,
 				51A81C201CE8D7AA005F83E6 /* StorefrontAssistant.swift */,
-				51A81C221CE8D81A005F83E6 /* StorefrontCountries.plist */,
+				517EF0CD1CECAA1400DF84E7 /* StorefrontCountries.plist */,
 				518B76871B0ECFA90009F138 /* Images.xcassets */,
 				514BCA761AED68CE00A1A18C /* Settings.bundle */,
 				51F84DC81AB750A000D51E0C /* Supporting Files */,
@@ -338,7 +338,7 @@
 				51E21F171BE69F2C0099FB27 /* AlbumCell.xib in Resources */,
 				518B76881B0ECFA90009F138 /* Images.xcassets in Resources */,
 				51F84DD51AB750A100D51E0C /* LaunchScreen.xib in Resources */,
-				51A81C231CE8D81A005F83E6 /* StorefrontCountries.plist in Resources */,
+				517EF0CE1CECAA1400DF84E7 /* StorefrontCountries.plist in Resources */,
 				518907951B46D61100F0E037 /* SearchResultsHeader.xib in Resources */,
 				51F80F101C9DB10100BB4624 /* SearchResultArtistCell.xib in Resources */,
 			);

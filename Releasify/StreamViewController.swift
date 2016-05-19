@@ -40,6 +40,7 @@ class StreamViewController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		// Initialize
 		tmpArtwork = [String:UIImage]()
 		tmpUrl = [Int:String]()
 		theme = StreamViewControllerTheme(style: appDelegate.theme.style)
@@ -97,17 +98,6 @@ class StreamViewController: UITableViewController {
 		if !appDelegate.completedRefresh {
 			refresh()
 		}
-
-		// Get iTunes Feed if no local content is available
-//		if AppDB.sharedInstance.albums.count == 0 {
-//			iTunesFeed = [Album]()
-//			API.sharedInstance.getiTunesFeed({ (feed) in
-//				self.iTunesFeed = feed
-//			},
-//			errorHandler: { (error) in
-//				// handle error
-//			})
-//		}
 	}
 
 	override func viewWillAppear(animated: Bool) {
@@ -151,6 +141,18 @@ class StreamViewController: UITableViewController {
 			// Reload data
 			AppDB.sharedInstance.getArtists()
 			AppDB.sharedInstance.getAlbums()
+
+			// Get iTunes Feed if no local content is available
+			//		if AppDB.sharedInstance.albums.count == 0 {
+			//			iTunesFeed = [Album]()
+			//			API.sharedInstance.getiTunesFeed({ (feed) in
+			//				self.iTunesFeed = feed
+			//			},
+			//			errorHandler: { (error) in
+			//				// handle error
+			//			})
+			//		}
+
 			self.streamTable.reloadData()
 
 			// Update content hash
@@ -250,11 +252,12 @@ class StreamViewController: UITableViewController {
 	}
 	
 	// MARK: - Unsubscribe from an album
-	func unsubscribeAlbum (album: Album, indexPath: NSIndexPath) {
+	func unsubscribeFromAlbum(album: Album, indexPath: NSIndexPath) {
 		AppDB.sharedInstance.deleteAlbum(album.ID, index: indexPath.row)
 		AppDB.sharedInstance.deleteArtwork(album.artwork)
 		self.tmpArtwork?.removeValueForKey(album.artwork)
 		self.tmpUrl?.removeValueForKey(album.ID)
+		Favorites.sharedInstance.removeFavoriteIfExists(album)
 		self.streamTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
 		API.sharedInstance.unsubscribeAlbum(album.iTunesUniqueID, successHandler: nil, errorHandler: { (error) in
 			self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
@@ -365,7 +368,7 @@ class StreamViewController: UITableViewController {
 						}
 					}
 				}
-				self.unsubscribeAlbum(album, indexPath: indexPath)
+				self.unsubscribeFromAlbum(album, indexPath: indexPath)
 			}))
 			self.presentViewController(alert, animated: true, completion: nil)
 		})
@@ -418,7 +421,7 @@ class StreamViewController: UITableViewController {
 // MARK: - StreamViewControllerDelegate
 extension StreamViewController: StreamViewControllerDelegate {
 	func removeAlbum(album: Album, indexPath: NSIndexPath) {
-		self.unsubscribeAlbum(album, indexPath: indexPath)
+		self.unsubscribeFromAlbum(album, indexPath: indexPath)
 	}
 }
 

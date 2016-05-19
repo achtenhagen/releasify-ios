@@ -14,6 +14,7 @@ final class Favorites {
 	private let rootKey = "favList"
 	var list: [Album]!
 	
+	// MARK: - Add new item to list
 	func addFavorite(album: Album) {
 		var exists = false
 		for favorite in list {
@@ -23,16 +24,31 @@ final class Favorites {
 			}
 		}
 		if !exists {
-			list.append(album)
-			print("Added new item")
+			list.append(album)			
+		}
+	}
+
+	// MARK: - Clear the list
+	func clearList() {
+		list = [Album]()
+		save()
+	}
+	
+	// MARK: - Remove item from list with known index
+	func removeFavorite(index: Int) {
+		list.removeAtIndex(index)
+	}
+
+	// MARK: - Remove item from list with unknown index
+	func removeFavoriteIfExists(album: Album) {
+		for (key, value) in list.enumerate() {
+			if value.ID == album.ID {
+				removeFavorite(key)
+			}
 		}
 	}
 	
-	func deleteFavorite(index: Int) {
-		list.removeAtIndex(index)
-	}
-	
-	// MARK: - Get favorite albums
+	// MARK: - Load favorites list
 	func load() {
 		list = [Album]()
 		if let data = NSData(contentsOfFile: objectFile) {
@@ -42,13 +58,12 @@ final class Favorites {
 		}
 	}
 	
+	// MARK: - Save favorites list
 	func save() {
 		let data = NSMutableData()
 		let archiver = NSKeyedArchiver(forWritingWithMutableData: data)
-		
 		archiver.encodeObject(list, forKey: rootKey)
 		archiver.finishEncoding()
-		
 		let success = data.writeToFile(objectFile, atomically: true)
 		if !success {
 			fatalError("Failed to unarchive object!")
