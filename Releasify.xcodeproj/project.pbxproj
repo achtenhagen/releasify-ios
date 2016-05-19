@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5101C43F1BDB239100E5ABA8 /* Intro04Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5101C43E1BDB239100E5ABA8 /* Intro04Controller.swift */; };
+		5109A50D1CEE33BD00EAFAA3 /* UnreadItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5109A50C1CEE33BD00EAFAA3 /* UnreadItems.swift */; };
 		512B69241BE6FCB3003752A8 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512B69231BE6FCB3003752A8 /* Notification.swift */; };
 		51386CCD1C80C63D006F7E60 /* AddSubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */; };
 		514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 514BCA761AED68CE00A1A18C /* Settings.bundle */; };
@@ -55,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		5101C43E1BDB239100E5ABA8 /* Intro04Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro04Controller.swift; sourceTree = "<group>"; };
+		5109A50C1CEE33BD00EAFAA3 /* UnreadItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadItems.swift; sourceTree = "<group>"; };
 		512B69231BE6FCB3003752A8 /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSubscriptionController.swift; sourceTree = "<group>"; };
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 			children = (
 				519C8ACE1C653819006114EC /* StreamCell.swift */,
 				51D959471C643965004B16AB /* StreamViewController.swift */,
+				5109A50C1CEE33BD00EAFAA3 /* UnreadItems.swift */,
 			);
 			name = "Stream View";
 			sourceTree = "<group>";
@@ -372,6 +375,7 @@
 				51DD31C61C6E560E005BAE85 /* TabBarController.swift in Sources */,
 				5186CCF21BD7E59400371F91 /* IntroPageController.swift in Sources */,
 				51F84DED1AB7A91B00D51E0C /* ArtistPicker.swift in Sources */,
+				5109A50D1CEE33BD00EAFAA3 /* UnreadItems.swift in Sources */,
 				517D6E0D1B6585DC002EC864 /* AppController.swift in Sources */,
 				51386CCD1C80C63D006F7E60 /* AddSubscriptionController.swift in Sources */,
 				51CB158B1C14F092006AEFFF /* SubscriptionDetailController.swift in Sources */,

@@ -118,8 +118,8 @@ final class API {
 	}
 	
 	// MARK: - Refresh Content
-	func refreshContent(successHandler: ((newItems: [Album], contentHash: String) -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
-		var newItems = [Album]()
+	func refreshContent(successHandler: ((processedAlbums: [Album], contentHash: String) -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
+		var processedAlbums = [Album]()
 		var postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(appDelegate.allowExplicitContent ? 1 : 0)"
 		if appDelegate.userDeviceToken != nil {
 			postString += "&token=\(appDelegate.userDeviceToken!)"
@@ -131,7 +131,7 @@ final class API {
 			if statusCode != 200 {
 				// No new content available
 				if statusCode == 204 {
-					if let handler: Void = successHandler?(newItems: newItems, contentHash: self.appDelegate.contentHash!) {
+					if let handler: Void = successHandler?(processedAlbums: processedAlbums, contentHash: self.appDelegate.contentHash!) {
 						handler
 						return
 					}
@@ -160,11 +160,11 @@ final class API {
 				return
 			}
 
-			newItems = self.processAlbumsFrom(content)
+			processedAlbums = self.processAlbumsFrom(content)
 			self.processSubscriptions(subscriptions)
 			
 			// Pass new content back thru closure
-			if let handler: Void = successHandler?(newItems: newItems, contentHash: contentHash) {
+			if let handler: Void = successHandler?(processedAlbums: processedAlbums, contentHash: contentHash) {
 				handler
 			}
 			},

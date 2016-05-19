@@ -230,16 +230,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			completionHandler(false)
 		}
 	}
+
+	func applicationDidBecomeActive(application: UIApplication) {
+		UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+	}
+
+	func applicationWillTerminate(application: UIApplication) {
+		UnreadItems.sharedInstance.save()
+	}
 	
 	func applicationWillResignActive(application: UIApplication) {}
 	
 	func applicationDidEnterBackground(application: UIApplication) {}
 	
 	func applicationWillEnterForeground(application: UIApplication) {}
-	
-	func applicationDidBecomeActive(application: UIApplication) {
-		UIApplication.sharedApplication().applicationIconBadgeNumber = 0
-	}
-	
-	func applicationWillTerminate(application: UIApplication) {}
+
 }

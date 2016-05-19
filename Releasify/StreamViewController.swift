@@ -16,8 +16,7 @@ protocol StreamViewControllerDelegate: class {
 class StreamViewController: UITableViewController {
 	
 	private var theme: StreamViewControllerTheme!
-	weak var delegate: AppControllerDelegate?
-	weak var tabBarDelegate: TabControllerDelegate?
+	weak var delegate: AppControllerDelegate?	
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let reuseIdentifier = "streamCell"
@@ -93,6 +92,11 @@ class StreamViewController: UITableViewController {
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
 		}
+
+		// Load unread items
+		UnreadItems.sharedInstance.load()
+		let unreadCount = UnreadItems.sharedInstance.list.count
+		self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(UnreadItems.sharedInstance.list.count)
 		
 		// Handle initial launch
 		if !appDelegate.completedRefresh {
@@ -117,11 +121,11 @@ class StreamViewController: UITableViewController {
 	
 	// MARK: - Refresh Content
 	func refresh() {
-		tabBarDelegate?.animateTitleView()
-		API.sharedInstance.refreshContent({ (newItems, contentHash) in
-			for album in newItems {
+		API.sharedInstance.refreshContent({ (processedAlbums, contentHash) in
+			for album in processedAlbums {
 				let newAlbumID = AppDB.sharedInstance.addAlbum(album)
 				if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications!.count < 64 {
+					UnreadItems.sharedInstance.list.append(newAlbumID)
 					let remaining = Double(album.releaseDate) - Double(NSDate().timeIntervalSince1970)
 					if remaining > 0 {
 						let notification = UILocalNotification()
@@ -142,16 +146,10 @@ class StreamViewController: UITableViewController {
 			AppDB.sharedInstance.getArtists()
 			AppDB.sharedInstance.getAlbums()
 
-			// Get iTunes Feed if no local content is available
-			//		if AppDB.sharedInstance.albums.count == 0 {
-			//			iTunesFeed = [Album]()
-			//			API.sharedInstance.getiTunesFeed({ (feed) in
-			//				self.iTunesFeed = feed
-			//			},
-			//			errorHandler: { (error) in
-			//				// handle error
-			//			})
-			//		}
+			// Show iTunes Feed if no local content is available
+			if AppDB.sharedInstance.albums.count == 0 {
+				self.getiTunesFeed()
+			}
 
 			self.streamTable.reloadData()
 
@@ -163,14 +161,26 @@ class StreamViewController: UITableViewController {
 			self.appDelegate.completedRefresh = true
 			NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
 
-			// Indicate availability of new content
+			// Update tab bar item badge value
+			let unreadCount = UnreadItems.sharedInstance.list.count
+			self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(UnreadItems.sharedInstance.list.count)
+
+			// Complete refresh
 			self.refreshControl!.endRefreshing()
-			if newItems.count > 0 {}
-			self.tabBarDelegate!.animateTitleView()
 			},
 			errorHandler: { (error) in
 				self.refreshControl!.endRefreshing()
 				self.handleError("Unable to update!", message: "Please try again later.", error: error)	
+		})
+	}
+
+	// MARK: - Get iTunes Feed
+	func getiTunesFeed() {
+		iTunesFeed = [Album]()
+		API.sharedInstance.getiTunesFeed({ (feed) in
+			self.iTunesFeed = feed
+		}, errorHandler: { (error) in
+
 		})
 	}
 
@@ -181,7 +191,7 @@ class StreamViewController: UITableViewController {
 	// MARK: - Fallback if 3D Touch is unavailable
 	func registerLongPressGesture() {
 		let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(StreamViewController.longPressGestureRecognized(_:)))
-		longPressGesture.minimumPressDuration = 1.0
+		longPressGesture.minimumPressDuration = 1
 		self.streamTable.addGestureRecognizer(longPressGesture)
 	}
 	
@@ -340,6 +350,11 @@ class StreamViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
+		if UnreadItems.sharedInstance.removeItem(albumID) {
+			let count = UnreadItems.sharedInstance.list.count
+			self.tabBarItem.badgeValue = count == 0 ? nil : String(count)
+		}
 		selectedAlbum = AppDB.sharedInstance.albums[indexPath.row]
 		self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 	}
@@ -349,7 +364,7 @@ class StreamViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, didUnhighlightRowAtIndexPath indexPath: NSIndexPath) {
-		tableView.cellForRowAtIndexPath(indexPath)?.alpha = 1.0
+		tableView.cellForRowAtIndexPath(indexPath)?.alpha = 1
 	}
 	
 	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {

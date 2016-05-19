@@ -133,9 +133,9 @@ class AlbumDetailController: UIViewController {
 		thirdTimeLabel.textColor = theme.timeLabelColor
 
 		// Buy button
-		buyBtn.layer.cornerRadius = 4
 		buyBtn.layer.borderColor = theme.globalTintColor.CGColor
 		buyBtn.layer.borderWidth = 1
+		buyBtn.layer.cornerRadius = 4
 		
 		// Configure things based on album availability
 		timeDiff = album!.releaseDate - NSDate().timeIntervalSince1970
@@ -186,6 +186,7 @@ class AlbumDetailController: UIViewController {
 				controller.requestCapabilitiesWithCompletionHandler { (capability, error) in
 					if capability.rawValue >= 256 {
 						self.canAddToLibrary = true
+						self.buyBtn.setTitle("Add to Library", forState: .Normal)
 					}
 				}
 			}

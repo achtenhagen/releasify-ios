@@ -8,9 +8,9 @@
 
 import UIKit
 
-let objectFile = documents + "/favList.archive"
 final class Favorites {
 	static let sharedInstance = Favorites()
+	private let objectFile = documents + "/favList.archive"
 	private let rootKey = "favList"
 	var list: [Album]!
 	
@@ -24,7 +24,7 @@ final class Favorites {
 			}
 		}
 		if !exists {
-			list.append(album)			
+			list.append(album)
 		}
 	}
 

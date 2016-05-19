@@ -10,11 +10,6 @@ import UIKit
 import MediaPlayer
 import StoreKit
 
-protocol TabControllerDelegate: class {
-	func animateTitleView()
-	func changeTitleViewText(title: String)
-}
-
 class TabBarController: UITabBarController {
 	
 	weak var notificationDelegate: AppControllerDelegate?
@@ -66,14 +61,9 @@ class TabBarController: UITabBarController {
 		addBarBtn.tintColor = theme.globalTintColor
 		
 		// Navigation item title view
-		let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
-		titleLabel.backgroundColor = UIColor.clearColor()
-		titleLabel.textAlignment = NSTextAlignment.Center
-		titleLabel.textColor = theme.globalTintColor
-		titleLabel.font = UIFont.systemFontOfSize(17)
-		titleLabel.adjustsFontSizeToFitWidth = true
-		titleLabel.text = "Releasify"
-		self.navigationItem.titleView = titleLabel
+		let titleImage = UIImageView(image: UIImage(named: "icon_navbar"))
+		titleImage.sizeToFit()
+		self.navigationItem.titleView = titleImage
 
 		// Theme customizations
 		if theme.style == .dark {
@@ -99,7 +89,6 @@ class TabBarController: UITabBarController {
 		if streamController == nil {
 			streamController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("StreamController") as! StreamViewController
 			streamController.delegate = notificationDelegate
-			streamController.tabBarDelegate = self
 		}
 		
 		if subscriptionController == nil {
@@ -107,7 +96,7 @@ class TabBarController: UITabBarController {
 		}
 		
 		self.setViewControllers([streamController, subscriptionController], animated: true)
-		
+
 		// Handle 3D Touch quick action while app is not running
 		if let shortcutItem = appDelegate.shortcutKeyDescription {
 			if shortcutItem == "add-subscription" {
@@ -180,34 +169,5 @@ class TabBarController: UITabBarController {
 		CGContextFillRect(context, CGRectMake(0, 0, 1, 1))
 		let image = UIImage(CGImage: CGBitmapContextCreateImage(context)!)
 		return image
-	}
-}
-
-// MARK: - TabControllerDelegate
-extension TabBarController: TabControllerDelegate {
-	func animateTitleView() {
-		let animation = CATransition()
-		animation.delegate = self
-		animation.duration = 0.25
-		animation.removedOnCompletion = false
-		animation.type = kCATransitionPush
-		animation.subtype = kCATransitionFromTop
-		animation.beginTime = CACurrentMediaTime() + 1
-		animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-		animation.setValue("titleView", forKey: "animationKey")
-		self.navigationItem.titleView!.layer.addAnimation(animation, forKey: "changeTitle")
-	}
-
-	func changeTitleViewText(title: String) {
-		 let label = self.navigationItem.titleView as! UILabel
-		 label.text = title
-	}
-
-	override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-		let value = anim.valueForKey("animationKey") as! String
-		if value == "titleView" {
-			changeTitleViewText("Releasify")
-			return
-		}
 	}
 }

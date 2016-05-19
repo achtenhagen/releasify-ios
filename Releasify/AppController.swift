@@ -36,6 +36,7 @@ final class AppController: UINavigationController {
 		// Get pending artists waiting to be removed
 		AppDB.sharedInstance.getPendingArtists()
 		
+		// Housekeeping
 		if appDelegate.removeExpiredAlbums {
 			AppDB.sharedInstance.removeExpiredAlbums()
 		}
