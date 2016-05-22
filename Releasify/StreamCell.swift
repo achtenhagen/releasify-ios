@@ -10,9 +10,13 @@ import UIKit
 
 class StreamCell: UITableViewCell {
 
+	let imageParallaxFactor: CGFloat = 20
 	var theme: Theme!
 	var gradientLayerView: UIView!
 	var gradient: CAGradientLayer!
+	var label: UILabel!
+	var imgBackTopInitial: CGFloat!
+	var imgBackBottomInitial: CGFloat!
 	
 	@IBOutlet var containerView: UIView!
 	@IBOutlet var artistImg: UIImageView!
@@ -23,11 +27,6 @@ class StreamCell: UITableViewCell {
 	@IBOutlet var timeLabel: UILabel!
 	@IBOutlet var artworkTopConstraint: NSLayoutConstraint!
 	@IBOutlet var artworkBottomConstraint: NSLayoutConstraint!
-	
-	var label: UILabel!
-	let imageParallaxFactor: CGFloat = 20
-	var imgBackTopInitial: CGFloat!
-	var imgBackBottomInitial: CGFloat!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -69,6 +68,7 @@ class StreamCell: UITableViewCell {
 		artworkContainer.addSubview(gradientLayerView)
 	}
 
+	// MARK: - Add new item label
 	func addNewItemLabel () {
 		if label == nil {
 			label = UILabel(frame: CGRect(x: gradientLayerView.bounds.width - 65, y: artworkContainer.bounds.height - 40, width: 50, height: 26))
@@ -84,13 +84,15 @@ class StreamCell: UITableViewCell {
 		}
 	}
 	
+	// MARK: - Remove new item label
 	func removeNewItemLabel () {
 		if label != nil {
-			label.removeFromSuperview()
-			label = nil
+			self.label.removeFromSuperview()
+			self.label = nil
 		}
 	}
 	
+	// MARK: - Calculate offset for image parallax effect
 	func setBackgroundOffset(offset:CGFloat) {
 		let boundOffset = max(0, min(1, offset))
 		let pixelOffset = (1 - boundOffset) * 2 * imageParallaxFactor

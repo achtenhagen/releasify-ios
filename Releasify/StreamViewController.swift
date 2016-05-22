@@ -335,18 +335,14 @@ class StreamViewController: UITableViewController {
 		cell.artistTitle.text = "By \(AppDB.sharedInstance.getAlbumArtist(album.ID)!), \(posted)"
 		cell.albumTitle.userInteractionEnabled = false
 		cell.timeLabel.text = album.getFormattedReleaseDate()
-
 		if tmpUrl![album.ID] == nil {
 			tmpUrl![album.ID] = album.iTunesUrl
 		}
-
 		cell.addOverlay()
-
 		cell.removeNewItemLabel()
-		if Int(NSDate().timeIntervalSince1970) - album.created <= 86400 {
+		if UnreadItems.sharedInstance.list.contains(album.ID) {
 			cell.addNewItemLabel()
 		}
-
 		return cell
 	}
 	
