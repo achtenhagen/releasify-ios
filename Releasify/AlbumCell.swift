@@ -24,17 +24,18 @@ class AlbumCell: UICollectionViewCell {
 		albumArtwork.layer.cornerRadius = 2
 		
 		var gradientLayerView: UIView!
-		switch UIScreen.mainScreen().bounds.width {
-		case 320:
-			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
-		case 375:
-			gradientLayerView = UIView(frame: CGRectMake(0, 0, 172.5, containerView.frame.height))
-		case 414:
-			gradientLayerView = UIView(frame: CGRectMake(0, 0, 192, containerView.frame.height))
-		default:
-			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
-		}
-		
+		gradientLayerView = UIView(frame: CGRectMake(0, 0, self.bounds.width, containerView.frame.height))
+//		switch UIScreen.mainScreen().bounds.width {
+//		case 320:
+//			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
+//		case 375:
+//			gradientLayerView = UIView(frame: CGRectMake(0, 0, 172.5, containerView.frame.height))
+//		case 414:
+//			gradientLayerView = UIView(frame: CGRectMake(0, 0, 192, containerView.frame.height))
+//		default:
+//			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, containerView.frame.height))
+//		}
+
 		let gradient = CAGradientLayer()
 		gradient.frame = gradientLayerView.bounds
 		gradient.colors = [AnyObject]()
@@ -46,6 +47,6 @@ class AlbumCell: UICollectionViewCell {
 
 		gradientLayerView.layer.insertSublayer(gradient, atIndex: 0)
 		containerView.addSubview(gradientLayerView)
-		containerView.bringSubviewToFront(timeLeft)
+		containerView.bringSubviewToFront(timeLeft)	
 	}
 }

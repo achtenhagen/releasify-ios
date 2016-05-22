@@ -10,7 +10,7 @@ import UIKit
 
 class AlbumCollectionViewLayout: UICollectionViewFlowLayout {
 	override init() {
-		super.init()
+		super.init()		
 		let defaultItemSize = CGSize(width: 145, height: 190)
 		switch UIScreen.mainScreen().bounds.width {
 		case 320:

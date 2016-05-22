@@ -67,6 +67,7 @@ class AlbumDetailController: UIViewController {
 		Favorites.sharedInstance.addFavorite(album!)
 		Favorites.sharedInstance.save()
 		NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
+		favoriteBtn.setImage(UIImage(named: "icon_favorite_dark_filled"), forState: .Normal)
 	}
 
 	@IBAction func shareAlbum(sender: AnyObject) {

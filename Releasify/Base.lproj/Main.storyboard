@@ -1339,7 +1339,9 @@
                                         <rect key="frame" x="38" y="0.0" width="244" height="21"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="14" id="eDq-GT-IR4"/>
-                                            <constraint firstAttribute="width" constant="315" id="pdQ-1o-nhM"/>
+                                            <constraint firstAttribute="width" constant="315" id="pdQ-1o-nhM">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="286"/>
+                                            </constraint>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="thin" pointSize="10"/>
                                         <color key="textColor" red="0.55294117647058827" green="0.55294117647058827" blue="0.55294117647058827" alpha="0.5" colorSpace="calibratedRGB"/>
@@ -2946,7 +2948,7 @@ Swipe to get started.</string>
     <inferredMetricsTieBreakers>
         <segue reference="cZg-RQ-l62"/>
         <segue reference="i1c-0T-qib"/>
-        <segue reference="zgf-W2-bDZ"/>
+        <segue reference="6ln-2C-qu7"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

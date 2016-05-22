@@ -231,13 +231,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 
-	func applicationDidBecomeActive(application: UIApplication) {
-		UIApplication.sharedApplication().applicationIconBadgeNumber = 0
-	}
+	func applicationDidBecomeActive(application: UIApplication) {}
 
-	func applicationWillTerminate(application: UIApplication) {
-		UnreadItems.sharedInstance.save()
-	}
+	func applicationWillTerminate(application: UIApplication) {}
 	
 	func applicationWillResignActive(application: UIApplication) {}
 	

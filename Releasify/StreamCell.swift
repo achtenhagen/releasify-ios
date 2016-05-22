@@ -11,6 +11,8 @@ import UIKit
 class StreamCell: UITableViewCell {
 
 	var theme: Theme!
+	var gradientLayerView: UIView!
+	var gradient: CAGradientLayer!
 	
 	@IBOutlet var containerView: UIView!
 	@IBOutlet var artistImg: UIImageView!
@@ -32,12 +34,11 @@ class StreamCell: UITableViewCell {
 
 		theme = Theme()
 		
-		artworkContainer.clipsToBounds = true
 		artworkContainer.layer.masksToBounds = true
 		artworkContainer.layer.cornerRadius = 6
-		self.artworkBottomConstraint.constant -= 2 * imageParallaxFactor
-		self.imgBackTopInitial = self.artworkTopConstraint.constant
-		self.imgBackBottomInitial = self.artworkBottomConstraint.constant
+		artworkBottomConstraint.constant -= 2 * imageParallaxFactor
+		imgBackTopInitial = self.artworkTopConstraint.constant
+		imgBackBottomInitial = self.artworkBottomConstraint.constant
 		
 		containerView.layer.masksToBounds = true
 		containerView.layer.cornerRadius = 4
@@ -46,40 +47,31 @@ class StreamCell: UITableViewCell {
 		artistImg.layer.cornerRadius = 17.5
 		artistImg.layer.borderColor = UIColor.clearColor().CGColor
 		artistImg.layer.borderWidth = 2
-		
-		var gradientLayerView: UIView!
-		switch UIScreen.mainScreen().bounds.width {
-		case 320:
-			gradientLayerView = UIView(frame: CGRectMake(0, 130, 320, 104))
-		case 375:
-			gradientLayerView = UIView(frame: CGRectMake(0, 130, 355, 104))
-		case 414:
-			gradientLayerView = UIView(frame: CGRectMake(0, 0, 192, self.frame.height))
-		default:
-			gradientLayerView = UIView(frame: CGRectMake(0, 0, 145, self.frame.height))
-		}
-		
-		let gradient = CAGradientLayer()
-		gradient.frame = gradientLayerView.bounds
-		gradient.colors = [AnyObject]()
-		gradient.colors!.append(UIColor.clearColor().CGColor)
-
-		for index in 0...17 {
-			gradient.colors!.append(UIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(Double(index) * 0.05)).CGColor)
-		}
-
-		gradient.cornerRadius = 4
-		gradientLayerView.layer.insertSublayer(gradient, atIndex: 0)
-		artworkContainer.addSubview(gradientLayerView)
     }
 
 	override func setSelected(selected: Bool, animated: Bool) {
 		super.setSelected(selected, animated: animated)
 	}
 
+	// MARK: - Add shadow overlay to cell
+	func addOverlay() {
+		if gradientLayerView != nil { gradientLayerView.removeFromSuperview() }
+		gradientLayerView = UIView(frame: CGRect(x: 0, y: artworkContainer.bounds.height - 100, width: artworkContainer.bounds.width, height: 100))
+		gradient = CAGradientLayer()
+		gradient.colors = [AnyObject]()
+		gradient.colors!.append(UIColor.clearColor().CGColor)
+		for index in 0...17 {
+			gradient.colors!.append(UIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(Double(index) * 0.05)).CGColor)
+		}
+		gradient.cornerRadius = 4
+		gradientLayerView.layer.insertSublayer(gradient, atIndex: 0)
+		gradient.frame = gradientLayerView.bounds
+		artworkContainer.addSubview(gradientLayerView)
+	}
+
 	func addNewItemLabel () {
 		if label == nil {
-			label = UILabel(frame: CGRect(x: 292, y: 260, width: 50, height: 26))
+			label = UILabel(frame: CGRect(x: gradientLayerView.bounds.width - 65, y: artworkContainer.bounds.height - 40, width: 50, height: 26))
 			label.text = "NEW"
 			label.font = UIFont(name: label.font.fontName, size: 12)
 			label.textColor = theme.orangeColor
@@ -88,7 +80,7 @@ class StreamCell: UITableViewCell {
 			label.layer.cornerRadius = 4
 			label.layer.borderWidth = 1
 			label.layer.borderColor = theme.orangeColor.CGColor
-			self.addSubview(label)
+			artworkContainer.addSubview(label)
 		}
 	}
 	

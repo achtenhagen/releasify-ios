@@ -135,7 +135,7 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 		cell.albumTitle.text = albums![indexPath.row].title
 		cell.artistTitle.text = artist!.title
 		cell.albumTitle.textColor = theme.albumTitleColor
-		cell.artistTitle.textColor = theme.artistTitleColor
+		cell.artistTitle.textColor = theme.artistTitleColor		
 		return cell
 	}
 }

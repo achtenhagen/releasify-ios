@@ -58,6 +58,7 @@ class StreamViewController: UITableViewController {
 		self.streamTable.separatorStyle = theme.style == .dark ? .None : .SingleLine
 		self.streamTable.separatorColor = theme.cellSeparatorColor		
 		
+		// Check for 3D Touch availability
 		if #available(iOS 9.0, *) {
 			if traitCollection.forceTouchCapability == .Available {
 				self.registerForPreviewingWithDelegate(self, sourceView: self.streamTable)
@@ -96,7 +97,7 @@ class StreamViewController: UITableViewController {
 		// Load unread items
 		UnreadItems.sharedInstance.load()
 		let unreadCount = UnreadItems.sharedInstance.list.count
-		self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(UnreadItems.sharedInstance.list.count)
+		self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(unreadCount)
 		
 		// Handle initial launch
 		if !appDelegate.completedRefresh {
@@ -163,7 +164,7 @@ class StreamViewController: UITableViewController {
 
 			// Update tab bar item badge value
 			let unreadCount = UnreadItems.sharedInstance.list.count
-			self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(UnreadItems.sharedInstance.list.count)
+			self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(unreadCount)
 
 			// Complete refresh
 			self.refreshControl!.endRefreshing()
@@ -330,22 +331,22 @@ class StreamViewController: UITableViewController {
 				cell.alpha = 1
 			}
 		})
-		
 		cell.albumTitle.text = album.title
 		cell.artistTitle.text = "By \(AppDB.sharedInstance.getAlbumArtist(album.ID)!), \(posted)"
 		cell.albumTitle.userInteractionEnabled = false
 		cell.timeLabel.text = album.getFormattedReleaseDate()
-		
-		if Int(NSDate().timeIntervalSince1970) - album.created <= 86400 {
-			cell.addNewItemLabel()
-		} else {
-			cell.removeNewItemLabel()
-		}
-		
+
 		if tmpUrl![album.ID] == nil {
 			tmpUrl![album.ID] = album.iTunesUrl
 		}
-		
+
+		cell.addOverlay()
+
+		cell.removeNewItemLabel()
+		if Int(NSDate().timeIntervalSince1970) - album.created <= 86400 {
+			cell.addNewItemLabel()
+		}
+
 		return cell
 	}
 	
@@ -354,6 +355,7 @@ class StreamViewController: UITableViewController {
 		if UnreadItems.sharedInstance.removeItem(albumID) {
 			let count = UnreadItems.sharedInstance.list.count
 			self.tabBarItem.badgeValue = count == 0 ? nil : String(count)
+			UnreadItems.sharedInstance.save()
 		}
 		selectedAlbum = AppDB.sharedInstance.albums[indexPath.row]
 		self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
@@ -396,6 +398,7 @@ class StreamViewController: UITableViewController {
 	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
 		let imageCell = cell as! StreamCell
 		self.setCellImageOffset(imageCell, indexPath: indexPath)
+		cell.layoutIfNeeded()
 	}
 	
 	override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
