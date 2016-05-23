@@ -37,17 +37,32 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
 
 		theme = appDelegate.theme
-		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(addSubscriptionFromShortcutItem), name: "addSubscriptionShortcutItem", object: nil)
 		mediaQuery = MPMediaQuery.artistsQuery()
 
-		// StoreKit API
+		// StoreKit API | Check users media library capabilities
 		StorefrontAssistant.countryCode { (countryCode, error) in
 			if let error = error {
 				print("Error: \(error)")
 			}
 			if let countryCode = countryCode {
 				print("Country code: \(countryCode)")
+			}
+			if let canAddToLibraryVal = NSUserDefaults.standardUserDefaults().valueForKey("canAddToLibrary") as? Bool {
+				self.appDelegate.canAddToLibrary = canAddToLibraryVal
+			} else {
+				if #available(iOS 9.3, *) {
+					if SKCloudServiceController.authorizationStatus() == .Authorized {
+						let controller = SKCloudServiceController()
+						controller.requestCapabilitiesWithCompletionHandler { (capability, error) in
+							if capability.rawValue >= 256 {
+								self.appDelegate.canAddToLibrary = true
+								NSUserDefaults.standardUserDefaults().setBool(true, forKey: "canAddToLibrary")
+								if self.appDelegate.debug { print("User can add to music library.") }
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -84,11 +99,9 @@ class TabBarController: UITabBarController {
 			streamController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("StreamController") as! StreamViewController
 			streamController.delegate = notificationDelegate
 		}
-		
 		if subscriptionController == nil {
 			subscriptionController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("SubscriptionController") as! SubscriptionController
 		}
-		
 		self.setViewControllers([streamController, subscriptionController], animated: true)
 
 		// Handle 3D Touch quick action while app is not running
@@ -96,11 +109,6 @@ class TabBarController: UITabBarController {
 			if shortcutItem == "add-subscription" {
 				addSubscriptionFromShortcutItem()
 			}
-		}
-		
-		// Adjust image inset for tabbar items
-		for item in self.tabBar.items! {
-			item.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 		}
 	}
 

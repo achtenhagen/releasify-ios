@@ -20,6 +20,7 @@ class AddSubscriptionController: UIViewController {
 	var selectedArtist: Artist!
 	var mediaQuery: MPMediaQuery!
 	var delayTimer: NSTimer!
+	var needsRefresh = false
 
 	@IBOutlet var importContainer: UIView!
 	@IBOutlet var importContainerTitle: UILabel!
@@ -173,6 +174,8 @@ class AddSubscriptionController: UIViewController {
 			addSubscriptionDetailView.artistTitle = selectedArtist.title
 			addSubscriptionDetailView.artistID = selectedArtist.ID
 			addSubscriptionDetailView.artistUniqueID = selectedArtist.iTunesUniqueID
+		} else if segue.identifier == "UnwindToStreamViewSegue" {
+			
 		}
 	}
 }
@@ -225,9 +228,11 @@ extension AddSubscriptionController: UISearchBarDelegate {
 	
 	func searchBarCancelButtonClicked(searchBar: UISearchBar) {
 		searchBar.resignFirstResponder()
-		// Only unwind segue if a new artist has been subscribed to
-		// self.dismissViewControllerAnimated(true, completion: nil)
-		self.performSegueWithIdentifier("UnwindToStreamViewSegue", sender: self)
+		if needsRefresh {
+			self.performSegueWithIdentifier("UnwindToStreamViewSegue", sender: self)
+		} else {
+			self.dismissViewControllerAnimated(true, completion: nil)
+		}
 	}
 }
 

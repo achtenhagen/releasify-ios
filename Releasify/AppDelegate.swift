@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var removeExpiredAlbums = false
 	var completedRefresh = false
 	var firstRun = false
+	var canAddToLibrary = false
 	var lastUpdated = 0
 	var notificationAlbumID: Int?
 	var remoteNotificationPayload: NSDictionary?
@@ -45,9 +46,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "removeExpiredAlbums")
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "theme")
+			NSUserDefaults.standardUserDefaults().removeObjectForKey("canAddToLibrary")
 		}
 		
-		// App settings
+		// Load App settings
 		userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
@@ -129,6 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		return true
 	}
 
+	// MARK: - Callback when user allows push notifications
 	func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
 		var deviceTokenString = deviceToken.description
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: .LiteralSearch, range: nil)
@@ -150,6 +153,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
+	// MARK: - Callback when user does not give permission to use push notifications
 	func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
 		if userID == 0 {
 			API.sharedInstance.register(allowExplicitContent, successHandler: { (userID, userUUID) in
@@ -163,8 +167,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	// MARK: - Local Notification - Receiver
-	// Called when app is in the foreground or the notification itself is tapped
+	// MARK: - Local Notification - Receiver | App is in the foreground or the notification itself is tapped
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["albumID"] as? Int

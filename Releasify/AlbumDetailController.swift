@@ -8,7 +8,6 @@
 
 import UIKit
 import MediaPlayer
-import StoreKit
 
 class AlbumDetailController: UIViewController {
 	
@@ -146,6 +145,9 @@ class AlbumDetailController: UIViewController {
 		buyBtn.layer.borderColor = theme.globalTintColor.CGColor
 		buyBtn.layer.borderWidth = 1
 		buyBtn.layer.cornerRadius = 4
+		if appDelegate.canAddToLibrary {
+			buyBtn.setTitle("Add to Library", forState: .Normal)
+		}
 		
 		// Configure things based on album availability
 		timeDiff = album!.releaseDate - NSDate().timeIntervalSince1970
@@ -188,19 +190,6 @@ class AlbumDetailController: UIViewController {
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
-		}
-
-		// Check users media library capabilities
-		if #available(iOS 9.3, *) {
-			if SKCloudServiceController.authorizationStatus() == .Authorized {
-				let controller = SKCloudServiceController()
-				controller.requestCapabilitiesWithCompletionHandler { (capability, error) in
-					if capability.rawValue >= 256 {
-						self.canAddToLibrary = true
-						self.buyBtn.setTitle("Add to Library", forState: .Normal)
-					}
-				}
-			}
 		}
 	}
 

@@ -412,7 +412,7 @@ private class ArtistPickerTheme: Theme {
 	var tableViewSectionIndexColor: UIColor!
 	var cellTextColor: UIColor!
 
-	override init (style: Styles) {
+	override init(style: Styles) {
 		super.init(style: style)
 		switch style {
 		case .dark:

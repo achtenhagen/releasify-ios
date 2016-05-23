@@ -8,6 +8,7 @@
 
 import UIKit
 import MediaPlayer
+import StoreKit
 
 protocol StreamViewControllerDelegate: class {
 	func removeAlbum (album: Album, indexPath: NSIndexPath)
@@ -16,7 +17,7 @@ protocol StreamViewControllerDelegate: class {
 class StreamViewController: UITableViewController {
 	
 	private var theme: StreamViewControllerTheme!
-	weak var delegate: AppControllerDelegate?	
+	weak var delegate: AppControllerDelegate?
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let reuseIdentifier = "streamCell"
@@ -56,7 +57,7 @@ class StreamViewController: UITableViewController {
 		self.streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
 		self.streamTable.backgroundView?.userInteractionEnabled = false
 		self.streamTable.separatorStyle = theme.style == .dark ? .None : .SingleLine
-		self.streamTable.separatorColor = theme.cellSeparatorColor		
+		self.streamTable.separatorColor = theme.cellSeparatorColor
 		
 		// Check for 3D Touch availability
 		if #available(iOS 9.0, *) {
@@ -256,7 +257,7 @@ class StreamViewController: UITableViewController {
 			return
 		}
 		// Artwork was not found, so download it
-		API.sharedInstance.fetchArtwork(url, successHandler: { artwork in
+		API.sharedInstance.fetchArtwork(url, successHandler: { (artwork) in
 			AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
 			self.tmpArtwork![hash] = artwork
 			completion(artwork: self.tmpArtwork![hash]!)
@@ -312,7 +313,16 @@ class StreamViewController: UITableViewController {
 			detailController.album = selectedAlbum
 		}
 	}
-	
+
+	// MARK: - Update tab bar item badge count
+	func updateTabBarItemBadge(albumID: Int) {
+		if UnreadItems.sharedInstance.removeItem(albumID) {
+			let count = UnreadItems.sharedInstance.list.count
+			self.tabBarItem.badgeValue = count == 0 ? nil : String(count)
+			UnreadItems.sharedInstance.save()
+		}
+	}
+
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return AppDB.sharedInstance.albums.count
 	}
@@ -352,11 +362,7 @@ class StreamViewController: UITableViewController {
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
-		if UnreadItems.sharedInstance.removeItem(albumID) {
-			let count = UnreadItems.sharedInstance.list.count
-			self.tabBarItem.badgeValue = count == 0 ? nil : String(count)
-			UnreadItems.sharedInstance.save()
-		}
+		updateTabBarItemBadge(albumID)
 		selectedAlbum = AppDB.sharedInstance.albums[indexPath.row]
 		self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 	}
@@ -386,6 +392,7 @@ class StreamViewController: UITableViewController {
 					}
 				}
 				self.unsubscribeFromAlbum(album, indexPath: indexPath)
+				self.updateTabBarItemBadge(album.ID)
 			}))
 			self.presentViewController(alert, animated: true, completion: nil)
 		})
@@ -402,6 +409,7 @@ class StreamViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+		if AppDB.sharedInstance.albums.count == 0 { return UIView() }
 		let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 40))
 		footerView.backgroundColor = UIColor.clearColor()
 		footerLabel = UILabel()

@@ -102,7 +102,9 @@
                             <outlet property="delegate" destination="4Mu-kG-8iL" id="TaK-SC-fuY"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" tag="1" title="" image="icon_more" id="sYp-jA-hmW"/>
+                    <tabBarItem key="tabBarItem" tag="1" title="" image="icon_more" id="sYp-jA-hmW">
+                        <inset key="imageInsets" minX="0.0" minY="6" maxX="0.0" maxY="-6"/>
+                    </tabBarItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="subscriptionsTable" destination="5re-xf-j2G" id="nkf-T3-4le"/>
@@ -2830,7 +2832,9 @@ Swipe to get started.</string>
                             <outlet property="delegate" destination="equ-hM-XdW" id="WrI-s5-FA4"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="" image="icon_cloud" id="NTH-vx-Fv2"/>
+                    <tabBarItem key="tabBarItem" title="" image="icon_cloud" id="NTH-vx-Fv2">
+                        <inset key="imageInsets" minX="0.0" minY="6" maxX="0.0" maxY="-6"/>
+                    </tabBarItem>
                     <navigationItem key="navigationItem" id="mnY-wu-tfn"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="smi-gL-DQA">
@@ -2946,9 +2950,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="cZg-RQ-l62"/>
         <segue reference="i1c-0T-qib"/>
-        <segue reference="gux-gb-W3x"/>
-        <segue reference="zgf-W2-bDZ"/>
+        <segue reference="6ln-2C-qu7"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

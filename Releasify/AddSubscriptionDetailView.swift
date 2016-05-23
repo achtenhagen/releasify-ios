@@ -90,6 +90,9 @@ class AddSubscriptionDetailView: UICollectionViewController {
 			if let remote_artwork = tmpArtwork[selectedAlbum.artwork] {
 				detailController.artwork = remote_artwork
 			}
+		} else if segue.identifier == "UnwindToAddSubscriptionSegue" {
+			let destinationController = segue.destinationViewController as! AddSubscriptionController
+			destinationController.needsRefresh = true
 		}
     }
 

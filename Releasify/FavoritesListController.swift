@@ -38,9 +38,6 @@ class FavoritesListController: UIViewController {
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
-
-		// Workaround for when the both navbar buttons are pressed at the same time
-		self.resignFirstResponder()
     }
 	
 	override func viewWillAppear(animated: Bool) {
@@ -92,14 +89,6 @@ extension FavoritesListController: UITableViewDataSource {
 		cell.selectedBackgroundView = bgColorView
 		return cell
 	}
-	
-	func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-		
-	}
-	
-	func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-		
-	}
 }
 
 // MARK: - UITableViewDelegate
@@ -119,26 +108,6 @@ extension FavoritesListController: UITableViewDelegate {
 		})
 		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete_small")!)
 		return [removeAction]
-	}
-	
-	func tableView(tableView: UITableView, willBeginEditingRowAtIndexPath indexPath: NSIndexPath) {
-	
-	}
-	
-	func tableView(tableView: UITableView, didEndEditingRowAtIndexPath indexPath: NSIndexPath) {
-		
-	}
-	
-	func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath {
-		return NSIndexPath()
-	}
-	
-	func tableView(tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-		return true
-	}
-	
-	func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
-		
 	}
 }
 
