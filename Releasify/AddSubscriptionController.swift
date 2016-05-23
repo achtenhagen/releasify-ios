@@ -32,6 +32,7 @@ class AddSubscriptionController: UIViewController {
 	}
 
 	@IBAction func ImportArtists(sender: AnyObject) {
+		self.resignFirstResponder()
 		self.performSegueWithIdentifier(unwindSegueIdentifier, sender: self)
 	}
 

@@ -30,8 +30,7 @@ final class AppController: UINavigationController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		// AppDB.sharedInstance.upgrade_db_v2()
-		// Favorites.sharedInstance.clearList()
+		// AppDB.sharedInstance.upgrade_db_v2()		
 
 		// Get pending artists waiting to be removed
 		AppDB.sharedInstance.getPendingArtists()

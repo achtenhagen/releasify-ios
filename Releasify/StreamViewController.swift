@@ -67,6 +67,7 @@ class StreamViewController: UITableViewController {
 		
 		registerLongPressGesture()
 		
+		// Refresh control
 		refreshControl!.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = theme.refreshControlTintColor
 		self.streamTable.addSubview(refreshControl!)
@@ -181,12 +182,15 @@ class StreamViewController: UITableViewController {
 		API.sharedInstance.getiTunesFeed({ (feed) in
 			self.iTunesFeed = feed
 		}, errorHandler: { (error) in
-
+			// Handle error
 		})
 	}
 
+	// MARK: - Gesture recognizer to scroll list to top
 	func scrollListToTop() {
-		self.streamTable.setContentOffset(CGPointZero, animated: true)
+		if self.tabBarController?.tabBar.selectedItem?.tag == 0 {
+			self.streamTable.setContentOffset(CGPointZero, animated: true)
+		}
 	}
 	
 	// MARK: - Fallback if 3D Touch is unavailable

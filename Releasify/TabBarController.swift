@@ -74,12 +74,6 @@ class TabBarController: UITabBarController {
 			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1)
 		}
 
-		// Tab bar customizations
-//		if theme.style == .dark {
-//			let bgImageColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
-//			self.tabBar.backgroundImage = onePixelImageFromColor(bgImageColor)
-//		}
-
 		// Add 1px border to top of tab bar
 		let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 1))
 		topBorder.backgroundColor = theme.tabBarTopBorderColor

@@ -12,16 +12,16 @@ final class NotificationQueue {
 	var queue: [Notification]?
 	var busy = false
 	
-	private init () {
+	private init() {
 		queue = [Notification]()
 	}
 	
-	func add (notification: Notification) {
+	func add(notification: Notification) {
 		queue?.append(notification)
 		process()
 	}
 	
-	func remove () {
+	func remove() {
 		if queue?.count > 0 {
 			queue![0].removeFromSuperview()
 			queue?.removeAtIndex(0)
@@ -29,7 +29,7 @@ final class NotificationQueue {
 		}
 	}
 	
-	func process () {
+	func process() {
 		if busy { return }
 		if (queue?.count > 0) {
 			self.busy = true

@@ -16,14 +16,7 @@ final class Favorites {
 	
 	// MARK: - Add new item to list
 	func addFavorite(album: Album) {
-		var exists = false
-		for favorite in list {
-			if favorite.ID == album.ID {
-				exists = true
-				break
-			}
-		}
-		if !exists {
+		if !isFavorite(album) {
 			list.append(album)
 		}
 	}
@@ -32,6 +25,16 @@ final class Favorites {
 	func clearList() {
 		list = [Album]()
 		save()
+	}
+
+	// MARK: - Check if album is present in list
+	func isFavorite(album: Album) -> Bool {
+		for favorite in list {
+			if favorite.ID == album.ID {
+				return true
+			}
+		}
+		return false
 	}
 	
 	// MARK: - Remove item from list with known index

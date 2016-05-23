@@ -10,8 +10,8 @@ import UIKit
 
 class StreamCell: UITableViewCell {
 
+	private var theme: Theme!
 	let imageParallaxFactor: CGFloat = 20
-	var theme: Theme!
 	var gradientLayerView: UIView!
 	var gradient: CAGradientLayer!
 	var label: UILabel!
@@ -69,7 +69,7 @@ class StreamCell: UITableViewCell {
 	}
 
 	// MARK: - Add new item label
-	func addNewItemLabel () {
+	func addNewItemLabel() {
 		if label == nil {
 			label = UILabel(frame: CGRect(x: gradientLayerView.bounds.width - 65, y: artworkContainer.bounds.height - 40, width: 50, height: 26))
 			label.text = "NEW"
@@ -85,7 +85,7 @@ class StreamCell: UITableViewCell {
 	}
 	
 	// MARK: - Remove new item label
-	func removeNewItemLabel () {
+	func removeNewItemLabel() {
 		if label != nil {
 			self.label.removeFromSuperview()
 			self.label = nil

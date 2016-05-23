@@ -26,6 +26,7 @@ class AlbumDetailController: UIViewController {
 	var timer: NSTimer!
 	var progress: Float = 0
 	var dateAdded: Double = 0
+	var isFavorite = false
 
 	@IBOutlet weak var albumArtwork: UIImageView!
 	@IBOutlet var artworkOverlay: UIVisualEffectView!
@@ -64,10 +65,18 @@ class AlbumDetailController: UIViewController {
 	}
 
 	@IBAction func favoriteAlbum(sender: AnyObject) {
-		Favorites.sharedInstance.addFavorite(album!)
-		Favorites.sharedInstance.save()
+		if !isFavorite {
+			Favorites.sharedInstance.addFavorite(album!)
+			Favorites.sharedInstance.save()
+			isFavorite = true
+			favoriteBtn.setImage(UIImage(named: "icon_favorite_dark_filled"), forState: .Normal)
+		} else {
+			Favorites.sharedInstance.removeFavoriteIfExists(album!)
+			Favorites.sharedInstance.save()
+			isFavorite = false
+			favoriteBtn.setImage(UIImage(named: "icon_favorite_dark"), forState: .Normal)
+		}
 		NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
-		favoriteBtn.setImage(UIImage(named: "icon_favorite_dark_filled"), forState: .Normal)
 	}
 
 	@IBAction func shareAlbum(sender: AnyObject) {
@@ -89,7 +98,7 @@ class AlbumDetailController: UIViewController {
 			}
 		}
 
-		// Dynamic constraints to supported other screen sizes
+		// Dynamic constraints to supported various screen sizes
 		switch UIScreen.mainScreen().bounds.height {
 		case 568: // iPhone 5
 			leftDigitLeadingConstraint.constant = 48
@@ -111,7 +120,7 @@ class AlbumDetailController: UIViewController {
 		// Set album artwork
 		albumArtwork.image = artwork
 		albumArtwork.layer.masksToBounds = true
-		albumArtwork.layer.cornerRadius = 2.0
+		albumArtwork.layer.cornerRadius = 2
 		artist = AppDB.sharedInstance.getAlbumArtist(album!.ID)!
 		artistTitle.text = artist
 		albumTitle.text = album!.title
@@ -119,7 +128,7 @@ class AlbumDetailController: UIViewController {
 
 		// Artwork overlay
 		artworkOverlay.layer.masksToBounds = true
-		artworkOverlay.layer.cornerRadius = 2.0
+		artworkOverlay.layer.cornerRadius = 2
 
 		// Theme settings
 		albumTitle.textColor = theme.albumTitleColor
@@ -145,12 +154,6 @@ class AlbumDetailController: UIViewController {
 			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
 			progressBar.progress = album!.getProgressSinceDate(dateAdded)
 			buyBtn.setTitle("Pre-Order", forState: .Normal)
-			buyBtn.tintColor = theme.preOrderBtnColor
-			buyBtn.layer.borderColor = theme.preOrderBtnColor.CGColor
-			if theme.style == .dark {
-				favoriteBtn.setImage(UIImage(named: "icon_favorite_pre"), forState: .Normal)
-				shareBtn.setImage(UIImage(named: "icon_share_pre"), forState: .Normal)
-			}
 			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(update), userInfo: nil, repeats: true)
 		} else {
 			if theme.style == .light {
@@ -158,6 +161,13 @@ class AlbumDetailController: UIViewController {
 			}
 			progressBar.hidden = true			
 			artworkOverlay.hidden = true
+		}
+
+		// Check if album has already been added to favorites
+		if Favorites.sharedInstance.isFavorite(album!) {
+			isFavorite = true
+			let btnImg = theme.style == .dark ? "icon_favorite_dark_filled" : "icon_favorite_filled"
+			favoriteBtn.setImage(UIImage(named: btnImg), forState: .Normal)
 		}
 		
 		// Triple tap gesture to re-download artwork
@@ -326,7 +336,6 @@ private class AlbumDetailControllerTheme: Theme {
 	var timeLabelColor: UIColor!
 	var digitLabelColor: UIColor!
 	var footerLabelColor: UIColor!
-	var preOrderBtnColor: UIColor!
 	
 	override init (style: Styles) {
 		super.init(style: style)
@@ -337,7 +346,6 @@ private class AlbumDetailControllerTheme: Theme {
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 			digitLabelColor = UIColor.whiteColor()
 			timeLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.6)
-			preOrderBtnColor = orangeColor
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 0.5)
 		case .light:
 			progressBarBackTintColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
@@ -345,7 +353,6 @@ private class AlbumDetailControllerTheme: Theme {
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 			digitLabelColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			timeLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
-			preOrderBtnColor = orangeColor
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 1)
 		}
 	}

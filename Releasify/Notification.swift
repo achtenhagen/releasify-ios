@@ -63,11 +63,11 @@ final class Notification: UIView {
 		self.alpha = 0
 	}
 
-	required init? (coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	func show (completed: () -> Void) {
+	func show(completed: () -> Void) {
 		UIView.animateWithDuration(0.25, delay: 0.5, options: UIViewAnimationOptions.CurveEaseIn, animations: {
 			self.alpha = 1.0
 			self.frame.origin.y = self.center.y
@@ -76,7 +76,7 @@ final class Notification: UIView {
 		})
 	}
 	
-	func hide (completed: () -> Void) {
+	func hide(completed: () -> Void) {
 		UIView.animateWithDuration(0.25, delay: 2.0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
 			self.alpha = 0
 			self.frame.origin.y += 50
