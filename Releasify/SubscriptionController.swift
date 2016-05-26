@@ -194,10 +194,10 @@ private class SubscriptionControllerTheme: Theme {
 	override init (style: Styles) {
 		super.init(style: style)
 		switch style {
-		case .dark:
+		case .Dark:
 			subscriptionTitleColor = UIColor.whiteColor()
 			cellBorderColor = UIColor.whiteColor()
-		case .light:
+		case .Light:
 			subscriptionTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			cellBorderColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
 		}

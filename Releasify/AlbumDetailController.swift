@@ -85,7 +85,7 @@ class AlbumDetailController: UIViewController {
 			if let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) {
 				artwork = dbArtwork
 			} else {
-				let filename = theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
+				let filename = theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork_light"
 				artwork = UIImage(named: filename)!
 			}
 		}
@@ -121,18 +121,13 @@ class AlbumDetailController: UIViewController {
 		// Artwork overlay
 		artworkOverlay.layer.masksToBounds = true
 		artworkOverlay.layer.cornerRadius = 2
+		artworkOverlay.effect = theme.style == .Dark ? UIBlurEffect(style: .Dark) : UIBlurEffect(style: .Light)
 
 		// Theme settings
 		albumTitle.textColor = theme.albumTitleColor
 		artistTitle.textColor = theme.artistTitleColor
 		copyrightLabel.textColor = theme.footerLabelColor
 		progressBar.trackTintColor = theme.progressBarBackTintColor
-		firstDigitLabel.textColor = theme.digitLabelColor
-		secondDigitLabel.textColor = theme.digitLabelColor
-		thirdDigitLabel.textColor = theme.digitLabelColor
-		firstTimeLabel.textColor = theme.timeLabelColor
-		secondTimeLabel.textColor = theme.timeLabelColor
-		thirdTimeLabel.textColor = theme.timeLabelColor
 
 		// Buy button
 		buyBtn.layer.borderColor = theme.globalTintColor.CGColor
@@ -151,7 +146,7 @@ class AlbumDetailController: UIViewController {
 			buyBtn.setTitle("Pre-Order", forState: .Normal)
 			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(update), userInfo: nil, repeats: true)
 		} else {
-			if theme.style == .light {
+			if theme.style == .Light {
 				self.navigationController?.navigationBar.shadowImage = UIImage(named: "navbar_shadow")
 			}
 			progressBar.hidden = true			
@@ -161,7 +156,7 @@ class AlbumDetailController: UIViewController {
 		// Check if album has already been added to favorites
 		if Favorites.sharedInstance.isFavorite(album!) {
 			isFavorite = true
-			let btnImg = theme.style == .dark ? "icon_favorite_dark_filled" : "icon_favorite_filled"
+			let btnImg = theme.style == .Dark ? "icon_favorite_dark_filled" : "icon_favorite_filled"
 			favoriteBtn.setImage(UIImage(named: btnImg), forState: .Normal)
 		}
 		
@@ -179,7 +174,7 @@ class AlbumDetailController: UIViewController {
 		}
 		
 		// Insert background gradient depending on theme
-		if theme.style == .dark {
+		if theme.style == .Dark {
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
@@ -329,26 +324,20 @@ private class AlbumDetailControllerTheme: Theme {
 	var progressBarBackTintColor: UIColor!
 	var albumTitleColor: UIColor!
 	var artistTitleColor: UIColor!
-	var timeLabelColor: UIColor!
-	var digitLabelColor: UIColor!
 	var footerLabelColor: UIColor!
 	
 	override init (style: Styles) {
 		super.init(style: style)
 		switch style {
-		case .dark:
+		case .Dark:
 			progressBarBackTintColor = UIColor(red: 0, green: 52/255, blue: 72/255, alpha: 1)
 			albumTitleColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-			digitLabelColor = UIColor.whiteColor()
-			timeLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.6)
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 0.5)
-		case .light:
+		case .Light:
 			progressBarBackTintColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
-			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-			digitLabelColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
-			timeLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)			
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 1)
 		}
 	}

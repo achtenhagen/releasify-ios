@@ -76,12 +76,13 @@ class TabBarController: UITabBarController {
 		addBarBtn.tintColor = theme.globalTintColor
 		
 		// Navigation item title view
-		let titleImage = UIImageView(image: UIImage(named: "icon_navbar"))
+		let titleImageName = theme.style == .Dark ? "icon_navbar" : "icon_navbar_alt"
+		let titleImage = UIImageView(image: UIImage(named: titleImageName))
 		titleImage.sizeToFit()
 		self.navigationItem.titleView = titleImage
 
 		// Theme customizations
-		if theme.style == .dark {
+		if theme.style == .Dark {
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)

@@ -10,9 +10,9 @@ import UIKit
 
 public class Theme {
 	
-	enum Styles { case dark, light }
+	enum Styles { case Dark, Light }
 	
-	var style: Styles = .dark
+	var style: Styles = .Dark
 	
 	// Global App tint color
 	var globalTintColor: UIColor!
@@ -68,7 +68,7 @@ public class Theme {
 	// MARK: - Set theme
 	func set() {
 		switch style {
-		case .dark:
+		case .Dark:
 			// Global App tint color
 			globalTintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
 
@@ -104,7 +104,7 @@ public class Theme {
 			cellSeparatorColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
 			sectionHeaderBackgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
 			sectionHeaderTextColor = greenColor
-		case .light:
+		case .Light:
 			// Global App tint color
 			globalTintColor = UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1)
 

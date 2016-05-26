@@ -56,7 +56,7 @@ class StreamViewController: UITableViewController {
 		self.streamTable.backgroundColor = theme.tableViewBackgroundColor
 		self.streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
 		self.streamTable.backgroundView?.userInteractionEnabled = false
-		self.streamTable.separatorStyle = theme.style == .dark ? .None : .SingleLine
+		self.streamTable.separatorStyle = theme.style == .Dark ? .None : .SingleLine
 		self.streamTable.separatorColor = theme.cellSeparatorColor
 		
 		// Check for 3D Touch availability
@@ -108,7 +108,7 @@ class StreamViewController: UITableViewController {
 	}
 
 	override func viewWillAppear(animated: Bool) {
-		if theme.style == .light {
+		if theme.style == .Light {
 			self.navigationController?.navigationBar.shadowImage = UIImage(named: "navbar_shadow")
 		}
 	}
@@ -262,7 +262,7 @@ class StreamViewController: UITableViewController {
 			self.tmpArtwork![hash] = artwork
 			completion(artwork: self.tmpArtwork![hash]!)
 			}, errorHandler: {				
-				let filename = self.theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
+				let filename = self.theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork_light"
 				completion(artwork: UIImage(named: filename)!)
 		})
 	}
@@ -398,7 +398,7 @@ class StreamViewController: UITableViewController {
 		})
 		let action_img = UIImage(named: "row_action_delete")
 		let action_img_dark = UIImage(named: "row_action_delete_dark")
-		removeAction.backgroundColor = theme.style == .dark ? UIColor(patternImage: action_img_dark!) : UIColor(patternImage: action_img!)
+		removeAction.backgroundColor = theme.style == .Dark ? UIColor(patternImage: action_img_dark!) : UIColor(patternImage: action_img!)
 		return [removeAction]
 	}
 	
@@ -481,12 +481,12 @@ private class StreamViewControllerTheme: Theme {
 	override init(style: Styles) {
 		super.init(style: style)
 		switch style {
-		case .dark:
+		case .Dark:
 			streamCellBackgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
 			streamCellAlbumTitleColor = UIColor.whiteColor()
 			streamCellArtistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 			streamCellFooterLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
-		case .light:
+		case .Light:
 			streamCellBackgroundColor = UIColor.clearColor()
 			streamCellAlbumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			streamCellArtistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)

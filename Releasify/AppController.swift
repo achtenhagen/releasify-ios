@@ -67,14 +67,14 @@ final class AppController: UINavigationController {
 			tabController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("TabBarController") as! TabBarController
 			tabController.notificationDelegate = self
 		}
-		
 		self.setViewControllers([tabController], animated: true)
 
+		// UIWindow customizations
 		window = appDelegate.window!
 		window.layer.shadowRadius = 15
 		window.layer.shadowOffset = CGSizeMake(0, 0)
 		window.layer.shadowColor = UIColor.blackColor().CGColor
-		window.layer.shadowOpacity = 0.8
+		window.layer.shadowOpacity =  appDelegate.theme.style == .Dark ? 0.8 : 0.2
 		_origin = window.frame.origin
 
 		// Hamburger menu gestures

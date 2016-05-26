@@ -69,16 +69,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 		// Theme settings & customizations
 		if let themeVal = NSUserDefaults.standardUserDefaults().valueForKey("theme") as? Bool {
-			theme = Theme(style: themeVal == true ? .dark : .light)
+			theme = Theme(style: themeVal == true ? .Dark : .Light)
 		} else {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "theme")
-			theme = Theme(style: .dark)
+			theme = Theme(style: .Dark)
 		}
 		UIApplication.sharedApplication().statusBarStyle = theme.statusBarStyle
 		let navBarAppearance = UINavigationBar.appearance()		
 		navBarAppearance.barStyle = theme.navBarStyle
 		navBarAppearance.barTintColor = theme.navBarTintColor
-		if theme.style == .dark {
+		if theme.style == .Dark {
 			navBarAppearance.shadowImage = UIImage()
 		} else {	
 			navBarAppearance.shadowImage = UIImage(named: "navbar_shadow")

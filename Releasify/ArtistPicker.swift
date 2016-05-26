@@ -415,11 +415,11 @@ private class ArtistPickerTheme: Theme {
 	override init(style: Styles) {
 		super.init(style: style)
 		switch style {
-		case .dark:
+		case .Dark:
 			artistsTableViewBackgroundColor = UIColor(red: 1/255, green: 27/255, blue: 38/255, alpha: 1)
 			tableViewSectionIndexColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1)
 			cellTextColor = blueColor
-		case .light:
+		case .Light:
 			artistsTableViewBackgroundColor = UIColor.whiteColor()
 			tableViewSectionIndexColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 			cellTextColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)

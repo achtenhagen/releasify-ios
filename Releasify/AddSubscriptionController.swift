@@ -64,7 +64,7 @@ class AddSubscriptionController: UIViewController {
 		searchBar.becomeFirstResponder()
 
 		// Theme dependent gradient
-		if theme.style == .dark {
+		if theme.style == .Dark {
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
@@ -74,7 +74,7 @@ class AddSubscriptionController: UIViewController {
 		importContainer.backgroundColor = theme.navBarTintColor
 		importContainerTitle.textColor = theme.importContainerTitleColor
 		importContainerSubtitle.textColor = theme.importContainerSubtitle
-		importBtn.setImage(theme.style == .dark ? UIImage(named: "icon_import_dark") : UIImage(named: "icon_import"), forState: .Normal)
+		importBtn.setImage(theme.style == .Dark ? UIImage(named: "icon_import_dark") : UIImage(named: "icon_import"), forState: .Normal)
 
 		// Add 1px bottom border to import container
 		let topBorder = UIView(frame: CGRect(x: 0, y: 59, width: self.view.bounds.width, height: 1))
@@ -248,14 +248,14 @@ private class AddSubscriptionControllerTheme: Theme {
 	override init(style: Styles) {
 		super.init(style: style)
 		switch style {
-		case .dark:
+		case .Dark:
 			cellBackgroundColor = UIColor.clearColor()
 			artistTitleColor = UIColor.whiteColor()
 			importContainerBorderColor = cellSeparatorColor
 			importContainerTitleColor = UIColor.whiteColor()
 			importContainerSubtitle = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 			importContainerButtonColor = blueColor
-		case .light:
+		case .Light:
 			cellBackgroundColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			importContainerBorderColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)

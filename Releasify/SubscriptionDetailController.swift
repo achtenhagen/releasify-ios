@@ -61,9 +61,9 @@ class SubscriptionDetailController: UIViewController {
 		self.navigationItem.title = artist!.title
 		
 		// Theme customizations
-		self.navigationItem.rightBarButtonItem?.tintColor = theme.style == .dark ? theme.redColor : theme.globalTintColor
+		self.navigationItem.rightBarButtonItem?.tintColor = theme.style == .Dark ? theme.redColor : theme.globalTintColor
 		self.view.backgroundColor = theme.viewBackgroundColor
-		if theme.style == .dark {
+		if theme.style == .Dark {
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
@@ -128,7 +128,7 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 		if let artwork = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork) {
 			cell.albumArtwork.image = artwork
 		} else {
-			let filename = theme.style == .dark ? "icon_artwork_dark" : "icon_artwork_light"
+			let filename = theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork_light"
 			cell.albumArtwork.image = UIImage(named: filename)!
 		}
 		cell.timeLeft.text = albums![indexPath.row].getFormattedReleaseDate()
@@ -164,11 +164,11 @@ private class SubscriptionDetailControllerTheme: Theme {
 	override init (style: Styles) {
 		super.init(style: style)
 		switch style {
-		case .dark:
+		case .Dark:
 			viewBackgroundColor = UIColor.clearColor()
 			albumTitleColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-		case .light:
+		case .Light:
 			viewBackgroundColor = UIColor.whiteColor()
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			artistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)

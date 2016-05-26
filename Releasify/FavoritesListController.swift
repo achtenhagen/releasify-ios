@@ -39,7 +39,7 @@ class FavoritesListController: UIViewController {
 		self.view.backgroundColor = theme.navBarTintColor
 		self.favoritesTable.backgroundColor = theme.tableBackgroundColor
 		self.favoritesTable.separatorColor = theme.cellSeparatorColor
-		if theme.style == .dark {
+		if theme.style == .Dark {
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
@@ -136,13 +136,13 @@ private class FavoritesListControllerTheme: Theme {
 	override init(style: Styles) {
 		super.init(style: style)
 		switch style {
-		case .dark:
+		case .Dark:
 			viewBackgroundColor = UIColor.clearColor()
 			tableBackgroundColor = UIColor.clearColor()
 			cellBackgroundColor = UIColor.clearColor()
 			albumTitleColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-		case .light:
+		case .Light:
 			viewBackgroundColor = UIColor.whiteColor()
 			tableBackgroundColor = UIColor.whiteColor()
 			cellBackgroundColor = UIColor.whiteColor()
