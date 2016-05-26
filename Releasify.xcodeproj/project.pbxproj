@@ -14,6 +14,7 @@
 		514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 514BCA761AED68CE00A1A18C /* Settings.bundle */; };
 		51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51557C591B9E073C00D980F9 /* Artist.swift */; };
 		5161265C1B9A7D3000171A93 /* AlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5161265A1B9A7D3000171A93 /* AlbumCell.swift */; };
+		5162D06F1CF6358600619444 /* FavoritesNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5162D06E1CF6358500619444 /* FavoritesNavController.swift */; };
 		516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516AEE581ACAD61D0065B567 /* AppDB.swift */; };
 		517D6E0D1B6585DC002EC864 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517D6E0C1B6585DC002EC864 /* AppController.swift */; };
 		517EF0CE1CECAA1400DF84E7 /* StorefrontCountries.plist in Resources */ = {isa = PBXBuildFile; fileRef = 517EF0CD1CECAA1400DF84E7 /* StorefrontCountries.plist */; };
@@ -62,6 +63,7 @@
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		51557C591B9E073C00D980F9 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		5161265A1B9A7D3000171A93 /* AlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCell.swift; sourceTree = "<group>"; };
+		5162D06E1CF6358500619444 /* FavoritesNavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesNavController.swift; sourceTree = "<group>"; };
 		516AEE581ACAD61D0065B567 /* AppDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = AppDB.swift; sourceTree = "<group>"; tabWidth = 4; usesTabs = 1; wrapsLines = 0; };
 		517D6E0C1B6585DC002EC864 /* AppController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		517EF0CD1CECAA1400DF84E7 /* StorefrontCountries.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = StorefrontCountries.plist; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 		51C39ABE1C949A9C0059CA01 /* Favorites List */ = {
 			isa = PBXGroup;
 			children = (
+				5162D06E1CF6358500619444 /* FavoritesNavController.swift */,
 				51C39AC11C95111D0059CA01 /* FavoritesListCell.swift */,
 				51B45D221C95A70800734CE4 /* FavoritesListController.swift */,
 				51B45D241C95C35700734CE4 /* Favorites.swift */,
@@ -406,6 +409,7 @@
 				51D5EA781CD4FDD600901844 /* AlbumCollectionViewLayout.swift in Sources */,
 				51D875401B1B2AD900353347 /* Devices.swift in Sources */,
 				51A81C211CE8D7AA005F83E6 /* StorefrontAssistant.swift in Sources */,
+				5162D06F1CF6358600619444 /* FavoritesNavController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

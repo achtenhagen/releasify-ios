@@ -9,21 +9,35 @@
 import UIKit
 
 protocol AppControllerDelegate: class {
-	func addNotificationView (notification: Notification)
+	func addNotificationView(notification: Notification)
+	func fullyHideMenu()
+	func restoreMenu()
 }
 
-let kHeaderHeight: CGFloat = 60
-var window = UIWindow()
-var panGesture = UIPanGestureRecognizer()
+var window: UIWindow!
+let kLeftInset: CGFloat = 60
 
 final class AppController: UINavigationController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	var leftEdgePan: UIScreenEdgePanGestureRecognizer!
+	var rightSwipe: UISwipeGestureRecognizer!
+	var tapGesture: UITapGestureRecognizer!
 	var tabController: TabBarController!
-	var firstX = Float()
-	var firstY = Float()
-	var _origin = CGPoint()
-	var _final = CGPoint()
-	var duration = CGFloat()
+	var _origin: CGPoint!
+
+	enum Menu {
+		case closed, hidden, open
+		func position() -> CGFloat {
+			switch self {
+			case .closed:
+				return CGPointZero.x
+			case .hidden:
+				return CGRectGetWidth(UIScreen.mainScreen().bounds)
+			case .open:
+				return CGRectGetWidth(UIScreen.mainScreen().bounds) - kLeftInset
+			}
+		}
+	}
 
 	@IBOutlet weak var navBar: UINavigationBar!
 	
@@ -32,7 +46,7 @@ final class AppController: UINavigationController {
 		
 		// AppDB.sharedInstance.upgrade_db_v2()
 
-		UnreadItems.sharedInstance.clearList()
+		// UnreadItems.sharedInstance.clearList()
 
 		// Get pending artists waiting to be removed
 		AppDB.sharedInstance.getPendingArtists()
@@ -61,77 +75,126 @@ final class AppController: UINavigationController {
 		window.layer.shadowOffset = CGSizeMake(0, 0)
 		window.layer.shadowColor = UIColor.blackColor().CGColor
 		window.layer.shadowOpacity = 0.8
-		duration = 0.3
+		_origin = window.frame.origin
+
+		// Hamburger menu gestures
+		leftEdgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleEdgePan(_:)))
+		leftEdgePan.edges = .Left
+		rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+		rightSwipe.direction = .Left
+		tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+		tabController.view.addGestureRecognizer(leftEdgePan)
+		tabController.view.addGestureRecognizer(rightSwipe)
 	}
 
-	override func didReceiveMemoryWarning() {
-		super.didReceiveMemoryWarning()
-	}
-
-	func activateSwipeToOpenMenu(onlyNavigation: Bool) {
-		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(_:)))
-		if onlyNavigation == true {
-			self.navigationBar.addGestureRecognizer(panGesture)
-		} else {
-			window.addGestureRecognizer(panGesture)
-		}
-	}
-
-	func openAndCloseMenu() {
-		var finalOrigin = CGPoint()
-		var f = CGRect()
-		f = window.frame
-		if f.origin.y == CGPointZero.y {
-			finalOrigin.y = CGRectGetHeight(UIScreen.mainScreen().bounds) - kHeaderHeight
-		} else {
-			finalOrigin.y = CGPointZero.y
-		}
-		finalOrigin.x = 0
+	// MARK: - Tap gesture handler
+	func handleTap(recognizer: UITapGestureRecognizer) {
+		var finalOrigin = CGPointZero
+		var f = window.frame
+		finalOrigin = CGPoint(x: Menu.closed.position(), y: 0)
 		f.origin = finalOrigin
 		UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: {
 			window.transform = CGAffineTransformIdentity
 			window.frame = f
-		}, completion: nil)
+		}, completion: { (completed) in
+			self.tabController.view.removeGestureRecognizer(self.tapGesture)
+			self.setViewInteraction(finalOrigin)
+		})
 	}
 
-	func setAnimationDuration(d: CGFloat) {
-		duration = d
+	// MARK: - Swipe gesture handler
+	func handleSwipe(recognizer: UISwipeGestureRecognizer) {
+		tabController.view.removeGestureRecognizer(tapGesture)
+		openAndCloseMenu()
 	}
 
-	func onPan(pan: UIPanGestureRecognizer) {
-		let translation:CGPoint = pan.translationInView(window)
-		let velocity:CGPoint = pan.velocityInView(window)
-
-		switch (pan.state) {
+	// MARK: - Edge pan gesture handler
+	func handleEdgePan(recognizer: UIScreenEdgePanGestureRecognizer) {
+		let translation: CGPoint = recognizer.translationInView(window)
+		let velocity: CGPoint = recognizer.velocityInView(window)
+		switch (recognizer.state) {
 		case .Began:
 			_origin = window.frame.origin
 			break
 		case .Changed:
-			if _origin.y + translation.y >= 0 {
-				if window.frame.origin.y != CGPointZero.y {
-					window.transform = CGAffineTransformMakeTranslation(0, translation.y)
-				} else {
-					window.transform = CGAffineTransformMakeTranslation(0, translation.y)
+				tabController.streamController.view.userInteractionEnabled = false
+				tabController.subscriptionController.view.userInteractionEnabled = false
+				if _origin.x + translation.x <= Menu.open.position() {
+					window.transform = CGAffineTransformMakeTranslation(translation.x, 0)
+				}
+		case .Ended:
+			var finalOrigin = CGPointZero
+			var f = window.frame
+			if velocity.x > 0 {
+				if _origin.x + translation.x >= 50 {
+					finalOrigin = CGPoint(x: Menu.open.position(), y: 0)
+				}
+			} else {
+				if _origin.x + translation.x >= Menu.open.position() - 50 {
+					finalOrigin = CGPoint(x: Menu.open.position(), y: 0)
 				}
 			}
-			break
-		case .Ended:
-			break
+			f.origin = finalOrigin
+			UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: {
+				window.transform = CGAffineTransformIdentity
+				window.frame = f
+			}, completion: { (completed) in
+				if window.frame.origin.x == Menu.open.position() {
+					self.tabController.view.addGestureRecognizer(self.tapGesture)
+				}
+				self.setViewInteraction(finalOrigin)
+			})
 		case .Cancelled:
 			var finalOrigin = CGPointZero
-			if velocity.y >= 0 {
-				finalOrigin.y = CGRectGetHeight(UIScreen.mainScreen().bounds) - kHeaderHeight
+			if velocity.x >= 0 {
+				finalOrigin.x = Menu.closed.position()
 			}
 			var f = window.frame
 			f.origin = finalOrigin
 			UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: {
 				window.transform = CGAffineTransformIdentity
 				window.frame = f
-			}, completion: nil)
-			break
+			}, completion: { (completed) in
+				self.tabController.view.removeGestureRecognizer(self.tapGesture)
+			})
 		default:
 			break
 		}
+	}
+
+	// MARK: - Toggle menu state
+	func openAndCloseMenu() {
+		var finalOrigin = CGPoint()
+		var f = window.frame
+		if f.origin.x == Menu.closed.position(){
+			finalOrigin.x = Menu.open.position()
+			self.tabController.view.addGestureRecognizer(self.tapGesture)
+		} else {
+			finalOrigin.x = Menu.closed.position()
+			self.tabController.view.removeGestureRecognizer(self.tapGesture)
+		}
+		f.origin = finalOrigin
+		UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: {
+			window.transform = CGAffineTransformIdentity
+			window.frame = f
+		}, completion: { (completed) in
+			self.setViewInteraction(finalOrigin)
+		})
+	}
+
+	// MARK: - Set the view's user interaction ability
+	func setViewInteraction(point: CGPoint) {
+		if point == CGPointZero {
+			self.tabController.streamController.view.userInteractionEnabled = true
+			self.tabController.subscriptionController.view.userInteractionEnabled = true
+		} else {
+			self.tabController.streamController.view.userInteractionEnabled = false
+			self.tabController.subscriptionController.view.userInteractionEnabled = false
+		}
+	}
+
+	override func didReceiveMemoryWarning() {
+		super.didReceiveMemoryWarning()
 	}
 }
 
@@ -140,14 +203,28 @@ extension AppController: AppControllerDelegate {
 	func addNotificationView(notification: Notification) {
 		self.view.addSubview(notification)
 	}
+
+	func fullyHideMenu() {
+		UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+			window.transform = CGAffineTransformIdentity
+			window.frame.origin.x = Menu.hidden.position()
+		}, completion: nil)
+	}
+
+	func restoreMenu() {
+		UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
+			window.transform = CGAffineTransformIdentity
+			window.frame.origin.x = Menu.open.position()
+		}, completion: nil)
+	}
 }
 
 // MARK: - UIView fade in/out extension
 extension UIView {
-	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
-		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 1.0 }, completion: completion)
+	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0, completion: (Bool) -> Void = { (finished) in } ) {
+		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 1 }, completion: completion)
 	}
-	func fadeOut(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
-		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 0.0 }, completion: completion)
+	func fadeOut(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0, completion: (Bool) -> Void = { (finished) in } ) {
+		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 0 }, completion: completion)
 	}
 }

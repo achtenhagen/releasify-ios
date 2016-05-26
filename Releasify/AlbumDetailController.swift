@@ -12,9 +12,9 @@ import MediaPlayer
 class AlbumDetailController: UIViewController {
 	
 	weak var delegate: StreamViewControllerDelegate?
-	
-	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+
 	private var theme: AlbumDetailControllerTheme!
+	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var canAddToLibrary = false
 	var mediaLibrary: MPMediaLibrary!
 	var album: Album?
@@ -65,17 +65,10 @@ class AlbumDetailController: UIViewController {
 
 	@IBAction func favoriteAlbum(sender: AnyObject) {
 		if !isFavorite {
-			Favorites.sharedInstance.addFavorite(album!)
-			Favorites.sharedInstance.save()
-			isFavorite = true
-			favoriteBtn.setImage(UIImage(named: "icon_favorite_dark_filled"), forState: .Normal)
+			addFavorite()
 		} else {
-			Favorites.sharedInstance.removeFavoriteIfExists(album!)
-			Favorites.sharedInstance.save()
-			isFavorite = false
-			favoriteBtn.setImage(UIImage(named: "icon_favorite_dark"), forState: .Normal)
+			removeFavorite()
 		}
-		NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
 	}
 
 	@IBAction func shareAlbum(sender: AnyObject) {
@@ -217,6 +210,24 @@ class AlbumDetailController: UIViewController {
 				self.presentViewController(alert, animated: true, completion: nil)
 		})
 	}
+
+	// MARK: - Add album to favorites list
+	func addFavorite() {
+		Favorites.sharedInstance.addFavorite(album!)
+		Favorites.sharedInstance.save()
+		isFavorite = true
+		favoriteBtn.setImage(UIImage(named: "icon_favorite_dark_filled"), forState: .Normal)
+		NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
+	}
+
+	// MARK: - Remove album from favorites list
+	func removeFavorite() {
+		Favorites.sharedInstance.removeFavoriteIfExists(album!)
+		Favorites.sharedInstance.save()
+		isFavorite = false
+		favoriteBtn.setImage(UIImage(named: "icon_favorite_dark"), forState: .Normal)
+		NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
+	}
 	
 	@available(iOS 9.0, *)
 	override func previewActionItems() -> [UIPreviewActionItem] {
@@ -226,22 +237,18 @@ class AlbumDetailController: UIViewController {
 		}
 		// 3D Touch purchase action
 		let purchaseAction = UIPreviewAction(title: buyTitle, style: .Default) { (action, viewController) -> Void in
-			if #available(iOS 9.3, *) {
-				if self.canAddToLibrary {
-//					self.mediaLibrary = MPMediaLibrary()
-//					self.mediaLibrary.addItemWithProductID("255991760", completionHandler: { (entity, error) in
-//						print(entity)
-//					})
-				}
-			} else {
-				if UIApplication.sharedApplication().canOpenURL(NSURL(string: (self.album?.iTunesUrl)!)!) {
-					UIApplication.sharedApplication().openURL(NSURL(string: (self.album?.iTunesUrl)!)!)
-				}
+			if UIApplication.sharedApplication().canOpenURL(NSURL(string: (self.album?.iTunesUrl)!)!) {
+				UIApplication.sharedApplication().openURL(NSURL(string: (self.album?.iTunesUrl)!)!)
 			}
 		}
 		// 3D Touch favorites action
-		let favoriteAction = UIPreviewAction(title: "Add to Favorites...", style: .Default, handler: { (action, viewController) -> Void in
-			Favorites.sharedInstance.addFavorite(self.album!)
+		let favoritesActionTitle = isFavorite == true ? "Remove from Favorites..." : "Add to Favorites..."
+		let favoriteAction = UIPreviewAction(title: favoritesActionTitle, style: .Default, handler: { (action, viewController) -> Void in
+			if !self.isFavorite {
+				self.addFavorite()
+			} else {
+				self.removeFavorite()
+			}
 		})
 		return [purchaseAction, favoriteAction]
 	}

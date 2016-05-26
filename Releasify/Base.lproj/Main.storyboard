@@ -900,20 +900,20 @@
                             </tableView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="leading" secondItem="CL7-BU-52b" secondAttribute="leading" id="68L-vQ-3Xn"/>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="top" secondItem="UBb-cc-d8C" secondAttribute="bottom" id="Kd1-N1-yeN"/>
-                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="bottom" secondItem="8MR-zB-SkS" secondAttribute="top" id="t0e-S4-GhB"/>
-                            <constraint firstAttribute="trailing" secondItem="Rkt-JF-j8p" secondAttribute="trailing" id="u02-hB-LpU"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="leading" secondItem="CL7-BU-52b" secondAttribute="leading" id="8rm-Pm-EPP"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Rkt-JF-j8p" secondAttribute="trailing" constant="44" id="tgw-Ra-zB0"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="bottom" secondItem="8MR-zB-SkS" secondAttribute="top" id="uJU-PI-30B"/>
+                            <constraint firstItem="Rkt-JF-j8p" firstAttribute="top" secondItem="UBb-cc-d8C" secondAttribute="bottom" id="uzw-1f-Hc0"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="Rkt-JF-j8p"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="68L-vQ-3Xn"/>
-                                <exclude reference="Kd1-N1-yeN"/>
-                                <exclude reference="t0e-S4-GhB"/>
-                                <exclude reference="u02-hB-LpU"/>
+                                <exclude reference="8rm-Pm-EPP"/>
+                                <exclude reference="tgw-Ra-zB0"/>
+                                <exclude reference="uJU-PI-30B"/>
+                                <exclude reference="uzw-1f-Hc0"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -921,18 +921,14 @@
                                 <include reference="Rkt-JF-j8p"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="68L-vQ-3Xn"/>
-                                <include reference="Kd1-N1-yeN"/>
-                                <include reference="t0e-S4-GhB"/>
-                                <include reference="u02-hB-LpU"/>
+                                <include reference="8rm-Pm-EPP"/>
+                                <include reference="tgw-Ra-zB0"/>
+                                <include reference="uJU-PI-30B"/>
+                                <include reference="uzw-1f-Hc0"/>
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" title="Favorites" id="A5n-qT-573">
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="mQp-lU-qYP">
-                            <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Favorites" id="A5n-qT-573"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="favoritesTable" destination="Rkt-JF-j8p" id="qgG-nN-C1c"/>
@@ -2912,10 +2908,10 @@ Swipe to get started.</string>
             </objects>
             <point key="canvasLocation" x="-1742.25" y="-161.625"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Favorites Nav Controller-->
         <scene sceneID="Gnq-Kk-TXb">
             <objects>
-                <navigationController storyboardIdentifier="favoritesList" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ZcE-Zw-nBl" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="favoritesList" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ZcE-Zw-nBl" customClass="FavoritesNavController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="AHk-lY-24o">
@@ -2950,9 +2946,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="zgf-W2-bDZ"/>
         <segue reference="cZg-RQ-l62"/>
         <segue reference="i1c-0T-qib"/>
-        <segue reference="6ln-2C-qu7"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

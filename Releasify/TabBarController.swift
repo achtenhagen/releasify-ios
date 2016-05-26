@@ -14,7 +14,7 @@ class TabBarController: UITabBarController {
 	
 	weak var notificationDelegate: AppControllerDelegate?
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	var navController = AppController()
+	var navController: AppController!
 	var theme: Theme!
 	var streamController: StreamViewController!
 	var subscriptionController: SubscriptionController!
@@ -116,8 +116,7 @@ class TabBarController: UITabBarController {
         super.didReceiveMemoryWarning()
     }
 
-	func menuPressed() {
-		addBarBtn.enabled = !addBarBtn.enabled
+	func menuPressed() {		
 		navController.openAndCloseMenu()
 	}
 

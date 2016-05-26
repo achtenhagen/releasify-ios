@@ -11,6 +11,7 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	let debug = true
+	let storyboard = UIStoryboard(name: "Main", bundle: nil)
 	var window: UIWindow?
 	var backWindow: UIWindow?
 	var theme: Theme!
@@ -118,13 +119,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		if userID == 0 {
 			firstRun = true
 			UIApplication.sharedApplication().cancelAllLocalNotifications()
-			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
+			window?.rootViewController = storyboard.instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
-			let back = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("favoritesList") as! UINavigationController
+			let back = storyboard.instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesNavController
+			let front = storyboard.instantiateViewControllerWithIdentifier("AppController") as! AppController
+			back.appControllerDelegate = front
 			self.backWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
 			self.backWindow!.rootViewController = back
 			backWindow?.makeKeyAndVisible()
-			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
+			window?.rootViewController = front
 		}
 		window?.makeKeyAndVisible()
 		

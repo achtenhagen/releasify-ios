@@ -10,9 +10,12 @@ import UIKit
 
 class FavoritesListController: UIViewController {
 	
+	weak var appControllerDelegate: AppControllerDelegate?
 	private var theme: FavoritesListControllerTheme!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	var navController: FavoritesNavController!
 	var selectedAlbum: Album!
+	var shouldRestore = false
 
 	@IBOutlet var favoritesTable: UITableView!
 	
@@ -25,6 +28,9 @@ class FavoritesListController: UIViewController {
         super.viewDidLoad()
 
 		theme = FavoritesListControllerTheme(style: appDelegate.theme.style)
+
+		// Navigation bar setup
+		navController = self.navigationController as! FavoritesNavController
 
 		// Observers
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(reloadFavoritesList), name: "reloadFavList", object: nil)
@@ -39,6 +45,12 @@ class FavoritesListController: UIViewController {
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
     }
+
+	override func viewDidAppear(animated: Bool) {
+		if shouldRestore {
+			navController.appControllerDelegate!.restoreMenu()
+		}
+	}
 	
 	override func viewWillAppear(animated: Bool) {
 		let indexPath = self.favoritesTable.indexPathForSelectedRow
@@ -95,6 +107,8 @@ extension FavoritesListController: UITableViewDataSource {
 extension FavoritesListController: UITableViewDelegate {
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		selectedAlbum = Favorites.sharedInstance.list[indexPath.row]
+		navController.appControllerDelegate?.fullyHideMenu()
+		shouldRestore = true
 		self.performSegueWithIdentifier("FavoritesListAlbumSegue", sender: self)
 	}
 	
