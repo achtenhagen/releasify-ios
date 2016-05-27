@@ -11,7 +11,7 @@ import MediaPlayer
 import StoreKit
 
 protocol StreamViewControllerDelegate: class {
-	func removeAlbum (album: Album, indexPath: NSIndexPath)
+	func removeAlbum(album: Album, indexPath: NSIndexPath)
 }
 
 class StreamViewController: UITableViewController {
@@ -471,7 +471,7 @@ extension StreamViewController: UIViewControllerPreviewingDelegate {
 	}
 }
 
-// MARK: - Theme Extension
+// MARK: - Theme Subclass
 private class StreamViewControllerTheme: Theme {
 	var streamCellBackgroundColor: UIColor!
 	var streamCellAlbumTitleColor: UIColor!

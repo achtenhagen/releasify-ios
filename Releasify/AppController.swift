@@ -20,20 +20,20 @@ let kLeftInset: CGFloat = 60
 final class AppController: UINavigationController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var leftEdgePan: UIScreenEdgePanGestureRecognizer!
-	var rightSwipe: UISwipeGestureRecognizer!
+	var swipeGesture: UISwipeGestureRecognizer!
 	var tapGesture: UITapGestureRecognizer!
 	var tabController: TabBarController!
 	var _origin: CGPoint!
 
 	enum Menu {
-		case closed, hidden, open
+		case Closed, Hidden, Open
 		func position() -> CGFloat {
 			switch self {
-			case .closed:
+			case .Closed:
 				return CGPointZero.x
-			case .hidden:
+			case .Hidden:
 				return CGRectGetWidth(UIScreen.mainScreen().bounds)
-			case .open:
+			case .Open:
 				return CGRectGetWidth(UIScreen.mainScreen().bounds) - kLeftInset
 			}
 		}
@@ -77,35 +77,23 @@ final class AppController: UINavigationController {
 		window.layer.shadowOpacity =  appDelegate.theme.style == .Dark ? 0.8 : 0.2
 		_origin = window.frame.origin
 
-		// Hamburger menu gestures
+		// Menu gestures
 		leftEdgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleEdgePan(_:)))
 		leftEdgePan.edges = .Left
-		rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
-		rightSwipe.direction = .Left
+		swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+		swipeGesture.direction = .Left
 		tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
 		tabController.view.addGestureRecognizer(leftEdgePan)
-		tabController.view.addGestureRecognizer(rightSwipe)
 	}
 
 	// MARK: - Tap gesture handler
 	func handleTap(recognizer: UITapGestureRecognizer) {
-		var finalOrigin = CGPointZero
-		var f = window.frame
-		finalOrigin = CGPoint(x: Menu.closed.position(), y: 0)
-		f.origin = finalOrigin
-		UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: {
-			window.transform = CGAffineTransformIdentity
-			window.frame = f
-		}, completion: { (completed) in
-			self.tabController.view.removeGestureRecognizer(self.tapGesture)
-			self.setViewInteraction(finalOrigin)
-		})
+		closeMenu()
 	}
 
 	// MARK: - Swipe gesture handler
 	func handleSwipe(recognizer: UISwipeGestureRecognizer) {
-		tabController.view.removeGestureRecognizer(tapGesture)
-		openAndCloseMenu()
+		closeMenu()
 	}
 
 	// MARK: - Edge pan gesture handler
@@ -119,7 +107,7 @@ final class AppController: UINavigationController {
 		case .Changed:
 				tabController.streamController.view.userInteractionEnabled = false
 				tabController.subscriptionController.view.userInteractionEnabled = false
-				if _origin.x + translation.x <= Menu.open.position() {
+				if _origin.x + translation.x <= Menu.Open.position() {
 					window.transform = CGAffineTransformMakeTranslation(translation.x, 0)
 				}
 		case .Ended:
@@ -127,11 +115,11 @@ final class AppController: UINavigationController {
 			var f = window.frame
 			if velocity.x > 0 {
 				if _origin.x + translation.x >= 50 {
-					finalOrigin = CGPoint(x: Menu.open.position(), y: 0)
+					finalOrigin = CGPoint(x: Menu.Open.position(), y: 0)
 				}
 			} else {
-				if _origin.x + translation.x >= Menu.open.position() - 50 {
-					finalOrigin = CGPoint(x: Menu.open.position(), y: 0)
+				if _origin.x + translation.x >= Menu.Open.position() - 50 {
+					finalOrigin = CGPoint(x: Menu.Open.position(), y: 0)
 				}
 			}
 			f.origin = finalOrigin
@@ -139,24 +127,14 @@ final class AppController: UINavigationController {
 				window.transform = CGAffineTransformIdentity
 				window.frame = f
 			}, completion: { (completed) in
-				if window.frame.origin.x == Menu.open.position() {
+				if window.frame.origin.x == Menu.Open.position() {
 					self.tabController.view.addGestureRecognizer(self.tapGesture)
+					self.tabController.view.addGestureRecognizer(self.swipeGesture)
 				}
 				self.setViewInteraction(finalOrigin)
 			})
 		case .Cancelled:
-			var finalOrigin = CGPointZero
-			if velocity.x >= 0 {
-				finalOrigin.x = Menu.closed.position()
-			}
-			var f = window.frame
-			f.origin = finalOrigin
-			UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: {
-				window.transform = CGAffineTransformIdentity
-				window.frame = f
-			}, completion: { (completed) in
-				self.tabController.view.removeGestureRecognizer(self.tapGesture)
-			})
+			closeMenu()
 		default:
 			break
 		}
@@ -166,12 +144,14 @@ final class AppController: UINavigationController {
 	func openAndCloseMenu() {
 		var finalOrigin = CGPoint()
 		var f = window.frame
-		if f.origin.x == Menu.closed.position(){
-			finalOrigin.x = Menu.open.position()
+		if f.origin.x == Menu.Closed.position(){
+			finalOrigin.x = Menu.Open.position()
 			self.tabController.view.addGestureRecognizer(self.tapGesture)
+			self.tabController.view.addGestureRecognizer(self.swipeGesture)
 		} else {
-			finalOrigin.x = Menu.closed.position()
+			finalOrigin.x = Menu.Closed.position()
 			self.tabController.view.removeGestureRecognizer(self.tapGesture)
+			self.tabController.view.removeGestureRecognizer(self.swipeGesture)
 		}
 		f.origin = finalOrigin
 		UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: {
@@ -179,6 +159,22 @@ final class AppController: UINavigationController {
 			window.frame = f
 		}, completion: { (completed) in
 			self.setViewInteraction(finalOrigin)
+		})
+	}
+
+	// MARK: - Close the menu
+	func closeMenu() {
+		var finalOrigin = CGPointZero
+		var f = window.frame
+		finalOrigin = CGPoint(x: Menu.Closed.position(), y: 0)
+		f.origin = finalOrigin
+		UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: {
+			window.transform = CGAffineTransformIdentity
+			window.frame = f
+			}, completion: { (completed) in
+				self.tabController.view.removeGestureRecognizer(self.tapGesture)
+				self.tabController.view.removeGestureRecognizer(self.swipeGesture)
+				self.setViewInteraction(finalOrigin)
 		})
 	}
 
@@ -207,14 +203,14 @@ extension AppController: AppControllerDelegate {
 	func fullyHideMenu() {
 		UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
 			window.transform = CGAffineTransformIdentity
-			window.frame.origin.x = Menu.hidden.position()
+			window.frame.origin.x = Menu.Hidden.position()
 		}, completion: nil)
 	}
 
 	func restoreMenu() {
 		UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseOut, animations: {
 			window.transform = CGAffineTransformIdentity
-			window.frame.origin.x = Menu.open.position()
+			window.frame.origin.x = Menu.Open.position()
 		}, completion: nil)
 	}
 }

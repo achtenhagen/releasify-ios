@@ -738,7 +738,7 @@
                         <outlet property="navBar" destination="YBc-a9-ZLA" id="EMX-hv-v1R"/>
                         <outlet property="progressBar" destination="Zc8-Ab-ucb" id="4cW-Eu-Q24"/>
                         <outlet property="selectAllBtn" destination="BK4-g3-ui1" id="ug7-Jo-HgQ"/>
-                        <segue destination="bVm-Vq-jeG" kind="presentation" identifier="ArtistSelectionSegue" modalTransitionStyle="flipHorizontal" id="2xf-M1-LZa"/>
+                        <segue destination="bVm-Vq-jeG" kind="presentation" identifier="ArtistSelectionSegue" modalTransitionStyle="coverVertical" id="2xf-M1-LZa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4S3-1h-WrK" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2946,9 +2946,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="zgf-W2-bDZ"/>
         <segue reference="cZg-RQ-l62"/>
-        <segue reference="i1c-0T-qib"/>
+        <segue reference="2xf-M1-LZa"/>
+        <segue reference="zgf-W2-bDZ"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

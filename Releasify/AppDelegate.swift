@@ -237,7 +237,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 
-	func applicationDidBecomeActive(application: UIApplication) {}
+	// MARK: - Reset application badge count to 0
+	func applicationDidBecomeActive(application: UIApplication) {
+		UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+	}
 
 	func applicationWillTerminate(application: UIApplication) {}
 	

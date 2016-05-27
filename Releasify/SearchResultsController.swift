@@ -9,6 +9,9 @@
 import UIKit
 
 class SearchResultsController: UIViewController {
+
+	private var theme: SearchResultsControllerTheme!
+
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var artists: [NSDictionary]!
 	var artwork = [String:UIImage]()
@@ -26,7 +29,7 @@ class SearchResultsController: UIViewController {
 	
 	// MARK: - Post notification if the user has added a new subscription
 	func closeView() {
-		self.dismissViewControllerAnimated(true, completion: { bool in
+		self.dismissViewControllerAnimated(true, completion: { (completed) in
 			if self.needsRefresh {
 				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 			}
@@ -35,6 +38,8 @@ class SearchResultsController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		theme = SearchResultsControllerTheme(style: appDelegate.theme.style)
 		
 		artistsTable.registerNib(UINib(nibName: "SearchResultsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
 		if keyword == nil {
@@ -43,13 +48,14 @@ class SearchResultsController: UIViewController {
 			infoLabel.text = "Showing results for \"\(keyword)\""
 		}
 		
-		let gradient: CAGradientLayer = CAGradientLayer()
-		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
-		gradient.locations = [0.0 , 1.0]
-		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
-		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		// Theme customizations
+		if theme.style == .Dark {
+			let gradient = theme.gradient()
+			gradient.frame = self.view.bounds
+			self.view.layer.insertSublayer(gradient, atIndex: 0)
+		} else {
+			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1)
+		}
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -59,7 +65,7 @@ class SearchResultsController: UIViewController {
 	// MARK: - Handle artist confirmation
 	func confirmArtist(sender: UIButton) {
 		var artistID = 0		
-		if let id = (artists[sender.tag]["artistID"] as? Int) { artistID = id }
+		if let id = artists[sender.tag]["artistID"] as? Int { artistID = id }
 		let artistTitle = (artists[sender.tag]["title"] as? String)!
 		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
 			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID[]=\(artistUniqueID)"
@@ -95,47 +101,39 @@ class SearchResultsController: UIViewController {
 			})
 		}
 	}
+
+	// MARK: - Parse response data
+	func parseAlbumsByArtist(artist: NSDictionary) -> [NSDictionary] {
+		guard let albums = artist["albums"] as? [NSDictionary] else {
+			return [NSDictionary]()
+		}
+		return albums
+	}
 }
 
 // MARK: - UITableViewDataSource
 extension SearchResultsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! SearchResultCell
-		let album = (artists[indexPath.section]["albums"] as? [NSDictionary])!
-		if album.count > 0 {
-			cell.albumTitle.text = album[indexPath.row]["title"] as? String
-			cell.releaseLabel.text = album[indexPath.row]["releaseDate"] as? String
-			let hash = album[indexPath.row]["artwork"]! as! String
-			let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
-			let albumURL = "https://releasify.io/static/artwork/music/\(subDir)/\(hash).jpg"
-			if let img = artwork[albumURL] {
+		let albums = parseAlbumsByArtist(artists[indexPath.section])
+		if albums.count > 0 {
+			cell.albumTitle.text = albums[indexPath.row]["title"] as? String
+			cell.releaseLabel.text = albums[indexPath.row]["releaseDate"] as? String
+			let albumURL = albums[indexPath.row]["artworkUrl"] as? String
+			if let img = artwork[albumURL!] {
 				cell.albumArtwork.image = img
 			} else {
-				if let checkedURL = NSURL(string: albumURL) {
-					let request = NSURLRequest(URL: checkedURL)
-					NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
-						if error != nil {
-							return
-						}
-						if let HTTPResponse = response as? NSHTTPURLResponse {
-							if HTTPResponse.statusCode == 404 { return }
-							if HTTPResponse.statusCode == 200 {
-								let image = UIImage(data: data!)
-								self.artwork[albumURL] = image
-								dispatch_async(dispatch_get_main_queue(), {
-									if let cellToUpdate = self.artistsTable.cellForRowAtIndexPath(indexPath) as? SearchResultCell {
-										cellToUpdate.albumArtwork.alpha = 0
-										cellToUpdate.albumArtwork.image = image
-										UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
-											cellToUpdate.albumArtwork.alpha = 1.0
-											}, completion: nil)
-									}
-								})
-							}
-						}
-						
-					})
-				}
+				API.sharedInstance.fetchArtwork(albumURL!, successHandler: { (artwork) in
+					if let cellToUpdate = self.artistsTable.cellForRowAtIndexPath(indexPath) as? SearchResultCell {
+						cellToUpdate.albumArtwork.alpha = 0
+						cellToUpdate.albumArtwork.image = artwork
+						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
+							cellToUpdate.albumArtwork.alpha = 1
+						}, completion: nil)
+					}
+					}, errorHandler: {
+						// show placeholder artwork
+				})
 			}
 		}
 		let bgColorView = UIView()
@@ -175,5 +173,18 @@ extension SearchResultsController: UITableViewDelegate {
 			headerView.confirmBtn.setImage(UIImage(named: "icon_add"), forState: .Normal)
 		}
 		return headerView
+	}
+}
+
+// MARK: - Theme Subclass
+private class SearchResultsControllerTheme: Theme {
+	override init(style: Styles) {
+		super.init(style: style)
+		switch style {
+		case .Dark:
+			break
+		case .Light:
+			break
+		}
 	}
 }
