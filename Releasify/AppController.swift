@@ -47,6 +47,7 @@ final class AppController: UINavigationController {
 		// AppDB.sharedInstance.upgrade_db_v2()
 
 		// UnreadItems.sharedInstance.clearList()
+		UnreadItems.sharedInstance.load()
 
 		// Get pending artists waiting to be removed
 		AppDB.sharedInstance.getPendingArtists()
@@ -59,6 +60,7 @@ final class AppController: UINavigationController {
 		// Print debug info
 		if appDelegate.debug {
 			print("Scheduled notifications: \(UIApplication.sharedApplication().scheduledLocalNotifications!.count)")
+			print("Unread items: \(UnreadItems.sharedInstance.list.count)")
 			print("App Controller loaded.")
 		}
 
@@ -69,7 +71,7 @@ final class AppController: UINavigationController {
 		}
 		self.setViewControllers([tabController], animated: true)
 
-		// UIWindow customizations
+		// Window customizations
 		window = appDelegate.window!
 		window.layer.shadowRadius = 15
 		window.layer.shadowOffset = CGSizeMake(0, 0)

@@ -10,7 +10,6 @@ import UIKit
 
 class StreamCell: UITableViewCell {
 
-	private var theme: Theme!
 	let imageParallaxFactor: CGFloat = 20
 	var gradientLayerView: UIView!
 	var gradient: CAGradientLayer!
@@ -30,8 +29,6 @@ class StreamCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-		theme = Theme()
 		
 		artworkContainer.layer.masksToBounds = true
 		artworkContainer.layer.cornerRadius = 6
@@ -73,13 +70,11 @@ class StreamCell: UITableViewCell {
 		if label == nil {
 			label = UILabel(frame: CGRect(x: gradientLayerView.bounds.width - 65, y: artworkContainer.bounds.height - 40, width: 50, height: 26))
 			label.text = "NEW"
-			label.font = UIFont(name: label.font.fontName, size: 12)
-			label.textColor = theme.orangeColor
+			label.font = UIFont(name: label.font.fontName, size: 12)		
 			label.textAlignment = NSTextAlignment.Center
 			label.layer.masksToBounds = true
 			label.layer.cornerRadius = 4
 			label.layer.borderWidth = 1
-			label.layer.borderColor = theme.orangeColor.CGColor
 			artworkContainer.addSubview(label)
 		}
 	}

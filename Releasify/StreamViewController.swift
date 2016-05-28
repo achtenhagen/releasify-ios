@@ -96,8 +96,7 @@ class StreamViewController: UITableViewController {
 			}
 		}
 
-		// Load unread items
-		UnreadItems.sharedInstance.load()
+		// Load unread items		
 		let unreadCount = UnreadItems.sharedInstance.list.count
 		self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(unreadCount)
 		
@@ -167,6 +166,7 @@ class StreamViewController: UITableViewController {
 			// Update tab bar item badge value
 			let unreadCount = UnreadItems.sharedInstance.list.count
 			self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(unreadCount)
+			UnreadItems.sharedInstance.save()
 
 			// Complete refresh
 			self.refreshControl!.endRefreshing()
@@ -356,6 +356,8 @@ class StreamViewController: UITableViewController {
 		cell.removeNewItemLabel()
 		if UnreadItems.sharedInstance.list.contains(album.ID) {
 			cell.addNewItemLabel()
+			cell.label.textColor = theme.orangeColor
+			cell.label.layer.borderColor = theme.orangeColor.CGColor
 		}
 		return cell
 	}

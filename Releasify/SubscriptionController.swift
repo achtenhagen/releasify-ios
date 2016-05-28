@@ -36,7 +36,7 @@ class SubscriptionController: UITableViewController {
 		
 		// Table view customizations
 		subscriptionsTable.backgroundColor = theme.tableViewBackgroundColor
-		subscriptionsTable.backgroundView = UIView(frame: self.subscriptionsTable.bounds)
+		subscriptionsTable.backgroundView = UIView(frame: subscriptionsTable.bounds)
 		subscriptionsTable.backgroundView?.userInteractionEnabled = false
 		subscriptionsTable.separatorColor = theme.cellSeparatorColor
 		
@@ -66,7 +66,7 @@ class SubscriptionController: UITableViewController {
 	}
 	
 	override func viewWillAppear(animated: Bool) {
-		let indexPath = self.subscriptionsTable.indexPathForSelectedRow
+		let indexPath = subscriptionsTable.indexPathForSelectedRow
 		if indexPath != nil {
 			subscriptionsTable.deselectRowAtIndexPath(indexPath!, animated: true)
 		}

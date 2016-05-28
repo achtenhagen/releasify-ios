@@ -8,23 +8,23 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="SearchResultsHeader" customModule="Releasify" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_artist_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="Dxt-7U-urn">
                     <rect key="frame" x="15" y="10" width="30" height="30"/>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZCx-Z0-Gey">
-                    <rect key="frame" x="55" y="14" width="215" height="20"/>
+                    <rect key="frame" x="55" y="16" width="200" height="18"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="215" id="RcO-HE-i0g"/>
+                        <constraint firstAttribute="width" constant="200" id="kXj-xQ-ZxO"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cmI-bs-sbQ">
-                    <rect key="frame" x="284" y="13" width="24" height="24"/>
+                    <rect key="frame" x="339" y="13" width="24" height="24"/>
                     <state key="normal" image="icon_add">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -32,13 +32,12 @@
             </subviews>
             <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="cmI-bs-sbQ" secondAttribute="trailing" constant="12" id="1Zn-JA-cw7"/>
-                <constraint firstItem="cmI-bs-sbQ" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="806-rd-HrA"/>
-                <constraint firstAttribute="bottom" secondItem="ZCx-Z0-Gey" secondAttribute="bottom" constant="16" id="DVg-QK-Xe9"/>
-                <constraint firstItem="cmI-bs-sbQ" firstAttribute="leading" secondItem="ZCx-Z0-Gey" secondAttribute="trailing" constant="14" id="Emg-Sl-BIe"/>
-                <constraint firstItem="Dxt-7U-urn" firstAttribute="centerY" secondItem="cmI-bs-sbQ" secondAttribute="centerY" id="YeT-s1-uL3"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="10" id="YiA-ex-hMJ"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="14" id="Yjv-D3-Gd5"/>
+                <constraint firstItem="cmI-bs-sbQ" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="GnK-GZ-sAK"/>
+                <constraint firstItem="Dxt-7U-urn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="IW3-U2-bBk"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="LrP-CC-Sl6"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="10" id="fD1-aW-BuI"/>
+                <constraint firstItem="Dxt-7U-urn" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="svA-qp-5iM"/>
+                <constraint firstAttribute="trailing" secondItem="cmI-bs-sbQ" secondAttribute="trailing" constant="12" id="t0I-bZ-Ejy"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>
@@ -49,7 +48,7 @@
                 <outlet property="artistLabel" destination="ZCx-Z0-Gey" id="srg-np-bhK"/>
                 <outlet property="confirmBtn" destination="cmI-bs-sbQ" id="w0D-nQ-QvI"/>
             </connections>
-            <point key="canvasLocation" x="359" y="345"/>
+            <point key="canvasLocation" x="358.5" y="345"/>
         </view>
     </objects>
     <resources>

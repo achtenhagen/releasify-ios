@@ -10,8 +10,8 @@ import UIKit
 
 final class API {
 	static let sharedInstance = API()
+	private let baseURL = NSURL(string: "https://releasify.io/api/ios/v1.2/")!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	let baseURL = NSURL(string: "https://releasify.io/api/ios/v1.1/")!
 	
 	enum Error: ErrorType {
 		case BadRequest
@@ -73,7 +73,7 @@ final class API {
 		}
 	}
 
-	// Return Error for status code
+	// Return error for http status code
 	func getErrorFor(statusCode: Int) -> ErrorType {
 		switch statusCode {
 		case 400:
@@ -93,7 +93,7 @@ final class API {
 		}
 	}
 
-	// MARK: - iTunes feed
+	// MARK: - Get iTunes feed
 	func getiTunesFeed(successHandler: ([Album] -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
 		sendRequest(Endpoint.feed.url(), postString: postString, successHandler: { (statusCode, data) in
@@ -129,7 +129,6 @@ final class API {
 		}
 		sendRequest(Endpoint.updateContent.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 200 {
-				// No new content available
 				if statusCode == 204 {
 					if let handler: Void = successHandler?(processedAlbums: processedAlbums, contentHash: self.appDelegate.contentHash!) {
 						handler
@@ -164,9 +163,7 @@ final class API {
 			self.processSubscriptions(subscriptions)
 			
 			// Pass new content back thru closure
-			if let handler: Void = successHandler?(processedAlbums: processedAlbums, contentHash: contentHash) {
-				handler
-			}
+			if let handler: Void = successHandler?(processedAlbums: processedAlbums, contentHash: contentHash) { handler }
 			},
 			errorHandler: { (error) in
 				errorHandler(error: error)
@@ -186,19 +183,9 @@ final class API {
 				let copyright = item["copyright"] as? String,
 				let iTunesUniqueID = item["iTunesUniqueID"] as? Int,
 				let iTunesUrl = item["iTunesUrl"] as? String else { break }
-			let albumItem = Album(
-				ID: ID,
-				title: title,
-				artistID: artistID,
-				releaseDate: releaseDate,
-				artwork: md5(artworkUrl),
-				artworkUrl: artworkUrl,
-				explicit: explicit,
-				copyright: copyright,
-				iTunesUniqueID: iTunesUniqueID,
-				iTunesUrl: iTunesUrl,
-				created: Int(NSDate().timeIntervalSince1970)
-			)
+			let albumItem = Album(ID: ID, title: title, artistID: artistID, releaseDate: releaseDate, artwork: md5(artworkUrl),
+				artworkUrl: artworkUrl, explicit: explicit, copyright: copyright, iTunesUniqueID: iTunesUniqueID, iTunesUrl: iTunesUrl,
+				created: Int(NSDate().timeIntervalSince1970))
 			albums.append(albumItem)
 		}
 		return albums
@@ -208,7 +195,7 @@ final class API {
 	func processSubscriptions(json: [NSDictionary]) {
 		for item in json {
 			let artistID = item["artistID"] as! Int
-			let artistTitle = (item["title"] as? String)!
+			let artistTitle = item["title"] as! String
 			let artistUniqueID = item["iTunesUniqueID"] as! Int
 			AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 		}
@@ -222,12 +209,10 @@ final class API {
 				errorHandler(error: self.getErrorFor(statusCode))
 				return
 			}
-
 			guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [NSDictionary] else {
 				errorHandler(error: Error.FailedToParseJSON)
 				return
 			}
-
 			// Process serialized JSON data
 			let albums = self.processAlbumsFrom(json!)
 			successHandler(albums: albums)
@@ -293,9 +278,7 @@ final class API {
 				errorHandler(error: self.getErrorFor(statusCode))
 				return
 			}
-			if let handler: Void = successHandler?() {
-				handler
-			}
+			if let handler: Void = successHandler?() { handler }
 			},
 			errorHandler: { (error) in
 				errorHandler(error: error)
@@ -375,13 +358,9 @@ final class API {
 	// MARK: - MD5 digestion extension
 	func md5(string: String) -> String {
 		var digest = [UInt8](count: Int(CC_MD5_DIGEST_LENGTH), repeatedValue: 0)
-		if let data = string.dataUsingEncoding(NSUTF8StringEncoding) {
-			CC_MD5(data.bytes, CC_LONG(data.length), &digest)
-		}
 		var digestHex = ""
-		for index in 0..<Int(CC_MD5_DIGEST_LENGTH) {
-			digestHex += String(format: "%02x", digest[index])
-		}
+		if let data = string.dataUsingEncoding(NSUTF8StringEncoding) { CC_MD5(data.bytes, CC_LONG(data.length), &digest) }
+		for index in 0..<Int(CC_MD5_DIGEST_LENGTH) { digestHex += String(format: "%02x", digest[index]) }
 		return digestHex
 	}
 }

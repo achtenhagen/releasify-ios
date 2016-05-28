@@ -13,6 +13,7 @@
 		51386CCD1C80C63D006F7E60 /* AddSubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */; };
 		514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 514BCA761AED68CE00A1A18C /* Settings.bundle */; };
 		51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51557C591B9E073C00D980F9 /* Artist.swift */; };
+		515CB1A31CF8D73B003FCE55 /* SearchResultsNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515CB1A21CF8D73B003FCE55 /* SearchResultsNavController.swift */; };
 		5161265C1B9A7D3000171A93 /* AlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5161265A1B9A7D3000171A93 /* AlbumCell.swift */; };
 		5162D06F1CF6358600619444 /* FavoritesNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5162D06E1CF6358500619444 /* FavoritesNavController.swift */; };
 		516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516AEE581ACAD61D0065B567 /* AppDB.swift */; };
@@ -62,6 +63,7 @@
 		51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSubscriptionController.swift; sourceTree = "<group>"; };
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		51557C591B9E073C00D980F9 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
+		515CB1A21CF8D73B003FCE55 /* SearchResultsNavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsNavController.swift; sourceTree = "<group>"; };
 		5161265A1B9A7D3000171A93 /* AlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCell.swift; sourceTree = "<group>"; };
 		5162D06E1CF6358500619444 /* FavoritesNavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesNavController.swift; sourceTree = "<group>"; };
 		516AEE581ACAD61D0065B567 /* AppDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = AppDB.swift; sourceTree = "<group>"; tabWidth = 4; usesTabs = 1; wrapsLines = 0; };
@@ -154,6 +156,7 @@
 		513E09B61BD8786400E6062C /* Search Results */ = {
 			isa = PBXGroup;
 			children = (
+				515CB1A21CF8D73B003FCE55 /* SearchResultsNavController.swift */,
 				51B09ED51B112D23007F871C /* SearchResultCell.swift */,
 				518B76851B0E688C0009F138 /* SearchResultsController.swift */,
 				518907961B46D67500F0E037 /* SearchResultsHeader.swift */,
@@ -399,6 +402,7 @@
 				516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */,
 				519C8ACF1C653819006114EC /* StreamCell.swift in Sources */,
 				51D959481C643965004B16AB /* StreamViewController.swift in Sources */,
+				515CB1A31CF8D73B003FCE55 /* SearchResultsNavController.swift in Sources */,
 				5101C43F1BDB239100E5ABA8 /* Intro04Controller.swift in Sources */,
 				51D8753E1B1B264B00353347 /* Album.swift in Sources */,
 				512B69241BE6FCB3003752A8 /* Notification.swift in Sources */,

@@ -58,9 +58,7 @@ public class Theme {
 	var sectionHeaderBackgroundColor: UIColor!
 	var sectionHeaderTextColor: UIColor!
 
-	init() {}
-
-	init(style: Styles) {
+	init(style: Styles = .Dark) {
 		self.style = style
 		set()
 	}

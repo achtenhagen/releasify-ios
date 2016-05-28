@@ -40,6 +40,7 @@ final class Favorites {
 	// MARK: - Remove item from list with known index
 	func removeFavorite(index: Int) {
 		list.removeAtIndex(index)
+		save()
 	}
 
 	// MARK: - Remove item from list with unknown index

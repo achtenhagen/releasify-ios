@@ -299,7 +299,7 @@ class ArtistPicker: UIViewController {
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "ArtistSelectionSegue" {
-			let selectionController = segue.destinationViewController as! SearchResultsController
+			let selectionController = segue.destinationViewController as! SearchResultsNavController
 			selectionController.artists = responseArtists
 		}
 	}
