@@ -16,6 +16,7 @@ class AlbumDetailController: UIViewController {
 	private var theme: AlbumDetailControllerTheme!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var canAddToLibrary = false
+	var canAddToFavorites = true
 	var mediaLibrary: MPMediaLibrary!
 	var album: Album?
 	var indexPath: NSIndexPath?
@@ -128,6 +129,9 @@ class AlbumDetailController: UIViewController {
 		artistTitle.textColor = theme.artistTitleColor
 		copyrightLabel.textColor = theme.footerLabelColor
 		progressBar.trackTintColor = theme.progressBarBackTintColor
+
+		// Favorites button enabled state
+		favoriteBtn.enabled = canAddToFavorites
 
 		// Buy button
 		buyBtn.layer.borderColor = theme.globalTintColor.CGColor

@@ -123,6 +123,7 @@ class SearchResultsController: UIViewController {
 		if segue.identifier == "showAlbumFromSearchResults" {
 			let albumDetailController = segue.destinationViewController as! AlbumDetailController
 			albumDetailController.album = selectedAlbum
+			albumDetailController.canAddToFavorites = false
 			if let remote_artwork = tmpArtwork[selectedAlbum.ID] {
 				albumDetailController.artwork = remote_artwork
 			}
