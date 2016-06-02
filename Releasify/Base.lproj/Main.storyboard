@@ -415,7 +415,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" title="Search Results" id="EPw-ei-Cey">
+                    <navigationItem key="navigationItem" title="Import Results" id="EPw-ei-Cey">
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="cvK-SD-xcT">
                             <connections>
                                 <action selector="closeView:" destination="bVm-Vq-jeG" id="0GV-wg-r6Y"/>
@@ -554,7 +554,7 @@
                                                 <action selector="selectAllArtists:" destination="5Wn-lw-nVy" id="moD-3P-WwU"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="rjC-tE-qPq">
+                                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="rjC-tE-qPq">
                                             <connections>
                                                 <action selector="closeArtistPicker:" destination="5Wn-lw-nVy" id="ekq-kY-drt"/>
                                             </connections>
@@ -822,6 +822,7 @@
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>
+                                        <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <connections>
                                             <outlet property="albumTitle" destination="rns-s2-VCy" id="IGZ-J4-pM6"/>
                                             <outlet property="artistTitle" destination="wIv-7e-PvG" id="EvH-3M-bal"/>

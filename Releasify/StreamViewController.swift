@@ -95,10 +95,6 @@ class StreamViewController: UITableViewController {
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
 		}
-
-		// Load unread items		
-		let unreadCount = UnreadItems.sharedInstance.list.count
-		self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(unreadCount)
 		
 		// Handle initial launch
 		if !appDelegate.completedRefresh {
@@ -107,6 +103,7 @@ class StreamViewController: UITableViewController {
 	}
 
 	override func viewWillAppear(animated: Bool) {
+		updateTabBarItemBadgeCount()
 		if theme.style == .Light {
 			self.navigationController?.navigationBar.shadowImage = UIImage(named: "navbar_shadow")
 		}
@@ -317,10 +314,15 @@ class StreamViewController: UITableViewController {
 	// MARK: - Update tab bar item badge count
 	func updateTabBarItemBadge(albumID: Int) {
 		if UnreadItems.sharedInstance.removeItem(albumID) {
-			let count = UnreadItems.sharedInstance.list.count
-			self.tabBarItem.badgeValue = count == 0 ? nil : String(count)
+			updateTabBarItemBadgeCount()
 			UnreadItems.sharedInstance.save()
 		}
+	}
+
+	// MARK: - Update tab bar item badge count
+	func updateTabBarItemBadgeCount() {
+		let count = UnreadItems.sharedInstance.list.count
+		self.tabBarItem.badgeValue = count == 0 ? nil : String(count)
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
