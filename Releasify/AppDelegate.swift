@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var userID = 0
 	var userDeviceToken: String?
 	var userUUID: String!
+	var userStoreFront: String!
 	var contentHash: String?
 	var shortcutKeyDescription: String?
 	var allowExplicitContent = true

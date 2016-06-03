@@ -40,29 +40,39 @@ class TabBarController: UITabBarController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(addSubscriptionFromShortcutItem), name: "addSubscriptionShortcutItem", object: nil)
 		mediaQuery = MPMediaQuery.artistsQuery()
 
+		// StoreKit API | Check for user store front
+		if let storeFront = NSUserDefaults.standardUserDefaults().valueForKey("userStoreFront") as? String {
+			appDelegate.userStoreFront = storeFront
+		} else {
+			StorefrontAssistant.countryCode { (countryCode, error) in
+				if let error = error {
+					print("An error occured setting the store front (\(error))")
+					return
+				}
+				if let countryCode = countryCode {
+					NSUserDefaults.standardUserDefaults().setValue(countryCode, forKey: "userStoreFront")
+					print("Store front has been set (\(countryCode))")
+				}
+			}
+		}
+
 		// StoreKit API | Check users media library capabilities
-		StorefrontAssistant.countryCode { (countryCode, error) in
-			if let error = error {
-				print("Error: \(error)")
-			}
-			if let countryCode = countryCode {
-				print("Country code: \(countryCode)")
-			}
-			if let canAddToLibraryVal = NSUserDefaults.standardUserDefaults().valueForKey("canAddToLibrary") as? Bool {
-				self.appDelegate.canAddToLibrary = canAddToLibraryVal
-			} else {
-				if #available(iOS 9.3, *) {
-					if SKCloudServiceController.authorizationStatus() == .Authorized {
-						let controller = SKCloudServiceController()
-						controller.requestCapabilitiesWithCompletionHandler { (capability, error) in
-							if capability.rawValue >= 256 {
-								self.appDelegate.canAddToLibrary = true
-								NSUserDefaults.standardUserDefaults().setBool(true, forKey: "canAddToLibrary")
-								if self.appDelegate.debug { print("User can add to music library.") }
-							}
+		if let canAddToLibrary = NSUserDefaults.standardUserDefaults().valueForKey("canAddToLibrary") as? Bool {
+			self.appDelegate.canAddToLibrary = canAddToLibrary
+		} else {
+			if #available(iOS 9.3, *) {
+				if SKCloudServiceController.authorizationStatus() == .Authorized {
+					let controller = SKCloudServiceController()
+					controller.requestCapabilitiesWithCompletionHandler { (capability, error) in
+						if capability.rawValue >= 256 {
+							self.appDelegate.canAddToLibrary = true
+							NSUserDefaults.standardUserDefaults().setBool(true, forKey: "canAddToLibrary")
+							if self.appDelegate.debug { print("User can add to music library.") }
 						}
 					}
 				}
+			} else {
+				NSUserDefaults.standardUserDefaults().setBool(false, forKey: "canAddToLibrary")
 			}
 		}
 

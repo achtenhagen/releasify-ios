@@ -15,7 +15,6 @@ class AlbumDetailController: UIViewController {
 
 	private var theme: AlbumDetailControllerTheme!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	var canAddToLibrary = false
 	var canAddToFavorites = true
 	var mediaLibrary: MPMediaLibrary!
 	var album: Album?
@@ -232,7 +231,7 @@ class AlbumDetailController: UIViewController {
 	override func previewActionItems() -> [UIPreviewActionItem] {
 		var buyTitle = "Pre-Order"
 		if timeDiff <= 0 {
-			buyTitle = canAddToLibrary ? "Add to Library..." : "Purchase"
+			buyTitle = appDelegate.canAddToLibrary ? "Add to Library" : "Purchase"
 		}
 		// 3D Touch purchase action
 		let purchaseAction = UIPreviewAction(title: buyTitle, style: .Default) { (action, viewController) -> Void in
@@ -241,7 +240,7 @@ class AlbumDetailController: UIViewController {
 			}
 		}
 		// 3D Touch favorites action
-		let favoritesActionTitle = isFavorite == true ? "Remove from Favorites..." : "Add to Favorites..."
+		let favoritesActionTitle = isFavorite == true ? "Remove from Favorites" : "Add to Favorites"
 		let favoriteAction = UIPreviewAction(title: favoritesActionTitle, style: .Default, handler: { (action, viewController) -> Void in
 			if !self.isFavorite {
 				self.addFavorite()
