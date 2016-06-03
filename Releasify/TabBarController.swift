@@ -74,7 +74,12 @@ class TabBarController: UITabBarController {
 		favListBarBtn.tintColor = theme.globalTintColor
 		addBarBtn = self.navigationController?.navigationBar.items![0].rightBarButtonItem
 		addBarBtn.tintColor = theme.globalTintColor
-		
+
+		// Prevent both bar button items from being pressed at the same time
+		for view in (self.navigationController?.navigationBar.subviews)! {
+			view.exclusiveTouch = true
+		}
+
 		// Navigation item title view
 		let titleImageName = theme.style == .Dark ? "icon_navbar" : "icon_navbar_alt"
 		let titleImage = UIImageView(image: UIImage(named: titleImageName))

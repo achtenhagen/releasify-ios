@@ -21,6 +21,7 @@ class StreamViewController: UITableViewController {
 	
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let reuseIdentifier = "streamCell"
+	var cellArtworkContainerSize: CGRect!
 	var selectedAlbum: Album!
 	var filteredData: [Artist]!
 	var notificationAlbumID: Int?
@@ -41,6 +42,7 @@ class StreamViewController: UITableViewController {
 		super.viewDidLoad()
 		
 		// Initialize
+		cellArtworkContainerSize = CGRect(x: 0, y: 134, width: UIScreen.mainScreen().bounds.width - 40, height: 100)
 		tmpArtwork = [String:UIImage]()
 		tmpUrl = [Int:String]()
 		theme = StreamViewControllerTheme(style: appDelegate.theme.style)
@@ -96,7 +98,7 @@ class StreamViewController: UITableViewController {
 			}
 		}
 		
-		// Handle initial launch
+		// Update content when app is launched
 		if !appDelegate.completedRefresh {
 			refresh()
 		}
@@ -121,8 +123,10 @@ class StreamViewController: UITableViewController {
 	// MARK: - Refresh Content
 	func refresh() {
 		API.sharedInstance.refreshContent({ (processedAlbums, contentHash) in
+			var newContentAvailable = false
 			for album in processedAlbums {
 				let newAlbumID = AppDB.sharedInstance.addAlbum(album)
+				if newAlbumID > 0 { newContentAvailable = true }
 				if newAlbumID > 0 && UIApplication.sharedApplication().scheduledLocalNotifications!.count < 64 {
 					UnreadItems.sharedInstance.list.append(newAlbumID)
 					let remaining = Double(album.releaseDate) - Double(NSDate().timeIntervalSince1970)
@@ -141,16 +145,17 @@ class StreamViewController: UITableViewController {
 				}
 			}
 
-			// Reload data
-			AppDB.sharedInstance.getArtists()
-			AppDB.sharedInstance.getAlbums()
+			// Reload data if new content is available
+			if newContentAvailable {
+				AppDB.sharedInstance.getArtists()
+				AppDB.sharedInstance.getAlbums()
+				self.streamTable.reloadData()
+			}
 
 			// Show iTunes Feed if no local content is available
 			if AppDB.sharedInstance.albums.count == 0 {
 				self.getiTunesFeed()
 			}
-
-			self.streamTable.reloadData()
 
 			// Update content hash
 			NSUserDefaults.standardUserDefaults().setValue(contentHash, forKey: "contentHash")
@@ -289,7 +294,7 @@ class StreamViewController: UITableViewController {
 		}
 		if footerLabel != nil && self.streamTable.contentOffset.y >= (self.streamTable.contentSize.height - self.streamTable.bounds.size.height) {
 			footerLabel.fadeIn()
-		} else if footerLabel != nil && footerLabel.alpha == 1.0 {
+		} else if footerLabel != nil && footerLabel.alpha == 1 {
 			footerLabel.fadeOut()
 		}
 	}
@@ -354,7 +359,7 @@ class StreamViewController: UITableViewController {
 		if tmpUrl![album.ID] == nil {
 			tmpUrl![album.ID] = album.iTunesUrl
 		}
-		cell.addOverlay()
+		cell.addOverlay(cellArtworkContainerSize)		
 		cell.removeNewItemLabel()
 		if UnreadItems.sharedInstance.list.contains(album.ID) {
 			cell.addNewItemLabel()

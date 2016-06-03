@@ -50,9 +50,9 @@ class StreamCell: UITableViewCell {
 	}
 
 	// MARK: - Add shadow overlay to cell
-	func addOverlay() {
+	func addOverlay(frame: CGRect) {
 		if gradientLayerView != nil { gradientLayerView.removeFromSuperview() }
-		gradientLayerView = UIView(frame: CGRect(x: 0, y: artworkContainer.bounds.height - 100, width: artworkContainer.bounds.width, height: 100))
+		gradientLayerView = UIView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: frame.height))
 		gradient = CAGradientLayer()
 		gradient.colors = [AnyObject]()
 		gradient.colors!.append(UIColor.clearColor().CGColor)
@@ -62,7 +62,7 @@ class StreamCell: UITableViewCell {
 		gradient.cornerRadius = 4
 		gradientLayerView.layer.insertSublayer(gradient, atIndex: 0)
 		gradient.frame = gradientLayerView.bounds
-		artworkContainer.addSubview(gradientLayerView)
+		artworkContainer.addSubview(gradientLayerView)		
 	}
 
 	// MARK: - Add new item label

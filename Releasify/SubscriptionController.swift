@@ -59,6 +59,8 @@ class SubscriptionController: UITableViewController {
 		searchController.searchBar.sizeToFit()
 		subscriptionsTable.tableHeaderView = searchController.searchBar
 		definesPresentationContext = true
+
+		AppDB.sharedInstance.getArtists()
 	}
 	
 	override func viewDidAppear(animated: Bool) {

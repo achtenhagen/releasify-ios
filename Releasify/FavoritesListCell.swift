@@ -11,7 +11,6 @@ import UIKit
 class FavoritesListCell: UITableViewCell {
 	
 	@IBOutlet var artwork: UIImageView!
-	@IBOutlet var numberLabel: UILabel!
 	@IBOutlet var albumTitle: UILabel!
 	@IBOutlet var artistTitle: UILabel!
 	
