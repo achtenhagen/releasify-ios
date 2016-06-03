@@ -16,20 +16,22 @@ protocol StreamViewControllerDelegate: class {
 
 class StreamViewController: UITableViewController {
 	
-	private var theme: StreamViewControllerTheme!
 	weak var delegate: AppControllerDelegate?
-	
+	private var theme: StreamViewControllerTheme!
+	private let reuseIdentifier = "streamCell"
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	let reuseIdentifier = "streamCell"
 	var cellArtworkContainerSize: CGRect!
 	var selectedAlbum: Album!
 	var filteredData: [Artist]!
 	var notificationAlbumID: Int?
 	var tmpArtwork: [String:UIImage]?
 	var tmpUrl: [Int:String]?
-	var iTunesFeed: [Album]?
 	var footerLabel: UILabel!
 	var favListBarBtn: UIBarButtonItem!
+	var placeholderView: UIImageView!
+	var placeholderTitle: UILabel!
+	var placeholderSubtitle: UILabel!
+	var placeholderButton: UIButton!
 
 	@IBOutlet var streamTabBarItem: UITabBarItem!
 	@IBOutlet var streamTable: UITableView!
@@ -55,16 +57,16 @@ class StreamViewController: UITableViewController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(showAlbumFromNotification(_:)), name: "showAlbum", object: nil)
 
 		// Theme customization
-		self.streamTable.backgroundColor = theme.tableViewBackgroundColor
-		self.streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
-		self.streamTable.backgroundView?.userInteractionEnabled = false
-		self.streamTable.separatorStyle = theme.style == .Dark ? .None : .SingleLine
-		self.streamTable.separatorColor = theme.cellSeparatorColor
+		streamTable.backgroundColor = theme.tableViewBackgroundColor
+		streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
+		streamTable.backgroundView?.userInteractionEnabled = false
+		streamTable.separatorStyle = theme.style == .Dark ? .None : .SingleLine
+		streamTable.separatorColor = theme.cellSeparatorColor
 		
 		// Check for 3D Touch availability
 		if #available(iOS 9.0, *) {
 			if traitCollection.forceTouchCapability == .Available {
-				self.registerForPreviewingWithDelegate(self, sourceView: self.streamTable)
+				self.registerForPreviewingWithDelegate(self, sourceView: streamTable)
 			}
 		}
 		
@@ -73,7 +75,7 @@ class StreamViewController: UITableViewController {
 		// Refresh control
 		refreshControl!.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = theme.refreshControlTintColor
-		self.streamTable.addSubview(refreshControl!)
+		streamTable.addSubview(refreshControl!)
 
 		// Double tap gesture on tab bar
 		let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(scrollListToTop))
@@ -81,8 +83,8 @@ class StreamViewController: UITableViewController {
 		self.tabBarController?.tabBar.addGestureRecognizer(doubleTapGesture)
 		
 		// Handle first run
-		if self.appDelegate.firstRun {
-			self.appDelegate.firstRun = false
+		if appDelegate.firstRun {
+			appDelegate.firstRun = false
 		}
 		
 		// Process remote notification payload
@@ -114,6 +116,11 @@ class StreamViewController: UITableViewController {
 	override func viewDidAppear(animated: Bool) {
 		AppDB.sharedInstance.getAlbums()
 		self.streamTable.reloadData()
+		if AppDB.sharedInstance.albums.count == 0 {
+			showEmptyStatePlaceholder()
+		} else {
+			hideEmptyStatePlaceholder()
+		}
 	}
 
     override func didReceiveMemoryWarning() {
@@ -152,9 +159,11 @@ class StreamViewController: UITableViewController {
 				self.streamTable.reloadData()
 			}
 
-			// Show iTunes Feed if no local content is available
+			// Show / hide empty state placeholder
 			if AppDB.sharedInstance.albums.count == 0 {
-				self.getiTunesFeed()
+				self.showEmptyStatePlaceholder()
+			} else {
+				self.hideEmptyStatePlaceholder()
 			}
 
 			// Update content hash
@@ -179,14 +188,69 @@ class StreamViewController: UITableViewController {
 		})
 	}
 
-	// MARK: - Get iTunes Feed
-	func getiTunesFeed() {
-		iTunesFeed = [Album]()
-		API.sharedInstance.getiTunesFeed({ (feed) in
-			self.iTunesFeed = feed
-		}, errorHandler: { (error) in
-			// Handle error
-		})
+	// MARK: - Show placeholder if no local content is available
+	func showEmptyStatePlaceholder() {
+		if placeholderView == nil {
+			placeholderView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+			placeholderView.image = UIImage(named: "stream_empty_state")
+			placeholderView.center = self.view.center
+			placeholderView.center.y -= 80
+		}
+		if placeholderTitle == nil {
+			placeholderTitle = UILabel()
+			placeholderTitle.font = UIFont(name: placeholderTitle.font.fontName, size: 20)
+			placeholderTitle.textColor = self.theme.blueColor
+			placeholderTitle.text = "No Content"
+			placeholderTitle.textAlignment = NSTextAlignment.Center
+			placeholderTitle.adjustsFontSizeToFitWidth = true
+			placeholderTitle.sizeToFit()
+			placeholderTitle.center = CGPoint(x: self.view.frame.size.width / 2, y: (self.view.frame.size.height / 2) + 10)
+		}
+		if placeholderSubtitle == nil {
+			placeholderSubtitle = UILabel()
+			placeholderSubtitle.font = UIFont(name: placeholderSubtitle.font!.fontName, size: 14)
+			placeholderSubtitle.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+			placeholderSubtitle.text = "Start by adding a new subscription"
+			placeholderSubtitle.textAlignment = NSTextAlignment.Center
+			placeholderSubtitle.adjustsFontSizeToFitWidth = true
+			placeholderSubtitle.sizeToFit()
+			placeholderSubtitle.center = CGPoint(x: self.view.frame.size.width / 2, y: (self.view.frame.size.height / 2) + 45)
+		}
+		if placeholderButton == nil {
+			placeholderButton = UIButton(type: UIButtonType.RoundedRect)
+			placeholderButton.setTitle("Add Subscription", forState: UIControlState.Normal)
+			placeholderButton.bounds.size = CGSize(width: 140, height: 40)
+			placeholderButton.center = self.view.center
+			placeholderButton.frame.origin.y += 95
+			placeholderButton.layer.cornerRadius = 4
+			placeholderButton.layer.borderWidth = 1
+			placeholderButton.layer.borderColor = self.theme.blueColor.CGColor
+			placeholderButton.addTarget(self, action: #selector(self.addSubscriptionFromPlaceholder), forControlEvents: UIControlEvents.TouchUpInside)
+		}
+		self.view.addSubview(placeholderView)
+		self.view.addSubview(placeholderTitle)
+		self.view.addSubview(placeholderSubtitle)
+		self.view.addSubview(placeholderButton)
+	}
+
+	// MARK: - Hide placeholder if local content is available
+	func hideEmptyStatePlaceholder() {
+		if placeholderView != nil {
+			placeholderView.removeFromSuperview()
+			placeholderView = nil
+		}
+		if placeholderTitle != nil {
+			placeholderTitle.removeFromSuperview()
+			placeholderTitle = nil
+		}
+		if placeholderSubtitle != nil {
+			placeholderSubtitle.removeFromSuperview()
+			placeholderSubtitle = nil
+		}
+		if placeholderButton != nil {
+			placeholderButton.removeFromSuperview()
+			placeholderButton = nil
+		}
 	}
 
 	// MARK: - Gesture recognizer to scroll list to top
@@ -275,7 +339,9 @@ class StreamViewController: UITableViewController {
 		AppDB.sharedInstance.deleteArtwork(album.artwork)
 		self.tmpArtwork?.removeValueForKey(album.artwork)
 		self.tmpUrl?.removeValueForKey(album.ID)
-		Favorites.sharedInstance.removeFavoriteIfExists(album)
+		if Favorites.sharedInstance.removeFavoriteIfExists(album) {
+			NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
+		}
 		self.streamTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
 		API.sharedInstance.unsubscribeAlbum(album.iTunesUniqueID, successHandler: nil, errorHandler: { (error) in
 			self.handleError("Unable to remove album!", message: "Please try again later.", error: error)
@@ -313,7 +379,13 @@ class StreamViewController: UITableViewController {
 		if segue.identifier == "AlbumViewSegue" {
 			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
+			detailController.artist = AppDB.sharedInstance.getAlbumArtist(selectedAlbum.ID)!
 		}
+	}
+
+	// MARK: - Add new subscription from empty state
+	func addSubscriptionFromPlaceholder() {
+		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
 	}
 
 	// MARK: - Update tab bar item badge count
@@ -469,6 +541,7 @@ extension StreamViewController: UIViewControllerPreviewingDelegate {
 		let album = AppDB.sharedInstance.albums[indexPath.row]
 		albumDetailVC.delegate = self
 		albumDetailVC.album = album
+		albumDetailVC.artist = AppDB.sharedInstance.getAlbumArtist(album.ID)!
 		albumDetailVC.indexPath = indexPath
 		albumDetailVC.preferredContentSize = CGSizeZero
 		previewingContext.sourceRect = cell.frame

@@ -38,13 +38,6 @@ final class UnreadItems {
 		return false
 	}
 
-	// MARK: - Remove unread items by artist
-	func removeUnreadItemsByArtist(albums: [Int]) {
-		for albumID in albums {
-			removeItem(albumID)
-		}
-	}
-
 	// MARK: - Load list
 	func load() {
 		list = [Int]()

@@ -754,9 +754,6 @@
                                                     <exclude reference="wIv-7e-PvG"/>
                                                 </mask>
                                                 <mask key="constraints">
-                                                    <exclude reference="Grd-Uw-hHe"/>
-                                                    <exclude reference="Ow0-Vp-hqh"/>
-                                                    <exclude reference="z08-w9-32L"/>
                                                     <exclude reference="GyU-nX-Byw"/>
                                                     <exclude reference="X98-hd-3KF"/>
                                                     <exclude reference="XMg-Jv-Xmi"/>
@@ -765,6 +762,9 @@
                                                     <exclude reference="hc6-6u-qQL"/>
                                                     <exclude reference="2yY-V5-fTG"/>
                                                     <exclude reference="L5a-gw-bgs"/>
+                                                    <exclude reference="Grd-Uw-hHe"/>
+                                                    <exclude reference="Ow0-Vp-hqh"/>
+                                                    <exclude reference="z08-w9-32L"/>
                                                 </mask>
                                             </variation>
                                             <variation key="heightClass=regular-widthClass=compact">
@@ -774,9 +774,6 @@
                                                     <include reference="wIv-7e-PvG"/>
                                                 </mask>
                                                 <mask key="constraints">
-                                                    <include reference="Grd-Uw-hHe"/>
-                                                    <include reference="Ow0-Vp-hqh"/>
-                                                    <include reference="z08-w9-32L"/>
                                                     <include reference="GyU-nX-Byw"/>
                                                     <include reference="X98-hd-3KF"/>
                                                     <include reference="XMg-Jv-Xmi"/>
@@ -785,6 +782,9 @@
                                                     <include reference="hc6-6u-qQL"/>
                                                     <include reference="2yY-V5-fTG"/>
                                                     <include reference="L5a-gw-bgs"/>
+                                                    <include reference="Grd-Uw-hHe"/>
+                                                    <include reference="Ow0-Vp-hqh"/>
+                                                    <include reference="z08-w9-32L"/>
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>
@@ -2745,6 +2745,7 @@ Swipe to get started.</string>
                         <outlet property="streamTable" destination="YfH-dM-XsL" id="e5r-jR-yTg"/>
                         <outlet property="view" destination="YfH-dM-XsL" id="8jx-MU-syi"/>
                         <segue destination="ICV-6m-5Th" kind="show" identifier="AlbumViewSegue" id="6ln-2C-qu7"/>
+                        <segue destination="muw-KU-1bt" kind="presentation" identifier="AddSubscriptionSegue" modalTransitionStyle="coverVertical" id="mRq-0I-L1t"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SEh-EV-g0Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2866,8 +2867,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="mRq-0I-L1t"/>
         <segue reference="gux-gb-W3x"/>
-        <segue reference="zgf-W2-bDZ"/>
+        <segue reference="EmM-mq-Qty"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

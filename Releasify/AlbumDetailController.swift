@@ -113,7 +113,6 @@ class AlbumDetailController: UIViewController {
 		albumArtwork.image = artwork
 		albumArtwork.layer.masksToBounds = true
 		albumArtwork.layer.cornerRadius = 2
-		artist = AppDB.sharedInstance.getAlbumArtist(album!.ID)!
 		artistTitle.text = artist
 		albumTitle.text = album!.title
 		copyrightLabel.text = album!.copyright

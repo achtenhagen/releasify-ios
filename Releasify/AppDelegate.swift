@@ -40,6 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		if reset {
 			AppDB.sharedInstance.reset()
 			Favorites.sharedInstance.clearList()
+			UnreadItems.sharedInstance.clearList()
 			application.cancelAllLocalNotifications()
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
@@ -49,6 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "theme")
 			NSUserDefaults.standardUserDefaults().removeObjectForKey("canAddToLibrary")
+			NSUserDefaults.standardUserDefaults().removeObjectForKey("userStoreFront")
 		}
 		
 		// Load App settings
@@ -76,7 +78,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			theme = Theme(style: .Dark)
 		}
 		UIApplication.sharedApplication().statusBarStyle = theme.statusBarStyle
-		let navBarAppearance = UINavigationBar.appearance()		
+		let navBarAppearance = UINavigationBar.appearance()
+		let tabBarAppearance = UITabBar.appearance()
+
+		// Navigation bar customizations
 		navBarAppearance.barStyle = theme.navBarStyle
 		navBarAppearance.barTintColor = theme.navBarTintColor
 		if theme.style == .Dark {
@@ -88,7 +93,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		navBarAppearance.tintColor = theme.navTintColor
 		navBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: theme.navTextColor]
 		navBarAppearance.translucent = false
-		let tabBarAppearance = UITabBar.appearance()
+
+		// Tab bar customizations
 		tabBarAppearance.barTintColor = theme.tabBarTintColor
 		tabBarAppearance.tintColor = theme.tabTintColor
 		tabBarAppearance.backgroundColor = UIColor.clearColor()
@@ -122,13 +128,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			UIApplication.sharedApplication().cancelAllLocalNotifications()
 			window?.rootViewController = storyboard.instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
-			let back = storyboard.instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesNavController
-			let front = storyboard.instantiateViewControllerWithIdentifier("AppController") as! AppController
-			back.appControllerDelegate = front
+			let backVC = storyboard.instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesNavController
+			let frontVC = storyboard.instantiateViewControllerWithIdentifier("AppController") as! AppController
+			backVC.appControllerDelegate = frontVC
 			self.backWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
-			self.backWindow!.rootViewController = back
+			self.backWindow!.rootViewController = backVC
 			backWindow?.makeKeyAndVisible()
-			window?.rootViewController = front
+			window?.rootViewController = frontVC
 		}
 		window?.makeKeyAndVisible()
 		
@@ -144,7 +150,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		userDeviceToken = deviceTokenString
 		if userDeviceToken != nil {
 			API.sharedInstance.register(deviceToken: userDeviceToken, allowExplicitContent, successHandler: { (userID, userUUID) in
-				if self.debug { print(userID!) }
+				if self.debug { print("Received user ID from server (\(userID!))") }
 				self.userID = userID!
 				self.userUUID = userUUID
 				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
@@ -242,13 +248,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func applicationDidBecomeActive(application: UIApplication) {
 		UIApplication.sharedApplication().applicationIconBadgeNumber = 0
 	}
-
-	func applicationWillTerminate(application: UIApplication) {}
-	
-	func applicationWillResignActive(application: UIApplication) {}
-	
-	func applicationDidEnterBackground(application: UIApplication) {}
-	
-	func applicationWillEnterForeground(application: UIApplication) {}
-
 }

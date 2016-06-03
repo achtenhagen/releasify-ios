@@ -16,6 +16,7 @@ class SearchResultsController: UIViewController {
 	var artists: [NSDictionary]!
 	var tmpArtwork = [Int:UIImage]()
 	var selectedAlbum: Album!
+	var selectedArtist: String!
 	var selectedArtists: [Int]!
 	var needsRefresh = false
 	
@@ -123,6 +124,7 @@ class SearchResultsController: UIViewController {
 		if segue.identifier == "showAlbumFromSearchResults" {
 			let albumDetailController = segue.destinationViewController as! AlbumDetailController
 			albumDetailController.album = selectedAlbum
+			albumDetailController.artist = selectedArtist
 			albumDetailController.canAddToFavorites = false
 			if let remote_artwork = tmpArtwork[selectedAlbum.ID] {
 				albumDetailController.artwork = remote_artwork
@@ -185,6 +187,7 @@ extension SearchResultsController: UITableViewDelegate {
 		guard let jsonData = artists[indexPath.section]["albums"] as? [NSDictionary] else { return }
 		let albums = API.sharedInstance.processAlbumsFrom(jsonData)
 		selectedAlbum = albums[indexPath.row]
+		selectedArtist = artists[indexPath.section]["title"] as? String
 		self.performSegueWithIdentifier("showAlbumFromSearchResults", sender: self)
 	}
 	

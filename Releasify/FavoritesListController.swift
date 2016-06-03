@@ -72,6 +72,7 @@ class FavoritesListController: UIViewController {
 		if segue.identifier == "FavoritesListAlbumSegue" {
 			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
+			detailController.artist = AppDB.sharedInstance.getAlbumArtist(selectedAlbum.ID)!
 		}
     }
 }

@@ -44,12 +44,14 @@ final class Favorites {
 	}
 
 	// MARK: - Remove item from list with unknown index
-	func removeFavoriteIfExists(album: Album) {
+	func removeFavoriteIfExists(album: Album) -> Bool {
 		for (key, value) in list.enumerate() {
 			if value.ID == album.ID {
 				removeFavorite(key)
+				return true
 			}
 		}
+		return false
 	}
 	
 	// MARK: - Load favorites list

@@ -87,6 +87,7 @@ class AddSubscriptionDetailView: UICollectionViewController {
 		if segue.identifier == "ArtistDetailAlbumsSegue" {
 			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
+			detailController.artist = artistTitle
 			detailController.canAddToFavorites = false
 			if let remote_artwork = tmpArtwork[selectedAlbum.artwork] {
 				detailController.artwork = remote_artwork

@@ -40,8 +40,7 @@ class SubscriptionDetailController: UIViewController {
 								UIApplication.sharedApplication().cancelLocalNotification(notification)
 							}
 						}
-					}
-					UnreadItems.sharedInstance.removeUnreadItemsByArtist(albumIDs)
+					}					
 					self.appDelegate.contentHash = nil
 					self.performSegueWithIdentifier("UnwindToSubscriptionsSegue", sender: self)
 				})
@@ -114,6 +113,7 @@ class SubscriptionDetailController: UIViewController {
 		if segue.identifier == "SubscriptionDetailCellSegue" {
 			let detailController = segue.destinationViewController as! AlbumDetailController
 			detailController.album = selectedAlbum
+			detailController.artist = AppDB.sharedInstance.getAlbumArtist(selectedAlbum.ID)!
 		}
 	}
 }
