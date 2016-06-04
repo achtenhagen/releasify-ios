@@ -45,7 +45,8 @@ class Intro02Controller: UIViewController {
 	
 	// MARK: - Notification settings
 	@IBAction func permissionBtn(sender: UIButton) {
-		if UIApplication.sharedApplication().respondsToSelector(#selector(UIApplication.registerUserNotificationSettings(_:))) {			
+		if UIApplication.sharedApplication().respondsToSelector(#selector(UIApplication.registerUserNotificationSettings(_:))) {
+			permissionBtn.enabled = false
 			let appAction = UIMutableUserNotificationAction()
 			appAction.identifier = "APP_ACTION"
 			appAction.title = "Open in App"

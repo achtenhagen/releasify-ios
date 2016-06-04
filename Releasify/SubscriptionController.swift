@@ -11,13 +11,12 @@ import UIKit
 class SubscriptionController: UITableViewController {
 	
 	private var theme: SubscriptionControllerTheme!
-	
+	private var appEmptyStateView: UIView!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var searchController: UISearchController!
 	var artists: [Artist]!
 	var filteredArtists: [Artist]!
 	var selectedArtist: Artist?
-	var appEmptyStateView: UIView!
 	
 	@IBOutlet var subscriptionsTable: UITableView!
 	

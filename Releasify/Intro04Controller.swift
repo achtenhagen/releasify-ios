@@ -29,12 +29,12 @@ class Intro04Controller: UIViewController {
 			let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 			alert.title = "Continue without Push Notifications?"
 			alert.message = "Are you really sure you would like to use Releasify with Push Notifications turned off?"
-			alert.addAction(UIAlertAction(title: "No", style: .Cancel, handler: { action in
+			alert.addAction(UIAlertAction(title: "No", style: .Cancel, handler: { (action) in
 				if self.delegate != nil {
 					self.delegate?.advanceIntroPageTo(2, reverse: true)
 				}
 			}))
-			alert.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { action in
+			alert.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { (action) in
 				API.sharedInstance.register(self.appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
 					self.appDelegate.userID = userID!
 					self.appDelegate.userUUID = userUUID
@@ -47,7 +47,7 @@ class Intro04Controller: UIViewController {
 						case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
 							alert.title = "You're Offline!"
 							alert.message = "Please make sure you are connected to the internet, then try again."
-							alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+							alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
 								UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 							}))
 						default:

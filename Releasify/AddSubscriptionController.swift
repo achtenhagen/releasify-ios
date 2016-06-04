@@ -14,6 +14,7 @@ class AddSubscriptionController: UIViewController {
 	private var theme: AddSubscriptionControllerTheme!
 	private var artistCellReuseIdentifier = "ArtistCell"
 	private var unwindSegueIdentifier = "ImportArtistsFromSearchResultsSegue"
+	private var appEmptyStateView: UIView!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var searchBar: UISearchBar!
 	var searchResults: [Artist]!
@@ -30,7 +31,6 @@ class AddSubscriptionController: UIViewController {
 
 	@IBAction func UnwindToAddSubscriptionSegue(sender: UIStoryboardSegue) {
 		if needsRefresh {
-			print("requires refresh")
 			NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 		}
 	}
@@ -146,8 +146,31 @@ class AddSubscriptionController: UIViewController {
 					iTunesUniqueID: artist["iTunesUniqueID"] as! Int, avatar: nil))
 			}
 			self.searchTable.reloadData()
+			if self.searchResults.count == 0 {
+				self.showAppEmptyState()
+			} else {
+				self.hideAppEmptyState()
+			}
 			}, errorHandler: { (error) in
 		})
+	}
+
+	// MARK: - Show App empty state
+	func showAppEmptyState() {
+		if appEmptyStateView == nil {
+			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "search_empty_state", title: "No Results",
+			                                  subtitle: "Your search did not return any results", buttonTitle: nil)
+			appEmptyStateView = appEmptyState.view()
+			self.view.addSubview(appEmptyStateView)
+		}
+	}
+
+	// MARK: - Hide App empty state
+	func hideAppEmptyState() {
+		if appEmptyStateView != nil {
+			appEmptyStateView.removeFromSuperview()
+			appEmptyStateView = nil
+		}
 	}
 
 	// MARK: - Error Message Handler

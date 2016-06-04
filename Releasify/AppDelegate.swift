@@ -30,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var notificationAlbumID: Int?
 	var remoteNotificationPayload: NSDictionary?
 	var localNotificationPayload: NSDictionary?
+	var backVC: FavoritesNavController!
 	
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String) + " (" + (NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as! String) + ")"
@@ -118,14 +119,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			}
 		}
 		
-		// Favorites list
-		Favorites.sharedInstance.load()
-		
 		// Set initial view controllers
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		let backVC = storyboard.instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesNavController
+		backVC = storyboard.instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesNavController
 		let frontVC = storyboard.instantiateViewControllerWithIdentifier("AppController") as! AppController
-		backVC.appControllerDelegate = frontVC
 		self.backWindow = UIWindow(frame: window!.bounds)
 		self.backWindow!.rootViewController = backVC
 		backWindow?.makeKeyAndVisible()
