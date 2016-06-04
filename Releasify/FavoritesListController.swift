@@ -101,6 +101,10 @@ extension FavoritesListController: UITableViewDataSource {
 		cell.selectedBackgroundView = bgColorView
 		return cell
 	}
+
+	func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+		return UIView()
+	}
 }
 
 // MARK: - UITableViewDelegate

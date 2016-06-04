@@ -28,10 +28,7 @@ class StreamViewController: UITableViewController {
 	var tmpUrl: [Int:String]?
 	var footerLabel: UILabel!
 	var favListBarBtn: UIBarButtonItem!
-	var placeholderView: UIImageView!
-	var placeholderTitle: UILabel!
-	var placeholderSubtitle: UILabel!
-	var placeholderButton: UIButton!
+	var appEmptyStateView: UIView!
 
 	@IBOutlet var streamTabBarItem: UITabBarItem!
 	@IBOutlet var streamTable: UITableView!
@@ -117,9 +114,28 @@ class StreamViewController: UITableViewController {
 		AppDB.sharedInstance.getAlbums()
 		self.streamTable.reloadData()
 		if AppDB.sharedInstance.albums.count == 0 {
-			showEmptyStatePlaceholder()
+			showAppEmptyState()
 		} else {
-			hideEmptyStatePlaceholder()
+			hideAppEmptyState()
+		}
+	}
+
+	// MARK: - Show App empty state
+	func showAppEmptyState() {
+		if appEmptyStateView == nil {
+			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "stream_empty_state", title: "No Content",
+			                                  subtitle: "Start by adding a new subscription", buttonTitle: "Add Subscription")
+			appEmptyStateView = appEmptyState.view()
+			appEmptyState.placeholderButton.addTarget(self, action: #selector(self.addSubscriptionFromPlaceholder), forControlEvents: .TouchUpInside)
+			self.view.addSubview(appEmptyStateView)
+		}
+	}
+
+	// MARK: - Hide App empty state
+	func hideAppEmptyState() {
+		if appEmptyStateView != nil {
+			appEmptyStateView.removeFromSuperview()
+			appEmptyStateView = nil
 		}
 	}
 
@@ -161,9 +177,9 @@ class StreamViewController: UITableViewController {
 
 			// Show / hide empty state placeholder
 			if AppDB.sharedInstance.albums.count == 0 {
-				self.showEmptyStatePlaceholder()
+				self.showAppEmptyState()
 			} else {
-				self.hideEmptyStatePlaceholder()
+				self.hideAppEmptyState()
 			}
 
 			// Update content hash
@@ -186,71 +202,6 @@ class StreamViewController: UITableViewController {
 				self.refreshControl!.endRefreshing()
 				self.handleError("Unable to update!", message: "Please try again later.", error: error)	
 		})
-	}
-
-	// MARK: - Show placeholder if no local content is available
-	func showEmptyStatePlaceholder() {
-		if placeholderView == nil {
-			placeholderView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-			placeholderView.image = UIImage(named: "stream_empty_state")
-			placeholderView.center = self.view.center
-			placeholderView.center.y -= 80
-		}
-		if placeholderTitle == nil {
-			placeholderTitle = UILabel()
-			placeholderTitle.font = UIFont(name: placeholderTitle.font.fontName, size: 20)
-			placeholderTitle.textColor = self.theme.blueColor
-			placeholderTitle.text = "No Content"
-			placeholderTitle.textAlignment = NSTextAlignment.Center
-			placeholderTitle.adjustsFontSizeToFitWidth = true
-			placeholderTitle.sizeToFit()
-			placeholderTitle.center = CGPoint(x: self.view.frame.size.width / 2, y: (self.view.frame.size.height / 2) + 10)
-		}
-		if placeholderSubtitle == nil {
-			placeholderSubtitle = UILabel()
-			placeholderSubtitle.font = UIFont(name: placeholderSubtitle.font!.fontName, size: 14)
-			placeholderSubtitle.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-			placeholderSubtitle.text = "Start by adding a new subscription"
-			placeholderSubtitle.textAlignment = NSTextAlignment.Center
-			placeholderSubtitle.adjustsFontSizeToFitWidth = true
-			placeholderSubtitle.sizeToFit()
-			placeholderSubtitle.center = CGPoint(x: self.view.frame.size.width / 2, y: (self.view.frame.size.height / 2) + 45)
-		}
-		if placeholderButton == nil {
-			placeholderButton = UIButton(type: UIButtonType.RoundedRect)
-			placeholderButton.setTitle("Add Subscription", forState: UIControlState.Normal)
-			placeholderButton.bounds.size = CGSize(width: 140, height: 40)
-			placeholderButton.center = self.view.center
-			placeholderButton.frame.origin.y += 95
-			placeholderButton.layer.cornerRadius = 4
-			placeholderButton.layer.borderWidth = 1
-			placeholderButton.layer.borderColor = self.theme.blueColor.CGColor
-			placeholderButton.addTarget(self, action: #selector(self.addSubscriptionFromPlaceholder), forControlEvents: UIControlEvents.TouchUpInside)
-		}
-		self.view.addSubview(placeholderView)
-		self.view.addSubview(placeholderTitle)
-		self.view.addSubview(placeholderSubtitle)
-		self.view.addSubview(placeholderButton)
-	}
-
-	// MARK: - Hide placeholder if local content is available
-	func hideEmptyStatePlaceholder() {
-		if placeholderView != nil {
-			placeholderView.removeFromSuperview()
-			placeholderView = nil
-		}
-		if placeholderTitle != nil {
-			placeholderTitle.removeFromSuperview()
-			placeholderTitle = nil
-		}
-		if placeholderSubtitle != nil {
-			placeholderSubtitle.removeFromSuperview()
-			placeholderSubtitle = nil
-		}
-		if placeholderButton != nil {
-			placeholderButton.removeFromSuperview()
-			placeholderButton = nil
-		}
 	}
 
 	// MARK: - Gesture recognizer to scroll list to top

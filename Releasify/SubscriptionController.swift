@@ -17,6 +17,7 @@ class SubscriptionController: UITableViewController {
 	var artists: [Artist]!
 	var filteredArtists: [Artist]!
 	var selectedArtist: Artist?
+	var appEmptyStateView: UIView!
 	
 	@IBOutlet var subscriptionsTable: UITableView!
 	
@@ -72,6 +73,11 @@ class SubscriptionController: UITableViewController {
 		if indexPath != nil {
 			subscriptionsTable.deselectRowAtIndexPath(indexPath!, animated: true)
 		}
+		if AppDB.sharedInstance.artists.count == 0 {
+			showAppEmptyState()
+		} else {
+			hideAppEmptyState()
+		}
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
@@ -86,6 +92,25 @@ class SubscriptionController: UITableViewController {
 		artists = AppDB.sharedInstance.artists
 		filteredArtists = [Artist]()
 		subscriptionsTable.reloadData()
+	}
+
+	// MARK: - Show App empty state
+	func showAppEmptyState() {
+		if appEmptyStateView == nil {
+			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "artists_empty_state", title: "No Subscriptions",
+			                                  subtitle: "Your subscriptions will appear here", buttonTitle: "Add Subscription")
+			appEmptyStateView = appEmptyState.view()
+			// appEmptyState.placeholderButton.addTarget(self, action: #selector(self.addSubscriptionFromPlaceholder), forControlEvents: .TouchUpInside)
+			self.view.addSubview(appEmptyStateView)
+		}
+	}
+
+	// MARK: - Hide App empty state
+	func hideAppEmptyState() {
+		if appEmptyStateView != nil {
+			appEmptyStateView.removeFromSuperview()
+			appEmptyStateView = nil
+		}
 	}
 	
 	// MARK: - Handle error messages
@@ -153,6 +178,10 @@ class SubscriptionController: UITableViewController {
 			selectedArtist = artists[indexPath.row]
 		}
 		self.performSegueWithIdentifier("SubscriptionDetailSegue", sender: self)
+	}
+
+	override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+		return UIView()
 	}
 	
 	override func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
