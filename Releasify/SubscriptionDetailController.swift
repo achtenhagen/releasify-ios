@@ -40,7 +40,9 @@ class SubscriptionDetailController: UIViewController {
 								UIApplication.sharedApplication().cancelLocalNotification(notification)
 							}
 						}
-					}					
+						UnreadItems.sharedInstance.removeItem(ID)
+					}
+					NSNotificationCenter.defaultCenter().postNotificationName("reloadStream", object: nil, userInfo: nil)
 					self.appDelegate.contentHash = nil
 					self.performSegueWithIdentifier("UnwindToSubscriptionsSegue", sender: self)
 				})

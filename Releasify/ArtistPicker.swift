@@ -24,6 +24,7 @@ class ArtistPicker: UIViewController {
 	var isIntro = false
 	var searchController: UISearchController!
 	var collection = [AnyObject]()
+	var successArtists = 0
 	var responseArtists = [NSDictionary]()
 	var activityView: UIView!
 	var indicatorView: UIActivityIndicatorView!
@@ -163,11 +164,15 @@ class ArtistPicker: UIViewController {
 		indicatorView.startAnimating()
 		UIApplication.sharedApplication().networkActivityIndicatorVisible = true
 		
+		// Process each batch
 		var batchesProcessed = 0
 		for batch in batches {
 			API.sharedInstance.sendRequest(API.Endpoint.submitArtist.url(), postString: batch, successHandler: { (statusCode, data) in
 				if statusCode == 202 {
 					if let json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers)) as? NSDictionary {
+						if let successArtists = json["success"] as? [NSDictionary] {
+							self.successArtists += successArtists.count
+						}
 						if let awaitingArtists = json["pending"] as? [NSDictionary] {
 							for artist in awaitingArtists {
 								if let uniqueID = artist["iTunesUniqueID"] as? Int {
@@ -197,6 +202,9 @@ class ArtistPicker: UIViewController {
 							self.progressBar.hidden = true
 							self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
 						} else {
+							if self.successArtists > 0 {
+								NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+							}
 							self.dismissViewControllerAnimated(true, completion: nil)
 						}
 					}

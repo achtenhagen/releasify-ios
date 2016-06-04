@@ -28,9 +28,9 @@ final class UnreadItems {
 	}
 
 	// MARK: - Remove item from list
-	func removeItem(ID: Int) -> Bool {
+	func removeItem(itemID: Int) -> Bool {
 		for (index, item) in list.enumerate() {
-			if item == ID {
+			if item == itemID {
 				list.removeAtIndex(index)
 				return true
 			}

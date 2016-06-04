@@ -121,19 +121,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Favorites list
 		Favorites.sharedInstance.load()
 		
-		// Set initial view controller
+		// Set initial view controllers
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
+		let backVC = storyboard.instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesNavController
+		let frontVC = storyboard.instantiateViewControllerWithIdentifier("AppController") as! AppController
+		backVC.appControllerDelegate = frontVC
+		self.backWindow = UIWindow(frame: window!.bounds)
+		self.backWindow!.rootViewController = backVC
+		backWindow?.makeKeyAndVisible()
 		if userID == 0 {
 			firstRun = true
 			UIApplication.sharedApplication().cancelAllLocalNotifications()
 			window?.rootViewController = storyboard.instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
-			let backVC = storyboard.instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesNavController
-			let frontVC = storyboard.instantiateViewControllerWithIdentifier("AppController") as! AppController
-			backVC.appControllerDelegate = frontVC
-			self.backWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
-			self.backWindow!.rootViewController = backVC
-			backWindow?.makeKeyAndVisible()
 			window?.rootViewController = frontVC
 		}
 		window?.makeKeyAndVisible()

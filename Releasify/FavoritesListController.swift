@@ -12,6 +12,7 @@ class FavoritesListController: UIViewController {
 	
 	weak var appControllerDelegate: AppControllerDelegate?
 	private var theme: FavoritesListControllerTheme!
+	private var appEmptyStateView: UIView!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var navController: FavoritesNavController!
 	var selectedAlbum: Album!
@@ -44,6 +45,10 @@ class FavoritesListController: UIViewController {
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
+
+		if Favorites.sharedInstance.list.count == 0 {
+			showAppEmptyState()
+		}
     }
 
 	override func viewDidAppear(animated: Bool) {
@@ -59,12 +64,35 @@ class FavoritesListController: UIViewController {
 		}
 	}
 
+	// MARK: - Show App empty state
+	func showAppEmptyState() {
+		if appEmptyStateView == nil {
+			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "favorites_empty_state", title: "No Favorites",
+			                                  subtitle: "Your favorites will appear here", buttonTitle: nil)
+			appEmptyStateView = appEmptyState.view()
+			self.view.addSubview(appEmptyStateView)
+		}
+	}
+
+	// MARK: - Hide App empty state
+	func hideAppEmptyState() {
+		if appEmptyStateView != nil {
+			appEmptyStateView.removeFromSuperview()
+			appEmptyStateView = nil
+		}
+	}
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
 
 	func reloadFavoritesList() {		
 		self.favoritesTable.reloadData()
+		if Favorites.sharedInstance.list.count == 0 {
+			showAppEmptyState()
+		} else {
+			hideAppEmptyState()
+		}
 	}
 	
     // MARK: - Navigation
@@ -121,7 +149,7 @@ extension FavoritesListController: UITableViewDelegate {
 			Favorites.sharedInstance.removeFavorite(indexPath.row)
 			tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)			
 			if Favorites.sharedInstance.list.count == 0 {
-				// Show placeholder for empty view
+				self.showAppEmptyState()
 			}
 		})
 		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete_small")!)

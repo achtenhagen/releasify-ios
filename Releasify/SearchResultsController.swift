@@ -157,7 +157,7 @@ extension SearchResultsController: UITableViewDataSource {
 						}, completion: nil)
 					}
 					}, errorHandler: {
-						// show placeholder artwork
+						cell.albumArtwork.image = UIImage(named: "icon_artwork_dark")
 				})
 			}
 		}

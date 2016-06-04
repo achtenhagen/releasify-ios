@@ -29,7 +29,10 @@ class AddSubscriptionController: UIViewController {
 	@IBOutlet var searchTable: UITableView!
 
 	@IBAction func UnwindToAddSubscriptionSegue(sender: UIStoryboardSegue) {
-		// Upon arrival of view
+		if needsRefresh {
+			print("requires refresh")
+			NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
+		}
 	}
 
 	@IBAction func ImportArtists(sender: AnyObject) {

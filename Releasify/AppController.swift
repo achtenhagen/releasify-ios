@@ -15,7 +15,7 @@ protocol AppControllerDelegate: class {
 }
 
 var window: UIWindow!
-let kLeftInset: CGFloat = 60
+private let kLeftInset: CGFloat = 60
 
 final class AppController: UINavigationController {
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate

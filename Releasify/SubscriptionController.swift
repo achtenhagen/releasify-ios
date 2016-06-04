@@ -30,6 +30,7 @@ class SubscriptionController: UITableViewController {
 		super.viewDidLoad()
 
 		theme = SubscriptionControllerTheme(style: appDelegate.theme.style)
+		AppDB.sharedInstance.getArtists()
 		artists = AppDB.sharedInstance.artists
 		filteredArtists = [Artist]()
 		
@@ -60,8 +61,6 @@ class SubscriptionController: UITableViewController {
 		searchController.searchBar.sizeToFit()
 		subscriptionsTable.tableHeaderView = searchController.searchBar
 		definesPresentationContext = true
-
-		AppDB.sharedInstance.getArtists()
 	}
 	
 	override func viewDidAppear(animated: Bool) {
@@ -98,9 +97,8 @@ class SubscriptionController: UITableViewController {
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
 			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "artists_empty_state", title: "No Subscriptions",
-			                                  subtitle: "Your subscriptions will appear here", buttonTitle: "Add Subscription")
+			                                  subtitle: "Your subscriptions will appear here", buttonTitle: nil)
 			appEmptyStateView = appEmptyState.view()
-			// appEmptyState.placeholderButton.addTarget(self, action: #selector(self.addSubscriptionFromPlaceholder), forControlEvents: .TouchUpInside)
 			self.view.addSubview(appEmptyStateView)
 		}
 	}

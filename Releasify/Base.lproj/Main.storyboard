@@ -1555,7 +1555,7 @@ Swipe to get started.</string>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Releasify" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jaP-Tk-HPP">
                                 <rect key="frame" x="-42" y="-21" width="42" height="21"/>
-                                <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="26"/>
+                                <fontDescription key="fontDescription" type="system" weight="thin" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -1564,7 +1564,7 @@ Swipe to get started.</string>
                         <constraints>
                             <constraint firstItem="Mxk-FJ-lcE" firstAttribute="leading" secondItem="cKR-ju-VfK" secondAttribute="leading" id="1bP-e3-b5k"/>
                             <constraint firstItem="jaP-Tk-HPP" firstAttribute="leading" secondItem="szJ-XQ-0Jr" secondAttribute="leadingMargin" constant="94" id="7zh-Gb-jJw">
-                                <variation key="heightClass=regular-widthClass=compact" constant="90"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="86"/>
                             </constraint>
                             <constraint firstItem="jaP-Tk-HPP" firstAttribute="top" secondItem="VWZ-cW-T0K" secondAttribute="bottom" id="DwJ-qZ-GgS"/>
                             <constraint firstItem="Mxk-FJ-lcE" firstAttribute="trailing" secondItem="cKR-ju-VfK" secondAttribute="trailing" id="K6z-AI-V6d"/>

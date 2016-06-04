@@ -149,8 +149,8 @@
 		513E09B51BD8783700E6062C /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				51582E161D0241D100E10969 /* AppEmptyState.swift */,
 				517D6E0C1B6585DC002EC864 /* AppController.swift */,
+				51582E161D0241D100E10969 /* AppEmptyState.swift */,
 				51DD31C51C6E560E005BAE85 /* TabBarController.swift */,
 			);
 			name = Main;

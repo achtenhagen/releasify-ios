@@ -12,6 +12,7 @@ class AddSubscriptionDetailView: UICollectionViewController {
 
 	private let albumCellReuseIdentifier = "AlbumCell"
 	private var theme: AddSubscriptionDetailViewTheme!
+	private var appEmptyStateView: UIView!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var artistID: Int!
 	var artistUniqueID: Int!
@@ -74,10 +75,23 @@ class AddSubscriptionDetailView: UICollectionViewController {
 			self.albums = albums
 			self.collectionView?.reloadData()
 			self.spinner.stopAnimating()
+			if self.albums.count == 0 {
+				self.showAppEmptyState()
+			}
 			}, errorHandler: { (error) in
 				// Handle error
 		})
     }
+
+	// MARK: - Show App empty state
+	func showAppEmptyState() {
+		if appEmptyStateView == nil {
+			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "albums_empty_state", title: "No Albums",
+			                                  subtitle: "We have no content for this artist yet", buttonTitle: nil)
+			appEmptyStateView = appEmptyState.view()
+			self.view.addSubview(appEmptyStateView)
+		}
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

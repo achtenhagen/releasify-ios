@@ -18,6 +18,7 @@ class StreamViewController: UITableViewController {
 	
 	weak var delegate: AppControllerDelegate?
 	private var theme: StreamViewControllerTheme!
+	private var appEmptyStateView: UIView!
 	private let reuseIdentifier = "streamCell"
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var cellArtworkContainerSize: CGRect!
@@ -28,14 +29,11 @@ class StreamViewController: UITableViewController {
 	var tmpUrl: [Int:String]?
 	var footerLabel: UILabel!
 	var favListBarBtn: UIBarButtonItem!
-	var appEmptyStateView: UIView!
 
 	@IBOutlet var streamTabBarItem: UITabBarItem!
 	@IBOutlet var streamTable: UITableView!
 
-	@IBAction func UnwindToStreamViewSegue(sender: UIStoryboardSegue) {
-		refresh()
-	}
+	@IBAction func UnwindToStreamViewSegue(sender: UIStoryboardSegue) {}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -45,11 +43,13 @@ class StreamViewController: UITableViewController {
 		tmpArtwork = [String:UIImage]()
 		tmpUrl = [Int:String]()
 		theme = StreamViewControllerTheme(style: appDelegate.theme.style)
+		AppDB.sharedInstance.getAlbums()
 		
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		
 		// Observers
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(refresh), name: "refreshContent", object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reloadStream), name: "reloadStream", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(showAlbumFromRemoteNotification(_:)), name: "appActionPressed", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(showAlbumFromNotification(_:)), name: "showAlbum", object: nil)
 
@@ -101,23 +101,45 @@ class StreamViewController: UITableViewController {
 		if !appDelegate.completedRefresh {
 			refresh()
 		}
+
+		// Set tab bar item badge count
+		updateTabBarItemBadgeCount()
 	}
 
 	override func viewWillAppear(animated: Bool) {
-		updateTabBarItemBadgeCount()
 		if theme.style == .Light {
 			self.navigationController?.navigationBar.shadowImage = UIImage(named: "navbar_shadow")
 		}
-	}
-	
-	override func viewDidAppear(animated: Bool) {
-		AppDB.sharedInstance.getAlbums()
-		self.streamTable.reloadData()
 		if AppDB.sharedInstance.albums.count == 0 {
 			showAppEmptyState()
 		} else {
 			hideAppEmptyState()
 		}
+	}
+
+	func reloadStream() {
+		AppDB.sharedInstance.getAlbums()
+		updateTabBarItemBadgeCount()
+		if AppDB.sharedInstance.albums.count == 0 {
+			showAppEmptyState()
+		} else {
+			hideAppEmptyState()
+		}
+		self.streamTable.reloadData()
+	}
+
+	// MARK: - Update tab bar item badge count
+	func updateTabBarItemBadge(albumID: Int) {
+		if UnreadItems.sharedInstance.removeItem(albumID) {
+			updateTabBarItemBadgeCount()
+			UnreadItems.sharedInstance.save()
+		}
+	}
+
+	// MARK: - Update tab bar item badge count
+	func updateTabBarItemBadgeCount() {
+		let count = UnreadItems.sharedInstance.list.count
+		self.tabBarItem.badgeValue = count == 0 ? nil : String(count)
 	}
 
 	// MARK: - Show App empty state
@@ -173,6 +195,7 @@ class StreamViewController: UITableViewController {
 				AppDB.sharedInstance.getArtists()
 				AppDB.sharedInstance.getAlbums()
 				self.streamTable.reloadData()
+				UnreadItems.sharedInstance.save()
 			}
 
 			// Show / hide empty state placeholder
@@ -191,8 +214,7 @@ class StreamViewController: UITableViewController {
 			NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
 
 			// Update tab bar item badge value
-			let unreadCount = UnreadItems.sharedInstance.list.count
-			self.tabBarItem.badgeValue = unreadCount == 0 ? nil : String(unreadCount)
+			self.updateTabBarItemBadgeCount()
 			UnreadItems.sharedInstance.save()
 
 			// Complete refresh
@@ -339,20 +361,6 @@ class StreamViewController: UITableViewController {
 		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
 	}
 
-	// MARK: - Update tab bar item badge count
-	func updateTabBarItemBadge(albumID: Int) {
-		if UnreadItems.sharedInstance.removeItem(albumID) {
-			updateTabBarItemBadgeCount()
-			UnreadItems.sharedInstance.save()
-		}
-	}
-
-	// MARK: - Update tab bar item badge count
-	func updateTabBarItemBadgeCount() {
-		let count = UnreadItems.sharedInstance.list.count
-		self.tabBarItem.badgeValue = count == 0 ? nil : String(count)
-	}
-
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return AppDB.sharedInstance.albums.count
 	}
@@ -448,7 +456,9 @@ class StreamViewController: UITableViewController {
 		footerLabel.alpha = 0
 		footerLabel.font = UIFont(name: footerLabel.font.fontName, size: 14)
 		footerLabel.textColor = theme.streamCellFooterLabelColor
-		footerLabel.text = "\(AppDB.sharedInstance.albums.count) albums, \(AppDB.sharedInstance.artists.count) artists"
+		let s1 = AppDB.sharedInstance.albums.count == 1 ? "album" : "albums"
+		let s2 = AppDB.sharedInstance.artists.count == 1 ? "artist" : "artists"
+		footerLabel.text = "\(AppDB.sharedInstance.albums.count) \(s1), \(AppDB.sharedInstance.artists.count) \(s2)"
 		footerLabel.textAlignment = NSTextAlignment.Center
 		footerLabel.adjustsFontSizeToFitWidth = true
 		footerLabel.sizeToFit()
@@ -464,7 +474,7 @@ class StreamViewController: UITableViewController {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
 			alert.title = "You're Offline!"
 			alert.message = "Please make sure you are connected to the internet, then try again."
-			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		default:
