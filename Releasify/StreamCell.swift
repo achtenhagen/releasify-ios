@@ -68,14 +68,14 @@ class StreamCell: UITableViewCell {
 	// MARK: - Add new item label
 	func addNewItemLabel() {
 		if label == nil {
-			label = UILabel(frame: CGRect(x: gradientLayerView.bounds.width - 65, y: artworkContainer.bounds.height - 40, width: 50, height: 26))
+			label = UILabel(frame: CGRect(x: gradientLayerView.bounds.width - 65, y: gradientLayerView.bounds.height - 40, width: 50, height: 26))
 			label.text = "NEW"
 			label.font = UIFont(name: label.font.fontName, size: 12)
 			label.textAlignment = NSTextAlignment.Center
 			label.layer.masksToBounds = true
 			label.layer.cornerRadius = 4
 			label.layer.borderWidth = 1
-			artworkContainer.addSubview(label)
+			gradientLayerView.addSubview(label)
 		}
 	}
 	

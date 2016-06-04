@@ -390,7 +390,7 @@ class StreamViewController: UITableViewController {
 		if tmpUrl![album.ID] == nil {
 			tmpUrl![album.ID] = album.iTunesUrl
 		}
-		cell.addOverlay(cellArtworkContainerSize)		
+		cell.addOverlay(cellArtworkContainerSize)
 		cell.removeNewItemLabel()
 		if UnreadItems.sharedInstance.list.contains(album.ID) {
 			cell.addNewItemLabel()
@@ -401,8 +401,10 @@ class StreamViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		let cell = tableView.cellForRowAtIndexPath(indexPath) as! StreamCell
 		let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
 		updateTabBarItemBadge(albumID)
+		cell.removeNewItemLabel()
 		selectedAlbum = AppDB.sharedInstance.albums[indexPath.row]
 		self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 	}
