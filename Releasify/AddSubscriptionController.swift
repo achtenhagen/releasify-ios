@@ -30,7 +30,7 @@ class AddSubscriptionController: UIViewController {
 	@IBOutlet var searchTable: UITableView!
 
 	@IBAction func UnwindToAddSubscriptionSegue(sender: UIStoryboardSegue) {
-		if needsRefresh {
+		if needsRefresh {			
 			NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 		}
 	}
@@ -161,6 +161,7 @@ class AddSubscriptionController: UIViewController {
 			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "search_empty_state", title: "No Results",
 			                                  subtitle: "Your search did not return any results", buttonTitle: nil)
 			appEmptyStateView = appEmptyState.view()
+			searchTable.tableFooterView = UIView()
 			self.view.addSubview(appEmptyStateView)
 		}
 	}
@@ -170,6 +171,7 @@ class AddSubscriptionController: UIViewController {
 		if appEmptyStateView != nil {
 			appEmptyStateView.removeFromSuperview()
 			appEmptyStateView = nil
+			searchTable.tableFooterView = nil
 		}
 	}
 
@@ -245,6 +247,7 @@ extension AddSubscriptionController: UISearchBarDelegate {
 		} else {
 			searchResults = [Artist]()
 			self.searchTable.reloadData()
+			hideAppEmptyState()
 		}
 	}
 

@@ -44,6 +44,9 @@ class StreamViewController: UITableViewController {
 		tmpUrl = [Int:String]()
 		theme = StreamViewControllerTheme(style: appDelegate.theme.style)
 		AppDB.sharedInstance.getAlbums()
+
+		// Required for footer label
+		AppDB.sharedInstance.getArtists()
 		
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
 		
@@ -192,11 +195,13 @@ class StreamViewController: UITableViewController {
 
 			// Reload data if new content is available
 			if newContentAvailable {
-				AppDB.sharedInstance.getArtists()
 				AppDB.sharedInstance.getAlbums()
 				self.streamTable.reloadData()
 				UnreadItems.sharedInstance.save()
 			}
+
+			// Required in case of new artist, but no new content
+			AppDB.sharedInstance.getArtists()
 
 			// Show / hide empty state placeholder
 			if AppDB.sharedInstance.albums.count == 0 {
@@ -312,7 +317,7 @@ class StreamViewController: UITableViewController {
 		AppDB.sharedInstance.deleteArtwork(album.artwork)
 		self.tmpArtwork?.removeValueForKey(album.artwork)
 		self.tmpUrl?.removeValueForKey(album.ID)
-		if Favorites.sharedInstance.removeFavoriteIfExists(album) {
+		if Favorites.sharedInstance.removeFavoriteIfExists(album.ID) {
 			NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
 		}
 		self.streamTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)

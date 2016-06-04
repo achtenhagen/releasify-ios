@@ -202,7 +202,7 @@ class ArtistPicker: UIViewController {
 							self.progressBar.hidden = true
 							self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
 						} else {
-							if self.successArtists > 0 {
+							if self.successArtists > 0 {								
 								NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 							}
 							self.dismissViewControllerAnimated(true, completion: nil)

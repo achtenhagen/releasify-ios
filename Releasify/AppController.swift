@@ -48,7 +48,6 @@ final class AppController: UINavigationController {
 		
 		// AppDB.sharedInstance.upgrade_db_v2()
 
-		// UnreadItems.sharedInstance.clearList()
 		UnreadItems.sharedInstance.load()
 
 		// Favorites list

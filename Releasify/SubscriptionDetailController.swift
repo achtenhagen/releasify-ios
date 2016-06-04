@@ -40,8 +40,12 @@ class SubscriptionDetailController: UIViewController {
 								UIApplication.sharedApplication().cancelLocalNotification(notification)
 							}
 						}
+						if Favorites.sharedInstance.removeFavoriteIfExists(ID) {
+							NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
+						}
 						UnreadItems.sharedInstance.removeItem(ID)
 					}
+					UnreadItems.sharedInstance.save()
 					NSNotificationCenter.defaultCenter().postNotificationName("reloadStream", object: nil, userInfo: nil)
 					self.appDelegate.contentHash = nil
 					self.performSegueWithIdentifier("UnwindToSubscriptionsSegue", sender: self)

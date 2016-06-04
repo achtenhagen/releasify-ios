@@ -219,7 +219,7 @@ class AlbumDetailController: UIViewController {
 
 	// MARK: - Remove album from favorites list
 	func removeFavorite() {
-		Favorites.sharedInstance.removeFavoriteIfExists(album!)
+		Favorites.sharedInstance.removeFavoriteIfExists(album!.ID)
 		Favorites.sharedInstance.save()
 		isFavorite = false
 		favoriteBtn.setImage(UIImage(named: "icon_favorite_dark"), forState: .Normal)

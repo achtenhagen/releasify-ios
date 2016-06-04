@@ -31,7 +31,7 @@ class SearchResultsController: UIViewController {
 	// MARK: - Post notification if the user has added a new subscription
 	func closeView() {
 		self.dismissViewControllerAnimated(true, completion: { (completed) in
-			if self.needsRefresh {
+			if self.needsRefresh {				
 				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 			}
 		})

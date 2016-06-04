@@ -29,7 +29,6 @@ class SubscriptionController: UITableViewController {
 		super.viewDidLoad()
 
 		theme = SubscriptionControllerTheme(style: appDelegate.theme.style)
-		AppDB.sharedInstance.getArtists()
 		artists = AppDB.sharedInstance.artists
 		filteredArtists = [Artist]()
 		
@@ -87,8 +86,8 @@ class SubscriptionController: UITableViewController {
 	}
 	
 	func reloadSubscriptions() {
-		artists = AppDB.sharedInstance.artists
 		filteredArtists = [Artist]()
+		artists = AppDB.sharedInstance.artists
 		subscriptionsTable.reloadData()
 	}
 
@@ -98,6 +97,7 @@ class SubscriptionController: UITableViewController {
 			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "artists_empty_state", title: "No Subscriptions",
 			                                  subtitle: "Your subscriptions will appear here", buttonTitle: nil)
 			appEmptyStateView = appEmptyState.view()
+			subscriptionsTable.tableFooterView = UIView()
 			self.view.addSubview(appEmptyStateView)
 		}
 	}
@@ -107,6 +107,7 @@ class SubscriptionController: UITableViewController {
 		if appEmptyStateView != nil {
 			appEmptyStateView.removeFromSuperview()
 			appEmptyStateView = nil
+			subscriptionsTable.tableFooterView = nil
 		}
 	}
 	
@@ -175,10 +176,6 @@ class SubscriptionController: UITableViewController {
 			selectedArtist = artists[indexPath.row]
 		}
 		self.performSegueWithIdentifier("SubscriptionDetailSegue", sender: self)
-	}
-
-	override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-		return UIView()
 	}
 	
 	override func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {

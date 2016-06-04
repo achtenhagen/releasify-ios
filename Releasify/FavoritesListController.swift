@@ -70,6 +70,7 @@ class FavoritesListController: UIViewController {
 			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "favorites_empty_state", title: "No Favorites",
 			                                  subtitle: "Your favorites will appear here", buttonTitle: nil)
 			appEmptyStateView = appEmptyState.view()
+			favoritesTable.tableFooterView = UIView()
 			self.view.addSubview(appEmptyStateView)
 		}
 	}
@@ -79,6 +80,7 @@ class FavoritesListController: UIViewController {
 		if appEmptyStateView != nil {
 			appEmptyStateView.removeFromSuperview()
 			appEmptyStateView = nil
+			favoritesTable.tableFooterView = nil
 		}
 	}
 
@@ -128,10 +130,6 @@ extension FavoritesListController: UITableViewDataSource {
 		bgColorView.backgroundColor = theme.cellHighlightColor
 		cell.selectedBackgroundView = bgColorView
 		return cell
-	}
-
-	func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-		return UIView()
 	}
 }
 
