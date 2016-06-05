@@ -83,7 +83,7 @@ class SubscriptionDetailController: UIViewController {
 		if albums == nil || albums?.count == 0 {
 			let label = UILabel()
 			label.font = UIFont(name: label.font.fontName, size: 18)
-			label.textColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 1)
+			label.textColor = theme.emptyStateLabelColor
 			label.text = "No albums here yet!"
 			label.textAlignment = NSTextAlignment.Center
 			label.adjustsFontSizeToFitWidth = true
@@ -135,7 +135,7 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 		if let artwork = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork) {
 			cell.albumArtwork.image = artwork
 		} else {
-			let filename = theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork_light"
+			let filename = theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork"
 			cell.albumArtwork.image = UIImage(named: filename)!
 		}
 		cell.timeLeft.text = albums![indexPath.row].getFormattedReleaseDate()
@@ -167,6 +167,7 @@ private class SubscriptionDetailControllerTheme: Theme {
 	var viewBackgroundColor: UIColor!
 	var albumTitleColor: UIColor!
 	var artistTitleColor: UIColor!
+	var emptyStateLabelColor: UIColor!
 	
 	override init (style: Styles) {
 		super.init(style: style)
@@ -175,10 +176,12 @@ private class SubscriptionDetailControllerTheme: Theme {
 			viewBackgroundColor = UIColor.clearColor()
 			albumTitleColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+			emptyStateLabelColor = globalTintColor
 		case .Light:
 			viewBackgroundColor = UIColor.whiteColor()
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			artistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			emptyStateLabelColor = globalTintColor
 		}
 	}
 }

@@ -15,7 +15,7 @@
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                 <rect key="frame" x="0.0" y="0.0" width="172" height="217"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_artwork_light" translatesAutoresizingMaskIntoConstraints="NO" id="cAq-II-fkp">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_artwork" translatesAutoresizingMaskIntoConstraints="NO" id="cAq-II-fkp">
                         <rect key="frame" x="0.0" y="0.0" width="172" height="172"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="cAq-II-fkp" secondAttribute="height" multiplier="1:1" id="ide-uh-LZX"/>
@@ -96,6 +96,6 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="icon_artwork_light" width="200" height="200"/>
+        <image name="icon_artwork" width="200" height="200"/>
     </resources>
 </document>

@@ -41,7 +41,7 @@ class FavoritesListController: UIViewController {
 
 		// Theme customizations
 		self.view.backgroundColor = theme.viewBackgroundColor
-		self.favoritesTable.backgroundColor = theme.tableBackgroundColor
+		self.favoritesTable.backgroundColor = UIColor.clearColor()
 		self.favoritesTable.separatorColor = theme.cellSeparatorColor
 		if theme.style == .Dark {
 			let gradient = theme.gradient()
@@ -49,7 +49,7 @@ class FavoritesListController: UIViewController {
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
 		}
 
-		if Favorites.sharedInstance.list.count == 0 {
+		if Favorites.sharedInstance.list.count == 0 {			
 			showAppEmptyState()
 		}
     }
@@ -70,7 +70,8 @@ class FavoritesListController: UIViewController {
 	// MARK: - Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
-			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "favorites_empty_state", title: "No Favorites",
+			let stateImg = theme.style == .Dark ? "app_empty_state_favorites_dark" : "app_empty_state_favorites"
+			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: "No Favorites",
 			                                  subtitle: "Your favorites will appear here", buttonTitle: nil)
 			appEmptyStateView = appEmptyState.view()
 			favoritesTable.tableFooterView = UIView()
@@ -153,7 +154,8 @@ extension FavoritesListController: UITableViewDelegate {
 				self.showAppEmptyState()
 			}
 		})
-		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: "row_action_delete_small")!)
+		let actionImg = theme.style == .Dark ? "row_action_delete_small_dark" : "row_action_delete_small"
+		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: actionImg)!)
 		return [removeAction]
 	}
 }
@@ -161,7 +163,6 @@ extension FavoritesListController: UITableViewDelegate {
 // MARK: - Theme Extension
 private class FavoritesListControllerTheme: Theme {
 	var viewBackgroundColor: UIColor!
-	var tableBackgroundColor: UIColor!
 	var cellBackgroundColor: UIColor!
 	var albumTitleColor: UIColor!
 	var artistTitleColor: UIColor!
@@ -171,13 +172,11 @@ private class FavoritesListControllerTheme: Theme {
 		switch style {
 		case .Dark:
 			viewBackgroundColor = UIColor.clearColor()
-			tableBackgroundColor = UIColor.clearColor()
 			cellBackgroundColor = UIColor.clearColor()
 			albumTitleColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 		case .Light:
 			viewBackgroundColor = UIColor.whiteColor()
-			tableBackgroundColor = UIColor.whiteColor()
 			cellBackgroundColor = UIColor.whiteColor()
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1.0)
 			artistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)

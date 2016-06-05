@@ -85,7 +85,7 @@ class AlbumDetailController: UIViewController {
 			if let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) {
 				artwork = dbArtwork
 			} else {
-				let filename = theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork_light"
+				let filename = theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork"
 				artwork = UIImage(named: filename)!
 			}
 		}
@@ -123,10 +123,11 @@ class AlbumDetailController: UIViewController {
 		artworkOverlay.effect = theme.style == .Dark ? UIBlurEffect(style: .Dark) : UIBlurEffect(style: .Light)
 
 		// Theme settings
+		progressBar.trackTintColor = theme.progressBarBackTintColor
 		albumTitle.textColor = theme.albumTitleColor
 		artistTitle.textColor = theme.artistTitleColor
+		buyBtn.tintColor = theme.buyBtnColor
 		copyrightLabel.textColor = theme.footerLabelColor
-		progressBar.trackTintColor = theme.progressBarBackTintColor
 
 		// Favorites button enabled state
 		favoriteBtn.enabled = canAddToFavorites
@@ -213,7 +214,8 @@ class AlbumDetailController: UIViewController {
 		Favorites.sharedInstance.addFavorite(album!)
 		Favorites.sharedInstance.save()
 		isFavorite = true
-		favoriteBtn.setImage(UIImage(named: "icon_favorite_dark_filled"), forState: .Normal)
+		let favImage = theme.style == .Dark ? "icon_favorite_dark_filled" : "icon_favorite_filled"
+		favoriteBtn.setImage(UIImage(named: favImage), forState: .Normal)
 		NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
 	}
 
@@ -222,7 +224,8 @@ class AlbumDetailController: UIViewController {
 		Favorites.sharedInstance.removeFavoriteIfExists(album!.ID)
 		Favorites.sharedInstance.save()
 		isFavorite = false
-		favoriteBtn.setImage(UIImage(named: "icon_favorite_dark"), forState: .Normal)
+		let favImage = theme.style == .Dark ? "icon_favorite_dark" : "icon_favorite"
+		favoriteBtn.setImage(UIImage(named: favImage), forState: .Normal)
 		NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
 	}
 	
@@ -326,6 +329,7 @@ private class AlbumDetailControllerTheme: Theme {
 	var progressBarBackTintColor: UIColor!
 	var albumTitleColor: UIColor!
 	var artistTitleColor: UIColor!
+	var buyBtnColor: UIColor!
 	var footerLabelColor: UIColor!
 	
 	override init (style: Styles) {
@@ -335,11 +339,13 @@ private class AlbumDetailControllerTheme: Theme {
 			progressBarBackTintColor = UIColor(red: 0, green: 52/255, blue: 72/255, alpha: 1)
 			albumTitleColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+			buyBtnColor = globalTintColor
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 0.5)
 		case .Light:
 			progressBarBackTintColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
 			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
-			artistTitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)			
+			artistTitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			buyBtnColor = globalTintColor
 			footerLabelColor = UIColor(red: 141/255, green: 141/255, blue: 141/255, alpha: 1)
 		}
 	}

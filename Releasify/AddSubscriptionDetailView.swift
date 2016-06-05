@@ -86,7 +86,8 @@ class AddSubscriptionDetailView: UICollectionViewController {
 	// MARK: - Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
-			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "albums_empty_state", title: "No Albums",
+			let stateImg = theme.style == .Dark ? "app_empty_state_albums_dark" : "app_empty_state_albums"
+			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: "No Albums",
 			                                  subtitle: "We have no content for this artist yet", buttonTitle: nil)
 			appEmptyStateView = appEmptyState.view()
 			self.view.addSubview(appEmptyStateView)
@@ -122,7 +123,7 @@ class AddSubscriptionDetailView: UICollectionViewController {
 			self.tmpArtwork![hash] = artwork
 			completion(artwork: self.tmpArtwork![hash]!)
 			}, errorHandler: {
-				let filename = self.theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork_light"
+				let filename = self.theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork"
 				completion(artwork: UIImage(named: filename)!)
 		})
 	}

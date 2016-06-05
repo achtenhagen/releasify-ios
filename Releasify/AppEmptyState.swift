@@ -10,13 +10,16 @@ import UIKit
 
 final class AppEmptyState {
 
+	private var theme: AppEmptyStateTheme!
 	private var containerView: UIView!
 	private var placeholderImage: UIImageView!
 	private var placeholderTitle: UILabel!
 	private var placeholderSubtitle: UILabel!
 	var placeholderButton: UIButton!
 
-	init(theme: Theme, refView: UIView, imageName: String, title: String, subtitle: String, buttonTitle: String?) {
+	init(style: Theme.Styles, refView: UIView, imageName: String, title: String, subtitle: String, buttonTitle: String?) {
+
+		theme = AppEmptyStateTheme(style: style)
 
 		// Container view
 		containerView = UIView(frame: CGRect(origin: CGPointZero, size: CGSize(width: 300, height: 300)))
@@ -31,7 +34,7 @@ final class AppEmptyState {
 		// Title label
 		placeholderTitle = UILabel()
 		placeholderTitle.font = UIFont(name: placeholderTitle.font.fontName, size: 20)
-		placeholderTitle.textColor = theme.blueColor
+		placeholderTitle.textColor = theme.titleColor
 		placeholderTitle.text = title
 		placeholderTitle.textAlignment = NSTextAlignment.Center
 		placeholderTitle.adjustsFontSizeToFitWidth = true
@@ -42,7 +45,7 @@ final class AppEmptyState {
 		// Subtitle label
 		placeholderSubtitle = UILabel()
 		placeholderSubtitle.font = UIFont(name: placeholderSubtitle.font!.fontName, size: 14)
-		placeholderSubtitle.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+		placeholderSubtitle.textColor = theme.subtitleColor
 		placeholderSubtitle.text = subtitle
 		placeholderSubtitle.textAlignment = NSTextAlignment.Center
 		placeholderSubtitle.adjustsFontSizeToFitWidth = true
@@ -58,7 +61,8 @@ final class AppEmptyState {
 			placeholderButton.frame.origin.y += 95
 			placeholderButton.layer.cornerRadius = 4
 			placeholderButton.layer.borderWidth = 1
-			placeholderButton.layer.borderColor = theme.blueColor.CGColor
+			placeholderButton.layer.borderColor = theme.placeholderButtonTintColor.CGColor
+			placeholderButton.tintColor = theme.placeholderButtonTintColor
 			containerView.addSubview(placeholderButton)
 		}
 	}
@@ -66,5 +70,26 @@ final class AppEmptyState {
 	// MARK: - Return placeholder view
 	func view() -> UIView {
 		return containerView
+	}
+}
+
+// MARK: - Theme Subclass
+private class AppEmptyStateTheme: Theme {
+	var titleColor: UIColor!
+	var subtitleColor: UIColor!
+	var placeholderButtonTintColor: UIColor!
+
+	override init(style: Styles) {
+		super.init(style: style)
+		switch style {
+		case .Dark:
+			titleColor = globalTintColor
+			subtitleColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+			placeholderButtonTintColor = globalTintColor
+		case .Light:
+			titleColor = globalTintColor
+			subtitleColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			placeholderButtonTintColor = globalTintColor
+		}
 	}
 }

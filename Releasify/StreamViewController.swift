@@ -148,7 +148,8 @@ class StreamViewController: UITableViewController {
 	// MARK: - Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
-			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "stream_empty_state", title: "No Content",
+			let stateImg = theme.style == .Dark ? "app_empty_state_stream_dark" : "app_empty_state_stream"
+			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: "No Content",
 			                                  subtitle: "Start by adding a new subscription", buttonTitle: "Add Subscription")
 			appEmptyStateView = appEmptyState.view()
 			appEmptyState.placeholderButton.addTarget(self, action: #selector(self.addSubscriptionFromPlaceholder), forControlEvents: .TouchUpInside)
@@ -306,7 +307,7 @@ class StreamViewController: UITableViewController {
 			self.tmpArtwork![hash] = artwork
 			completion(artwork: self.tmpArtwork![hash]!)
 			}, errorHandler: {				
-				let filename = self.theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork_light"
+				let filename = self.theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork"
 				completion(artwork: UIImage(named: filename)!)
 		})
 	}
@@ -440,12 +441,14 @@ class StreamViewController: UITableViewController {
 				}
 				self.unsubscribeFromAlbum(album, indexPath: indexPath)
 				self.updateTabBarItemBadge(album.ID)
+				if AppDB.sharedInstance.albums.count == 0 {
+					self.showAppEmptyState()
+				}
 			}))
 			self.presentViewController(alert, animated: true, completion: nil)
 		})
-		let action_img = UIImage(named: "row_action_delete")
-		let action_img_dark = UIImage(named: "row_action_delete_dark")
-		removeAction.backgroundColor = theme.style == .Dark ? UIColor(patternImage: action_img_dark!) : UIColor(patternImage: action_img!)
+		let actionImg = theme.style == .Dark ? "row_action_delete_dark" : "row_action_delete"
+		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: actionImg)!)
 		return [removeAction]
 	}
 	

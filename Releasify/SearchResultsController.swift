@@ -31,7 +31,7 @@ class SearchResultsController: UIViewController {
 	// MARK: - Post notification if the user has added a new subscription
 	func closeView() {
 		self.dismissViewControllerAnimated(true, completion: { (completed) in
-			if self.needsRefresh {				
+			if self.needsRefresh {
 				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 			}
 		})
@@ -49,16 +49,15 @@ class SearchResultsController: UIViewController {
 		infoLabel.text = "Please choose from the list below."
 		
 		// Theme customizations
+		self.view.backgroundColor = theme.viewBackgroundColor
+		artistsTable.backgroundColor = UIColor.clearColor()
+		artistsTable.separatorColor = theme.cellSeparatorColor
 		if theme.style == .Dark {
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
-		} else {
-			self.view.backgroundColor = UIColor(red: 239/255, green: 239/255, blue: 242/255, alpha: 1)
 		}
 		infoLabel.textColor = theme.infoLabelColor
-
-		artistsTable.separatorColor = theme.cellSeparatorColor
 	}
 
 	override func viewWillAppear(animated: Bool) {
@@ -207,16 +206,21 @@ extension SearchResultsController: UITableViewDelegate {
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let headerView = artistsTable.dequeueReusableHeaderFooterViewWithIdentifier("header") as! SearchResultsHeader
 		let artistID = (artists[section]["iTunesUniqueID"] as? Int)!
+		let artistImg = theme.style == .Dark ? "icon_artist_placeholder_dark" : "icon_artist_placeholder"
+		headerView.artistImg.image = UIImage(named: artistImg)
 		headerView.contentView.backgroundColor = UIColor.clearColor()
 		headerView.artistLabel.text = artists[section]["title"] as? String
+		headerView.artistLabel.textColor = theme.sectionHeaderLabelColor
 		headerView.confirmBtn.tag = section		
 		headerView.confirmBtn.addTarget(self, action: #selector(SearchResultsController.confirmArtist(_:)), forControlEvents: .TouchUpInside)
 		if selectedArtists.contains(artistID) {
+			let confirmImg = theme.style == .Dark ? "icon_confirm_dark" : "icon_confirm"
 			headerView.confirmBtn.enabled = false
-			headerView.confirmBtn.setImage(UIImage(named: "icon_confirm"), forState: .Disabled)
+			headerView.confirmBtn.setImage(UIImage(named: confirmImg), forState: .Disabled)
 		} else {
+			let addImg = theme.style == .Dark ? "icon_add_dark" : "icon_add"
 			headerView.confirmBtn.enabled = true
-			headerView.confirmBtn.setImage(UIImage(named: "icon_add"), forState: .Normal)
+			headerView.confirmBtn.setImage(UIImage(named: addImg), forState: .Normal)
 		}
 		return headerView
 	}
@@ -224,7 +228,9 @@ extension SearchResultsController: UITableViewDelegate {
 
 // MARK: - Theme Subclass
 private class SearchResultsControllerTheme: Theme {
+	var viewBackgroundColor: UIColor!
 	var infoLabelColor: UIColor!
+	var sectionHeaderLabelColor: UIColor!
 	var albumTitleColor: UIColor!
 	var releaseLabelColor: UIColor!
 
@@ -232,11 +238,18 @@ private class SearchResultsControllerTheme: Theme {
 		super.init(style: style)
 		switch style {
 		case .Dark:
+			viewBackgroundColor = UIColor.clearColor()
 			infoLabelColor = UIColor.whiteColor()
+			sectionHeaderLabelColor = globalTintColor
 			albumTitleColor = UIColor.whiteColor()
 			releaseLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.6)
 			break
 		case .Light:
+			viewBackgroundColor = UIColor.whiteColor()
+			infoLabelColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			sectionHeaderLabelColor = globalTintColor
+			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			releaseLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 			break
 		}
 	}

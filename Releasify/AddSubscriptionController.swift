@@ -158,7 +158,8 @@ class AddSubscriptionController: UIViewController {
 	// MARK: - Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
-			let appEmptyState = AppEmptyState(theme: theme, refView: self.view, imageName: "search_empty_state", title: "No Results",
+			let stateImg = theme.style == .Dark ? "app_empty_state_search_dark" : "app_empty_state_search"
+			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: "No Results",
 			                                  subtitle: "Your search did not return any results", buttonTitle: nil)
 			appEmptyStateView = appEmptyState.view()
 			searchTable.tableFooterView = UIView()
