@@ -64,6 +64,10 @@ class ArtistPicker: UIViewController {
 		super.viewDidLoad()
 
 		theme = ArtistPickerTheme(style: appDelegate.theme.style)
+
+		// Theme customizations
+		artistsTable.tintColor = theme.globalTintColor
+		progressBar.trackTintColor = theme.progressBarBackTintColor
 		
 		var previousArtist = ""
 		for artist in collection {
@@ -416,6 +420,7 @@ private class ArtistPickerTheme: Theme {
 	var artistsTableViewBackgroundColor: UIColor!
 	var tableViewSectionIndexColor: UIColor!
 	var cellTextColor: UIColor!
+	var progressBarBackTintColor: UIColor!
 
 	override init(style: Styles) {
 		super.init(style: style)
@@ -424,10 +429,12 @@ private class ArtistPickerTheme: Theme {
 			artistsTableViewBackgroundColor = UIColor(red: 1/255, green: 27/255, blue: 38/255, alpha: 1)
 			tableViewSectionIndexColor = UIColor(red: 0, green: 242/255, blue: 192/255, alpha: 1)
 			cellTextColor = blueColor
+			progressBarBackTintColor = UIColor(red: 0, green: 52/255, blue: 72/255, alpha: 1)
 		case .Light:
 			artistsTableViewBackgroundColor = UIColor.whiteColor()
 			tableViewSectionIndexColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
 			cellTextColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			progressBarBackTintColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
 		}
 	}
 }
