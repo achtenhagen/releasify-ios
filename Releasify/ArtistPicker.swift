@@ -208,9 +208,6 @@ class ArtistPicker: UIViewController {
 							self.dismissViewControllerAnimated(true, completion: nil)
 						}
 					}
-				} else {
-					self.activityView.removeFromSuperview()
-					self.indicatorView.removeFromSuperview()
 				}
 				},
 				errorHandler: { (error) in

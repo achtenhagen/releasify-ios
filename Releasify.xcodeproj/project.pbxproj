@@ -14,6 +14,7 @@
 		514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 514BCA761AED68CE00A1A18C /* Settings.bundle */; };
 		51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51557C591B9E073C00D980F9 /* Artist.swift */; };
 		51582E171D0241D100E10969 /* AppEmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51582E161D0241D100E10969 /* AppEmptyState.swift */; };
+		51582E191D0454A000E10969 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51582E181D04549F00E10969 /* MD5.swift */; };
 		515CB1A31CF8D73B003FCE55 /* SearchResultsNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515CB1A21CF8D73B003FCE55 /* SearchResultsNavController.swift */; };
 		5161265C1B9A7D3000171A93 /* AlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5161265A1B9A7D3000171A93 /* AlbumCell.swift */; };
 		5162D06F1CF6358600619444 /* FavoritesNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5162D06E1CF6358500619444 /* FavoritesNavController.swift */; };
@@ -65,6 +66,7 @@
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		51557C591B9E073C00D980F9 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		51582E161D0241D100E10969 /* AppEmptyState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppEmptyState.swift; sourceTree = "<group>"; };
+		51582E181D04549F00E10969 /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MD5.swift; sourceTree = "<group>"; };
 		515CB1A21CF8D73B003FCE55 /* SearchResultsNavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsNavController.swift; sourceTree = "<group>"; };
 		5161265A1B9A7D3000171A93 /* AlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCell.swift; sourceTree = "<group>"; };
 		5162D06E1CF6358500619444 /* FavoritesNavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesNavController.swift; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 				51C337F61BEAA0B5003B0E20 /* Notifications */,
 				51D959461C64391B004B16AB /* Stream View */,
 				51D776A91B29FC9300D252A5 /* API.swift */,
+				51582E181D04549F00E10969 /* MD5.swift */,
 				516AEE581ACAD61D0065B567 /* AppDB.swift */,
 				51F84DCA1AB750A000D51E0C /* AppDelegate.swift */,
 				51557C591B9E073C00D980F9 /* Artist.swift */,
@@ -405,6 +408,7 @@
 				51C7E0221CCBDE4D001EA6A5 /* AddSubscriptionDetailView.swift in Sources */,
 				516AEE591ACAD61D0065B567 /* AppDB.swift in Sources */,
 				519C8ACF1C653819006114EC /* StreamCell.swift in Sources */,
+				51582E191D0454A000E10969 /* MD5.swift in Sources */,
 				51D959481C643965004B16AB /* StreamViewController.swift in Sources */,
 				515CB1A31CF8D73B003FCE55 /* SearchResultsNavController.swift in Sources */,
 				5101C43F1BDB239100E5ABA8 /* Intro04Controller.swift in Sources */,

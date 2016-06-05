@@ -113,9 +113,23 @@ class SearchResultsController: UIViewController {
 	}
 
 	// MARK: - Parse response data
-	func parseAlbumsByArtist(artist: NSDictionary) -> [NSDictionary] {
-		guard let albums = artist["albums"] as? [NSDictionary] else {
-			return [NSDictionary]()
+	func parseAlbumsByArtist(artist: NSDictionary) -> [Album] {
+		var albums = [Album]()
+		guard let json = artist["albums"] as? [NSDictionary] else { return albums }
+		for item in json {
+			guard let ID = item["ID"] as? Int,
+				let title = item["title"] as? String,
+				let artistID = item["artistID"] as? Int,
+				let releaseDate = item["releaseDate"] as? Double,
+				let artworkUrl = item["artworkUrl"] as? String,
+				let explicit = item["explicit"] as? Int,
+				let copyright = item["copyright"] as? String,
+				let iTunesUniqueID = item["iTunesUniqueID"] as? Int,
+				let iTunesUrl = item["iTunesUrl"] as? String else { break }
+			let albumItem = Album(ID: ID, title: title, artistID: artistID, releaseDate: releaseDate, artwork: md5(artworkUrl),
+			                      artworkUrl: artworkUrl, explicit: explicit, copyright: copyright, iTunesUniqueID: iTunesUniqueID, iTunesUrl: iTunesUrl,
+			                      created: Int(NSDate().timeIntervalSince1970))
+			albums.append(albumItem)
 		}
 		return albums
 	}
@@ -138,28 +152,27 @@ extension SearchResultsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! SearchResultCell
 		let albums = parseAlbumsByArtist(artists[indexPath.section])
-		if albums.count > 0 {
-			cell.albumTitle.text = albums[indexPath.row]["title"] as? String
-			cell.albumTitle.textColor = theme.albumTitleColor
-			cell.releaseLabel.text = albums[indexPath.row]["releaseYear"] as? String
-			cell.releaseLabel.textColor = theme.releaseLabelColor
-			let albumURL = albums[indexPath.row]["artworkUrl"] as? String
-			let albumID = albums[indexPath.row]["ID"] as? Int
-			if let img = tmpArtwork[albumID!] {
-				cell.albumArtwork.image = img
-			} else {
-				API.sharedInstance.fetchArtwork(albumURL!, successHandler: { (artwork) in
-					if let cellToUpdate = self.artistsTable.cellForRowAtIndexPath(indexPath) as? SearchResultCell {
-						cellToUpdate.albumArtwork.alpha = 0
-						cellToUpdate.albumArtwork.image = artwork
-						UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
-							cellToUpdate.albumArtwork.alpha = 1
+		let album = albums[indexPath.row]
+		cell.albumTitle.text = album.title
+		cell.albumTitle.textColor = theme.albumTitleColor
+		cell.releaseLabel.text = album.releaseDateAsYear(album.releaseDate)
+		cell.releaseLabel.textColor = theme.releaseLabelColor
+		let albumURL = album.artworkUrl
+		let albumID = album.ID
+		if let img = tmpArtwork[albumID] {
+			cell.albumArtwork.image = img
+		} else {
+			API.sharedInstance.fetchArtwork(albumURL!, successHandler: { (artwork) in
+				if let cellToUpdate = self.artistsTable.cellForRowAtIndexPath(indexPath) as? SearchResultCell {
+					cellToUpdate.albumArtwork.alpha = 0
+					cellToUpdate.albumArtwork.image = artwork
+					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
+						cellToUpdate.albumArtwork.alpha = 1
 						}, completion: nil)
-					}
-					}, errorHandler: {
-						cell.albumArtwork.image = UIImage(named: "icon_artwork_dark")
-				})
-			}
+				}
+				}, errorHandler: {
+					cell.albumArtwork.image = UIImage(named: "icon_artwork_dark")
+			})
 		}
 		let bgColorView = UIView()
 		bgColorView.backgroundColor = theme.cellHighlightColor

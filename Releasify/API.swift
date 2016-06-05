@@ -234,7 +234,7 @@ final class API {
 				return
 			}
 			let releaseDate = item!["releaseDate"] as! Double
-			let hash = self.md5(item!["artworkUrl"] as! String)
+			let hash = md5(item!["artworkUrl"] as! String)
 			let album = Album(
 				ID: item!["ID"] as! Int,
 				title: item!["title"] as! String,
@@ -353,14 +353,5 @@ final class API {
 			if self.appDelegate.debug { print("HTTP status code: \(response.statusCode)") }
 			successHandler(statusCode: response.statusCode, data: data)
 		})
-	}
-
-	// MARK: - MD5 digestion extension
-	func md5(string: String) -> String {
-		var digest = [UInt8](count: Int(CC_MD5_DIGEST_LENGTH), repeatedValue: 0)
-		var digestHex = ""
-		if let data = string.dataUsingEncoding(NSUTF8StringEncoding) { CC_MD5(data.bytes, CC_LONG(data.length), &digest) }
-		for index in 0..<Int(CC_MD5_DIGEST_LENGTH) { digestHex += String(format: "%02x", digest[index]) }
-		return digestHex
 	}
 }

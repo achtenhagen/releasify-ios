@@ -134,6 +134,13 @@ class Album: NSObject, NSCoding {
 		dateFormat.dateFormat = "MMM dd"
 		return dateFormat.stringFromDate(NSDate(timeIntervalSince1970: releaseDate))
 	}
+
+	// Return release date represented as 4 digit year
+	func releaseDateAsYear(timestamp: Double) -> String {
+		let dateFormat = NSDateFormatter()
+		dateFormat.dateFormat = "yyyy"
+		return dateFormat.stringFromDate(NSDate(timeIntervalSince1970: timestamp))
+	}
 	
 	// MARK: - Compute the floor of 2 numbers
 	func component(x: Double, v: Double) -> Double {
