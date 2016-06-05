@@ -46,12 +46,9 @@ final class AppController: UINavigationController {
 
 		appDelegate.backVC.appControllerDelegate = self
 		
-		// AppDB.sharedInstance.upgrade_db_v2()
+		AppDB.sharedInstance.upgrade_db_v2()
 
 		UnreadItems.sharedInstance.load()
-
-		// Favorites list
-		Favorites.sharedInstance.load()
 
 		// Get pending artists waiting to be removed
 		AppDB.sharedInstance.getPendingArtists()

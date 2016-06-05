@@ -30,6 +30,9 @@ class FavoritesListController: UIViewController {
 
 		theme = FavoritesListControllerTheme(style: appDelegate.theme.style)
 
+		// Load favorites list
+		Favorites.sharedInstance.load()
+
 		// Navigation bar setup
 		navController = self.navigationController as! FavoritesNavController
 
