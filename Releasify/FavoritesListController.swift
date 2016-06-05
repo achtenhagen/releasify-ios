@@ -40,7 +40,7 @@ class FavoritesListController: UIViewController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(reloadFavoritesList), name: "reloadFavList", object: nil)
 
 		// Theme customizations
-		self.view.backgroundColor = theme.navBarTintColor
+		self.view.backgroundColor = theme.viewBackgroundColor
 		self.favoritesTable.backgroundColor = theme.tableBackgroundColor
 		self.favoritesTable.separatorColor = theme.cellSeparatorColor
 		if theme.style == .Dark {

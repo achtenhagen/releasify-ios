@@ -320,7 +320,7 @@ class ArtistPicker: UIViewController {
 		searchController.searchBar.barStyle = theme.searchBarStyle
 		searchController.searchBar.barTintColor = UIColor.clearColor()
 		searchController.searchBar.tintColor = theme.searchBarTintColor
-		searchController.searchBar.backgroundColor = theme.navBarTintColor
+		searchController.searchBar.backgroundColor = theme.searchBarBackgroundColor
 		searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
 		searchController.searchBar.layer.borderWidth = 1
 		searchController.searchBar.translucent = false

@@ -536,7 +536,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YBc-a9-ZLA">
+                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YBc-a9-ZLA" customClass="NavigationBar" customModule="Releasify" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="64" id="bYT-Ea-NAL"/>
@@ -2270,7 +2270,7 @@ Swipe to get started.</string>
                     <toolbarItems/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="Xbp-AH-7Ic">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="Xbp-AH-7Ic" customClass="NavigationBar" customModule="Releasify" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.0" green="0.086274509799999996" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -2797,7 +2797,7 @@ Swipe to get started.</string>
             <objects>
                 <navigationController title="Add Subscription Navigation Controller" automaticallyAdjustsScrollViewInsets="NO" id="muw-KU-1bt" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="BwB-2c-T20">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="BwB-2c-T20" customClass="NavigationBar" customModule="Releasify" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -2817,7 +2817,7 @@ Swipe to get started.</string>
                 <navigationController storyboardIdentifier="favoritesList" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ZcE-Zw-nBl" customClass="FavoritesNavController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="AHk-lY-24o">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="AHk-lY-24o" customClass="NavigationBar" customModule="Releasify" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -2835,7 +2835,7 @@ Swipe to get started.</string>
             <objects>
                 <navigationController title="Search Results Navigation Controller" automaticallyAdjustsScrollViewInsets="NO" id="2u5-KM-jLL" customClass="SearchResultsNavController" customModule="Releasify" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Ik-0p-BPB">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3Ik-0p-BPB" customClass="NavigationBar" customModule="Releasify" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -2867,9 +2867,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="mRq-0I-L1t"/>
-        <segue reference="gux-gb-W3x"/>
-        <segue reference="EmM-mq-Qty"/>
+        <segue reference="DYx-ci-f0A"/>
+        <segue reference="cZg-RQ-l62"/>
+        <segue reference="9ie-8H-2no"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.84705882352941175" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

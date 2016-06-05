@@ -32,9 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var localNotificationPayload: NSDictionary?
 	var backVC: FavoritesNavController!
 	
-	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {		
 		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String) + " (" + (NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as! String) + ")"
-		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")		
+		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")
 		
 		// Handle reset case
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
@@ -79,23 +79,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			theme = Theme(style: .Dark)
 		}
 		UIApplication.sharedApplication().statusBarStyle = theme.statusBarStyle
-		let navBarAppearance = UINavigationBar.appearance()
-		let tabBarAppearance = UITabBar.appearance()
-
-		// Navigation bar customizations
-		navBarAppearance.barStyle = theme.navBarStyle
-		navBarAppearance.barTintColor = theme.navBarTintColor
-		if theme.style == .Dark {
-			navBarAppearance.shadowImage = UIImage()
-		} else {	
-			navBarAppearance.shadowImage = UIImage(named: "navbar_shadow")
-		}
-		navBarAppearance.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-		navBarAppearance.tintColor = theme.navTintColor
-		navBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: theme.navTextColor]
-		navBarAppearance.translucent = false
 
 		// Tab bar customizations
+		let tabBarAppearance = UITabBar.appearance()
 		tabBarAppearance.barTintColor = theme.tabBarTintColor
 		tabBarAppearance.tintColor = theme.tabTintColor
 		tabBarAppearance.backgroundColor = UIColor.clearColor()

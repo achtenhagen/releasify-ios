@@ -74,7 +74,7 @@ class AddSubscriptionController: UIViewController {
 		}
 
 		// Import container customizations
-		importContainer.backgroundColor = theme.navBarTintColor
+		importContainer.backgroundColor = theme.importContainerBackgroundColor
 		importContainerTitle.textColor = theme.importContainerTitleColor
 		importContainerSubtitle.textColor = theme.importContainerSubtitle
 		importBtn.setImage(theme.style == .Dark ? UIImage(named: "icon_import_dark") : UIImage(named: "icon_import"), forState: .Normal)
@@ -269,6 +269,7 @@ extension AddSubscriptionController: UISearchBarDelegate {
 private class AddSubscriptionControllerTheme: Theme {
 	var cellBackgroundColor: UIColor!
 	var artistTitleColor: UIColor!
+	var importContainerBackgroundColor: UIColor!
 	var importContainerBorderColor: UIColor!
 	var importContainerTitleColor: UIColor!
 	var importContainerSubtitle: UIColor!
@@ -280,6 +281,7 @@ private class AddSubscriptionControllerTheme: Theme {
 		case .Dark:
 			cellBackgroundColor = UIColor.clearColor()
 			artistTitleColor = UIColor.whiteColor()
+			importContainerBackgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
 			importContainerBorderColor = cellSeparatorColor
 			importContainerTitleColor = UIColor.whiteColor()
 			importContainerSubtitle = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
@@ -287,6 +289,7 @@ private class AddSubscriptionControllerTheme: Theme {
 		case .Light:
 			cellBackgroundColor = UIColor.whiteColor()
 			artistTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			importContainerBackgroundColor = UIColor.whiteColor()
 			importContainerBorderColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1)
 			importContainerTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
 			importContainerSubtitle = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)

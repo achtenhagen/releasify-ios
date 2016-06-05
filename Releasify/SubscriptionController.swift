@@ -195,7 +195,7 @@ class SubscriptionController: UITableViewController {
 // MARK: - UISearchControllerDelegate
 extension SubscriptionController: UISearchControllerDelegate {
 	func willPresentSearchController(searchController: UISearchController) {
-		searchController.searchBar.backgroundColor = theme.navBarTintColor
+		searchController.searchBar.backgroundColor = theme.searchBarBackgroundColor
 	}
 	
 	func willDismissSearchController(searchController: UISearchController) {

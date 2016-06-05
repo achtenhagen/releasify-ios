@@ -25,6 +25,8 @@ final class AppController: UINavigationController {
 	var tabController: TabBarController!
 	var _origin: CGPoint!
 
+	@IBOutlet weak var navBar: UINavigationBar!
+
 	enum Menu {
 		case Closed, Hidden, Open
 		func position() -> CGFloat {
@@ -38,15 +40,13 @@ final class AppController: UINavigationController {
 			}
 		}
 	}
-
-	@IBOutlet weak var navBar: UINavigationBar!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		appDelegate.backVC.appControllerDelegate = self
 		
-		AppDB.sharedInstance.upgrade_db_v2()
+		// AppDB.sharedInstance.upgrade_db_v2()
 
 		UnreadItems.sharedInstance.load()
 

@@ -27,16 +27,11 @@ public class Theme {
 	
 	// Status bar appearance
 	var statusBarStyle: UIStatusBarStyle!
-
-	// Navigation bar appearance
-	var navBarStyle: UIBarStyle!
-	var navBarTintColor: UIColor!
-	var navTintColor: UIColor!
-	var navTextColor: UIColor!
 	
 	// Search bar appearance
 	var searchBarStyle: UIBarStyle!
 	var searchBarTintColor: UIColor!
+	var searchBarBackgroundColor: UIColor!
 	
 	// Tab bar appearance
 	var tabTintColor: UIColor!
@@ -72,16 +67,11 @@ public class Theme {
 
 			// Status bar appearance
 			statusBarStyle = .LightContent
-
-			// Navigation bar appearance
-			navBarStyle = .Black
-			navBarTintColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
-			navTintColor = globalTintColor
-			navTextColor = globalTintColor
 			
 			// Search bar appearance
 			searchBarStyle = .Black
 			searchBarTintColor = globalTintColor
+			searchBarBackgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1)
 			
 			// Tab bar appearance
 			tabTintColor = blueColor
@@ -108,16 +98,11 @@ public class Theme {
 
 			// Status bar appearance
 			statusBarStyle = .Default
-
-			// Navigation bar appearance
-			navBarStyle = .Default
-			navBarTintColor = UIColor.whiteColor()
-			navTintColor = globalTintColor
-			navTextColor = globalTintColor
 			
 			// Search bar appearance
 			searchBarStyle = .Default
 			searchBarTintColor = globalTintColor
+			searchBarBackgroundColor = UIColor.whiteColor()
 			
 			// Tab bar appearance
 			tabTintColor = globalTintColor
