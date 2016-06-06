@@ -225,6 +225,9 @@ class ArtistPicker: UIViewController {
 							}
 							self.dismissViewControllerAnimated(true, completion: nil)
 						}))
+					case API.Error.ServerDownForMaintenance:
+						alert.title = "Service Unavailable"
+						alert.message = "We'll be back shortly, our servers are currently undergoing maintenance."
 					default:
 						alert.title = "Unable to import!"
 						alert.message = "Please try again later."

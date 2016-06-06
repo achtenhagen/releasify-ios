@@ -151,6 +151,9 @@ class TabBarController: UITabBarController {
 			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
+		case API.Error.ServerDownForMaintenance:
+			alert.title = "Service Unavailable"
+			alert.message = "We'll be back shortly, our servers are currently undergoing maintenance."
 		default:
 			alert.title = "Unable to update!"
 			alert.message = "Please try again later."
