@@ -133,7 +133,6 @@ class ArtistPicker: UIViewController {
 		var totalItems = 0
 		var batchCount = 0
 		var currentBatch = String()
-		
 		for (section, values) in checkedStates {
 			for (index, state) in values {
 				if state == true || hasSelectedAll {
@@ -150,19 +149,15 @@ class ArtistPicker: UIViewController {
 				}
 			}
 		}
-		
 		if totalItems == 0 {
 			self.dismissViewControllerAnimated(true, completion: nil)
 			return
 		}
-		
 		progressBar.hidden = false
 		progressBar.progress = 0
-		
 		if !currentBatch.isEmpty {
 			batches.append(postString.stringByAppendingString(currentBatch))
 		}
-		
 		self.view.userInteractionEnabled = false
 		setupActivityView()
 		indicatorView.startAnimating()

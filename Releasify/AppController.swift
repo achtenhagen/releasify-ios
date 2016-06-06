@@ -45,8 +45,13 @@ final class AppController: UINavigationController {
 		super.viewDidLoad()
 
 		appDelegate.backVC.appControllerDelegate = self
-		
-		// AppDB.sharedInstance.upgrade_db_v2()
+
+		// Check if user is coming from a preview version
+		if NSUserDefaults.standardUserDefaults().valueForKey("requireDBUpgradeV2") as? Bool == nil {
+			if appDelegate.debug { print("Upgrade required") }
+			AppDB.sharedInstance.upgrade_db_v2()
+			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "requireDBUpgradeV2")
+		}
 
 		UnreadItems.sharedInstance.load()
 

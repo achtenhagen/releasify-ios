@@ -57,25 +57,32 @@ final class AppDB {
 
 	// Upgrade database to version 2
 	func upgrade_db_v2() {
-
-		// TODO: Delete old artwork in Library/artwork
-
 		if !connected() { fatalError("Unable to connect to database") }
 		if debug { print("Begin upgrade") }
 		var errMsg: UnsafeMutablePointer<Int8> = nil
-		var query = "ALTER TABLE albums RENAME TO tmp_albums"
+		var query = "DROP TABLE albums"
 		sqlite3_exec(database, query, nil, nil, &errMsg)
 
+		// Create albums table with updated schema
 		query = "CREATE TABLE IF NOT EXISTS albums (id INTEGER PRIMARY KEY, title varchar(100) NOT NULL, release_date int(11) DEFAULT NULL, artwork varchar(250) DEFAULT NULL, artwork_url varchar(250) DEFAULT NULL, explicit tinyint(1) NOT NULL DEFAULT '0', copyright varchar(250) DEFAULT NULL, iTunes_unique_id int(11) DEFAULT NULL, iTunes_url varchar(250) DEFAULT NULL, created int(11) NOT NULL)"
 		sqlite3_exec(database, query, nil, nil, &errMsg)
-
-		query = "INSERT INTO albums (id, title, release_date, artwork, explicit, copyright, iTunes_unique_id, iTunes_url, created) SELECT id, title, release_date, artwork, explicit, copyright, iTunes_unique_id, iTunes_url, created FROM tmp_albums"
-		sqlite3_exec(database, query, nil, nil, &errMsg)
-
-		query = "DROP TABLE tmp_albums"
-		sqlite3_exec(database, query, nil, nil, &errMsg)
-
 		disconnect()
+
+		// Delete old artwork
+		let fileManager = NSFileManager.defaultManager()
+		if let enumerator = fileManager.enumeratorAtPath(documents + "/artwork") {
+			while let element = enumerator.nextObject() as? String {
+				if element.hasSuffix("jpg") {
+					let filePath = documents + "/artwork/" + element
+					do {
+						try NSFileManager.defaultManager().removeItemAtPath(filePath)
+					} catch _ {
+						// Log to blackbox
+					}
+				}
+			}
+		}
+
 		if debug { print("Upgrade complete") }
 	}
 	
