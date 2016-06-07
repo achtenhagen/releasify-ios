@@ -1,8 +1,8 @@
 /* Class = "UILabel"; text = "Stay up to date with the latest content by enabling notifications, otherwise you'll have to check manually."; ObjectID = "0a5-sW-2Fn"; */
-"0a5-sW-2Fn.text" = "Erlaube Mitteilungen um immer auf dem neuesten Stand zu bleiben, sonst musst Du selbst nachschauen.";
+"0a5-sW-2Fn.text" = "Verpasse keine Neuigkeiten und aktiviere die Benachrichtigungen für Releasify.";
 
 /* Class = "UIButton"; normalTitle = "SKIP"; ObjectID = "0bR-EB-8Vl"; */
-"0bR-EB-8Vl.normalTitle" = "ÜBERSPRINGEN";
+"0bR-EB-8Vl.normalTitle" = "WEITER";
 
 /* Class = "UILabel"; text = "00"; ObjectID = "1V3-qP-JCp"; */
 "1V3-qP-JCp.text" = "00";
@@ -11,7 +11,7 @@
 "2u5-KM-jLL.title" = "Search Results Navigation Controller";
 
 /* Class = "UINavigationItem"; title = "Music Library"; ObjectID = "3k5-Ba-uwZ"; */
-"3k5-Ba-uwZ.title" = "Music Library";
+"3k5-Ba-uwZ.title" = "Mediathek";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "4H1-MX-Bve"; */
 "4H1-MX-Bve.text" = "Title";
@@ -26,7 +26,7 @@
 "6rW-BT-NjG.title" = "Intro Screen #1";
 
 /* Class = "UILabel"; text = "Import..."; ObjectID = "7RK-wx-Lfm"; */
-"7RK-wx-Lfm.text" = "Import...";
+"7RK-wx-Lfm.text" = "Importieren...";
 
 /* Class = "UIViewController"; title = "Intro Screen #4"; ObjectID = "9N7-fw-5Bs"; */
 "9N7-fw-5Bs.title" = "Intro Screen #4";
@@ -41,7 +41,7 @@
 "BK4-g3-ui1.title" = "Select All";
 
 /* Class = "UIButton"; normalTitle = "START USING RELEASIFY"; ObjectID = "BVK-uh-9M2"; */
-"BVK-uh-9M2.normalTitle" = "LOS GEHT'S";
+"BVK-uh-9M2.normalTitle" = "Happy Releasify!";
 
 /* Class = "UILabel"; text = "weeks"; ObjectID = "Cok-XX-g4E"; */
 "Cok-XX-g4E.text" = "weeks";
@@ -68,7 +68,7 @@
 "Igt-28-j79.text" = "SubscriptionTitle";
 
 /* Class = "UILabel"; text = "You've completed the setup, congratulations!"; ObjectID = "J6y-2U-0Rz"; */
-"J6y-2U-0Rz.text" = "Du hast das Setup erfolgreich abgeschlossen!";
+"J6y-2U-0Rz.text" = "Glückwunsch, du hast die Einstellungen abgeschlossen!";
 
 /* Class = "UIViewController"; title = "Intro Screen #3"; ObjectID = "J9l-lc-PhZ"; */
 "J9l-lc-PhZ.title" = "Intro Screen #3";
@@ -98,7 +98,7 @@
 "VHb-mT-Yu7.title" = "Details";
 
 /* Class = "UIButton"; normalTitle = "SKIP"; ObjectID = "WDI-yG-J56"; */
-"WDI-yG-J56.normalTitle" = "SKIP";
+"WDI-yG-J56.normalTitle" = "WEITER";
 
 /* Class = "UILabel"; text = "Showing results for keyword"; ObjectID = "WpK-5c-lYH"; */
 "WpK-5c-lYH.text" = "Showing results for keyword";
@@ -136,7 +136,7 @@ Nach links streichen.";
 "jaP-Tk-HPP.text" = "Releasify";
 
 /* Class = "UILabel"; text = "Would you like to import artists from your music library?"; ObjectID = "jym-JQ-ggf"; */
-"jym-JQ-ggf.text" = "Möchtest Du jetzt Interpreten aus deiner Medienbibliothek hinzufügen?";
+"jym-JQ-ggf.text" = "Möchtest du Interpreten von deiner Mediathek importieren?";
 
 /* Class = "UINavigationController"; title = "Add Subscription Navigation Controller"; ObjectID = "muw-KU-1bt"; */
 "muw-KU-1bt.title" = "Add Subscription Navigation Controller";
@@ -178,5 +178,5 @@ Nach links streichen.";
 "yWS-G5-cd2.title" = "Subscription Detail View";
 
 /* Class = "UILabel"; text = "Hi there!"; ObjectID = "zHl-KR-AWX"; */
-"zHl-KR-AWX.text" = "Hallo!";
+"zHl-KR-AWX.text" = "Hey!";
 

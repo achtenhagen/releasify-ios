@@ -130,7 +130,7 @@ class Intro02Controller: UIViewController {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
 			alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
 			alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
-			let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "")
+			let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
 			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
@@ -138,7 +138,7 @@ class Intro02Controller: UIViewController {
 			alert.title = NSLocalizedString("ALERT_REGISTER_FAIL_TITLE", comment: "The title for the alert controller")
 			alert.message = NSLocalizedString("ALERT_REGISTER_FAIL_MESSAGE", comment: "The message for the alert controller")
 		}
-		let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert action")
+		let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
 		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}

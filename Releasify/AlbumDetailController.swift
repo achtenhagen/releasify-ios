@@ -211,7 +211,8 @@ class AlbumDetailController: UIViewController {
 				let title =  NSLocalizedString("ALERT_ERROR_TITLE", comment: "The title for the alert controller")
 				let message = NSLocalizedString("ARTWORK_DOWNLOAD_FAILED", comment: "The message for the alert controller")
 				let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+				let alertActionTitle = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+				alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
 		})
 	}
@@ -240,7 +241,9 @@ class AlbumDetailController: UIViewController {
 	override func previewActionItems() -> [UIPreviewActionItem] {
 		var buyTitle = "Pre-Order"
 		if timeDiff <= 0 {
-			buyTitle = appDelegate.canAddToLibrary ? "Add to Library" : "Purchase"
+			let s1 = NSLocalizedString("BUTTON_ADD_TO_LIBRARY", comment: "The title for the buy button")
+			let s2 = NSLocalizedString("BUTTON_PURCHASE", comment: "The title for the buy button")
+			buyTitle = appDelegate.canAddToLibrary ? s1 : s2
 		}
 		// 3D Touch purchase action
 		let purchaseAction = UIPreviewAction(title: buyTitle, style: .Default) { (action, viewController) -> Void in
@@ -262,7 +265,8 @@ class AlbumDetailController: UIViewController {
 	
 	// MARK: - Handle album share sheet
 	func shareAlbum() {
-		let shareActivityItem = "Buy this album on iTunes:\n\(album!.iTunesUrl)"
+		let message = NSLocalizedString("SHARE_ACTIVITY_BUY", comment: "The message for the share sheet")
+		let shareActivityItem = "\(message):\n\(album!.iTunesUrl)"
 		let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 		self.presentViewController(activityViewController, animated: true, completion: nil)
 	}

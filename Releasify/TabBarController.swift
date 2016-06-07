@@ -46,12 +46,12 @@ class TabBarController: UITabBarController {
 		} else {
 			StorefrontAssistant.countryCode { (countryCode, error) in
 				if let error = error {
-					print("An error occured setting the store front (\(error))")
+					if self.appDelegate.debug { print("An error occured setting the store front (\(error))") }
 					return
 				}
 				if let countryCode = countryCode {
 					NSUserDefaults.standardUserDefaults().setValue(countryCode, forKey: "userStoreFront")
-					print("Store front has been set (\(countryCode))")
+					if self.appDelegate.debug { print("Store front has been set (\(countryCode))") }
 				}
 			}
 		}
@@ -146,19 +146,21 @@ class TabBarController: UITabBarController {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = "You're Offline!"
-			alert.message = "Please make sure you are connected to the internet, then try again."
-			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
+			alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
+			alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
+			let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		case API.Error.ServerDownForMaintenance:
-			alert.title = "Service Unavailable"
-			alert.message = "We'll be back shortly, our servers are currently undergoing maintenance."
+			alert.title = NSLocalizedString("ALERT_MAINTENANCE_TITLE", comment: "The title for the alert controller")
+			alert.message = NSLocalizedString("ALERT_MAINTENANCE_MESSAGE", comment: "The message for the alert controller")
 		default:
-			alert.title = "Unable to update!"
-			alert.message = "Please try again later."
+			alert.title = NSLocalizedString("ALERT_UPDATE_FAILED_TITLE", comment: "The title for the alert controller")
+			alert.message = NSLocalizedString("ALERT_UPDATE_FAILED_MESSAGE", comment: "The message for the alert controller")
 		}
-		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
@@ -167,16 +169,18 @@ class TabBarController: UITabBarController {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = "You're Offline!"
-			alert.message = "Please make sure you are connected to the internet, then try again."
-			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
+			alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
+			alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
+			let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		default:
 			alert.title = title
 			alert.message = message
 		}
-		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 

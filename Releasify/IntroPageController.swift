@@ -14,7 +14,7 @@ protocol IntroPageDelegate: class {
 
 class IntroPageController: UIPageViewController, UIPageViewControllerDelegate {
 
-	let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+	private let storyBoard = UIStoryboard(name: "Main", bundle: nil)
 	var introPage01: Intro01Controller?
 	var introPage02: Intro02Controller?
 	var introPage03: Intro03Controller?

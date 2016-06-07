@@ -46,7 +46,7 @@ class SearchResultsController: UIViewController {
 		theme = SearchResultsControllerTheme(style: appDelegate.theme.style)
 		
 		artistsTable.registerNib(UINib(nibName: "SearchResultsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
-		infoLabel.text = "Please choose from the list below."
+		infoLabel.text = NSLocalizedString("SEARCH_RESULTS_INFO_LABEL", comment: "The title for the label")
 		
 		// Theme customizations
 		self.view.backgroundColor = theme.viewBackgroundColor
@@ -97,19 +97,21 @@ class SearchResultsController: UIViewController {
 					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 					switch (error) {
 					case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-						alert.title = "You're Offline!"
-						alert.message = "Please make sure you are connected to the internet, then try again."
-						alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+						alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
+						alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
+						let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+						alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 							UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 						}))
 					case API.Error.ServerDownForMaintenance:
-						alert.title = "Service Unavailable"
-						alert.message = "We'll be back shortly, our servers are currently undergoing maintenance."
+						alert.title = NSLocalizedString("ALERT_MAINTENANCE_TITLE", comment: "The title for the alert controller")
+						alert.message = NSLocalizedString("ALERT_MAINTENANCE_MESSAGE", comment: "The message for the alert controller")
 					default:
-						alert.title = "Unable to subscribe!"
-						alert.message = "Please try again later."
+						alert.title = NSLocalizedString("ALERT_SUBSCRIBE_FAILED", comment: "The title for the alert controller")
+						alert.message = NSLocalizedString("ALERT_SUBSCRIBE_FAILED_DESCRIPTION", comment: "The message for the alert controller")
 					}
-					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+					let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+					alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 					self.presentViewController(alert, animated: true, completion: nil)
 			})
 		}

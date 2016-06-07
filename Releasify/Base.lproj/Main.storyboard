@@ -668,7 +668,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4S3-1h-WrK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2417.25" y="-817.125"/>
+            <point key="canvasLocation" x="3191.25" y="-817.125"/>
         </scene>
         <!--Favorites List View-->
         <scene sceneID="zZa-sc-6ZQ">
@@ -2856,9 +2856,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="0OL-Xb-Eq8"/>
-        <segue reference="9ie-8H-2no"/>
+        <segue reference="zgf-W2-bDZ"/>
         <segue reference="DYx-ci-f0A"/>
+        <segue reference="0OL-Xb-Eq8"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.13333333333333333" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

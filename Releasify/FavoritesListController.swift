@@ -70,9 +70,11 @@ class FavoritesListController: UIViewController {
 	// MARK: - Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
+			let title = NSLocalizedString("APP_EMPTY_STATE_NO_FAVORITES", comment: "The title for the app empty state")
+			let subtitle = NSLocalizedString("APP_EMPTY_STATE_NO_FAVORITES_DESCRIPTION", comment: "The description for the app empty state")
 			let stateImg = theme.style == .Dark ? "app_empty_state_favorites_dark" : "app_empty_state_favorites"
-			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: "No Favorites",
-			                                  subtitle: "Your favorites will appear here", buttonTitle: nil)
+			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: title,
+			                                  subtitle: subtitle, buttonTitle: nil)
 			appEmptyStateView = appEmptyState.view()
 			favoritesTable.tableFooterView = UIView()
 			self.view.addSubview(appEmptyStateView)

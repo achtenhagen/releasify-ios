@@ -37,7 +37,7 @@ class ArtistPicker: UIViewController {
 	@IBAction func selectAllArtists(sender: UIBarButtonItem) {
 		hasSelectedAll = !hasSelectedAll
 		if hasSelectedAll {
-			selectAllBtn.title = "Deselect All"
+			selectAllBtn.title = NSLocalizedString("TABLE_VIEW_DESELECT_ALL", comment: "The title for the bar button item")
 		} else {
 			filteredCheckedStates.removeAll(keepCapacity: true)
 			for (key, values) in checkedStates {
@@ -45,7 +45,7 @@ class ArtistPicker: UIViewController {
 					checkedStates[key]?.updateValue(false, forKey: section)
 				}
 			}
-			selectAllBtn.title = "Select All"
+			selectAllBtn.title = NSLocalizedString("TABLE_VIEW_SELECT_ALL", comment: "The title for the bar button item")
 		}
 		artistsTable.reloadData()
 	}
@@ -115,7 +115,7 @@ class ArtistPicker: UIViewController {
 			activityView.removeFromSuperview()
 			indicatorView.removeFromSuperview()
 		}
-		selectAllBtn.title = "Select All"
+		selectAllBtn.title = NSLocalizedString("TABLE_VIEW_SELECT_ALL", comment: "The title for the bar button item")
 		progressBar.setProgress(0, animated: false)
 		self.view.userInteractionEnabled = true
 	}
@@ -216,9 +216,10 @@ class ArtistPicker: UIViewController {
 					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 					switch (error) {
 					case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-						alert.title = "You're Offline!"
-						alert.message = "Please make sure you are connected to the internet, then try again."
-						alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+						alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
+						alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
+						let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+						alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { action in
 							UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 							if self.searchController.active {
 								self.searchController.dismissViewControllerAnimated(true, completion: nil)
@@ -226,13 +227,14 @@ class ArtistPicker: UIViewController {
 							self.dismissViewControllerAnimated(true, completion: nil)
 						}))
 					case API.Error.ServerDownForMaintenance:
-						alert.title = "Service Unavailable"
-						alert.message = "We'll be back shortly, our servers are currently undergoing maintenance."
+						alert.title = NSLocalizedString("ALERT_MAINTENANCE_TITLE", comment: "The title for the alert controller")
+						alert.message = NSLocalizedString("ALERT_MAINTENANCE_MESSAGE", comment: "The message for the alert controller")
 					default:
-						alert.title = "Unable to import!"
-						alert.message = "Please try again later."
+						alert.title = NSLocalizedString("ALERT_IMPORT_FAIL_TITLE", comment: "The title for the alert controller")
+						alert.message = NSLocalizedString("ALERT_IMPORT_FAIL_ALT_MESSAGE", comment: "The title for the alert controller")
 					}
-					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { action in
+					let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+					alert.addAction(UIAlertAction(title: title, style: .Default, handler: { action in
 						if self.searchController.active {
 							self.searchController.dismissViewControllerAnimated(true, completion: nil)
 						}
@@ -317,7 +319,7 @@ class ArtistPicker: UIViewController {
 		searchController.searchResultsUpdater = self	
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.hidesNavigationBarDuringPresentation = false
-		searchController.searchBar.placeholder = "Search Artists"
+		searchController.searchBar.placeholder = NSLocalizedString("SEARCH_BAR_PLACEHOLDER_SEARCH_ARTISTS", comment: "The placeholder for the search bar")
 		searchController.searchBar.searchBarStyle = .Minimal
 		searchController.searchBar.barStyle = theme.searchBarStyle
 		searchController.searchBar.barTintColor = UIColor.clearColor()
@@ -389,7 +391,8 @@ extension ArtistPicker: UITableViewDelegate {
 		lbl.textColor = theme.sectionHeaderTextColor
 		headerView.addSubview(lbl)
 		lbl.text = sections[section]
-		if searchController.active { lbl.text = "Results (\(filteredArtists.count))" }
+		let title = NSLocalizedString("ARTIST_PICKER_SEARCH_RESULTS_LABEL", comment: "")
+		if searchController.active { lbl.text = "\(title) (\(filteredArtists.count))" }
 		return headerView
 	}
 	
