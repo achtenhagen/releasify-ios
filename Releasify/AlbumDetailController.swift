@@ -137,7 +137,7 @@ class AlbumDetailController: UIViewController {
 		buyBtn.layer.borderWidth = 1
 		buyBtn.layer.cornerRadius = 4
 		if appDelegate.canAddToLibrary {
-			buyBtn.setTitle("Add to Library", forState: .Normal)
+			buyBtn.setTitle(NSLocalizedString("BUTTON_ADD_TO_LIBRARY", comment: "The title for the buy button"), forState: .Normal)
 		}
 		
 		// Configure things based on album availability
@@ -146,7 +146,7 @@ class AlbumDetailController: UIViewController {
 			self.navigationController?.navigationBar.shadowImage = UIImage()			
 			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
 			progressBar.progress = album!.getProgressSinceDate(dateAdded)
-			buyBtn.setTitle("Pre-Order", forState: .Normal)
+			buyBtn.setTitle(NSLocalizedString("BUTTON_PREORDER", comment: "The title for the buy button"), forState: .Normal)
 			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(update), userInfo: nil, repeats: true)
 		} else {
 			if theme.style == .Light {
@@ -160,6 +160,9 @@ class AlbumDetailController: UIViewController {
 		if Favorites.sharedInstance.isFavorite(album!) {
 			isFavorite = true
 			let btnImg = theme.style == .Dark ? "icon_favorite_dark_filled" : "icon_favorite_filled"
+			favoriteBtn.setImage(UIImage(named: btnImg), forState: .Normal)
+		} else {
+			let btnImg = theme.style == .Dark ? "icon_favorite_dark" : "icon_favorite"
 			favoriteBtn.setImage(UIImage(named: btnImg), forState: .Normal)
 		}
 		
@@ -176,8 +179,10 @@ class AlbumDetailController: UIViewController {
 			albumArtwork.contentMode = .ScaleToFill
 		}
 		
-		// Insert background gradient depending on theme
+		// Theme customizations
 		if theme.style == .Dark {
+			let btnImg = theme.style == .Dark ? "icon_share_dark" : "icon_share"
+			shareBtn.setImage(UIImage(named: btnImg), forState: .Normal)
 			let gradient = theme.gradient()
 			gradient.frame = self.view.bounds
 			self.view.layer.insertSublayer(gradient, atIndex: 0)
@@ -203,7 +208,9 @@ class AlbumDetailController: UIViewController {
 				self.albumArtwork.image = artwork
 				AppDB.sharedInstance.addArtwork(self.album!.artwork, artwork: artwork!)				
 			}, errorHandler: {
-				let alert = UIAlertController(title: "Error", message: "Failed to download album artwork.", preferredStyle: .Alert)
+				let title =  NSLocalizedString("ALERT_ERROR_TITLE", comment: "The title for the alert controller")
+				let message = NSLocalizedString("ARTWORK_DOWNLOAD_FAILED", comment: "The message for the alert controller")
+				let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
 				alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
 		})

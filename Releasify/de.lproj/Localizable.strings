@@ -1,0 +1,12 @@
+/* The title for the alert controller */
+"ALERT_ERROR_TITLE" = "Fehler";
+
+/* The message for the alert controller */
+"ARTWORK_DOWNLOAD_FAILED" = "Die gewünschte Datei konnte nicht heruntergeladen werden.";
+
+/* The title for the buy button */
+"BUTTON_ADD_TO_LIBRARY" = "Zu Bibliothek Hinzufügen";
+
+/* The title for the buy button */
+"BUTTON_PREORDER" = "Vorbestellen";
+

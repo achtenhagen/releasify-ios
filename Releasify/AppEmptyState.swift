@@ -17,13 +17,14 @@ final class AppEmptyState {
 	private var placeholderSubtitle: UILabel!
 	var placeholderButton: UIButton!
 
-	init(style: Theme.Styles, refView: UIView, imageName: String, title: String, subtitle: String, buttonTitle: String?) {
+	init(style: Theme.Styles, refView: UIView, imageName: String, title: String, subtitle: String, buttonTitle: String?, offset: CGFloat = 0) {
 
 		theme = AppEmptyStateTheme(style: style)
 
 		// Container view
 		containerView = UIView(frame: CGRect(origin: CGPointZero, size: CGSize(width: 300, height: 300)))
 		containerView.center = refView.center
+		containerView.center.y += offset
 
 		// Image view
 		placeholderImage = UIImageView(frame: CGRect(origin: CGPoint(x: 100, y: 100), size: CGSize(width: 100, height: 100)))

@@ -26,15 +26,17 @@ class Intro04Controller: UIViewController {
 	
 	@IBAction func finishIntro(sender: UIButton) {
 		if appDelegate.userID == 0 {
-			let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-			alert.title = "Continue without Push Notifications?"
-			alert.message = "Are you really sure you would like to use Releasify with Push Notifications turned off?"
-			alert.addAction(UIAlertAction(title: "No", style: .Cancel, handler: { (action) in
+			let title = NSLocalizedString("ALERT_CONTINUE_WITHOUT_NOTIFICATIONS_TITLE", comment: "The title for the alert controller")
+			let message = NSLocalizedString("ALERT_CONTINUE_WITHOUT_NOTIFICATIONS_MESSAGE", comment: "The message for the alert controller")
+			let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+			let alertFirstActionTitle = NSLocalizedString("ALERT_ACTION_NO", comment: "The title for the first alert controller action")
+			alert.addAction(UIAlertAction(title: alertFirstActionTitle, style: .Cancel, handler: { (action) in
 				if self.delegate != nil {
 					self.delegate?.advanceIntroPageTo(2, reverse: true)
 				}
 			}))
-			alert.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { (action) in
+			let alertSecondActionTitle = NSLocalizedString("ALERT_ACTION_YES", comment: "The title for the second alert controller action")
+			alert.addAction(UIAlertAction(title: alertSecondActionTitle, style: .Destructive, handler: { (action) in
 				API.sharedInstance.register(self.appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
 					self.appDelegate.userID = userID!
 					self.appDelegate.userUUID = userUUID
@@ -45,16 +47,18 @@ class Intro04Controller: UIViewController {
 					errorHandler: { (error) in
 						switch (error) {
 						case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-							alert.title = "You're Offline!"
-							alert.message = "Please make sure you are connected to the internet, then try again."
-							alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
+							alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
+							alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
+							let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "")
+							alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 								UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 							}))
 						default:
-							alert.title = "Unable to register!"
-							alert.message = "Please try again later."
+							alert.title = NSLocalizedString("ALERT_REGISTER_FAIL_TITLE", comment: "The title for the alert controller")
+							alert.message = NSLocalizedString("ALERT_REGISTER_FAIL_MESSAGE", comment: "The message for the alert controller")
 						}
-						alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+						let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert action")
+						alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 						self.presentViewController(alert, animated: true, completion: nil)
 				})
 			}))

@@ -82,7 +82,8 @@ class SearchResultsController: UIViewController {
 				if statusCode == 200 {
 					let headerView = self.artistsTable.headerViewForSection(sender.tag) as? SearchResultsHeader
 					headerView?.confirmBtn.enabled = false
-					headerView?.confirmBtn.setImage(UIImage(named: "icon_confirm"), forState: .Disabled)
+					let confirmImg = self.theme.style == .Dark ? "icon_confirm_dark" : "icon_confirm"
+					headerView?.confirmBtn.setImage(UIImage(named: confirmImg), forState: .Disabled)
 					AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 					AppDB.sharedInstance.getArtists()
 					self.selectedArtists.append(artistUniqueID)

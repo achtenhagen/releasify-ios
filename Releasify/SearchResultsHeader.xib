@@ -15,9 +15,9 @@
                     <rect key="frame" x="15" y="10" width="30" height="30"/>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZCx-Z0-Gey">
-                    <rect key="frame" x="55" y="16" width="276" height="18"/>
+                    <rect key="frame" x="55" y="16" width="220" height="18"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="276" id="kXj-xQ-ZxO"/>
+                        <constraint firstAttribute="width" constant="220" id="RKc-Nd-9YA"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <nil key="highlightedColor"/>

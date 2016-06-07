@@ -96,7 +96,7 @@ class SubscriptionController: UITableViewController {
 		if appEmptyStateView == nil {
 			let stateImg = theme.style == .Dark ? "app_empty_state_artists_dark" : "app_empty_state_artists"
 			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: "No Subscriptions",
-			                                  subtitle: "Your subscriptions will appear here", buttonTitle: nil)
+			                                  subtitle: "Your subscriptions will appear here", buttonTitle: nil, offset: searchController.searchBar.frame.height)
 			appEmptyStateView = appEmptyState.view()
 			subscriptionsTable.tableFooterView = UIView()
 			self.view.addSubview(appEmptyStateView)
