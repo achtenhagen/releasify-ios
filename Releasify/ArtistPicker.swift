@@ -218,7 +218,7 @@ class ArtistPicker: UIViewController {
 					case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
 						alert.title = NSLocalizedString("You're Offline!", comment: "")
 						alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
-						let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+						let alertActionTitle = NSLocalizedString("Settings", comment: "")
 						alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { action in
 							UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 							if self.searchController.active {

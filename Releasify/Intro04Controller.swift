@@ -18,6 +18,9 @@ class Intro04Controller: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
+		finishIntroBtn.layer.borderColor = UIColor.whiteColor().CGColor
+		finishIntroBtn.layer.borderWidth = 1
+		finishIntroBtn.layer.cornerRadius = 4
     }
 
     override func didReceiveMemoryWarning() {

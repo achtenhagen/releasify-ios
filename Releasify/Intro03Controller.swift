@@ -50,6 +50,9 @@ class Intro03Controller: UIViewController {
 			importButton.enabled = false
 			importButton.layer.opacity = 0.5
 		}
+		importButton.layer.borderColor = UIColor.whiteColor().CGColor
+		importButton.layer.borderWidth = 1
+		importButton.layer.cornerRadius = 4
 		mediaQuery = MPMediaQuery.artistsQuery()
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(Intro03Controller.finishIntro), name: "finishIntroStep", object: nil)
     }

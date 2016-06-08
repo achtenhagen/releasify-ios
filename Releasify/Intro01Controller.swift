@@ -15,11 +15,17 @@ class Intro01Controller: UIViewController {
 	@IBOutlet weak var labelTopLayoutConstraint: NSLayoutConstraint!
 	@IBOutlet weak var getStartedButton: UIButton!
 	
+	@IBOutlet var textHeightConstraint: NSLayoutConstraint! // 110
+
     override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
+		getStartedButton.layer.borderColor = UIColor.whiteColor().CGColor
+		getStartedButton.layer.borderWidth = 1
+		getStartedButton.layer.cornerRadius = 4
 		if view.bounds.height == 480 {
 			labelTopLayoutConstraint.constant = 80
+			textHeightConstraint.constant = 200
 		} else if view.bounds.height == 568 {
 			labelTopLayoutConstraint.constant = 110
 		}

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		5101C43F1BDB239100E5ABA8 /* Intro04Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5101C43E1BDB239100E5ABA8 /* Intro04Controller.swift */; };
 		5109A50D1CEE33BD00EAFAA3 /* UnreadItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5109A50C1CEE33BD00EAFAA3 /* UnreadItems.swift */; };
+		5119F72A1D08AF8A000C1333 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5119F72C1D08AF8A000C1333 /* InfoPlist.strings */; };
+		5119F7301D08AF8A000C1333 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5119F7321D08AF8A000C1333 /* Localizable.strings */; };
 		512B69241BE6FCB3003752A8 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512B69231BE6FCB3003752A8 /* Notification.swift */; };
 		51386CCD1C80C63D006F7E60 /* AddSubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */; };
 		514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 514BCA761AED68CE00A1A18C /* Settings.bundle */; };
@@ -48,7 +50,6 @@
 		51D875401B1B2AD900353347 /* Devices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D8753F1B1B2AD900353347 /* Devices.swift */; };
 		51D959481C643965004B16AB /* StreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D959471C643965004B16AB /* StreamViewController.swift */; };
 		51DD31C61C6E560E005BAE85 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DD31C51C6E560E005BAE85 /* TabBarController.swift */; };
-		51E089FC1D06254900CC7E60 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 51E089FE1D06254900CC7E60 /* Localizable.strings */; };
 		51E21F171BE69F2C0099FB27 /* AlbumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51E21F161BE69F2C0099FB27 /* AlbumCell.xib */; };
 		51E9F0781BA6414C00E67DAC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */; };
 		51F80F0F1C9DB10100BB4624 /* SearchResultArtistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F80F0D1C9DB10100BB4624 /* SearchResultArtistCell.swift */; };
@@ -63,10 +64,13 @@
 /* Begin PBXFileReference section */
 		5101C43E1BDB239100E5ABA8 /* Intro04Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intro04Controller.swift; sourceTree = "<group>"; };
 		5109A50C1CEE33BD00EAFAA3 /* UnreadItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadItems.swift; sourceTree = "<group>"; };
+		5119F7261D08A572000C1333 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
+		5119F7271D08A629000C1333 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
+		5119F72B1D08AF8A000C1333 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5119F72D1D08AF8A000C1333 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		5119F7311D08AF8A000C1333 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		512B69231BE6FCB3003752A8 /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSubscriptionController.swift; sourceTree = "<group>"; };
-		514A49C11D075DBF00F3660A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
-		514A49C21D075DBF00F3660A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		51557C591B9E073C00D980F9 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		51582E161D0241D100E10969 /* AppEmptyState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppEmptyState.swift; sourceTree = "<group>"; };
@@ -105,7 +109,6 @@
 		51D8753F1B1B2AD900353347 /* Devices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Devices.swift; sourceTree = "<group>"; };
 		51D959471C643965004B16AB /* StreamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewController.swift; sourceTree = "<group>"; };
 		51DD31C51C6E560E005BAE85 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
-		51E089E61D0612EA00CC7E60 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		51E21F161BE69F2C0099FB27 /* AlbumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumCell.xib; sourceTree = "<group>"; };
 		51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		51F80F0D1C9DB10100BB4624 /* SearchResultArtistCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultArtistCell.swift; sourceTree = "<group>"; };
@@ -281,7 +284,8 @@
 		51F84DC81AB750A000D51E0C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				51E089FE1D06254900CC7E60 /* Localizable.strings */,
+				5119F7321D08AF8A000C1333 /* Localizable.strings */,
+				5119F72C1D08AF8A000C1333 /* InfoPlist.strings */,
 				51F84DC91AB750A000D51E0C /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -338,7 +342,6 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
 			);
 			mainGroup = 51F84DBC1AB750A000D51E0C;
@@ -361,9 +364,10 @@
 				51E21F171BE69F2C0099FB27 /* AlbumCell.xib in Resources */,
 				518B76881B0ECFA90009F138 /* Images.xcassets in Resources */,
 				51F84DD51AB750A100D51E0C /* LaunchScreen.xib in Resources */,
-				51E089FC1D06254900CC7E60 /* Localizable.strings in Resources */,
+				5119F7301D08AF8A000C1333 /* Localizable.strings in Resources */,
 				517EF0CE1CECAA1400DF84E7 /* StorefrontCountries.plist in Resources */,
 				518907951B46D61100F0E037 /* SearchResultsHeader.xib in Resources */,
+				5119F72A1D08AF8A000C1333 /* InfoPlist.strings in Resources */,
 				51F80F101C9DB10100BB4624 /* SearchResultArtistCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -438,10 +442,18 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		51E089FE1D06254900CC7E60 /* Localizable.strings */ = {
+		5119F72C1D08AF8A000C1333 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				514A49C21D075DBF00F3660A /* en */,
+				5119F72B1D08AF8A000C1333 /* de */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		5119F7321D08AF8A000C1333 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5119F7311D08AF8A000C1333 /* de */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -450,7 +462,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				51F84DCF1AB750A100D51E0C /* Base */,
-				51E089E61D0612EA00CC7E60 /* en */,
+				5119F7261D08A572000C1333 /* de */,
+				5119F7271D08A629000C1333 /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -459,7 +472,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				51F84DD41AB750A100D51E0C /* Base */,
-				514A49C11D075DBF00F3660A /* en */,
+				5119F72D1D08AF8A000C1333 /* de */,
 			);
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";

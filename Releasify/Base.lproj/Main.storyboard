@@ -1454,29 +1454,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mxk-FJ-lcE">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="vZt-2R-L2b"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="GET STARTED">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="vZt-2R-L2b"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=regular-widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="vZt-2R-L2b"/>
-                                    </mask>
-                                </variation>
-                                <connections>
-                                    <action selector="getStartedButtonPressed:" destination="6rW-BT-NjG" eventType="touchUpInside" id="NgF-h5-x9H"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hi there!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zHl-KR-AWX">
                                 <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                 <constraints>
@@ -1543,15 +1520,42 @@ Swipe to get started.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mxk-FJ-lcE">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="vZt-2R-L2b"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="GET STARTED">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="vZt-2R-L2b"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="vZt-2R-L2b"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="getStartedButtonPressed:" destination="6rW-BT-NjG" eventType="touchUpInside" id="NgF-h5-x9H"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.086274509803921567" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="Mxk-FJ-lcE" firstAttribute="leading" secondItem="cKR-ju-VfK" secondAttribute="leading" id="1bP-e3-b5k"/>
+                            <constraint firstItem="Mxk-FJ-lcE" firstAttribute="leading" secondItem="cKR-ju-VfK" secondAttribute="leading" id="1bP-e3-b5k">
+                                <variation key="heightClass=regular-widthClass=compact" constant="62"/>
+                            </constraint>
                             <constraint firstItem="jaP-Tk-HPP" firstAttribute="leading" secondItem="szJ-XQ-0Jr" secondAttribute="leadingMargin" constant="94" id="7zh-Gb-jJw">
                                 <variation key="heightClass=regular-widthClass=compact" constant="86"/>
                             </constraint>
                             <constraint firstItem="jaP-Tk-HPP" firstAttribute="top" secondItem="VWZ-cW-T0K" secondAttribute="bottom" id="DwJ-qZ-GgS"/>
-                            <constraint firstItem="Mxk-FJ-lcE" firstAttribute="trailing" secondItem="cKR-ju-VfK" secondAttribute="trailing" id="K6z-AI-V6d"/>
+                            <constraint firstItem="Mxk-FJ-lcE" firstAttribute="trailing" secondItem="cKR-ju-VfK" secondAttribute="trailing" id="K6z-AI-V6d">
+                                <variation key="heightClass=regular-widthClass=compact" constant="-63"/>
+                            </constraint>
                             <constraint firstItem="jaP-Tk-HPP" firstAttribute="centerX" secondItem="zHl-KR-AWX" secondAttribute="centerX" id="KaW-u3-6d0"/>
                             <constraint firstItem="VWZ-cW-T0K" firstAttribute="centerX" secondItem="szJ-XQ-0Jr" secondAttribute="centerX" id="L1j-qm-KGj">
                                 <variation key="heightClass=regular-widthClass=compact" constant="3"/>
@@ -1571,11 +1575,11 @@ Swipe to get started.</string>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
-                                <exclude reference="Mxk-FJ-lcE"/>
                                 <exclude reference="zHl-KR-AWX"/>
                                 <exclude reference="cKR-ju-VfK"/>
                                 <exclude reference="VWZ-cW-T0K"/>
                                 <exclude reference="jaP-Tk-HPP"/>
+                                <exclude reference="Mxk-FJ-lcE"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="1bP-e3-b5k"/>
@@ -1596,11 +1600,11 @@ Swipe to get started.</string>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
-                                <include reference="Mxk-FJ-lcE"/>
                                 <include reference="zHl-KR-AWX"/>
                                 <include reference="cKR-ju-VfK"/>
                                 <include reference="VWZ-cW-T0K"/>
                                 <include reference="jaP-Tk-HPP"/>
+                                <include reference="Mxk-FJ-lcE"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="1bP-e3-b5k"/>
@@ -1624,6 +1628,7 @@ Swipe to get started.</string>
                     <connections>
                         <outlet property="getStartedButton" destination="Mxk-FJ-lcE" id="LqA-WN-9UD"/>
                         <outlet property="labelTopLayoutConstraint" destination="tBs-Zi-q9z" id="psK-GH-2ov"/>
+                        <outlet property="textHeightConstraint" destination="0p7-ac-guo" id="iQt-RM-dre"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Raa-o5-f18" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1642,29 +1647,6 @@ Swipe to get started.</string>
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PJN-MK-B81">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="f3L-4r-3RU"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="ENABLE NOTIFICATIONS">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="f3L-4r-3RU"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=regular-widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="f3L-4r-3RU"/>
-                                    </mask>
-                                </variation>
-                                <connections>
-                                    <action selector="permissionBtn:" destination="n1q-Dk-f64" eventType="touchUpInside" id="zYW-mw-VvE"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WDI-yG-J56">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <constraints>
@@ -1736,6 +1718,29 @@ Swipe to get started.</string>
                                     </mask>
                                 </variation>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PJN-MK-B81">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="f3L-4r-3RU"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="ENABLE NOTIFICATIONS">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="f3L-4r-3RU"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="f3L-4r-3RU"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="permissionBtn:" destination="n1q-Dk-f64" eventType="touchUpInside" id="zYW-mw-VvE"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.086274509803921567" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -1756,22 +1761,22 @@ Swipe to get started.</string>
                             </constraint>
                             <constraint firstItem="dOP-AN-G70" firstAttribute="centerX" secondItem="Zm7-1c-Vzd" secondAttribute="centerX" id="clb-6T-bH6"/>
                             <constraint firstItem="PJN-MK-B81" firstAttribute="leading" secondItem="0a5-sW-2Fn" secondAttribute="leading" id="iVr-3e-IFL">
-                                <variation key="heightClass=regular-widthClass=compact" constant="5"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="27"/>
                             </constraint>
                             <constraint firstItem="SQI-H1-x0c" firstAttribute="trailing" secondItem="0a5-sW-2Fn" secondAttribute="trailing" id="jeD-0A-CCz">
                                 <variation key="heightClass=regular-widthClass=compact" constant="-5"/>
                             </constraint>
                             <constraint firstItem="0a5-sW-2Fn" firstAttribute="trailing" secondItem="PJN-MK-B81" secondAttribute="trailing" id="xt6-Uq-afb">
-                                <variation key="heightClass=regular-widthClass=compact" constant="5"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="28"/>
                             </constraint>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
-                                <exclude reference="PJN-MK-B81"/>
                                 <exclude reference="WDI-yG-J56"/>
                                 <exclude reference="dOP-AN-G70"/>
                                 <exclude reference="SQI-H1-x0c"/>
                                 <exclude reference="0a5-sW-2Fn"/>
+                                <exclude reference="PJN-MK-B81"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="bei-1O-lKG"/>
@@ -1791,11 +1796,11 @@ Swipe to get started.</string>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
-                                <include reference="PJN-MK-B81"/>
                                 <include reference="WDI-yG-J56"/>
                                 <include reference="dOP-AN-G70"/>
                                 <include reference="SQI-H1-x0c"/>
                                 <include reference="0a5-sW-2Fn"/>
+                                <include reference="PJN-MK-B81"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="bei-1O-lKG"/>
@@ -1882,29 +1887,6 @@ Swipe to get started.</string>
                                     <action selector="skipButtonPressed:" destination="J9l-lc-PhZ" eventType="touchUpInside" id="DRS-Jg-WCA"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wW1-Li-qeT">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="PI2-QV-qXg"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="IMPORT FROM LIBRARY">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="PI2-QV-qXg"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=regular-widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="PI2-QV-qXg"/>
-                                    </mask>
-                                </variation>
-                                <connections>
-                                    <action selector="importButtonPressed:" destination="J9l-lc-PhZ" eventType="touchUpInside" id="vsc-pP-NTy"/>
-                                </connections>
-                            </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_library" translatesAutoresizingMaskIntoConstraints="NO" id="jsD-zE-fvb">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <constraints>
@@ -1943,6 +1925,29 @@ Swipe to get started.</string>
                                     </mask>
                                 </variation>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wW1-Li-qeT">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="PI2-QV-qXg"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="IMPORT FROM LIBRARY">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="PI2-QV-qXg"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="PI2-QV-qXg"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="importButtonPressed:" destination="J9l-lc-PhZ" eventType="touchUpInside" id="vsc-pP-NTy"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.086274509803921567" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -1954,7 +1959,7 @@ Swipe to get started.</string>
                             <constraint firstAttribute="trailing" secondItem="0bR-EB-8Vl" secondAttribute="trailing" id="NRH-jf-Il4"/>
                             <constraint firstItem="jym-JQ-ggf" firstAttribute="centerX" secondItem="J3O-Hl-qcr" secondAttribute="centerX" id="PXa-zY-NhC"/>
                             <constraint firstItem="jym-JQ-ggf" firstAttribute="trailing" secondItem="wW1-Li-qeT" secondAttribute="trailing" id="QSA-sh-eqY">
-                                <variation key="heightClass=regular-widthClass=compact" constant="19"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="42"/>
                             </constraint>
                             <constraint firstItem="0bR-EB-8Vl" firstAttribute="top" secondItem="agk-e8-jjP" secondAttribute="bottom" id="Qrl-Qb-sSb"/>
                             <constraint firstItem="jym-JQ-ggf" firstAttribute="top" secondItem="0bR-EB-8Vl" secondAttribute="bottom" constant="20" id="RSx-2V-uiW"/>
@@ -1962,16 +1967,16 @@ Swipe to get started.</string>
                                 <variation key="heightClass=regular-widthClass=compact" constant="0.0"/>
                             </constraint>
                             <constraint firstItem="jym-JQ-ggf" firstAttribute="leading" secondItem="wW1-Li-qeT" secondAttribute="leading" id="VuZ-Uz-SLt">
-                                <variation key="heightClass=regular-widthClass=compact" constant="-19"/>
+                                <variation key="heightClass=regular-widthClass=compact" constant="-41"/>
                             </constraint>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="jym-JQ-ggf"/>
                                 <exclude reference="0bR-EB-8Vl"/>
-                                <exclude reference="wW1-Li-qeT"/>
                                 <exclude reference="jsD-zE-fvb"/>
                                 <exclude reference="Tif-2D-Ylm"/>
+                                <exclude reference="wW1-Li-qeT"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="NRH-jf-Il4"/>
@@ -1992,9 +1997,9 @@ Swipe to get started.</string>
                             <mask key="subviews">
                                 <include reference="jym-JQ-ggf"/>
                                 <include reference="0bR-EB-8Vl"/>
-                                <include reference="wW1-Li-qeT"/>
                                 <include reference="jsD-zE-fvb"/>
                                 <include reference="Tif-2D-Ylm"/>
+                                <include reference="wW1-Li-qeT"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="NRH-jf-Il4"/>
@@ -2856,8 +2861,8 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="zgf-W2-bDZ"/>
         <segue reference="DYx-ci-f0A"/>
+        <segue reference="zgf-W2-bDZ"/>
         <segue reference="0OL-Xb-Eq8"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.13333333333333333" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -105,6 +105,9 @@ class Intro02Controller: UIViewController {
 		} else if view.bounds.height == 568 {
 			imageTopLayoutConstraint.constant = 260
 		}
+		permissionBtn.layer.borderColor = UIColor.whiteColor().CGColor
+		permissionBtn.layer.borderWidth = 1
+		permissionBtn.layer.cornerRadius = 4
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(Intro02Controller.finishRegister), name: "finishNotificationRegister", object: nil)
     }
 
