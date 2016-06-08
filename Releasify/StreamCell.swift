@@ -69,7 +69,7 @@ class StreamCell: UITableViewCell {
 	func addNewItemLabel() {
 		if label == nil {
 			label = UILabel(frame: CGRect(x: gradientLayerView.bounds.width - 65, y: gradientLayerView.bounds.height - 40, width: 50, height: 26))
-			label.text = NSLocalizedString("STREAM_CELL_NEW_ITEM_LABEL", comment: "The title for the label")
+			label.text = NSLocalizedString("NEW", comment: "")
 			label.font = UIFont(name: label.font.fontName, size: 12)
 			label.textAlignment = NSTextAlignment.Center
 			label.layer.masksToBounds = true

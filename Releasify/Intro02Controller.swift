@@ -23,10 +23,10 @@ class Intro02Controller: UIViewController {
 			self.delegate?.advanceIntroPageTo(3, reverse: false)
 			return
 		}
-		let title = NSLocalizedString("ALERT_DISABLE_NOTIFICATION_TITLE", comment: "The title for the alert controller")
-		let message = NSLocalizedString("ALERT_DISABLE_NOTIFICATION_MESSAGE", comment: "The message for the alert controller")
-		let cancelTitle = NSLocalizedString("ALERT_ACTION_CANCEL", comment: "The title for the first alert controller action")
-		let disableTitle = NSLocalizedString("ALERT_ACTION_DISABLE", comment: "The title for the second alert controller action")
+		let title = NSLocalizedString("Disable Push Notifications?", comment: "")
+		let message = NSLocalizedString("Please confirm that you would like to disable Push Notifications. You can re-enable them later in iOS settings.", comment: "")
+		let cancelTitle = NSLocalizedString("Cancel", comment: "")
+		let disableTitle = NSLocalizedString("Disable", comment: "")
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
 		alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel, handler: nil))
 		alert.addAction(UIAlertAction(title: disableTitle, style: .Destructive, handler: { action in
@@ -35,7 +35,7 @@ class Intro02Controller: UIViewController {
 				self.appDelegate.userUUID = userUUID
 				NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
 				NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
-				let skipBtnTitle = NSLocalizedString("SKIP_BUTTON_TITLE", comment: "The title for the skip button")
+				let skipBtnTitle = NSLocalizedString("NEXT", comment: "")
 				self.skipBtn.setTitle(skipBtnTitle, forState: UIControlState.Normal)
 				self.delegate?.advanceIntroPageTo(3, reverse: false)
 				},
@@ -52,7 +52,7 @@ class Intro02Controller: UIViewController {
 			permissionBtn.enabled = false
 			let appAction = UIMutableUserNotificationAction()
 			appAction.identifier = "APP_ACTION"
-			let notificationOpenActionTitle = NSLocalizedString("NOTIFICATION_SETTINGS_OPEN_IN_APP", comment: "The title for the first notification action")
+			let notificationOpenActionTitle = NSLocalizedString("Open in App", comment: "")
 			appAction.title = notificationOpenActionTitle
 			appAction.activationMode = .Foreground
 			appAction.destructive = false
@@ -60,7 +60,7 @@ class Intro02Controller: UIViewController {
 			
 			let storeAction = UIMutableUserNotificationAction()
 			storeAction.identifier = "STORE_ACTION"
-			let notificationPurchaseActionTitle = NSLocalizedString("NOTIFICATION_SETTINGS_PURCHASE", comment: "The title for the second notification action")
+			let notificationPurchaseActionTitle = NSLocalizedString("Purchase", comment: "")
 			storeAction.title = notificationPurchaseActionTitle
 			storeAction.activationMode = .Foreground
 			storeAction.destructive = false
@@ -68,7 +68,7 @@ class Intro02Controller: UIViewController {
 			
 			let preorderAction = UIMutableUserNotificationAction()
 			preorderAction.identifier = "PREORDER_ACTION"
-			let notificationPreOrderActionTitle = NSLocalizedString("NOTIFICATION_SETTINGS_PREORDER", comment: "The title for the third notification action")
+			let notificationPreOrderActionTitle = NSLocalizedString("Pre-Order", comment: "")
 			preorderAction.title = notificationPreOrderActionTitle
 			preorderAction.activationMode = .Foreground
 			preorderAction.destructive = false
@@ -114,7 +114,7 @@ class Intro02Controller: UIViewController {
 	
 	func finishRegister() {
 		if appDelegate.userID > 0 && appDelegate.userUUID != nil {
-			let skipBtnTitle = NSLocalizedString("SKIP_BUTTON_TITLE", comment: "The title for the skip button")
+			let skipBtnTitle = NSLocalizedString("NEXT", comment: "")
 			skipBtn.setTitle(skipBtnTitle, forState: UIControlState.Normal)
 			permissionBtn.enabled = false
 			permissionBtn.layer.opacity = 0.5
@@ -128,17 +128,17 @@ class Intro02Controller: UIViewController {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
-			let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+			alert.title = NSLocalizedString("You're Offline!", comment: "")
+			alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+			let alertActionTitle = NSLocalizedString("Settings", comment: "")
 			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		default:
-			alert.title = NSLocalizedString("ALERT_REGISTER_FAIL_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_REGISTER_FAIL_MESSAGE", comment: "The message for the alert controller")
+			alert.title = NSLocalizedString("Unable to register", comment: "Unable to register")
+			alert.message = NSLocalizedString("Please try again later.", comment: "")
 		}
-		let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+		let title = NSLocalizedString("OK", comment: "")
 		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}

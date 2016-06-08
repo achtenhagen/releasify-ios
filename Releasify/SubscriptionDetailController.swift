@@ -22,18 +22,18 @@ class SubscriptionDetailController: UIViewController {
 	@IBOutlet var detailFlowLayout: UICollectionViewFlowLayout!
 	
 	@IBAction func removeArtist(sender: AnyObject) {
-		let title = NSLocalizedString("ALERT_CONFIRM_UNSUBSCRIBE_ALBUM_TITLE", comment: "The title for the alert controller")
-		let message = NSLocalizedString("ALERT_CONFIRM_UNSUBSCRIBE_ALBUM_MESSAGE", comment: "The message for the alert controller")
+		let title = NSLocalizedString("Remove Subscription?", comment: "")
+		let message = NSLocalizedString("Please confirm that you want to unsubscribe from this artist.", comment: "")
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-		let firstActionTitle = NSLocalizedString("ALERT_ACTION_CANCEL", comment: "The title for the first alert controller action")
-		let secondActionTitle = NSLocalizedString("ALERT_ACTION_REMOVE", comment: "The title for the second alert controller action")
+		let firstActionTitle = NSLocalizedString("Cancel", comment: "")
+		let secondActionTitle = NSLocalizedString("Remove", comment: "")
 		alert.addAction(UIAlertAction(title: firstActionTitle, style: .Cancel, handler: nil))
 		alert.addAction(UIAlertAction(title: secondActionTitle, style: .Destructive, handler: { (action) in
 			let postString = "id=\(self.appDelegate.userID)&uuid=\(self.appDelegate.userUUID)&artistUniqueID=\(self.artist!.iTunesUniqueID)"
 			API.sharedInstance.sendRequest(API.Endpoint.removeArtist.url(), postString: postString, successHandler: { (statusCode, data) in
 				if statusCode != 204 {
-					let title = NSLocalizedString("ALERT_REMOVE_SUBSCRIPTION_FAILED_TITLE", comment: "The title for the alert controller")
-					let message = NSLocalizedString("ALERT_REMOVE_SUBSCRIPTION_FAILED_MESSAGE", comment: "The message for the alert controller")
+					let title = NSLocalizedString("Unable to remove subscription!", comment: "")
+					let message = NSLocalizedString("Please try again later.", comment: "")
 					self.handleError(title, message: message, error: API.Error.FailedRequest)
 					return
 				}
@@ -59,8 +59,8 @@ class SubscriptionDetailController: UIViewController {
 				},
 				errorHandler: { (error) in
 					AppDB.sharedInstance.addPendingArtist(self.artist!.ID)
-					let title = NSLocalizedString("ALERT_REMOVE_SUBSCRIPTION_FAILED_TITLE", comment: "The title for the alert controller")
-					let message = NSLocalizedString("ALERT_REMOVE_SUBSCRIPTION_FAILED_MESSAGE", comment: "The message for the alert controller")
+					let title = NSLocalizedString("Unable to remove subscription!", comment: "")
+					let message = NSLocalizedString("Please try again later.", comment: "")
 					self.handleError(title, message: message, error: error)
 			})
 		}))
@@ -92,7 +92,7 @@ class SubscriptionDetailController: UIViewController {
 			let label = UILabel()
 			label.font = UIFont(name: label.font.fontName, size: 18)
 			label.textColor = theme.emptyStateLabelColor
-			label.text = NSLocalizedString("NO_ALBUMS_PLACEHOLDER", comment: "The title for the label")
+			label.text = NSLocalizedString("No albums here yet!", comment: "")
 			label.textAlignment = NSTextAlignment.Center
 			label.adjustsFontSizeToFitWidth = true
 			label.sizeToFit()
@@ -110,20 +110,20 @@ class SubscriptionDetailController: UIViewController {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
-			let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+			alert.title = NSLocalizedString("You're Offline!", comment: "")
+			alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+			let alertActionTitle = NSLocalizedString("Settings", comment: "")
 			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		case API.Error.ServerDownForMaintenance:
-			alert.title = NSLocalizedString("ALERT_MAINTENANCE_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_MAINTENANCE_MESSAGE", comment: "The message for the alert controller")
+			alert.title = NSLocalizedString("Service Unavailable", comment: "")
+			alert.message = NSLocalizedString("We'll be back shortly, our servers are currently undergoing maintenance.", comment: "")
 		default:
 			alert.title = title
 			alert.message = message
 		}
-		let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+		let title = NSLocalizedString("OK", comment: "")
 		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}

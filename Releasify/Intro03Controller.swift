@@ -30,10 +30,10 @@ class Intro03Controller: UIViewController {
 		if mediaQuery.collections!.count > 0 && appDelegate.userID > 0 {
 			performSegueWithIdentifier("importFromIntroSegue", sender: self)
 		} else {
-			let title = NSLocalizedString("ALERT_IMPORT_FAIL_TITLE", comment: "The title for the alert controller")
-			let message = NSLocalizedString("ALERT_IMPORT_FAIL_MESSAGE", comment: "The message for the alert controller")
+			let title = NSLocalizedString("Unable to import!", comment: "")
+			let message = NSLocalizedString("You currently have no artists in your media library.", comment: "")
 			let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-			let actionTitle = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+			let actionTitle = NSLocalizedString("OK", comment: "")
 			alert.addAction(UIAlertAction(title: actionTitle, style: .Default, handler: nil))
 			self.presentViewController(alert, animated: true, completion: nil)
 		}

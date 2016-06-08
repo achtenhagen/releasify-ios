@@ -46,7 +46,7 @@ class SubscriptionController: UITableViewController {
 		searchController.delegate = self
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.hidesNavigationBarDuringPresentation = false
-		searchController.searchBar.placeholder = "Search Artists"
+		searchController.searchBar.placeholder = NSLocalizedString("Search Artists", comment: "")
 		searchController.searchBar.searchBarStyle = .Minimal
 		searchController.searchBar.barStyle = theme.searchBarStyle
 		searchController.searchBar.barTintColor = UIColor.clearColor()
@@ -94,8 +94,8 @@ class SubscriptionController: UITableViewController {
 	// MARK: - Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
-			let title = NSLocalizedString("APP_EMPTY_STATE_NO_SUBSCRIPTIONS", comment: "The title for the app empty state")
-			let subtitle = NSLocalizedString("APP_EMPTY_STATE_NO_SUBSCRIPTIONS_DESCRIPTION", comment: "The description for the app empty state")
+			let title = NSLocalizedString("No Subscriptions", comment: "")
+			let subtitle = NSLocalizedString("Your subscriptions will appear here", comment: "")
 			let stateImg = theme.style == .Dark ? "app_empty_state_artists_dark" : "app_empty_state_artists"
 			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: title,
 			                                  subtitle: subtitle, buttonTitle: nil, offset: searchController.searchBar.frame.height)
@@ -119,20 +119,20 @@ class SubscriptionController: UITableViewController {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
-			let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+			alert.title = NSLocalizedString("You're Offline!", comment: "")
+			alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+			let alertActionTitle = NSLocalizedString("Settings", comment: "")
 			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		case API.Error.ServerDownForMaintenance:
-			alert.title = NSLocalizedString("ALERT_MAINTENANCE_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_MAINTENANCE_MESSAGE", comment: "The message for the alert controller")
+			alert.title = NSLocalizedString("Service Unavailable", comment: "")
+			alert.message = NSLocalizedString("We'll be back shortly, our servers are currently undergoing maintenance.", comment: "")
 		default:
 			alert.title = title
 			alert.message = message
 		}
-		let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+		let title = NSLocalizedString("OK", comment: "")
 		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}

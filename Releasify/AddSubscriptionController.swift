@@ -50,7 +50,7 @@ class AddSubscriptionController: UIViewController {
 		// Search bar customizations
 		searchBar = UISearchBar()
 		searchBar.delegate = self
-		searchBar.placeholder = NSLocalizedString("SEARCH_BAR_PLACEHOLDER_SEARCH", comment: "The placeholder text for the search bar")
+		searchBar.placeholder = NSLocalizedString("Search", comment: "")
 		searchBar.searchBarStyle = .Minimal
 		searchBar.barStyle = theme.searchBarStyle
 		searchBar.barTintColor = UIColor.clearColor()
@@ -116,8 +116,8 @@ class AddSubscriptionController: UIViewController {
 		let timer = userInfo as? NSTimer
 		let keyword = timer?.userInfo as! String
 		searchFor(keyword, errorHandler: { (error) in
-			let title = NSLocalizedString("ALERT_ERROR_ALT_TITLE", comment: "The title for the alert controller")
-			let message = NSLocalizedString("ALERT_ERROR_ALT_MESSAGE", comment: "The message for the alert controller")
+			let title = NSLocalizedString("Oops!", comment: "")
+			let message = NSLocalizedString("There was an error performing your search request. Please try again later.", comment: "")
 			self.handleError(title, message: message, error: error)
 		})
 	}
@@ -160,8 +160,8 @@ class AddSubscriptionController: UIViewController {
 	// MARK: - Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
-			let title = NSLocalizedString("APP_EMPTY_STATE_NO_SEARCH_RESULTS", comment: "The title for the app empty state")
-			let subtitle = NSLocalizedString("APP_EMPTY_STATE_NO_SEARCH_RESULTS_DESCRIPTION", comment: "The description for the app empty state")
+			let title = NSLocalizedString("No Results", comment: "")
+			let subtitle = NSLocalizedString("Your search did not return any results", comment: "")
 			let stateImg = theme.style == .Dark ? "app_empty_state_search_dark" : "app_empty_state_search"
 			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: title,
 			                                  subtitle: subtitle, buttonTitle: nil)
@@ -185,20 +185,20 @@ class AddSubscriptionController: UIViewController {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
-			let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+			alert.title = NSLocalizedString("You're Offline!", comment: "")
+			alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+			let alertActionTitle = NSLocalizedString("Settings", comment: "")
 			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		case API.Error.ServerDownForMaintenance:
-			alert.title = NSLocalizedString("ALERT_MAINTENANCE_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_MAINTENANCE_MESSAGE", comment: "The message for the alert controller")
+			alert.title = NSLocalizedString("Service Unavailable", comment: "Service Unavailable")
+			alert.message = NSLocalizedString("We'll be back shortly, our servers are currently undergoing maintenance.", comment: "")
 		default:
 			alert.title = title
 			alert.message = message
 		}
-		let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+		let title = NSLocalizedString("OK", comment: "")
 		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}

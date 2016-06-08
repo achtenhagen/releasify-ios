@@ -15,7 +15,7 @@ protocol StreamViewControllerDelegate: class {
 }
 
 class StreamViewController: UITableViewController {
-	
+
 	weak var delegate: AppControllerDelegate?
 	private var theme: StreamViewControllerTheme!
 	private var appEmptyStateView: UIView!
@@ -34,10 +34,10 @@ class StreamViewController: UITableViewController {
 	@IBOutlet var streamTable: UITableView!
 
 	@IBAction func UnwindToStreamViewSegue(sender: UIStoryboardSegue) {}
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+
 		// Initialize
 		cellArtworkContainerSize = CGRect(x: 0, y: 134, width: UIScreen.mainScreen().bounds.width - 40, height: 100)
 		tmpArtwork = [String:UIImage]()
@@ -47,9 +47,9 @@ class StreamViewController: UITableViewController {
 
 		// Required for footer label
 		AppDB.sharedInstance.getArtists()
-		
+
 		favListBarBtn = self.navigationController?.navigationBar.items![0].leftBarButtonItem
-		
+
 		// Observers
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(refresh), name: "refreshContent", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reloadStream), name: "reloadStream", object: nil)
@@ -62,16 +62,16 @@ class StreamViewController: UITableViewController {
 		streamTable.backgroundView?.userInteractionEnabled = false
 		streamTable.separatorStyle = theme.style == .Dark ? .None : .SingleLine
 		streamTable.separatorColor = theme.cellSeparatorColor
-		
+
 		// Check for 3D Touch availability
 		if #available(iOS 9.0, *) {
 			if traitCollection.forceTouchCapability == .Available {
 				self.registerForPreviewingWithDelegate(self, sourceView: streamTable)
 			}
 		}
-		
+
 		registerLongPressGesture()
-		
+
 		// Refresh control
 		refreshControl!.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
 		refreshControl!.tintColor = theme.refreshControlTintColor
@@ -81,17 +81,17 @@ class StreamViewController: UITableViewController {
 		let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(scrollListToTop))
 		doubleTapGesture.numberOfTapsRequired = 2
 		self.tabBarController?.tabBar.addGestureRecognizer(doubleTapGesture)
-		
+
 		// Handle first run
 		if appDelegate.firstRun {
 			appDelegate.firstRun = false
 		}
-		
+
 		// Process remote notification payload
 		if let remoteContent = appDelegate.remoteNotificationPayload {
 			processRemoteNotificationPayload(remoteContent)
 		}
-		
+
 		// Process local notification payload
 		if let notificationAlbumID = appDelegate.localNotificationPayload?["albumID"] as? Int {
 			if let album = AppDB.sharedInstance.getAlbum(notificationAlbumID) {
@@ -99,7 +99,7 @@ class StreamViewController: UITableViewController {
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
 		}
-		
+
 		// Update content when app is launched
 		if !appDelegate.completedRefresh {
 			refresh()
@@ -148,11 +148,12 @@ class StreamViewController: UITableViewController {
 	// MARK: - Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
-			let title = NSLocalizedString("APP_EMPTY_STATE_STREAM", comment: "The title for the app empty state")
-			let subtitle = NSLocalizedString("APP_EMPTY_STATE_STREAM_DESCRIPTION", comment: "")
+			let title = NSLocalizedString("No Content", comment: "")
+			let subtitle = NSLocalizedString("Start by adding a new subscription", comment: "")
+			let buttonTitle = NSLocalizedString("Add Subscription", comment: "")
 			let stateImg = theme.style == .Dark ? "app_empty_state_stream_dark" : "app_empty_state_stream"
 			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: title,
-			                                  subtitle: subtitle, buttonTitle: "Add Subscription")
+			                                  subtitle: subtitle, buttonTitle: buttonTitle)
 			appEmptyStateView = appEmptyState.view()
 			appEmptyState.placeholderButton.addTarget(self, action: #selector(self.addSubscriptionFromPlaceholder), forControlEvents: .TouchUpInside)
 			self.view.addSubview(appEmptyStateView)
@@ -167,10 +168,10 @@ class StreamViewController: UITableViewController {
 		}
 	}
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-	
+	override func didReceiveMemoryWarning() {
+		super.didReceiveMemoryWarning()
+	}
+
 	// MARK: - Refresh Content
 	func refresh() {
 		API.sharedInstance.refreshContent({ (processedAlbums, contentHash) in
@@ -184,12 +185,12 @@ class StreamViewController: UITableViewController {
 					if remaining > 0 {
 						let notification = UILocalNotification()
 						if #available(iOS 8.2, *) {
-							let title = NSLocalizedString("ALERT_NOTIFICATION_TITLE", comment: "The title for the notification alert")
+							let title = NSLocalizedString("New Album Released", comment: "")
 							notification.alertTitle = title
 						}
 						notification.category = "DEFAULT_CATEGORY"
 						notification.timeZone = NSTimeZone.localTimeZone()
-						let body = NSLocalizedString("ALERT_NOTIFICATION_BODY", comment: "The message for the local notification")
+						let body = NSLocalizedString("is now available.", comment: "")
 						notification.alertBody = "\(album.title) \(body)"
 						notification.fireDate = NSDate(timeIntervalSince1970: album.releaseDate)
 						notification.applicationIconBadgeNumber += 1
@@ -234,8 +235,8 @@ class StreamViewController: UITableViewController {
 			},
 			errorHandler: { (error) in
 				self.refreshControl!.endRefreshing()
-				let title = NSLocalizedString("ALERT_UPDATE_FAILED_TITLE", comment: "The title for the alert controller")
-				let message = NSLocalizedString("ALERT_UPDATE_FAILED_MESSAGE", comment: "The message for the alert controller")
+				let title = NSLocalizedString("Unable to update!", comment: "")
+				let message = NSLocalizedString("Please try again later.", comment: "")
 				self.handleError(title, message: message, error: error)
 		})
 	}
@@ -246,14 +247,14 @@ class StreamViewController: UITableViewController {
 			self.streamTable.setContentOffset(CGPointZero, animated: true)
 		}
 	}
-	
+
 	// MARK: - Fallback if 3D Touch is unavailable
 	func registerLongPressGesture() {
 		let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(StreamViewController.longPressGestureRecognized(_:)))
 		longPressGesture.minimumPressDuration = 1
 		self.streamTable.addGestureRecognizer(longPressGesture)
 	}
-	
+
 	// MARK: - Handle long press gesture
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
 		let cellLocation = gesture.locationInView(streamTable)
@@ -261,13 +262,13 @@ class StreamViewController: UITableViewController {
 		if indexPath == nil { return }
 		if indexPath?.row == nil { return }
 		if gesture.state == UIGestureRecognizerState.Began {
-			let message = NSLocalizedString("SHARE_ACTIVITY_BUY", comment: "The message for the share sheet")
+			let message = NSLocalizedString("Buy this album on iTunes", comment: "")
 			let shareActivityItem = "\(message):\n\(AppDB.sharedInstance.albums[indexPath!.row].iTunesUrl)"
 			let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 			self.presentViewController(activityViewController, animated: true, completion: nil)
 		}
 	}
-	
+
 	// MARK: - Open album from a local notification
 	func showAlbumFromNotification(notification: NSNotification) {
 		if let notificationAlbumID = notification.userInfo!["albumID"] as? Int {
@@ -277,12 +278,12 @@ class StreamViewController: UITableViewController {
 			}
 		}
 	}
-	
+
 	// MARK: - Open album from a remote notification
 	func showAlbumFromRemoteNotification(notification: NSNotification) {
 		processRemoteNotificationPayload(notification.userInfo!)
 	}
-	
+
 	// MARK: - Process remote notification payload
 	func processRemoteNotificationPayload(userInfo: NSDictionary) {
 		UIApplication.sharedApplication().applicationIconBadgeNumber -= 1
@@ -292,13 +293,13 @@ class StreamViewController: UITableViewController {
 				self.selectedAlbum = album
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 				}, errorHandler: { (error) in
-					let title = NSLocalizedString("ALERT_ALBUM_LOOKUP_FAIL_TITLE", comment: "The title for the alert controller")
-					let message = NSLocalizedString("ALERT_ALBUM_LOOKUP_FAIL_MESSAGE", comment: "The message for the alert controller")
+					let title = NSLocalizedString("Failed to lookup album!", comment: "")
+					let message = NSLocalizedString("Please try again later.", comment: "")
 					self.handleError(title, message: message, error: error)
 			})
 		}
 	}
-	
+
 	// MARK: - Return artwork image for each collection view cell
 	func getArtworkForCell(url: String, hash: String, completion: ((artwork: UIImage) -> Void)) {
 		// Artwork is cached in dictionary, return it
@@ -317,12 +318,12 @@ class StreamViewController: UITableViewController {
 			AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
 			self.tmpArtwork![hash] = artwork
 			completion(artwork: self.tmpArtwork![hash]!)
-			}, errorHandler: {				
+			}, errorHandler: {
 				let filename = self.theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork"
 				completion(artwork: UIImage(named: filename)!)
 		})
 	}
-	
+
 	// MARK: - Unsubscribe from an album
 	func unsubscribeFromAlbum(album: Album, indexPath: NSIndexPath) {
 		AppDB.sharedInstance.deleteAlbum(album.ID, index: indexPath.row)
@@ -334,12 +335,12 @@ class StreamViewController: UITableViewController {
 		}
 		self.streamTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
 		API.sharedInstance.unsubscribeAlbum(album.iTunesUniqueID, successHandler: nil, errorHandler: { (error) in
-			let title = NSLocalizedString("ALERT_REMOVE_ALBUM_FAILED_TITLE", comment: "The title for the alert controller")
-			let message = NSLocalizedString("ALERT_REMOVE_ALBUM_FAILED_MESSAGE", comment: "The message for the alert controller")
+			let title = NSLocalizedString("Unable to remove album!", comment: "")
+			let message = NSLocalizedString("Please try again later.", comment: "")
 			self.handleError(title, message: message, error: error)
 		})
 	}
-	
+
 	override func scrollViewDidScroll(scrollView: UIScrollView) {
 		if scrollView == self.streamTable {
 			if let visibleCells = self.streamTable.indexPathsForVisibleRows {
@@ -356,7 +357,7 @@ class StreamViewController: UITableViewController {
 			footerLabel.fadeOut()
 		}
 	}
-	
+
 	// MARK: - Parallax scrolling effect
 	func setCellImageOffset(cell: StreamCell, indexPath: NSIndexPath) {
 		let cellFrame = self.streamTable.rectForRowAtIndexPath(indexPath)
@@ -383,7 +384,7 @@ class StreamViewController: UITableViewController {
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return AppDB.sharedInstance.albums.count
 	}
-	
+
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! StreamCell
 		let album = AppDB.sharedInstance.albums[indexPath.row]
@@ -403,7 +404,7 @@ class StreamViewController: UITableViewController {
 			}
 		})
 		cell.albumTitle.text = album.title
-		let title = NSLocalizedString("STREAM_CELL_ARTIST_TITLE_PREFIX", comment: "The title for the artist label")
+		let title = NSLocalizedString("By", comment: "")
 		cell.artistTitle.text = "\(title) \(AppDB.sharedInstance.getAlbumArtist(album.ID)!), \(posted)"
 		cell.albumTitle.userInteractionEnabled = false
 		cell.timeLabel.text = album.getFormattedReleaseDate()
@@ -419,7 +420,7 @@ class StreamViewController: UITableViewController {
 		}
 		return cell
 	}
-	
+
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		let cell = tableView.cellForRowAtIndexPath(indexPath) as! StreamCell
 		let albumID = AppDB.sharedInstance.albums[indexPath.row].ID
@@ -428,22 +429,24 @@ class StreamViewController: UITableViewController {
 		selectedAlbum = AppDB.sharedInstance.albums[indexPath.row]
 		self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 	}
-	
+
 	override func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.cellForRowAtIndexPath(indexPath)?.alpha = 0.8
 	}
-	
+
 	override func tableView(tableView: UITableView, didUnhighlightRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.cellForRowAtIndexPath(indexPath)?.alpha = 1
 	}
-	
+
 	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
 		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
-			let title = NSLocalizedString("ALERT_REMOVE_ALBUM_TITLE", comment: "The title for the alert controller")
-			let message = NSLocalizedString("ALERT_REMOVE_ALBUM_MESSAGE", comment: "The message for the alert controller")
+			let title = NSLocalizedString("Remove Album?", comment: "")
+			let message = NSLocalizedString("Please confirm that you want to remove this album.", comment: "")
 			let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-			alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-			alert.addAction(UIAlertAction(title: "Remove", style: .Destructive, handler: { action in
+			let firstAction = NSLocalizedString("Cancel", comment: "")
+			let secondAction = NSLocalizedString("Remove", comment: "")
+			alert.addAction(UIAlertAction(title: firstAction, style: .Cancel, handler: nil))
+			alert.addAction(UIAlertAction(title: secondAction, style: .Destructive, handler: { action in
 				let album = AppDB.sharedInstance.albums[indexPath.row]
 				if !album.isReleased() {
 					for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
@@ -467,13 +470,13 @@ class StreamViewController: UITableViewController {
 		removeAction.backgroundColor = UIColor(patternImage: UIImage(named: actionImg)!)
 		return [removeAction]
 	}
-	
+
 	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
 		let imageCell = cell as! StreamCell
 		self.setCellImageOffset(imageCell, indexPath: indexPath)
 		cell.layoutIfNeeded()
 	}
-	
+
 	override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 		if AppDB.sharedInstance.albums.count == 0 { return UIView() }
 		let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 40))
@@ -482,8 +485,8 @@ class StreamViewController: UITableViewController {
 		footerLabel.alpha = 0
 		footerLabel.font = UIFont(name: footerLabel.font.fontName, size: 14)
 		footerLabel.textColor = theme.streamCellFooterLabelColor
-		let s1 = AppDB.sharedInstance.albums.count == 1 ? "album" : "albums" // Needs localization
-		let s2 = AppDB.sharedInstance.artists.count == 1 ? "artist" : "artists" // Needs localization
+		let s1 = AppDB.sharedInstance.albums.count == 1 ? NSLocalizedString("album", comment: "") : NSLocalizedString("albums", comment: "")
+		let s2 = AppDB.sharedInstance.artists.count == 1 ? NSLocalizedString("artist", comment: "") : NSLocalizedString("artists", comment: "")
 		footerLabel.text = "\(AppDB.sharedInstance.albums.count) \(s1), \(AppDB.sharedInstance.artists.count) \(s2)"
 		footerLabel.textAlignment = NSTextAlignment.Center
 		footerLabel.adjustsFontSizeToFitWidth = true
@@ -492,26 +495,26 @@ class StreamViewController: UITableViewController {
 		footerView.addSubview(footerLabel)
 		return footerView
 	}
-	
+
 	// MARK: - Error Message Handler
 	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = NSLocalizedString("ALERT_OFFLINE_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_OFFLINE_MESSAGE", comment: "The message for the alert controller")
-			let alertActionTitle = NSLocalizedString("ALERT_ACTION_SETTINGS", comment: "The title for the alert controller action")
+			alert.title = NSLocalizedString("You're Offline!", comment: "")
+			alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+			let alertActionTitle = NSLocalizedString("Settings", comment: "")
 			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		case API.Error.ServerDownForMaintenance:
-			alert.title = NSLocalizedString("ALERT_MAINTENANCE_TITLE", comment: "The title for the alert controller")
-			alert.message = NSLocalizedString("ALERT_MAINTENANCE_MESSAGE", comment: "The message for the alert controller")
+			alert.title = NSLocalizedString("Service Unavailable", comment: "")
+			alert.message = NSLocalizedString("We'll be back shortly, our servers are currently undergoing maintenance.", comment: "")
 		default:
 			alert.title = title
 			alert.message = message
 		}
-		let title = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+		let title = NSLocalizedString("OK", comment: "")
 		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
@@ -539,7 +542,7 @@ extension StreamViewController: UIViewControllerPreviewingDelegate {
 		previewingContext.sourceRect = cell.frame
 		return albumDetailVC
 	}
-	
+
 	func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
 		self.showViewController(viewControllerToCommit, sender: self)
 	}

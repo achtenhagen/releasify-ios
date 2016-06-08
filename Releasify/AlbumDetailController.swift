@@ -137,7 +137,7 @@ class AlbumDetailController: UIViewController {
 		buyBtn.layer.borderWidth = 1
 		buyBtn.layer.cornerRadius = 4
 		if appDelegate.canAddToLibrary {
-			buyBtn.setTitle(NSLocalizedString("BUTTON_ADD_TO_LIBRARY", comment: "The title for the buy button"), forState: .Normal)
+			buyBtn.setTitle(NSLocalizedString("Add to Library", comment: ""), forState: .Normal)
 		}
 		
 		// Configure things based on album availability
@@ -146,7 +146,7 @@ class AlbumDetailController: UIViewController {
 			self.navigationController?.navigationBar.shadowImage = UIImage()			
 			dateAdded = AppDB.sharedInstance.getAlbumDateAdded(album!.ID)!
 			progressBar.progress = album!.getProgressSinceDate(dateAdded)
-			buyBtn.setTitle(NSLocalizedString("BUTTON_PREORDER", comment: "The title for the buy button"), forState: .Normal)
+			buyBtn.setTitle(NSLocalizedString("Pre-Order", comment: ""), forState: .Normal)
 			timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(update), userInfo: nil, repeats: true)
 		} else {
 			if theme.style == .Light {
@@ -208,10 +208,10 @@ class AlbumDetailController: UIViewController {
 				self.albumArtwork.image = artwork
 				AppDB.sharedInstance.addArtwork(self.album!.artwork, artwork: artwork!)				
 			}, errorHandler: {
-				let title =  NSLocalizedString("ALERT_ERROR_TITLE", comment: "The title for the alert controller")
-				let message = NSLocalizedString("ARTWORK_DOWNLOAD_FAILED", comment: "The message for the alert controller")
+				let title =  NSLocalizedString("Error", comment: "")
+				let message = NSLocalizedString("Failed to download album artwork.", comment: "")
 				let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-				let alertActionTitle = NSLocalizedString("ALERT_ACTION_OK", comment: "The title for the alert controller action")
+				let alertActionTitle = NSLocalizedString("OK", comment: "")
 				alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: nil))
 				self.presentViewController(alert, animated: true, completion: nil)
 		})
@@ -239,10 +239,10 @@ class AlbumDetailController: UIViewController {
 	
 	@available(iOS 9.0, *)
 	override func previewActionItems() -> [UIPreviewActionItem] {
-		var buyTitle = "Pre-Order"
+		var buyTitle = NSLocalizedString("Pre-Order", comment: "")
 		if timeDiff <= 0 {
-			let s1 = NSLocalizedString("BUTTON_ADD_TO_LIBRARY", comment: "The title for the buy button")
-			let s2 = NSLocalizedString("BUTTON_PURCHASE", comment: "The title for the buy button")
+			let s1 = NSLocalizedString("Add to Library", comment: "")
+			let s2 = NSLocalizedString("Purchase", comment: "")
 			buyTitle = appDelegate.canAddToLibrary ? s1 : s2
 		}
 		// 3D Touch purchase action
@@ -252,7 +252,7 @@ class AlbumDetailController: UIViewController {
 			}
 		}
 		// 3D Touch favorites action
-		let favoritesActionTitle = isFavorite == true ? "Remove from Favorites" : "Add to Favorites"
+		let favoritesActionTitle = isFavorite == true ? NSLocalizedString("Remove from Favorites", comment: "") : NSLocalizedString("Add to Favorites", comment: "")
 		let favoriteAction = UIPreviewAction(title: favoritesActionTitle, style: .Default, handler: { (action, viewController) -> Void in
 			if !self.isFavorite {
 				self.addFavorite()
@@ -265,7 +265,7 @@ class AlbumDetailController: UIViewController {
 	
 	// MARK: - Handle album share sheet
 	func shareAlbum() {
-		let message = NSLocalizedString("SHARE_ACTIVITY_BUY", comment: "The message for the share sheet")
+		let message = NSLocalizedString("Buy this album on iTunes", comment: "")
 		let shareActivityItem = "\(message):\n\(album!.iTunesUrl)"
 		let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 		self.presentViewController(activityViewController, animated: true, completion: nil)
@@ -285,39 +285,39 @@ class AlbumDetailController: UIViewController {
 		let seconds = component(Double(timeDiff),            v: 1) % 60
 		if Int(weeks) > 0 {
 			firstDigitLabel.text = formatNumber(weeks)
-			firstTimeLabel.text = "weeks"
+			firstTimeLabel.text = NSLocalizedString("weeks", comment: "")
 			secondDigitLabel.text = formatNumber(days)
-			secondTimeLabel.text = "days"
+			secondTimeLabel.text = NSLocalizedString("days", comment: "")
 			thirdDigitLabel.text = formatNumber(hours)
-			thirdTimeLabel.text = "hours"
+			thirdTimeLabel.text = NSLocalizedString("hours", comment: "")
 		} else if Int(days) > 0 && Int(days) <= 7 {
 			firstDigitLabel.text = formatNumber(days)
-			firstTimeLabel.text = "days"
+			firstTimeLabel.text = NSLocalizedString("days", comment: "")
 			secondDigitLabel.text = formatNumber(hours)
-			secondTimeLabel.text = "hours"
+			secondTimeLabel.text = NSLocalizedString("hours", comment: "")
 			thirdDigitLabel.text = formatNumber(minutes)
-			thirdTimeLabel.text = "minutes"
+			thirdTimeLabel.text = NSLocalizedString("minutes", comment: "")
 		} else if Int(hours) > 0 && Int(hours) <= 24 {
 			firstDigitLabel.text = formatNumber(hours)
-			firstTimeLabel.text = "hours"
+			firstTimeLabel.text = NSLocalizedString("hours", comment: "")
 			secondDigitLabel.text = formatNumber(minutes)
-			secondTimeLabel.text = "minutes"
+			secondTimeLabel.text = NSLocalizedString("minutes", comment: "")
 			thirdDigitLabel.text = formatNumber(seconds)
-			thirdTimeLabel.text = "seconds"
+			thirdTimeLabel.text = NSLocalizedString("seconds", comment: "")
 		} else if Int(minutes) > 0 && Int(minutes) <= 60 {
 			firstDigitLabel.text = String("00")
-			firstTimeLabel.text = "hours"
+			firstTimeLabel.text = NSLocalizedString("hours", comment: "")
 			secondDigitLabel.text = formatNumber(minutes)
-			secondTimeLabel.text = "minutes"
+			secondTimeLabel.text = NSLocalizedString("minutes", comment: "")
 			thirdDigitLabel.text = formatNumber(seconds)
-			thirdTimeLabel.text = "seconds"
+			thirdTimeLabel.text = NSLocalizedString("seconds", comment: "")
 		} else if Int(seconds) > 0 && Int(seconds) <= 60 {
 			firstDigitLabel.text = String("00")
-			firstTimeLabel.text = "hours"
+			firstTimeLabel.text = NSLocalizedString("hours", comment: "")
 			secondDigitLabel.text = "00"
-			secondTimeLabel.text = "minutes"
+			secondTimeLabel.text = NSLocalizedString("minutes", comment: "")
 			thirdDigitLabel.text = formatNumber(seconds)
-			thirdTimeLabel.text = "seconds"
+			thirdTimeLabel.text = NSLocalizedString("seconds", comment: "")
 		}
 		progress = album!.getProgressSinceDate(dateAdded)
 		progressBar.progress = progress

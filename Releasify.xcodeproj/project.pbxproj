@@ -106,9 +106,6 @@
 		51D959471C643965004B16AB /* StreamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamViewController.swift; sourceTree = "<group>"; };
 		51DD31C51C6E560E005BAE85 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		51E089E61D0612EA00CC7E60 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
-		51E089F31D061A5000CC7E60 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
-		51E089F91D06254800CC7E60 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
-		51E089FD1D06254900CC7E60 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		51E21F161BE69F2C0099FB27 /* AlbumCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumCell.xib; sourceTree = "<group>"; };
 		51E9F0771BA6414C00E67DAC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		51F80F0D1C9DB10100BB4624 /* SearchResultArtistCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultArtistCell.swift; sourceTree = "<group>"; };
@@ -444,7 +441,6 @@
 		51E089FE1D06254900CC7E60 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				51E089FD1D06254900CC7E60 /* de */,
 				514A49C21D075DBF00F3660A /* en */,
 			);
 			name = Localizable.strings;
@@ -455,7 +451,6 @@
 			children = (
 				51F84DCF1AB750A100D51E0C /* Base */,
 				51E089E61D0612EA00CC7E60 /* en */,
-				51E089F31D061A5000CC7E60 /* de */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -464,7 +459,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				51F84DD41AB750A100D51E0C /* Base */,
-				51E089F91D06254800CC7E60 /* de */,
 				514A49C11D075DBF00F3660A /* en */,
 			);
 			name = LaunchScreen.xib;
