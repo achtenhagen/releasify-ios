@@ -18,6 +18,9 @@ class Intro04Controller: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		view.backgroundColor = UIColor.clearColor()
+		finishIntroBtn.layer.borderColor = UIColor.whiteColor().CGColor
+		finishIntroBtn.layer.borderWidth = 1
+		finishIntroBtn.layer.cornerRadius = 4
     }
 
     override func didReceiveMemoryWarning() {
@@ -26,15 +29,17 @@ class Intro04Controller: UIViewController {
 	
 	@IBAction func finishIntro(sender: UIButton) {
 		if appDelegate.userID == 0 {
-			let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-			alert.title = "Continue without Push Notifications?"
-			alert.message = "Are you really sure you would like to use Releasify with Push Notifications turned off?"
-			alert.addAction(UIAlertAction(title: "No", style: .Cancel, handler: { action in
+			let title = NSLocalizedString("Continue without Push Notifications?", comment: "")
+			let message = NSLocalizedString("Are you really sure you would like to use Releasify with Push Notifications turned off?", comment: "")
+			let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+			let alertFirstActionTitle = NSLocalizedString("No", comment: "")
+			alert.addAction(UIAlertAction(title: alertFirstActionTitle, style: .Cancel, handler: { (action) in
 				if self.delegate != nil {
 					self.delegate?.advanceIntroPageTo(2, reverse: true)
 				}
 			}))
-			alert.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { action in
+			let alertSecondActionTitle = NSLocalizedString("Yes", comment: "")
+			alert.addAction(UIAlertAction(title: alertSecondActionTitle, style: .Destructive, handler: { (action) in
 				API.sharedInstance.register(self.appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
 					self.appDelegate.userID = userID!
 					self.appDelegate.userUUID = userUUID
@@ -45,16 +50,18 @@ class Intro04Controller: UIViewController {
 					errorHandler: { (error) in
 						switch (error) {
 						case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-							alert.title = "You're Offline!"
-							alert.message = "Please make sure you are connected to the internet, then try again."
-							alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+							alert.title = NSLocalizedString("You're Offline!", comment: "")
+							alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+							let alertActionTitle = NSLocalizedString("Settings", comment: "")
+							alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 								UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 							}))
 						default:
-							alert.title = "Unable to register!"
-							alert.message = "Please try again later."
+							alert.title = NSLocalizedString("Unable to register", comment: "")
+							alert.message = NSLocalizedString("Please try again later.", comment: "")
 						}
-						alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+						let title = NSLocalizedString("OK", comment: "")
+						alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 						self.presentViewController(alert, animated: true, completion: nil)
 				})
 			}))

@@ -8,60 +8,57 @@
 
 import UIKit
 
-class SubscriptionController: UIViewController {
-	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	var notificationBarItem: UIBarButtonItem?
-	var addBarItem: UIBarButtonItem?
-	var refreshControl: UIRefreshControl!
-	var searchController: UISearchController!
-	var filteredData: [Artist]!
-	var selectedArtist: Artist?
-	var footerLabel: UILabel!
+class SubscriptionController: UITableViewController {
 	
-	@IBOutlet weak var subscriptionsTable: UITableView!
+	private var theme: SubscriptionControllerTheme!
+	private var appEmptyStateView: UIView!
+	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+	var searchController: UISearchController!
+	var artists: [Artist]!
+	var filteredArtists: [Artist]!
+	var selectedArtist: Artist?
+	
+	@IBOutlet var subscriptionsTable: UITableView!
 	
 	@IBAction func unwindToSubscriptions(sender: UIStoryboardSegue) {
 		AppDB.sharedInstance.getArtists()
 		reloadSubscriptions()
 	}
-	
-	override func loadView() {
-		super.loadView()
-		filteredData = AppDB.sharedInstance.artists
+
+	override func viewDidLoad() {
+		super.viewDidLoad()
+
+		theme = SubscriptionControllerTheme(style: appDelegate.theme.style)
+		artists = AppDB.sharedInstance.artists
+		filteredArtists = [Artist]()
+		
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(SubscriptionController.reloadSubscriptions), name: "refreshSubscriptions", object: nil)
+		
+		// Table view customizations
+		subscriptionsTable.backgroundColor = theme.tableViewBackgroundColor
+		subscriptionsTable.backgroundView = UIView(frame: subscriptionsTable.bounds)
+		subscriptionsTable.backgroundView?.userInteractionEnabled = false
+		subscriptionsTable.separatorColor = theme.cellSeparatorColor
+		
+		// Search controller customizations
 		searchController = UISearchController(searchResultsController: nil)
-		searchController.delegate = self
 		searchController.searchResultsUpdater = self
-		searchController.definesPresentationContext = true
+		searchController.delegate = self
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.hidesNavigationBarDuringPresentation = false
-		searchController.searchBar.placeholder = "Search Artists"
+		searchController.searchBar.placeholder = NSLocalizedString("Search Artists", comment: "")
 		searchController.searchBar.searchBarStyle = .Minimal
-		searchController.searchBar.barStyle = .Black
+		searchController.searchBar.barStyle = theme.searchBarStyle
 		searchController.searchBar.barTintColor = UIColor.clearColor()
-		searchController.searchBar.tintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
+		searchController.searchBar.tintColor = theme.searchBarTintColor
 		searchController.searchBar.layer.borderColor = UIColor.clearColor().CGColor
 		searchController.searchBar.layer.borderWidth = 1
 		searchController.searchBar.translucent = false
 		searchController.searchBar.autocapitalizationType = .Words
-		searchController.searchBar.keyboardAppearance = .Dark
+		searchController.searchBar.keyboardAppearance = theme.keyboardStyle
 		searchController.searchBar.sizeToFit()
 		subscriptionsTable.tableHeaderView = searchController.searchBar
-		let backgroundView = UIView(frame: view.bounds)
-		backgroundView.backgroundColor = UIColor.clearColor()
-		subscriptionsTable.backgroundView = backgroundView
-	}
-
-	override func viewDidLoad() {
-		super.viewDidLoad()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"reloadSubscriptions", name: "refreshSubscriptions", object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"updateStatusBarFrame", name: "updateStatusBarFrame", object: nil)
-		notificationBarItem = self.navigationController?.navigationBar.items![0].leftBarButtonItem
-		addBarItem = self.navigationController?.navigationBar.items![0].rightBarButtonItem
-		refreshControl = UIRefreshControl()
-		refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
-		refreshControl.tintColor = UIColor(red: 0, green: 216/255, blue: 1, alpha: 0.5)
-		subscriptionsTable.setContentOffset(CGPoint(x: 0, y: 44), animated: true)
-		subscriptionsTable.addSubview(refreshControl)
+		definesPresentationContext = true
 	}
 	
 	override func viewDidAppear(animated: Bool) {
@@ -69,12 +66,18 @@ class SubscriptionController: UIViewController {
 	}
 	
 	override func viewWillAppear(animated: Bool) {
-		subscriptionsTable.scrollsToTop = true
-		notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
+		let indexPath = subscriptionsTable.indexPathForSelectedRow
+		if indexPath != nil {
+			subscriptionsTable.deselectRowAtIndexPath(indexPath!, animated: true)
+		}
+		if AppDB.sharedInstance.artists.count == 0 {
+			showAppEmptyState()
+		} else {
+			hideAppEmptyState()
+		}
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
-		subscriptionsTable.scrollsToTop = false
 		searchController.active = false
 	}
 	
@@ -83,21 +86,32 @@ class SubscriptionController: UIViewController {
 	}
 	
 	func reloadSubscriptions() {
-		filteredData = AppDB.sharedInstance.artists
+		filteredArtists = [Artist]()
+		artists = AppDB.sharedInstance.artists
 		subscriptionsTable.reloadData()
 	}
-	
-	// MARK: - Handle refresh content
-	func refresh() {
-		API.sharedInstance.refreshContent({ newItems in
-			self.reloadSubscriptions()
-			self.refreshControl.endRefreshing()
-			self.notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
-			},
-			errorHandler: { (error) in
-				self.refreshControl.endRefreshing()
-				self.handleError("Unable to update!", message: "Please try again later.", error: error)
-		})
+
+	// MARK: - Show App empty state
+	func showAppEmptyState() {
+		if appEmptyStateView == nil {
+			let title = NSLocalizedString("No Subscriptions", comment: "")
+			let subtitle = NSLocalizedString("Your subscriptions will appear here", comment: "")
+			let stateImg = theme.style == .Dark ? "app_empty_state_artists_dark" : "app_empty_state_artists"
+			let appEmptyState = AppEmptyState(style: theme.style, refView: self.view, imageName: stateImg, title: title,
+			                                  subtitle: subtitle, buttonTitle: nil, offset: searchController.searchBar.frame.height)
+			appEmptyStateView = appEmptyState.view()
+			subscriptionsTable.tableFooterView = UIView()
+			self.view.addSubview(appEmptyStateView)
+		}
+	}
+
+	// MARK: - Hide App empty state
+	func hideAppEmptyState() {
+		if appEmptyStateView != nil {
+			appEmptyStateView.removeFromSuperview()
+			appEmptyStateView = nil
+			subscriptionsTable.tableFooterView = nil
+		}
 	}
 	
 	// MARK: - Handle error messages
@@ -105,24 +119,32 @@ class SubscriptionController: UIViewController {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = "You're Offline!"
-			alert.message = "Please make sure you are connected to the internet, then try again."
-			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+			alert.title = NSLocalizedString("You're Offline!", comment: "")
+			alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+			let alertActionTitle = NSLocalizedString("Settings", comment: "")
+			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
+		case API.Error.ServerDownForMaintenance:
+			alert.title = NSLocalizedString("Service Unavailable", comment: "")
+			alert.message = NSLocalizedString("We'll be back shortly, our servers are currently undergoing maintenance.", comment: "")
 		default:
 			alert.title = title
 			alert.message = message
 		}
-		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		let title = NSLocalizedString("OK", comment: "")
+		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
 	// MARK: - Search function for UISearchResultsUpdating
 	func filterContentForSearchText(searchText: String) {
-		filteredData = searchText.isEmpty ? AppDB.sharedInstance.artists : AppDB.sharedInstance.artists.filter({(artist: Artist) -> Bool in
-			return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
-		})
+		filteredArtists.removeAll(keepCapacity: true)
+		if !searchText.isEmpty {
+			filteredArtists = AppDB.sharedInstance.artists.filter({ (artist: Artist) -> Bool in
+				return artist.title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+			})
+		}
 	}
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -132,86 +154,60 @@ class SubscriptionController: UIViewController {
 		}
 	}
 	
-	func scrollViewDidScroll(scrollView: UIScrollView) {
-		if footerLabel != nil && subscriptionsTable.contentOffset.y >= (subscriptionsTable.contentSize.height - subscriptionsTable.bounds.size.height) {
-			footerLabel.fadeIn()
-		} else if footerLabel != nil && footerLabel.alpha == 1.0 {
-			footerLabel.fadeOut()
-		}
-	}
-}
-
-// MARK: - UITableViewDataSource
-extension SubscriptionController: UITableViewDataSource {
-	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return filteredData.count
+	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return searchController.active ? filteredArtists.count : artists.count
 	}
 	
-	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = subscriptionsTable.dequeueReusableCellWithIdentifier("subscriptionCell", forIndexPath: indexPath) as! SubscriptionCell
-		cell.subscriptionImage.image = UIImage(named: filteredData[indexPath.row].avatar)
-		cell.subscriptionTitle.text = filteredData[indexPath.row].title
+	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		let cell = tableView.dequeueReusableCellWithIdentifier("subscriptionCell", forIndexPath: indexPath) as! SubscriptionCell
+		if searchController.active {
+			cell.subscriptionImage.image = UIImage(named: filteredArtists[indexPath.row].avatar!)
+			cell.subscriptionTitle.text = filteredArtists[indexPath.row].title
+		} else {
+			cell.subscriptionImage.image = UIImage(named: artists[indexPath.row].avatar!)
+			cell.subscriptionTitle.text = artists[indexPath.row].title
+		}
+		cell.subscriptionTitle.textColor = theme.subscriptionTitleColor
+		cell.borderColor = theme.cellBorderColor
 		let bgColorView = UIView()
-		bgColorView.backgroundColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.1)
+		bgColorView.backgroundColor = theme.cellHighlightColor
 		cell.selectedBackgroundView = bgColorView
 		cell.setNeedsLayout()
 		cell.layoutIfNeeded()
 		return cell
 	}
-}
-
-// MARK: - UITableViewDelegate
-extension SubscriptionController: UITableViewDelegate {
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		selectedArtist = filteredData[indexPath.row]
-		searchController.active = false
+	
+	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		if searchController.active {
+			selectedArtist = filteredArtists[indexPath.row]
+		} else {
+			selectedArtist = artists[indexPath.row]
+		}
 		self.performSegueWithIdentifier("SubscriptionDetailSegue", sender: self)
 	}
 	
-	func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+	override func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
 		return true
 	}
 	
-	func tableView(tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-		return action == Selector("copy:")
+	override func tableView(tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
+		return action == #selector(NSObject.copy(_:))
 	}
 	
-	func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
+	override func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
 		let cell = tableView.cellForRowAtIndexPath(indexPath) as! SubscriptionCell
 		UIPasteboard.generalPasteboard().string = cell.subscriptionTitle!.text
-	}
-	
-	func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-		let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 40))
-		footerView.backgroundColor = UIColor.clearColor()
-		if filteredData.count > 0 {
-			footerLabel = UILabel()
-			footerLabel.alpha = 0
-			footerLabel.font = UIFont(name: footerLabel.font.fontName, size: 14)
-			footerLabel.textColor = UIColor(red: 255, green: 255, blue: 255, alpha: 0.2)
-			footerLabel.text = filteredData.count == 1 ? "\(filteredData.count) Artist" : "\(filteredData.count) Artists"
-			footerLabel.textAlignment = NSTextAlignment.Center
-			footerLabel.adjustsFontSizeToFitWidth = true
-			footerLabel.sizeToFit()
-			footerLabel.center = CGPoint(x: self.view.frame.size.width / 2, y: (footerView.frame.size.height / 2) - 7)
-			footerView.addSubview(footerLabel)
-		}
-		return footerView
 	}
 }
 
 // MARK: - UISearchControllerDelegate
 extension SubscriptionController: UISearchControllerDelegate {
 	func willPresentSearchController(searchController: UISearchController) {
-		searchController.searchBar.backgroundColor = UIColor(red: 0, green: 22/255, blue: 32/255, alpha: 1.0)
-		notificationBarItem?.enabled = false
-		addBarItem?.enabled = false
+		searchController.searchBar.backgroundColor = theme.searchBarBackgroundColor
 	}
 	
 	func willDismissSearchController(searchController: UISearchController) {
 		searchController.searchBar.backgroundColor = UIColor.clearColor()
-		notificationBarItem?.enabled = UIApplication.sharedApplication().scheduledLocalNotifications!.count > 0 ? true : false
-		addBarItem?.enabled = true
 	}
 }
 
@@ -223,13 +219,20 @@ extension SubscriptionController: UISearchResultsUpdating {
 	}
 }
 
-// Mark: - UIView extension
-extension UIView {
-	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
-		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 1.0 }, completion: completion)
-	}
+// MARK: - Theme Extension
+private class SubscriptionControllerTheme: Theme {
+	var subscriptionTitleColor: UIColor!
+	var cellBorderColor: UIColor!
 	
-	func fadeOut(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0.0, completion: (Bool) -> Void = { (finished: Bool) -> Void in } ) {
-		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 0.0 }, completion: completion)
+	override init (style: Styles) {
+		super.init(style: style)
+		switch style {
+		case .Dark:
+			subscriptionTitleColor = UIColor.whiteColor()
+			cellBorderColor = UIColor.whiteColor()
+		case .Light:
+			subscriptionTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			cellBorderColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
+		}
 	}
 }

@@ -1,0 +1,8 @@
+/* A single strings file, whose title is specified in your preferences schema. The strings files provide the localized content to display to the user for each of your preferences. */
+
+"Version" = "Version";
+"Auto Remove Albums" = "Alben Automatisch Löschen";
+"Allow Explicit Content" = "Explizite Inhalte Anzeigen";
+"Use Dark Theme" = "Dunkle Theme Verwenden";
+"Reset App Next Launch" = "App Zurücksetzen";
+"If Releasify does not work correctly, the problem might be resolved by resetting the App to default settings. Turn on this setting, close the app, and then start it again." = "Im Fall Releasify nicht richtig funktionieren sollte, kannst du die App zurücksetzen. Wenn diese Option gewählt wird, schließe die App und starte sie erneut.";

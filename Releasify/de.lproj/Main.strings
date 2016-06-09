@@ -1,0 +1,182 @@
+/* Class = "UILabel"; text = "Stay up to date with the latest content by enabling notifications, otherwise you'll have to check manually."; ObjectID = "0a5-sW-2Fn"; */
+"0a5-sW-2Fn.text" = "Verpasse keine Neuigkeiten und aktiviere die Benachrichtigungen für Releasify, sonst musst du selbst nachschauen.";
+
+/* Class = "UIButton"; normalTitle = "SKIP"; ObjectID = "0bR-EB-8Vl"; */
+"0bR-EB-8Vl.normalTitle" = "WEITER";
+
+/* Class = "UILabel"; text = "00"; ObjectID = "1V3-qP-JCp"; */
+"1V3-qP-JCp.text" = "00";
+
+/* Class = "UINavigationController"; title = "Search Results Navigation Controller"; ObjectID = "2u5-KM-jLL"; */
+"2u5-KM-jLL.title" = "Search Results Navigation Controller";
+
+/* Class = "UINavigationItem"; title = "Music Library"; ObjectID = "3k5-Ba-uwZ"; */
+"3k5-Ba-uwZ.title" = "Mediathek";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "4H1-MX-Bve"; */
+"4H1-MX-Bve.text" = "Titel";
+
+/* Class = "UITableViewController"; title = "Subscription View"; ObjectID = "4Mu-kG-8iL"; */
+"4Mu-kG-8iL.title" = "Subscription View";
+
+/* Class = "UIViewController"; title = "Artist Picker View"; ObjectID = "5Wn-lw-nVy"; */
+"5Wn-lw-nVy.title" = "Artist Picker View";
+
+/* Class = "UIViewController"; title = "Intro Screen #1"; ObjectID = "6rW-BT-NjG"; */
+"6rW-BT-NjG.title" = "Intro Screen #1";
+
+/* Class = "UILabel"; text = "Import..."; ObjectID = "7RK-wx-Lfm"; */
+"7RK-wx-Lfm.text" = "Importieren...";
+
+/* Class = "UIViewController"; title = "Intro Screen #4"; ObjectID = "9N7-fw-5Bs"; */
+"9N7-fw-5Bs.title" = "Intro Screen #4";
+
+/* Class = "UINavigationItem"; title = "Favorites"; ObjectID = "A5n-qT-573"; */
+"A5n-qT-573.title" = "Favoriten";
+
+/* Class = "UILabel"; text = "Album Title"; ObjectID = "ABq-iP-Xku"; */
+"ABq-iP-Xku.text" = "Album Titel";
+
+/* Class = "UIBarButtonItem"; title = "Select All"; ObjectID = "BK4-g3-ui1"; */
+"BK4-g3-ui1.title" = "Alle auswählen";
+
+/* Class = "UIButton"; normalTitle = "START USING RELEASIFY"; ObjectID = "BVK-uh-9M2"; */
+"BVK-uh-9M2.normalTitle" = "HAPPY RELEASIFY";
+
+/* Class = "UILabel"; text = "weeks"; ObjectID = "Cok-XX-g4E"; */
+"Cok-XX-g4E.text" = "wochen";
+
+/* Class = "UILabel"; text = "00"; ObjectID = "Dhi-Y9-qXv"; */
+"Dhi-Y9-qXv.text" = "00";
+
+/* Class = "UILabel"; text = "Artist"; ObjectID = "DwO-To-IZ4"; */
+"DwO-To-IZ4.text" = "Interpret";
+
+/* Class = "UINavigationItem"; title = "Import Results"; ObjectID = "EPw-ei-Cey"; */
+"EPw-ei-Cey.title" = "Import Ergebnisse";
+
+/* Class = "UILabel"; text = "2015"; ObjectID = "EZT-FJ-fEi"; */
+"EZT-FJ-fEi.text" = "2015";
+
+/* Class = "UINavigationController"; title = "App Controller"; ObjectID = "HBF-6K-pqv"; */
+"HBF-6K-pqv.title" = "App Controller";
+
+/* Class = "UIViewController"; title = "Album Detail View"; ObjectID = "ICV-6m-5Th"; */
+"ICV-6m-5Th.title" = "Album Detail View";
+
+/* Class = "UILabel"; text = "SubscriptionTitle"; ObjectID = "Igt-28-j79"; */
+"Igt-28-j79.text" = "SubscriptionTitle";
+
+/* Class = "UILabel"; text = "You've completed the setup, congratulations!"; ObjectID = "J6y-2U-0Rz"; */
+"J6y-2U-0Rz.text" = "Glückwunsch, du hast die Einstellungen abgeschlossen!";
+
+/* Class = "UIViewController"; title = "Intro Screen #3"; ObjectID = "J9l-lc-PhZ"; */
+"J9l-lc-PhZ.title" = "Intro Screen #3";
+
+/* Class = "UINavigationItem"; title = "Artist Name"; ObjectID = "LyN-mg-ljD"; */
+"LyN-mg-ljD.title" = "Artist Name";
+
+/* Class = "UIButton"; normalTitle = "GET STARTED"; ObjectID = "Mxk-FJ-lcE"; */
+"Mxk-FJ-lcE.normalTitle" = "JETZT STARTEN";
+
+/* Class = "UIButton"; normalTitle = "ENABLE NOTIFICATIONS"; ObjectID = "PJN-MK-B81"; */
+"PJN-MK-B81.normalTitle" = "MITTEILUNGEN ERLAUBEN";
+
+/* Class = "UINavigationItem"; title = "Artist"; ObjectID = "RAq-WC-rgR"; */
+"RAq-WC-rgR.title" = "Interpret";
+
+/* Class = "UITabBarController"; title = "Tab Bar Controller"; ObjectID = "SCy-74-9E0"; */
+"SCy-74-9E0.title" = "Tab Bar Controller";
+
+/* Class = "UILabel"; text = "Notifications"; ObjectID = "SQI-H1-x0c"; */
+"SQI-H1-x0c.text" = "Mitteilungen";
+
+/* Class = "UILabel"; text = "00"; ObjectID = "UyI-O7-Qlg"; */
+"UyI-O7-Qlg.text" = "00";
+
+/* Class = "UINavigationItem"; title = "Details"; ObjectID = "VHb-mT-Yu7"; */
+"VHb-mT-Yu7.title" = "Details";
+
+/* Class = "UIButton"; normalTitle = "SKIP"; ObjectID = "WDI-yG-J56"; */
+"WDI-yG-J56.normalTitle" = "WEITER";
+
+/* Class = "UILabel"; text = "Showing results for keyword"; ObjectID = "WpK-5c-lYH"; */
+"WpK-5c-lYH.text" = "Showing results for keyword";
+
+/* Class = "UILabel"; text = "Artist Title"; ObjectID = "Y3b-VB-l9E"; */
+"Y3b-VB-l9E.text" = "Artist Title";
+
+/* Class = "UIPageViewController"; title = "Intro Screen Page Controller"; ObjectID = "a5r-UX-Xoi"; */
+"a5r-UX-Xoi.title" = "Intro Screen Page Controller";
+
+/* Class = "UILabel"; text = "Album Title"; ObjectID = "agD-Yf-MJG"; */
+"agD-Yf-MJG.text" = "Album Title";
+
+/* Class = "UILabel"; text = "Follow us @ReleasifyApp"; ObjectID = "bJw-5m-pNe"; */
+"bJw-5m-pNe.text" = "Folge uns @ReleasifyApp";
+
+/* Class = "UIViewController"; title = "Search Results View"; ObjectID = "bVm-Vq-jeG"; */
+"bVm-Vq-jeG.title" = "Search Results View";
+
+/* Class = "UILabel"; text = "Releasify tells you about new albums from your favorite artists and when they’re available.\n\nSwipe to get started."; ObjectID = "cKR-ju-VfK"; */
+"cKR-ju-VfK.text" = "Releasify informiert dich über neue Alben von deinen Lieblingsinterpreten und wann diese verfügbar sein werden.
+
+Streiche um zu starten.";
+
+/* Class = "UITableViewController"; title = "Stream View"; ObjectID = "equ-hM-XdW"; */
+"equ-hM-XdW.title" = "Stream View";
+
+/* Class = "UIViewController"; title = "Add Subscription View"; ObjectID = "g3t-R2-LdD"; */
+"g3t-R2-LdD.title" = "Add Subscription View";
+
+/* Class = "UILabel"; text = "hours"; ObjectID = "jHi-gO-arw"; */
+"jHi-gO-arw.text" = "stunden";
+
+/* Class = "UILabel"; text = "Releasify"; ObjectID = "jaP-Tk-HPP"; */
+"jaP-Tk-HPP.text" = "Releasify";
+
+/* Class = "UILabel"; text = "Would you like to import artists from your music library?"; ObjectID = "jym-JQ-ggf"; */
+"jym-JQ-ggf.text" = "Möchtest du Interpreten von deiner Mediathek importieren?";
+
+/* Class = "UINavigationController"; title = "Add Subscription Navigation Controller"; ObjectID = "muw-KU-1bt"; */
+"muw-KU-1bt.title" = "Add Subscription Navigation Controller";
+
+/* Class = "UIViewController"; title = "Intro Screen #2"; ObjectID = "n1q-Dk-f64"; */
+"n1q-Dk-f64.title" = "Intro Screen #2";
+
+/* Class = "UIViewController"; title = "Favorites List View"; ObjectID = "ndp-Pd-N3R"; */
+"ndp-Pd-N3R.title" = "Favorites List View";
+
+/* Class = "UILabel"; text = "2 weeks"; ObjectID = "rFT-Ys-mr0"; */
+"rFT-Ys-mr0.text" = "2 Wochen";
+
+/* Class = "UILabel"; text = "Album Title"; ObjectID = "rns-s2-VCy"; */
+"rns-s2-VCy.text" = "Album Titel";
+
+/* Class = "UIButton"; normalTitle = "Buy on iTunes"; ObjectID = "s3s-sa-Ndy"; */
+"s3s-sa-Ndy.normalTitle" = "Kaufen";
+
+/* Class = "UILabel"; text = "From your music library"; ObjectID = "t4G-JB-NHq"; */
+"t4G-JB-NHq.text" = "Aus deiner Mediathek";
+
+/* Class = "UILabel"; text = "Album Title"; ObjectID = "vKx-Gw-3ic"; */
+"vKx-Gw-3ic.text" = "Album Titel";
+
+/* Class = "UILabel"; text = "Artist Title"; ObjectID = "wIv-7e-PvG"; */
+"wIv-7e-PvG.text" = "Artist Title";
+
+/* Class = "UIButton"; normalTitle = "IMPORT FROM LIBRARY"; ObjectID = "wW1-Li-qeT"; */
+"wW1-Li-qeT.normalTitle" = "VON MEDIATHEK IMPORTIEREN";
+
+/* Class = "UILabel"; text = "Fioware Studios © 2015"; ObjectID = "xZF-Te-Rk8"; */
+"xZF-Te-Rk8.text" = "Fioware Studios © 2015";
+
+/* Class = "UILabel"; text = "days"; ObjectID = "yHK-lx-sNX"; */
+"yHK-lx-sNX.text" = "tage";
+
+/* Class = "UIViewController"; title = "Subscription Detail View"; ObjectID = "yWS-G5-cd2"; */
+"yWS-G5-cd2.title" = "Subscription Detail View";
+
+/* Class = "UILabel"; text = "Hi there!"; ObjectID = "zHl-KR-AWX"; */
+"zHl-KR-AWX.text" = "Hey!";
+

@@ -22,18 +22,21 @@ class Intro02Controller: UIViewController {
 		if appDelegate.userID > 0 {
 			self.delegate?.advanceIntroPageTo(3, reverse: false)
 			return
-		}		
-		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-		alert.title = "Disable Push Notifications?"
-		alert.message = "Please confirm that you would like to disable Push Notifications. You can re-enable them later in iOS settings."
-		alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-		alert.addAction(UIAlertAction(title: "Disable", style: .Destructive, handler: { action in
+		}
+		let title = NSLocalizedString("Disable Push Notifications?", comment: "")
+		let message = NSLocalizedString("Please confirm that you would like to disable Push Notifications. You can re-enable them later in iOS settings.", comment: "")
+		let cancelTitle = NSLocalizedString("Cancel", comment: "")
+		let disableTitle = NSLocalizedString("Disable", comment: "")
+		let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+		alert.addAction(UIAlertAction(title: cancelTitle, style: .Cancel, handler: nil))
+		alert.addAction(UIAlertAction(title: disableTitle, style: .Destructive, handler: { action in
 			API.sharedInstance.register(self.appDelegate.allowExplicitContent, successHandler: { (userID, userUUID) in
 				self.appDelegate.userID = userID!
 				self.appDelegate.userUUID = userUUID
 				NSUserDefaults.standardUserDefaults().setInteger(self.appDelegate.userID, forKey: "ID")
 				NSUserDefaults.standardUserDefaults().setValue(self.appDelegate.userUUID, forKey: "uuid")
-				self.skipBtn.setTitle("NEXT", forState: UIControlState.Normal)
+				let skipBtnTitle = NSLocalizedString("NEXT", comment: "")
+				self.skipBtn.setTitle(skipBtnTitle, forState: UIControlState.Normal)
 				self.delegate?.advanceIntroPageTo(3, reverse: false)
 				},
 				errorHandler: { (error) in
@@ -45,24 +48,28 @@ class Intro02Controller: UIViewController {
 	
 	// MARK: - Notification settings
 	@IBAction func permissionBtn(sender: UIButton) {
-		if UIApplication.sharedApplication().respondsToSelector("registerUserNotificationSettings:") {			
+		if UIApplication.sharedApplication().respondsToSelector(#selector(UIApplication.registerUserNotificationSettings(_:))) {
+			permissionBtn.enabled = false
 			let appAction = UIMutableUserNotificationAction()
 			appAction.identifier = "APP_ACTION"
-			appAction.title = "Open in App"
+			let notificationOpenActionTitle = NSLocalizedString("Open in App", comment: "")
+			appAction.title = notificationOpenActionTitle
 			appAction.activationMode = .Foreground
 			appAction.destructive = false
 			appAction.authenticationRequired = false
 			
 			let storeAction = UIMutableUserNotificationAction()
 			storeAction.identifier = "STORE_ACTION"
-			storeAction.title = "Purchase"
+			let notificationPurchaseActionTitle = NSLocalizedString("Purchase", comment: "")
+			storeAction.title = notificationPurchaseActionTitle
 			storeAction.activationMode = .Foreground
 			storeAction.destructive = false
 			storeAction.authenticationRequired = false
 			
 			let preorderAction = UIMutableUserNotificationAction()
 			preorderAction.identifier = "PREORDER_ACTION"
-			preorderAction.title = "Pre-Order"
+			let notificationPreOrderActionTitle = NSLocalizedString("Pre-Order", comment: "")
+			preorderAction.title = notificationPreOrderActionTitle
 			preorderAction.activationMode = .Foreground
 			preorderAction.destructive = false
 			preorderAction.authenticationRequired = false
@@ -98,7 +105,10 @@ class Intro02Controller: UIViewController {
 		} else if view.bounds.height == 568 {
 			imageTopLayoutConstraint.constant = 260
 		}
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"finishRegister", name: "finishNotificationRegister", object: nil)
+		permissionBtn.layer.borderColor = UIColor.whiteColor().CGColor
+		permissionBtn.layer.borderWidth = 1
+		permissionBtn.layer.cornerRadius = 4
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(Intro02Controller.finishRegister), name: "finishNotificationRegister", object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -107,7 +117,8 @@ class Intro02Controller: UIViewController {
 	
 	func finishRegister() {
 		if appDelegate.userID > 0 && appDelegate.userUUID != nil {
-			skipBtn.setTitle("NEXT", forState: UIControlState.Normal)
+			let skipBtnTitle = NSLocalizedString("NEXT", comment: "")
+			skipBtn.setTitle(skipBtnTitle, forState: UIControlState.Normal)
 			permissionBtn.enabled = false
 			permissionBtn.layer.opacity = 0.5
 		}
@@ -120,16 +131,18 @@ class Intro02Controller: UIViewController {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
 		case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-			alert.title = "You're Offline!"
-			alert.message = "Please make sure you are connected to the internet, then try again."
-			alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+			alert.title = NSLocalizedString("You're Offline!", comment: "")
+			alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+			let alertActionTitle = NSLocalizedString("Settings", comment: "")
+			alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 				UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 			}))
 		default:
-			alert.title = "Unable to register"
-			alert.message = "Please try again later."
+			alert.title = NSLocalizedString("Unable to register", comment: "Unable to register")
+			alert.message = NSLocalizedString("Please try again later.", comment: "")
 		}
-		alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+		let title = NSLocalizedString("OK", comment: "")
+		alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 }

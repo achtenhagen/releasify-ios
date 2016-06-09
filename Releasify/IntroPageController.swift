@@ -14,7 +14,7 @@ protocol IntroPageDelegate: class {
 
 class IntroPageController: UIPageViewController, UIPageViewControllerDelegate {
 
-	let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+	private let storyBoard = UIStoryboard(name: "Main", bundle: nil)
 	var introPage01: Intro01Controller?
 	var introPage02: Intro02Controller?
 	var introPage03: Intro03Controller?
@@ -103,7 +103,7 @@ extension IntroPageController: UIPageViewControllerDataSource {
 		let identifier = viewController.restorationIdentifier
 		var index = indexForRestorationIdentifier(identifier!)
 		if index == 3 { return nil }
-		index++
+		index += 1
 		return viewControllerAtIndex(index)
 	}
 	
@@ -111,7 +111,7 @@ extension IntroPageController: UIPageViewControllerDataSource {
 		let identifier = viewController.restorationIdentifier
 		var index = indexForRestorationIdentifier(identifier!)
 		if index == 0 { return nil }
-		index--
+		index -= 1
 		return viewControllerAtIndex(index)
 	}
 	

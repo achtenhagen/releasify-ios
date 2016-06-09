@@ -1,0 +1,249 @@
+/* No comment provided by engineer. */
+"Add Subscription" = "Hinzufügen";
+
+/* No comment provided by engineer. */
+"Add to Favorites" = "Als Favorit Hinzufügen";
+
+/* No comment provided by engineer. */
+"Add to Library" = "Hinzufügen";
+
+/* No comment provided by engineer. */
+"Are you really sure you would like to use Releasify with Push Notifications turned off?" = "Ohne Push Benachrichtigungen fortfahren?";
+
+/* No comment provided by engineer. */
+"Buy this album on iTunes" = "Dieses Album auf iTunes kaufen.";
+
+/* No comment provided by engineer. */
+"By" = "Von";
+
+/* No comment provided by engineer. */
+"Cancel" = "Abbrechen";
+
+/* No comment provided by engineer. */
+"Continue without Push Notifications?" = "Ohne Push Benachrichtigungen fortfahren?";
+
+/* No comment provided by engineer. */
+"Deselect All" = "Alle abwählen";
+
+/* No comment provided by engineer. */
+"Disable" = "Ausschalten";
+
+/* No comment provided by engineer. */
+"Disable Push Notifications?" = "Push Benachrichtigungen deaktivieren?";
+
+/* No comment provided by engineer. */
+"Error" = "Fehler";
+
+/* No comment provided by engineer. */
+"Failed to download album artwork." = "Das Album Cover konnte nicht geladen werden.";
+
+/* No comment provided by engineer. */
+"Failed to lookup album!" = "Die Suche nach dem Album ist leider fehlgeschlagen!";
+
+/* No comment provided by engineer. */
+"NEW" = "NEU";
+
+/* No comment provided by engineer. */
+"NEXT" = "WEITER";
+
+/* No comment provided by engineer. */
+"New Album Released" = "Neues Album veröffentlicht";
+
+/* No comment provided by engineer. */
+"No" = "Nein";
+
+/* No comment provided by engineer. */
+"No Albums" = "Keine Alben";
+
+/* No comment provided by engineer. */
+"No Content" = "Kein Inhalt";
+
+/* No comment provided by engineer. */
+"No Favorites" = "Keine Favoriten";
+
+/* No comment provided by engineer. */
+"No Results" = "Keine Ergebnisse";
+
+/* No comment provided by engineer. */
+"No Subscriptions" = "Keine Abonnements";
+
+/* No comment provided by engineer. */
+"No albums here yet!" = "Noch keine Alben verfügbar!";
+
+/* No comment provided by engineer. */
+"OK" = "OK";
+
+/* No comment provided by engineer. */
+"Oops!" = "Ups!";
+
+/* No comment provided by engineer. */
+"Open in App" = "In der App öffnen";
+
+/* No comment provided by engineer. */
+"Please choose from the list below." = "Bitte wähle aus der unteren Liste.";
+
+/* No comment provided by engineer. */
+"Please confirm that you want to remove this album." = "Bitte bestätige, dass du dieses Album entfernen möchtest.";
+
+/* No comment provided by engineer. */
+"Please confirm that you want to unsubscribe from this artist." = "Bitte bestätige, dass du diesem Interpreten nicht mehr folgen willst.";
+
+/* No comment provided by engineer. */
+"Please confirm that you would like to disable Push Notifications. You can re-enable them later in iOS settings." = "Bitte bestätige, dass du Push Benachrichtigungen deaktivieren möchtest. Du kannst sie in den Einstellungen später aktivieren.";
+
+/* No comment provided by engineer. */
+"Please make sure you are connected to the internet, then try again." = "Bitte stelle sicher, dass du mit dem Internet verbunden bist und versuche es erneut.";
+
+/* No comment provided by engineer. */
+"Please try again later." = "Bitte versuche es später erneut.";
+
+/* No comment provided by engineer. */
+"Pre-Order" = "Vorbestellen";
+
+/* No comment provided by engineer. */
+"Purchase" = "Kaufen";
+
+/* No comment provided by engineer. */
+"Remove" = "Entfernen";
+
+/* No comment provided by engineer. */
+"Remove Album?" = "Album entfernen?";
+
+/* No comment provided by engineer. */
+"Remove Subscription?" = "Nicht mehr folgen?";
+
+/* No comment provided by engineer. */
+"Remove from Favorites" = "Favorit Entfernen";
+
+/* No comment provided by engineer. */
+"Results" = "Ergebnisse";
+
+/* No comment provided by engineer. */
+"Search" = "Suche";
+
+/* No comment provided by engineer. */
+"Search Artists" = "Interpreten suchen";
+
+/* No comment provided by engineer. */
+"Select All" = "Alle auswählen";
+
+/* Service Unavailable */
+"Service Unavailable" = "Dienst nicht verfügbar";
+
+/* No comment provided by engineer. */
+"Settings" = "Einstellungen";
+
+/* No comment provided by engineer. */
+"Start by adding a new subscription" = "Mit einem neuen Abonnement beginnen.";
+
+/* No comment provided by engineer. */
+"There was an error performing your search request. Please try again later." = "Bei deiner Suche ist ein unerwarteter Fehler aufgetreten. bitte versuche es später erneut.";
+
+/* No comment provided by engineer. */
+"Today" = "Heute";
+
+/* No comment provided by engineer. */
+"Unable to import!" = "Das Importieren ist fehlgeschlagen!";
+
+/* Unable to register */
+"Unable to register" = "Anmeldung fehlgeschlagen";
+
+/* No comment provided by engineer. */
+"Unable to remove album!" = "Das Album konnte nicht entfernt werden!";
+
+/* No comment provided by engineer. */
+"Unable to remove subscription!" = "Das Abonnement konnte nicht entfernt werden!";
+
+/* No comment provided by engineer. */
+"Unable to subscribe!" = "Abonnieren fehlgeschlagen!";
+
+/* No comment provided by engineer. */
+"Unable to update!" = "Update nicht möglich!";
+
+/* No comment provided by engineer. */
+"We have no content for this artist yet" = "Wir haben noch keinen Inhalt zu diesem Künstler";
+
+/* No comment provided by engineer. */
+"We'll be back shortly, our servers are currently undergoing maintenance." = "Wir sind in Kürze zurück. An unseren Servern werden Wartungsarbeiten durchgeführt.";
+
+/* No comment provided by engineer. */
+"Yes" = "Ja";
+
+/* No comment provided by engineer. */
+"You currently have no artists in your media library." = "Du hast momentan keine Interpreten in deiner Mediathek.";
+
+/* No comment provided by engineer. */
+"You're Offline!" = "Du bist offline!";
+
+/* No comment provided by engineer. */
+"Your favorites will appear here" = "Hier erscheinen deine Favoriten.";
+
+/* No comment provided by engineer. */
+"Your search did not return any results" = "Deine Suche ergab keine Treffer.";
+
+/* No comment provided by engineer. */
+"Your subscriptions will appear here" = "Deine Abonnements erscheinen hier";
+
+/* No comment provided by engineer. */
+"a while ago" = "vor einer Weile";
+
+/* No comment provided by engineer. */
+"ago" = "vor";
+
+/* No comment provided by engineer. */
+"album" = "Album";
+
+/* No comment provided by engineer. */
+"albums" = "Alben";
+
+/* No comment provided by engineer. */
+"artist" = "Interpret";
+
+/* No comment provided by engineer. */
+"artists" = "Interpreten";
+
+/* No comment provided by engineer. */
+"day" = "Tag";
+
+/* No comment provided by engineer. */
+"days" = "Tage";
+
+/* No comment provided by engineer. */
+"hour" = "Stunde";
+
+/* No comment provided by engineer. */
+"hours" = "Stunden";
+
+/* No comment provided by engineer. */
+"is now available." = "ist nun erhältlich.";
+
+/* No comment provided by engineer. */
+"just a moment ago" = "gerade eben";
+
+/* No comment provided by engineer. */
+"minute" = "Minute";
+
+/* No comment provided by engineer. */
+"minutes" = "Minuten";
+
+/* No comment provided by engineer. */
+"month" = "Monat";
+
+/* No comment provided by engineer. */
+"months" = "Monate";
+
+/* No comment provided by engineer. */
+"second" = "Sekunde";
+
+/* No comment provided by engineer. */
+"seconds" = "Sekunden";
+
+/* No comment provided by engineer. */
+"week" = "Woche";
+
+/* No comment provided by engineer. */
+"weeks" = "Wochen";
+
+/* No comment provided by engineer. */
+"yesterday" = "gestern";
+

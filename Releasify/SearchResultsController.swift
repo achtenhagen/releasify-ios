@@ -9,11 +9,15 @@
 import UIKit
 
 class SearchResultsController: UIViewController {
+
+	private var theme: SearchResultsControllerTheme!
+
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	var artists: [NSDictionary]!
-	var artwork = [String:UIImage]()
-	var selectedArtists = NSMutableArray()
-	var keyword: String!
+	var tmpArtwork = [Int:UIImage]()
+	var selectedAlbum: Album!
+	var selectedArtist: String!
+	var selectedArtists: [Int]!
 	var needsRefresh = false
 	
 	@IBOutlet weak var navBar: UINavigationBar!
@@ -26,7 +30,7 @@ class SearchResultsController: UIViewController {
 	
 	// MARK: - Post notification if the user has added a new subscription
 	func closeView() {
-		self.dismissViewControllerAnimated(true, completion: { bool in
+		self.dismissViewControllerAnimated(true, completion: { (completed) in
 			if self.needsRefresh {
 				NSNotificationCenter.defaultCenter().postNotificationName("refreshContent", object: nil, userInfo: nil)
 			}
@@ -35,21 +39,32 @@ class SearchResultsController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		let navController = self.navigationController as! SearchResultsNavController
+		artists = navController.artists
+		selectedArtists = [Int]()
+		theme = SearchResultsControllerTheme(style: appDelegate.theme.style)
 		
 		artistsTable.registerNib(UINib(nibName: "SearchResultsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
-		if keyword == nil {
-			infoLabel.text = "Please choose from the list below."
-		} else {
-			infoLabel.text = "Showing results for \"\(keyword)\""
-		}
+		infoLabel.text = NSLocalizedString("Please choose from the list below.", comment: "")
 		
-		let gradient: CAGradientLayer = CAGradientLayer()
-		gradient.colors = [UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1.0).CGColor, UIColor(red: 0, green: 0, blue: 6/255, alpha: 1.0).CGColor]
-		gradient.locations = [0.0 , 1.0]
-		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
-		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradient.frame = CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-		self.view.layer.insertSublayer(gradient, atIndex: 0)
+		// Theme customizations
+		self.view.backgroundColor = theme.viewBackgroundColor
+		artistsTable.backgroundColor = UIColor.clearColor()
+		artistsTable.separatorColor = theme.cellSeparatorColor
+		if theme.style == .Dark {
+			let gradient = theme.gradient()
+			gradient.frame = self.view.bounds
+			self.view.layer.insertSublayer(gradient, atIndex: 0)
+		}
+		infoLabel.textColor = theme.infoLabelColor
+	}
+
+	override func viewWillAppear(animated: Bool) {
+		let indexPath = artistsTable.indexPathForSelectedRow
+		if indexPath != nil {
+			artistsTable.deselectRowAtIndexPath(indexPath!, animated: true)
+		}
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -59,7 +74,7 @@ class SearchResultsController: UIViewController {
 	// MARK: - Handle artist confirmation
 	func confirmArtist(sender: UIButton) {
 		var artistID = 0		
-		if let id = (artists[sender.tag]["artistID"] as? Int) { artistID = id }
+		if let id = artists[sender.tag]["artistID"] as? Int { artistID = id }
 		let artistTitle = (artists[sender.tag]["title"] as? String)!
 		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
 			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID[]=\(artistUniqueID)"
@@ -67,10 +82,11 @@ class SearchResultsController: UIViewController {
 				if statusCode == 200 {
 					let headerView = self.artistsTable.headerViewForSection(sender.tag) as? SearchResultsHeader
 					headerView?.confirmBtn.enabled = false
-					headerView?.confirmBtn.setImage(UIImage(named: "icon_confirm"), forState: .Disabled)
+					let confirmImg = self.theme.style == .Dark ? "icon_confirm_dark" : "icon_confirm"
+					headerView?.confirmBtn.setImage(UIImage(named: confirmImg), forState: .Disabled)
 					AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
 					AppDB.sharedInstance.getArtists()
-					self.selectedArtists.addObject(artistUniqueID)
+					self.selectedArtists.append(artistUniqueID)
 					if self.artists.count == self.selectedArtists.count {
 						self.closeView()
 					}
@@ -81,18 +97,57 @@ class SearchResultsController: UIViewController {
 					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 					switch (error) {
 					case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-						alert.title = "You're Offline!"
-						alert.message = "Please make sure you are connected to the internet, then try again."
-						alert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { action in
+						alert.title = NSLocalizedString("You're Offline!", comment: "")
+						alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+						let alertActionTitle = NSLocalizedString("Settings", comment: "")
+						alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
 							UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
 						}))
+					case API.Error.ServerDownForMaintenance:
+						alert.title = NSLocalizedString("Service Unavailable", comment: "")
+						alert.message = NSLocalizedString("We'll be back shortly, our servers are currently undergoing maintenance.", comment: "")
 					default:
-						alert.title = "Unable to subscribe!"
-						alert.message = "Please try again later."
+						alert.title = NSLocalizedString("Unable to subscribe!", comment: "")
+						alert.message = NSLocalizedString("Please try again later.", comment: "")
 					}
-					alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+					let title = NSLocalizedString("OK", comment: "")
+					alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
 					self.presentViewController(alert, animated: true, completion: nil)
 			})
+		}
+	}
+
+	// MARK: - Parse response data
+	func parseAlbumsByArtist(artist: NSDictionary) -> [Album] {
+		var albums = [Album]()
+		guard let json = artist["albums"] as? [NSDictionary] else { return albums }
+		for item in json {
+			guard let ID = item["ID"] as? Int,
+				let title = item["title"] as? String,
+				let artistID = item["artistID"] as? Int,
+				let releaseDate = item["releaseDate"] as? Double,
+				let artworkUrl = item["artworkUrl"] as? String,
+				let explicit = item["explicit"] as? Int,
+				let copyright = item["copyright"] as? String,
+				let iTunesUniqueID = item["iTunesUniqueID"] as? Int,
+				let iTunesUrl = item["iTunesUrl"] as? String else { break }
+			let albumItem = Album(ID: ID, title: title, artistID: artistID, releaseDate: releaseDate, artwork: md5(artworkUrl),
+			                      artworkUrl: artworkUrl, explicit: explicit, copyright: copyright, iTunesUniqueID: iTunesUniqueID, iTunesUrl: iTunesUrl,
+			                      created: Int(NSDate().timeIntervalSince1970))
+			albums.append(albumItem)
+		}
+		return albums
+	}
+
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		if segue.identifier == "showAlbumFromSearchResults" {
+			let albumDetailController = segue.destinationViewController as! AlbumDetailController
+			albumDetailController.album = selectedAlbum
+			albumDetailController.artist = selectedArtist
+			albumDetailController.canAddToFavorites = false
+			if let remote_artwork = tmpArtwork[selectedAlbum.ID] {
+				albumDetailController.artwork = remote_artwork
+			}
 		}
 	}
 }
@@ -101,45 +156,31 @@ class SearchResultsController: UIViewController {
 extension SearchResultsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! SearchResultCell
-		let albums = (artists[indexPath.section]["albums"] as? [NSDictionary])!
-		if albums.count > 0 {
-			cell.albumTitle.text = albums[indexPath.row]["title"] as? String
-			cell.releaseLabel.text = albums[indexPath.row]["releaseDate"] as? String
-			let hash = albums[indexPath.row]["artwork"]! as! String
-			let subDir = (hash as NSString).substringWithRange(NSRange(location: 0, length: 2))
-			let albumURL = "https://releasify.me/static/artwork/music/\(subDir)/\(hash).jpg"
-			if let img = artwork[albumURL] {
-				cell.albumArtwork.image = img
-			} else {
-				if let checkedURL = NSURL(string: albumURL) {
-					let request = NSURLRequest(URL: checkedURL)
-					NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) in
-						if error != nil {
-							return
-						}
-						if let HTTPResponse = response as? NSHTTPURLResponse {
-							if HTTPResponse.statusCode == 404 { return }
-							if HTTPResponse.statusCode == 200 {
-								let image = UIImage(data: data!)
-								self.artwork[albumURL] = image
-								dispatch_async(dispatch_get_main_queue(), {
-									if let cellToUpdate = self.artistsTable.cellForRowAtIndexPath(indexPath) as? SearchResultCell {
-										cellToUpdate.albumArtwork.alpha = 0
-										cellToUpdate.albumArtwork.image = image
-										UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
-											cellToUpdate.albumArtwork.alpha = 1.0
-											}, completion: nil)
-									}
-								})
-							}
-						}
-						
-					})
+		let albums = parseAlbumsByArtist(artists[indexPath.section])
+		let album = albums[indexPath.row]
+		cell.albumTitle.text = album.title
+		cell.albumTitle.textColor = theme.albumTitleColor
+		cell.releaseLabel.text = album.releaseDateAsYear(album.releaseDate)
+		cell.releaseLabel.textColor = theme.releaseLabelColor
+		let albumURL = album.artworkUrl
+		let albumID = album.ID
+		if let img = tmpArtwork[albumID] {
+			cell.albumArtwork.image = img
+		} else {
+			API.sharedInstance.fetchArtwork(albumURL!, successHandler: { (artwork) in
+				if let cellToUpdate = self.artistsTable.cellForRowAtIndexPath(indexPath) as? SearchResultCell {
+					cellToUpdate.albumArtwork.alpha = 0
+					cellToUpdate.albumArtwork.image = artwork
+					UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseIn, animations: {
+						cellToUpdate.albumArtwork.alpha = 1
+						}, completion: nil)
 				}
-			}
+				}, errorHandler: {
+					cell.albumArtwork.image = UIImage(named: "icon_artwork_dark")
+			})
 		}
 		let bgColorView = UIView()
-		bgColorView.backgroundColor = UIColor.clearColor()
+		bgColorView.backgroundColor = theme.cellHighlightColor
 		cell.selectedBackgroundView = bgColorView
 		return cell
 	}
@@ -159,21 +200,63 @@ extension SearchResultsController: UITableViewDelegate {
 	func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		return 50
 	}
+
+	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		guard let jsonData = artists[indexPath.section]["albums"] as? [NSDictionary] else { return }
+		let albums = API.sharedInstance.processAlbumsFrom(jsonData)
+		selectedAlbum = albums[indexPath.row]
+		selectedArtist = artists[indexPath.section]["title"] as? String
+		self.performSegueWithIdentifier("showAlbumFromSearchResults", sender: self)
+	}
 	
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let headerView = artistsTable.dequeueReusableHeaderFooterViewWithIdentifier("header") as! SearchResultsHeader
 		let artistID = (artists[section]["iTunesUniqueID"] as? Int)!
+		let artistImg = theme.style == .Dark ? "icon_artist_placeholder_dark" : "icon_artist_placeholder"
+		headerView.artistImg.image = UIImage(named: artistImg)
 		headerView.contentView.backgroundColor = UIColor.clearColor()
 		headerView.artistLabel.text = artists[section]["title"] as? String
+		headerView.artistLabel.textColor = theme.sectionHeaderLabelColor
 		headerView.confirmBtn.tag = section		
-		headerView.confirmBtn.addTarget(self, action: "confirmArtist:", forControlEvents: .TouchUpInside)
-		if selectedArtists.containsObject(artistID) {
+		headerView.confirmBtn.addTarget(self, action: #selector(SearchResultsController.confirmArtist(_:)), forControlEvents: .TouchUpInside)
+		if selectedArtists.contains(artistID) {
+			let confirmImg = theme.style == .Dark ? "icon_confirm_dark" : "icon_confirm"
 			headerView.confirmBtn.enabled = false
-			headerView.confirmBtn.setImage(UIImage(named: "icon_confirm"), forState: .Disabled)
+			headerView.confirmBtn.setImage(UIImage(named: confirmImg), forState: .Disabled)
 		} else {
+			let addImg = theme.style == .Dark ? "icon_add_dark" : "icon_add"
 			headerView.confirmBtn.enabled = true
-			headerView.confirmBtn.setImage(UIImage(named: "icon_add"), forState: .Normal)
+			headerView.confirmBtn.setImage(UIImage(named: addImg), forState: .Normal)
 		}
 		return headerView
+	}
+}
+
+// MARK: - Theme Subclass
+private class SearchResultsControllerTheme: Theme {
+	var viewBackgroundColor: UIColor!
+	var infoLabelColor: UIColor!
+	var sectionHeaderLabelColor: UIColor!
+	var albumTitleColor: UIColor!
+	var releaseLabelColor: UIColor!
+
+	override init(style: Styles) {
+		super.init(style: style)
+		switch style {
+		case .Dark:
+			viewBackgroundColor = UIColor.clearColor()
+			infoLabelColor = UIColor.whiteColor()
+			sectionHeaderLabelColor = globalTintColor
+			albumTitleColor = UIColor.whiteColor()
+			releaseLabelColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.6)
+			break
+		case .Light:
+			viewBackgroundColor = UIColor.whiteColor()
+			infoLabelColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			sectionHeaderLabelColor = globalTintColor
+			albumTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
+			releaseLabelColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+			break
+		}
 	}
 }

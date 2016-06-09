@@ -11,39 +11,50 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	let debug = false
+	let storyboard = UIStoryboard(name: "Main", bundle: nil)
 	var window: UIWindow?
+	var backWindow: UIWindow?
+	var theme: Theme!
 	var userID = 0
 	var userDeviceToken: String?
 	var userUUID: String!
+	var userStoreFront: String!
 	var contentHash: String?
 	var shortcutKeyDescription: String?
 	var allowExplicitContent = true
 	var removeExpiredAlbums = false
 	var completedRefresh = false
 	var firstRun = false
+	var canAddToLibrary = false
 	var lastUpdated = 0
 	var notificationAlbumID: Int?
 	var remoteNotificationPayload: NSDictionary?
 	var localNotificationPayload: NSDictionary?
+	var backVC: FavoritesNavController!
 	
-	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {		
 		let versionString = (NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as! String) + " (" + (NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as! String) + ")"
-		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")		
+		NSUserDefaults.standardUserDefaults().setValue(versionString, forKey: "appVersion")
 		
-		// Handle Reset Case
+		// Handle reset case
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
 		if reset {
 			AppDB.sharedInstance.reset()
+			Favorites.sharedInstance.clearList()
+			UnreadItems.sharedInstance.clearList()
 			application.cancelAllLocalNotifications()
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
+			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
 			NSUserDefaults.standardUserDefaults().setValue(nil, forKey: "contentHash")
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "reset")
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "removeExpiredAlbums")
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
-			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
+			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "theme")
+			NSUserDefaults.standardUserDefaults().removeObjectForKey("canAddToLibrary")
+			NSUserDefaults.standardUserDefaults().removeObjectForKey("userStoreFront")
 		}
 		
-		// Read App Settings
+		// Load App settings
 		userID = NSUserDefaults.standardUserDefaults().integerForKey("ID")
 		lastUpdated = NSUserDefaults.standardUserDefaults().integerForKey("lastUpdated")
 		if let token = NSUserDefaults.standardUserDefaults().stringForKey("deviceToken") { userDeviceToken = token }
@@ -59,7 +70,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		} else {
 			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "allowExplicit")
 		}
-		
+
+		// Theme settings & customizations
+		if let themeVal = NSUserDefaults.standardUserDefaults().valueForKey("theme") as? Bool {
+			theme = Theme(style: themeVal == true ? .Dark : .Light)
+		} else {
+			NSUserDefaults.standardUserDefaults().setBool(true, forKey: "theme")
+			theme = Theme(style: .Dark)
+		}
+		UIApplication.sharedApplication().statusBarStyle = theme.statusBarStyle
+
+		// Tab bar customizations
+		let tabBarAppearance = UITabBar.appearance()
+		tabBarAppearance.barTintColor = theme.tabBarTintColor
+		tabBarAppearance.tintColor = theme.tabTintColor
+		tabBarAppearance.backgroundColor = UIColor.clearColor()
+		tabBarAppearance.shadowImage = UIImage()
+		tabBarAppearance.backgroundImage = UIImage()
+
+		// Launch options
 		if let launchOpts = launchOptions {
 			if let remotePayload = launchOpts[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
 				remoteNotificationPayload = remotePayload
@@ -76,19 +105,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			}
 		}
 		
+		// Set initial view controllers
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
+		backVC = storyboard.instantiateViewControllerWithIdentifier("favoritesList") as! FavoritesNavController
+		let frontVC = storyboard.instantiateViewControllerWithIdentifier("AppController") as! AppController
+		self.backWindow = UIWindow(frame: window!.bounds)
+		self.backWindow!.rootViewController = backVC
+		backWindow?.makeKeyAndVisible()
 		if userID == 0 {
 			firstRun = true
 			UIApplication.sharedApplication().cancelAllLocalNotifications()
-			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
+			window?.rootViewController = storyboard.instantiateViewControllerWithIdentifier("IntroPageController") as! UIPageViewController
 		} else {
-			window?.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AppController") as! UINavigationController
+			window?.rootViewController = frontVC
 		}
 		window?.makeKeyAndVisible()
 		
 		return true
 	}
 
+	// MARK: - Callback when user allows push notifications
 	func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
 		var deviceTokenString = deviceToken.description
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: .LiteralSearch, range: nil)
@@ -97,7 +133,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		userDeviceToken = deviceTokenString
 		if userDeviceToken != nil {
 			API.sharedInstance.register(deviceToken: userDeviceToken, allowExplicitContent, successHandler: { (userID, userUUID) in
-				if self.debug { print(userID!) }
+				if self.debug { print("Received user ID from server (\(userID!))") }
 				self.userID = userID!
 				self.userUUID = userUUID
 				NSUserDefaults.standardUserDefaults().setInteger(self.userID, forKey: "ID")
@@ -110,6 +146,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
+	// MARK: - Callback when user does not give permission to use push notifications
 	func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
 		if userID == 0 {
 			API.sharedInstance.register(allowExplicitContent, successHandler: { (userID, userUUID) in
@@ -123,8 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	// MARK: - Local Notification - Receiver
-	// Called when app is in the foreground or the notification itself is tapped
+	// MARK: - Local Notification - Receiver | App is in the foreground or the notification itself is tapped
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["albumID"] as? Int
@@ -190,28 +226,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			completionHandler(false)
 		}
 	}
-	
-	func applicationWillResignActive(application: UIApplication) {
-		// Sent when the application is about to move from active to inactive state.
-		// This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-		// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-	}
-	
-	func applicationDidEnterBackground(application: UIApplication) {
-		// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-		// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-	}
-	
-	func applicationWillEnterForeground(application: UIApplication) {
-		// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-	}
-	
+
+	// MARK: - Reset application badge count to 0
 	func applicationDidBecomeActive(application: UIApplication) {
-		// Move to Album Controller
-		application.applicationIconBadgeNumber = 0
-	}
-	
-	func applicationWillTerminate(application: UIApplication) {
-		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+		UIApplication.sharedApplication().applicationIconBadgeNumber = 0
 	}
 }

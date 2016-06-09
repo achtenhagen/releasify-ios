@@ -10,8 +10,10 @@ import UIKit
 
 class SubscriptionCell: UITableViewCell {
 
-	@IBOutlet weak var subscriptionImage: UIImageView!
-	@IBOutlet weak var subscriptionTitle: UILabel!
+	var borderColor: UIColor!
+
+	@IBOutlet var subscriptionImage: UIImageView!
+	@IBOutlet var subscriptionTitle: UILabel!
 	
 	override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,7 +26,7 @@ class SubscriptionCell: UITableViewCell {
 	override func layoutIfNeeded() {
 		super.layoutIfNeeded()
 		subscriptionImage.layer.masksToBounds = true
-		subscriptionImage.layer.borderColor = UIColor.whiteColor().CGColor
+		subscriptionImage.layer.borderColor = borderColor.CGColor
 		subscriptionImage.layer.borderWidth = 2
 		subscriptionImage.layer.cornerRadius = subscriptionImage.bounds.height / 2
 	}
