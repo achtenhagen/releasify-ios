@@ -10,7 +10,7 @@ import UIKit
 
 final class API {
 	static let sharedInstance = API()
-	private let baseURL = NSURL(string: "https://releasify.io/api/ios/v1.2/")!
+	private let baseURL = NSURL(string: "https://releasify.me/api/ios/v1.2/")!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	
 	enum Error: ErrorType {
