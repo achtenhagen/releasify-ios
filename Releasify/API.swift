@@ -289,10 +289,14 @@ final class API {
 	func register(allowExplicitContent: Bool = true, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void),
 	              errorHandler: ((error: ErrorType) -> Void)) {
 		let UUID = NSUUID().UUIDString
+		let locale = NSLocale.currentLocale()
+		let currentLangID = (NSLocale.preferredLanguages() as [String])[0]
+		let displayLang = locale.displayNameForKey(NSLocaleLanguageCode, value: currentLangID)
 		var explicitValue = 1
 		if !allowExplicitContent { explicitValue = 0 }
 		var postString = "uuid=\(UUID)&explicit=\(explicitValue)"
 		if deviceToken != nil { postString += "&deviceToken=\(deviceToken!)" }
+		if displayLang! == "Deutsch" { postString += "&lang=de" }
 		sendRequest(Endpoint.register.url(), postString: postString, successHandler: { (statusCode, data) in
 			if statusCode != 201 {
 				errorHandler(error: self.getErrorFor(statusCode))
