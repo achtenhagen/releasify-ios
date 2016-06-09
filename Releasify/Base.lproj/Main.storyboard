@@ -1582,8 +1582,10 @@ Swipe to get started.</string>
                                 <exclude reference="Mxk-FJ-lcE"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="L1j-qm-KGj"/>
-                                <exclude reference="bTf-Ah-KaZ"/>
+                                <exclude reference="is5-9B-Spz"/>
+                                <exclude reference="vy9-tt-MtV"/>
+                                <exclude reference="XNQ-sD-GQt"/>
+                                <exclude reference="tj6-aF-fTs"/>
                                 <exclude reference="7zh-Gb-jJw"/>
                                 <exclude reference="DwJ-qZ-GgS"/>
                                 <exclude reference="KaW-u3-6d0"/>
@@ -1591,10 +1593,8 @@ Swipe to get started.</string>
                                 <exclude reference="RJG-SQ-ryv"/>
                                 <exclude reference="Rsn-On-ijS"/>
                                 <exclude reference="tBs-Zi-q9z"/>
-                                <exclude reference="XNQ-sD-GQt"/>
-                                <exclude reference="tj6-aF-fTs"/>
-                                <exclude reference="is5-9B-Spz"/>
-                                <exclude reference="vy9-tt-MtV"/>
+                                <exclude reference="L1j-qm-KGj"/>
+                                <exclude reference="bTf-Ah-KaZ"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -1606,8 +1606,10 @@ Swipe to get started.</string>
                                 <include reference="Mxk-FJ-lcE"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="L1j-qm-KGj"/>
-                                <include reference="bTf-Ah-KaZ"/>
+                                <include reference="is5-9B-Spz"/>
+                                <include reference="vy9-tt-MtV"/>
+                                <include reference="XNQ-sD-GQt"/>
+                                <include reference="tj6-aF-fTs"/>
                                 <include reference="7zh-Gb-jJw"/>
                                 <include reference="DwJ-qZ-GgS"/>
                                 <include reference="KaW-u3-6d0"/>
@@ -1615,10 +1617,8 @@ Swipe to get started.</string>
                                 <include reference="RJG-SQ-ryv"/>
                                 <include reference="Rsn-On-ijS"/>
                                 <include reference="tBs-Zi-q9z"/>
-                                <include reference="XNQ-sD-GQt"/>
-                                <include reference="tj6-aF-fTs"/>
-                                <include reference="is5-9B-Spz"/>
-                                <include reference="vy9-tt-MtV"/>
+                                <include reference="L1j-qm-KGj"/>
+                                <include reference="bTf-Ah-KaZ"/>
                             </mask>
                         </variation>
                     </view>
@@ -1778,18 +1778,18 @@ Swipe to get started.</string>
                                 <exclude reference="PJN-MK-B81"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="Qbh-60-HYE"/>
-                                <exclude reference="clb-6T-bH6"/>
+                                <exclude reference="bei-1O-lKG"/>
+                                <exclude reference="rR7-LJ-VU5"/>
+                                <exclude reference="IhC-l6-2d3"/>
+                                <exclude reference="NHT-ub-XzP"/>
+                                <exclude reference="cYM-hd-qSx"/>
                                 <exclude reference="FwQ-29-1bS"/>
                                 <exclude reference="LMC-H2-ap4"/>
                                 <exclude reference="Ob2-N8-VBm"/>
                                 <exclude reference="cTP-dX-V4A"/>
                                 <exclude reference="jeD-0A-CCz"/>
-                                <exclude reference="IhC-l6-2d3"/>
-                                <exclude reference="NHT-ub-XzP"/>
-                                <exclude reference="cYM-hd-qSx"/>
-                                <exclude reference="bei-1O-lKG"/>
-                                <exclude reference="rR7-LJ-VU5"/>
+                                <exclude reference="Qbh-60-HYE"/>
+                                <exclude reference="clb-6T-bH6"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -1801,18 +1801,18 @@ Swipe to get started.</string>
                                 <include reference="PJN-MK-B81"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="Qbh-60-HYE"/>
-                                <include reference="clb-6T-bH6"/>
+                                <include reference="bei-1O-lKG"/>
+                                <include reference="rR7-LJ-VU5"/>
+                                <include reference="IhC-l6-2d3"/>
+                                <include reference="NHT-ub-XzP"/>
+                                <include reference="cYM-hd-qSx"/>
                                 <include reference="FwQ-29-1bS"/>
                                 <include reference="LMC-H2-ap4"/>
                                 <include reference="Ob2-N8-VBm"/>
                                 <include reference="cTP-dX-V4A"/>
                                 <include reference="jeD-0A-CCz"/>
-                                <include reference="IhC-l6-2d3"/>
-                                <include reference="NHT-ub-XzP"/>
-                                <include reference="cYM-hd-qSx"/>
-                                <include reference="bei-1O-lKG"/>
-                                <include reference="rR7-LJ-VU5"/>
+                                <include reference="Qbh-60-HYE"/>
+                                <include reference="clb-6T-bH6"/>
                             </mask>
                         </variation>
                     </view>
@@ -1978,17 +1978,17 @@ Swipe to get started.</string>
                                 <exclude reference="wW1-Li-qeT"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="NRH-jf-Il4"/>
+                                <exclude reference="Qrl-Qb-sSb"/>
+                                <exclude reference="5U2-bk-jBC"/>
+                                <exclude reference="ag7-tk-GwF"/>
                                 <exclude reference="PXa-zY-NhC"/>
                                 <exclude reference="RSx-2V-uiW"/>
                                 <exclude reference="RxX-CG-bVN"/>
-                                <exclude reference="NRH-jf-Il4"/>
-                                <exclude reference="Qrl-Qb-sSb"/>
-                                <exclude reference="Dmm-4F-6gW"/>
-                                <exclude reference="Dyb-ME-4VJ"/>
                                 <exclude reference="3bU-a6-lq2"/>
                                 <exclude reference="EXM-vA-W7F"/>
-                                <exclude reference="5U2-bk-jBC"/>
-                                <exclude reference="ag7-tk-GwF"/>
+                                <exclude reference="Dmm-4F-6gW"/>
+                                <exclude reference="Dyb-ME-4VJ"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -2000,17 +2000,17 @@ Swipe to get started.</string>
                                 <include reference="wW1-Li-qeT"/>
                             </mask>
                             <mask key="constraints">
+                                <include reference="NRH-jf-Il4"/>
+                                <include reference="Qrl-Qb-sSb"/>
+                                <include reference="5U2-bk-jBC"/>
+                                <include reference="ag7-tk-GwF"/>
                                 <include reference="PXa-zY-NhC"/>
                                 <include reference="RSx-2V-uiW"/>
                                 <include reference="RxX-CG-bVN"/>
-                                <include reference="NRH-jf-Il4"/>
-                                <include reference="Qrl-Qb-sSb"/>
-                                <include reference="Dmm-4F-6gW"/>
-                                <include reference="Dyb-ME-4VJ"/>
                                 <include reference="3bU-a6-lq2"/>
                                 <include reference="EXM-vA-W7F"/>
-                                <include reference="5U2-bk-jBC"/>
-                                <include reference="ag7-tk-GwF"/>
+                                <include reference="Dmm-4F-6gW"/>
+                                <include reference="Dyb-ME-4VJ"/>
                             </mask>
                         </variation>
                     </view>
