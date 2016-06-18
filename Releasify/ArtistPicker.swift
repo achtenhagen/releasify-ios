@@ -14,7 +14,7 @@ class ArtistPicker: UIViewController {
 	private var theme: ArtistPickerTheme!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	let blacklist: NSArray = ["Various Artists", "Verschiedene Interpreten"]
-	let keys: [String] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"]
+	let keys = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"]
 	var sections: [String]!
 	var artists = [String: [String]]()
 	var checkedStates = [String: [Int: Bool]]()
@@ -25,7 +25,7 @@ class ArtistPicker: UIViewController {
 	var searchController: UISearchController!
 	var collection = [AnyObject]()
 	var successArtists = 0
-	var responseArtists = [NSDictionary]()
+	var searchResults = [NSDictionary]()
 	var activityView: UIView!
 	var indicatorView: UIActivityIndicatorView!
 	
@@ -102,7 +102,7 @@ class ArtistPicker: UIViewController {
 	
 	override func viewDidDisappear(animated: Bool) {
 		hasSelectedAll = false
-		responseArtists.removeAll(keepCapacity: true)
+		searchResults.removeAll(keepCapacity: true)
 		filteredArtists.removeAll(keepCapacity: true)
 		filteredCheckedStates.removeAll(keepCapacity: true)
 		for (section, values) in checkedStates {
@@ -126,7 +126,7 @@ class ArtistPicker: UIViewController {
 	
 	// MARK: - Handle artist batch processing
 	func handleBatchProcessing () {
-		let batchSize = 20
+		let batchSize = 10
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
 		var batches = [String]()
 		var uniqueIDs = [Int]()
@@ -172,13 +172,16 @@ class ArtistPicker: UIViewController {
 						if let successArtists = json["success"] as? [NSDictionary] {
 							self.successArtists += successArtists.count
 						}
+						// Pending artists + albums that will be passed to SearchResultsController
 						if let awaitingArtists = json["pending"] as? [NSDictionary] {
 							for artist in awaitingArtists {
-								if let uniqueID = artist["iTunesUniqueID"] as? Int {
-									if !uniqueIDs.contains(uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
-										uniqueIDs.append(uniqueID)
-										self.responseArtists.append(artist)
-									}
+								guard let uniqueID = artist["iTunesUniqueID"] as? Int else {
+									if self.appDelegate.debug { print("Failed to parse artist") }
+									continue
+								}
+								if !uniqueIDs.contains(uniqueID) && AppDB.sharedInstance.getArtistByUniqueID(uniqueID) == 0 {
+									uniqueIDs.append(uniqueID)
+									self.searchResults.append(artist)
 								}
 							}
 						}
@@ -197,7 +200,7 @@ class ArtistPicker: UIViewController {
 						if self.appDelegate.debug { print("Completed batch processing.") }
 						self.progressBar.setProgress(1.0, animated: true)
 						UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-						if self.responseArtists.count > 0 {
+						if self.searchResults.count > 0 {
 							self.progressBar.hidden = true
 							self.performSegueWithIdentifier("ArtistSelectionSegue", sender: self)
 						} else {
@@ -210,7 +213,7 @@ class ArtistPicker: UIViewController {
 				}
 				},
 				errorHandler: { (error) in
-					self.progressBar.progressTintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1.0)
+					self.progressBar.progressTintColor = UIColor(red: 1, green: 0, blue: 162/255, alpha: 1)
 					self.activityView.removeFromSuperview()
 					self.indicatorView.removeFromSuperview()
 					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
@@ -309,7 +312,7 @@ class ArtistPicker: UIViewController {
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "ArtistSelectionSegue" {
 			let selectionController = segue.destinationViewController as! SearchResultsNavController
-			selectionController.artists = responseArtists
+			selectionController.searchResults = searchResults
 		}
 	}
 	

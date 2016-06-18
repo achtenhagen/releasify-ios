@@ -10,7 +10,7 @@ import UIKit
 
 final class API {
 	static let sharedInstance = API()
-	private let baseURL = NSURL(string: "https://releasify.me/api/ios/v1.2/")!
+	private let baseURL = NSURL(string: "https://releasify.io/api/ios/v1.2/")!
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 	
 	enum Error: ErrorType {
@@ -107,7 +107,7 @@ final class API {
 				return
 			}
 
-			if let handler: Void = successHandler(self.processAlbumsFrom(json!)) {
+			if let handler: Void = successHandler(self.parseAlbumsFrom(json!)) {
 				handler
 				return
 			}
@@ -159,7 +159,7 @@ final class API {
 				return
 			}
 
-			processedAlbums = self.processAlbumsFrom(content)
+			processedAlbums = self.parseAlbumsFrom(content)
 			self.processSubscriptions(subscriptions)
 			
 			// Pass new content back thru closure
@@ -170,11 +170,12 @@ final class API {
 		})
 	}
 
-	// MARK: - Process downloaded JSON data
-	func processAlbumsFrom(json: [NSDictionary]) -> [Album] {
+	// MARK: - Parse downloaded JSON data
+	func parseAlbumsFrom(json: [NSDictionary]) -> [Album] {
 		var albums = [Album]()
 		for item in json {
-			guard let ID = item["ID"] as? Int,
+			guard
+				let ID = item["ID"] as? Int,
 				let title = item["title"] as? String,
 				let artistID = item["artistID"] as? Int,
 				let releaseDate = item["releaseDate"] as? Double,
@@ -214,7 +215,7 @@ final class API {
 				return
 			}
 			// Process serialized JSON data
-			let albums = self.processAlbumsFrom(json!)
+			let albums = self.parseAlbumsFrom(json!)
 			successHandler(albums: albums)
 		}, errorHandler: { (error) in
 				errorHandler(error: error)

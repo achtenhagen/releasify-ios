@@ -15,7 +15,7 @@ final class Favorites {
 	var list: [Album]!
 	
 	// MARK: - Add new item to list
-	func addFavorite(album: Album) {
+	func add(album: Album) {
 		if !isFavorite(album) {
 			list.append(album)
 		}
@@ -38,7 +38,7 @@ final class Favorites {
 	}
 	
 	// MARK: - Remove item from list with known index
-	func removeFavorite(index: Int) {
+	func remove(index: Int) {
 		list.removeAtIndex(index)
 		save()
 	}
@@ -47,7 +47,7 @@ final class Favorites {
 	func removeFavoriteIfExists(albumID: Int) -> Bool {
 		for (key, value) in list.enumerate() {
 			if value.ID == albumID {
-				removeFavorite(key)
+				remove(key)
 				return true
 			}
 		}

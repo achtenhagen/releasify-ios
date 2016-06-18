@@ -150,7 +150,7 @@ extension FavoritesListController: UITableViewDelegate {
 	
 	func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
 		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
-			Favorites.sharedInstance.removeFavorite(indexPath.row)
+			Favorites.sharedInstance.remove(indexPath.row)
 			tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)			
 			if Favorites.sharedInstance.list.count == 0 {
 				self.showAppEmptyState()

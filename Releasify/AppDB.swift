@@ -194,14 +194,8 @@ final class AppDB {
 	// MARK: - Get all albums
 	func getAlbums() {
 		albums = [Album]()
-		let timestamp = String(stringInterpolationSegment: Int(NSDate().timeIntervalSince1970))
-		var query = "SELECT * FROM albums WHERE release_date - \(timestamp) > 0 ORDER BY release_date ASC LIMIT 64"
-		if let upcomingAlbums = getAlbumsComponent(query) {
+		if let upcomingAlbums = getAlbumsComponent("SELECT * FROM albums ORDER BY created DESC LIMIT 100") {
 			albums.appendContentsOf(upcomingAlbums)
-		}
-		query = "SELECT * FROM albums WHERE release_date - \(timestamp) < 0 ORDER BY release_date DESC LIMIT 1000"
-		if let releasedAlbums = getAlbumsComponent(query) {
-			albums.appendContentsOf(releasedAlbums)
 		}
 		if debug { print("Albums in db: \(albums!.count)") }
 	}

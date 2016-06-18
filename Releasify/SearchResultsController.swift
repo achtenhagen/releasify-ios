@@ -13,7 +13,8 @@ class SearchResultsController: UIViewController {
 	private var theme: SearchResultsControllerTheme!
 
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-	var artists: [NSDictionary]!
+	var JSONPayload: [NSDictionary]?
+	var searchResults: [SearchResult]!
 	var tmpArtwork = [Int:UIImage]()
 	var selectedAlbum: Album!
 	var selectedArtist: String!
@@ -40,10 +41,15 @@ class SearchResultsController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		// Initialization
 		let navController = self.navigationController as! SearchResultsNavController
-		artists = navController.artists
 		selectedArtists = [Int]()
 		theme = SearchResultsControllerTheme(style: appDelegate.theme.style)
+
+		// Parse JSON payload into dictionary
+		JSONPayload = navController.searchResults
+		searchResults = [SearchResult]()
+		parseSearchResults()
 		
 		artistsTable.registerNib(UINib(nibName: "SearchResultsHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "header")
 		infoLabel.text = NSLocalizedString("Please choose from the list below.", comment: "")
@@ -70,73 +76,74 @@ class SearchResultsController: UIViewController {
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 	}
+
+	// MARK: - Parse response data
+	func parseSearchResults() {
+		guard let data = JSONPayload else {
+			if appDelegate.debug { print("Failed to parse search result") }
+			return
+		}
+		for node in data {
+			guard
+				let ID = node["artistID"] as? Int,
+				let title = node["title"] as? String,
+				let iTunesUniqueID = node["iTunesUniqueID"] as? Int
+			else {
+				if appDelegate.debug { print("Failed to parse artist") }
+				continue
+			}
+			let artist = Artist(ID: ID, title: title, iTunesUniqueID: iTunesUniqueID)
+			if let JSONAlbums = node["albums"] as? [NSDictionary] {
+				let albums = API.sharedInstance.parseAlbumsFrom(JSONAlbums)
+				searchResults.append(SearchResult(artist: artist, albums: albums))
+			} else {
+				searchResults.append(SearchResult(artist: artist))
+			}
+		}
+	}
 	
 	// MARK: - Handle artist confirmation
 	func confirmArtist(sender: UIButton) {
-		var artistID = 0		
-		if let id = artists[sender.tag]["artistID"] as? Int { artistID = id }
-		let artistTitle = (artists[sender.tag]["title"] as? String)!
-		if let artistUniqueID  = (artists[sender.tag]["iTunesUniqueID"] as? Int) {
-			let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID[]=\(artistUniqueID)"
-			API.sharedInstance.sendRequest(API.Endpoint.confirmArtist.url(), postString: postString, successHandler: { (statusCode, data) in
-				if statusCode == 200 {
-					let headerView = self.artistsTable.headerViewForSection(sender.tag) as? SearchResultsHeader
-					headerView?.confirmBtn.enabled = false
-					let confirmImg = self.theme.style == .Dark ? "icon_confirm_dark" : "icon_confirm"
-					headerView?.confirmBtn.setImage(UIImage(named: confirmImg), forState: .Disabled)
-					AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
-					AppDB.sharedInstance.getArtists()
-					self.selectedArtists.append(artistUniqueID)
-					if self.artists.count == self.selectedArtists.count {
-						self.closeView()
-					}
-					self.needsRefresh = true
+		let artistID = searchResults[sender.tag].artist.ID
+		let artistTitle = searchResults[sender.tag].artist.title
+		let artistUniqueID = searchResults[sender.tag].artist.iTunesUniqueID
+		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID[]=\(artistUniqueID)"
+		API.sharedInstance.sendRequest(API.Endpoint.confirmArtist.url(), postString: postString, successHandler: { (statusCode, data) in
+			if statusCode == 200 {
+				let headerView = self.artistsTable.headerViewForSection(sender.tag) as? SearchResultsHeader
+				headerView?.confirmBtn.enabled = false
+				let confirmImg = self.theme.style == .Dark ? "icon_confirm_dark" : "icon_confirm"
+				headerView?.confirmBtn.setImage(UIImage(named: confirmImg), forState: .Disabled)
+				AppDB.sharedInstance.addArtist(artistID, artistTitle: artistTitle, iTunesUniqueID: artistUniqueID)
+				AppDB.sharedInstance.getArtists()
+				self.selectedArtists.append(artistUniqueID)
+				if self.searchResults.count == self.selectedArtists.count {
+					self.closeView()
 				}
-				},
-				errorHandler: { (error) in
-					let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-					switch (error) {
-					case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
-						alert.title = NSLocalizedString("You're Offline!", comment: "")
-						alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
-						let alertActionTitle = NSLocalizedString("Settings", comment: "")
-						alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
-							UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
-						}))
-					case API.Error.ServerDownForMaintenance:
-						alert.title = NSLocalizedString("Service Unavailable", comment: "")
-						alert.message = NSLocalizedString("We'll be back shortly, our servers are currently undergoing maintenance.", comment: "")
-					default:
-						alert.title = NSLocalizedString("Unable to subscribe!", comment: "")
-						alert.message = NSLocalizedString("Please try again later.", comment: "")
-					}
-					let title = NSLocalizedString("OK", comment: "")
-					alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
-					self.presentViewController(alert, animated: true, completion: nil)
-			})
-		}
-	}
-
-	// MARK: - Parse response data
-	func parseAlbumsByArtist(artist: NSDictionary) -> [Album] {
-		var albums = [Album]()
-		guard let json = artist["albums"] as? [NSDictionary] else { return albums }
-		for item in json {
-			guard let ID = item["ID"] as? Int,
-				let title = item["title"] as? String,
-				let artistID = item["artistID"] as? Int,
-				let releaseDate = item["releaseDate"] as? Double,
-				let artworkUrl = item["artworkUrl"] as? String,
-				let explicit = item["explicit"] as? Int,
-				let copyright = item["copyright"] as? String,
-				let iTunesUniqueID = item["iTunesUniqueID"] as? Int,
-				let iTunesUrl = item["iTunesUrl"] as? String else { break }
-			let albumItem = Album(ID: ID, title: title, artistID: artistID, releaseDate: releaseDate, artwork: md5(artworkUrl),
-			                      artworkUrl: artworkUrl, explicit: explicit, copyright: copyright, iTunesUniqueID: iTunesUniqueID, iTunesUrl: iTunesUrl,
-			                      created: Int(NSDate().timeIntervalSince1970))
-			albums.append(albumItem)
-		}
-		return albums
+				self.needsRefresh = true
+			}
+			},
+			   errorHandler: { (error) in
+				let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+				switch (error) {
+				case API.Error.NoInternetConnection, API.Error.NetworkConnectionLost:
+					alert.title = NSLocalizedString("You're Offline!", comment: "")
+					alert.message = NSLocalizedString("Please make sure you are connected to the internet, then try again.", comment: "")
+					let alertActionTitle = NSLocalizedString("Settings", comment: "")
+					alert.addAction(UIAlertAction(title: alertActionTitle, style: .Default, handler: { (action) in
+						UIApplication.sharedApplication().openURL(NSURL(string:UIApplicationOpenSettingsURLString)!)
+					}))
+				case API.Error.ServerDownForMaintenance:
+					alert.title = NSLocalizedString("Service Unavailable", comment: "")
+					alert.message = NSLocalizedString("We'll be back shortly, our servers are currently undergoing maintenance.", comment: "")
+				default:
+					alert.title = NSLocalizedString("Unable to subscribe!", comment: "")
+					alert.message = NSLocalizedString("Please try again later.", comment: "")
+				}
+				let title = NSLocalizedString("OK", comment: "")
+				alert.addAction(UIAlertAction(title: title, style: .Default, handler: nil))
+				self.presentViewController(alert, animated: true, completion: nil)
+		})
 	}
 
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -156,8 +163,7 @@ class SearchResultsController: UIViewController {
 extension SearchResultsController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = artistsTable.dequeueReusableCellWithIdentifier("ArtistCell") as! SearchResultCell
-		let albums = parseAlbumsByArtist(artists[indexPath.section])
-		let album = albums[indexPath.row]
+		let album = searchResults[indexPath.section].albums![indexPath.row]
 		cell.albumTitle.text = album.title
 		cell.albumTitle.textColor = theme.albumTitleColor
 		cell.releaseLabel.text = album.releaseDateAsYear(album.releaseDate)
@@ -186,12 +192,13 @@ extension SearchResultsController: UITableViewDataSource {
 	}
 	
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		return artists.count
+		return searchResults.count
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		let albums = (artists[section]["albums"] as? [NSDictionary])!
-		return albums.count
+		// If condensed to 1 line, syntax highlighting will crash
+		if let albums = searchResults[section].albums { return albums.count }
+		return 0
 	}
 }
 
@@ -202,20 +209,19 @@ extension SearchResultsController: UITableViewDelegate {
 	}
 
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		guard let jsonData = artists[indexPath.section]["albums"] as? [NSDictionary] else { return }
-		let albums = API.sharedInstance.processAlbumsFrom(jsonData)
-		selectedAlbum = albums[indexPath.row]
-		selectedArtist = artists[indexPath.section]["title"] as? String
+		let album = searchResults[indexPath.section].albums![indexPath.row]
+		selectedAlbum = album
+		selectedArtist = searchResults[indexPath.section].artist.title
 		self.performSegueWithIdentifier("showAlbumFromSearchResults", sender: self)
 	}
 	
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let headerView = artistsTable.dequeueReusableHeaderFooterViewWithIdentifier("header") as! SearchResultsHeader
-		let artistID = (artists[section]["iTunesUniqueID"] as? Int)!
+		let artistID = searchResults[section].artist.iTunesUniqueID
 		let artistImg = theme.style == .Dark ? "icon_artist_placeholder_dark" : "icon_artist_placeholder"
 		headerView.artistImg.image = UIImage(named: artistImg)
 		headerView.contentView.backgroundColor = UIColor.clearColor()
-		headerView.artistLabel.text = artists[section]["title"] as? String
+		headerView.artistLabel.text = searchResults[section].artist.title
 		headerView.artistLabel.textColor = theme.sectionHeaderLabelColor
 		headerView.confirmBtn.tag = section		
 		headerView.confirmBtn.addTarget(self, action: #selector(SearchResultsController.confirmArtist(_:)), forControlEvents: .TouchUpInside)

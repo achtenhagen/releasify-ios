@@ -219,7 +219,7 @@ class AlbumDetailController: UIViewController {
 
 	// MARK: - Add album to favorites list
 	func addFavorite() {
-		Favorites.sharedInstance.addFavorite(album!)
+		Favorites.sharedInstance.add(album!)
 		Favorites.sharedInstance.save()
 		isFavorite = true
 		let favImage = theme.style == .Dark ? "icon_favorite_dark_filled" : "icon_favorite_filled"

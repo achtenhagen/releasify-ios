@@ -13,4 +13,11 @@ struct Artist {
 	var title: String
 	var iTunesUniqueID: Int
 	var avatar: String?
+
+	init(ID: Int, title: String, iTunesUniqueID: Int, avatar: String? = nil) {
+		self.ID = ID
+		self.title = title
+		self.iTunesUniqueID = iTunesUniqueID
+		self.avatar = avatar
+	}
 }
