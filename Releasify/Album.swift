@@ -183,7 +183,7 @@ class Album: NSObject, NSCoding {
 		return t2
 	}
 
-	// MARK: - Return the formatted release date
+	// Return the formatted release date
 	func getFormattedReleaseDate() -> String {
 		let timeDiff = releaseDate - NSDate().timeIntervalSince1970
 		if timeDiff > 0 {
@@ -230,12 +230,19 @@ class Album: NSObject, NSCoding {
 		return dateFormat.stringFromDate(NSDate(timeIntervalSince1970: timestamp))
 	}
 
-	// MARK: - Compute the floor of 2 numbers
+	// Format the release date for the today widget
+	func formatReleaseDateForWidget() -> String {
+		let dateFormat = NSDateFormatter()
+		dateFormat.dateFormat = "MM/d/yy"
+		return dateFormat.stringFromDate(NSDate(timeIntervalSince1970: releaseDate))
+	}
+
+	// Compute the floor of 2 numbers
 	func component(x: Double, v: Double) -> Double {
 		return floor(x / v)
 	}
 
-	// MARK: - Return the boolean value whether the album has been released
+	// Return the boolean value whether the album has been released
 	func isReleased() -> Bool {
 		return releaseDate - NSDate().timeIntervalSince1970 > 0 ? false : true
 	}

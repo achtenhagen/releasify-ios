@@ -82,6 +82,11 @@ class StreamViewController: UITableViewController {
 		doubleTapGesture.numberOfTapsRequired = 2
 		self.tabBarController?.tabBar.addGestureRecognizer(doubleTapGesture)
 
+		// Quadruple tap gesture
+		let quadrupleTapGesture = UITapGestureRecognizer(target: self, action: #selector(markAllRead))
+		quadrupleTapGesture.numberOfTapsRequired = 4
+		self.tabBarController?.tabBar.addGestureRecognizer(quadrupleTapGesture)
+
 		// Handle first run
 		if appDelegate.firstRun {
 			appDelegate.firstRun = false
@@ -94,7 +99,7 @@ class StreamViewController: UITableViewController {
 
 		// Process local notification payload
 		if let notificationAlbumID = appDelegate.localNotificationPayload?["albumID"] as? Int {
-			if let album = AppDB.sharedInstance.getAlbum(notificationAlbumID) {
+			if let album = AppDB.sharedInstance.getAlbumBy(notificationAlbumID) {
 				selectedAlbum = album
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
@@ -129,6 +134,18 @@ class StreamViewController: UITableViewController {
 			hideAppEmptyState()
 		}
 		self.streamTable.reloadData()
+	}
+
+	// Mark all items in stream as read
+	func markAllRead(sender: AnyObject) {
+		if UnreadItems.sharedInstance.list.count > 0 {
+			UnreadItems.sharedInstance.clearList()
+			updateTabBarItemBadgeCount()
+			streamTable.reloadData()
+			streamTable.tableHeaderView?.fadeOut(0.2, delay: 0, completion: { (complete) in
+				self.streamTable.tableHeaderView = nil
+			})
+		}
 	}
 
 	// MARK: - Update tab bar item badge count
@@ -172,7 +189,7 @@ class StreamViewController: UITableViewController {
 		super.didReceiveMemoryWarning()
 	}
 
-	// MARK: - Refresh Content
+	// Refresh Content
 	func refresh() {
 		API.sharedInstance.refreshContent({ (processedAlbums, contentHash) in
 			var newContentAvailable = false
@@ -197,6 +214,16 @@ class StreamViewController: UITableViewController {
 						notification.soundName = UILocalNotificationDefaultSoundName
 						notification.userInfo = ["albumID": newAlbumID, "iTunesUrl": album.iTunesUrl]
 						UIApplication.sharedApplication().scheduleLocalNotification(notification)
+						// Set album for widget
+						let sharedDefaults = NSUserDefaults(suiteName: "group.fioware.TodayExtensionSharingDefaults")
+						if let album = AppDB.sharedInstance.getWidgetAlbum(),
+							let artist = AppDB.sharedInstance.getAlbumArtist(album.ID) {
+							let releaseDate = album.formatReleaseDateForWidget()
+							let message = "\(artist): \(album.title) is set to be released on \(releaseDate)"
+							sharedDefaults?.setObject(message, forKey: "upcomingAlbum")
+						} else {
+							sharedDefaults?.setObject("No Upcoming Albums", forKey: "upcomingAlbum")
+						}
 					}
 				}
 			}
@@ -272,7 +299,7 @@ class StreamViewController: UITableViewController {
 	// MARK: - Open album from a local notification
 	func showAlbumFromNotification(notification: NSNotification) {
 		if let notificationAlbumID = notification.userInfo!["albumID"] as? Int {
-			if let album = AppDB.sharedInstance.getAlbum(notificationAlbumID) {
+			if let album = AppDB.sharedInstance.getAlbumBy(notificationAlbumID) {
 				selectedAlbum = album
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
 			}
@@ -308,14 +335,14 @@ class StreamViewController: UITableViewController {
 			return
 		}
 		// Artwork is either not yet cached or needs to be downloaded first
-		if AppDB.sharedInstance.checkArtwork(hash) {
-			tmpArtwork![hash] = AppDB.sharedInstance.getArtwork(hash)
+		if checkArtwork(hash) {
+			tmpArtwork![hash] = getArtwork(hash)
 			completion(artwork: tmpArtwork![hash]!)
 			return
 		}
 		// Artwork was not found, so download it
 		API.sharedInstance.fetchArtwork(url, successHandler: { (artwork) in
-			AppDB.sharedInstance.addArtwork(hash, artwork: artwork!)
+			addArtwork(hash, artwork: artwork!)
 			self.tmpArtwork![hash] = artwork
 			completion(artwork: self.tmpArtwork![hash]!)
 			}, errorHandler: {
@@ -326,8 +353,8 @@ class StreamViewController: UITableViewController {
 
 	// MARK: - Unsubscribe from an album
 	func unsubscribeFromAlbum(album: Album, indexPath: NSIndexPath) {
-		AppDB.sharedInstance.deleteAlbum(album.ID, index: indexPath.row)
-		AppDB.sharedInstance.deleteArtwork(album.artwork)
+		AppDB.sharedInstance.removeAlbum(album.ID, index: indexPath.row)
+		deleteArtwork(album.artwork)
 		self.tmpArtwork?.removeValueForKey(album.artwork)
 		self.tmpUrl?.removeValueForKey(album.ID)
 		if Favorites.sharedInstance.removeFavoriteIfExists(album.ID) {

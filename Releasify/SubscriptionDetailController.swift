@@ -37,7 +37,7 @@ class SubscriptionDetailController: UIViewController {
 					self.handleError(title, message: message, error: API.Error.FailedRequest)
 					return
 				}
-				AppDB.sharedInstance.deleteArtist(self.artist!.ID, completion: { (albumIDs) in
+				AppDB.sharedInstance.removeArtist(self.artist!.ID, completion: { (albumIDs) in
 					for ID in albumIDs {
 						for notification in UIApplication.sharedApplication().scheduledLocalNotifications! {
 							let userInfoCurrent = notification.userInfo! as! [String:AnyObject]
@@ -87,7 +87,7 @@ class SubscriptionDetailController: UIViewController {
 		subscriptionAlbumCollectionView.registerNib(UINib(nibName: "AlbumCell", bundle: nil), forCellWithReuseIdentifier: albumCellReuseIdentifier)
 		subscriptionAlbumCollectionView.setCollectionViewLayout(AlbumCollectionViewLayout(), animated: false)
 
-		albums = AppDB.sharedInstance.getAlbumsByArtist(artist!.ID)
+		albums = AppDB.sharedInstance.getAlbumsBy(artist!.ID)
 		if albums == nil || albums?.count == 0 {
 			let label = UILabel()
 			label.font = UIFont(name: label.font.fontName, size: 18)
@@ -145,7 +145,7 @@ extension SubscriptionDetailController: UICollectionViewDataSource {
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(albumCellReuseIdentifier, forIndexPath: indexPath) as! AlbumCell		
-		if let artwork = AppDB.sharedInstance.getArtwork(albums![indexPath.row].artwork) {
+		if let artwork = getArtwork(albums![indexPath.row].artwork) {
 			cell.albumArtwork.image = artwork
 		} else {
 			let filename = theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork"

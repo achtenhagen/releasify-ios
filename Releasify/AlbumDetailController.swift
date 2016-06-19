@@ -82,7 +82,7 @@ class AlbumDetailController: UIViewController {
 		
 		// Check if remote artwork present, else load local file, else use placeholder
 		if artwork == nil {
-			if let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) {
+			if let dbArtwork = getArtwork(album!.artwork) {
 				artwork = dbArtwork
 			} else {
 				let filename = theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork"
@@ -172,10 +172,10 @@ class AlbumDetailController: UIViewController {
 		albumArtwork.addGestureRecognizer(tripleTapGesture)
 
 		// Fetch artwork if not available
-		if AppDB.sharedInstance.getArtwork(album!.artwork) == nil {
+		if getArtwork(album!.artwork) == nil {
 			downloadArtwork()
 		} else {
-			albumArtwork.image = AppDB.sharedInstance.getArtwork(album!.artwork)
+			albumArtwork.image = getArtwork(album!.artwork)
 			albumArtwork.contentMode = .ScaleToFill
 		}
 		
@@ -206,7 +206,7 @@ class AlbumDetailController: UIViewController {
 		API.sharedInstance.fetchArtwork(url, successHandler: { (artwork) in
 				self.albumArtwork.contentMode = .ScaleToFill
 				self.albumArtwork.image = artwork
-				AppDB.sharedInstance.addArtwork(self.album!.artwork, artwork: artwork!)				
+				addArtwork(self.album!.artwork, artwork: artwork!)
 			}, errorHandler: {
 				let title =  NSLocalizedString("Error", comment: "")
 				let message = NSLocalizedString("Failed to download album artwork.", comment: "")

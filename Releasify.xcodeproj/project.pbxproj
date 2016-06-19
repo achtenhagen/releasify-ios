@@ -20,6 +20,9 @@
 		5119F7301D08AF8A000C1333 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5119F7321D08AF8A000C1333 /* Localizable.strings */; };
 		512B69241BE6FCB3003752A8 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512B69231BE6FCB3003752A8 /* Notification.swift */; };
 		5134A9C11D15957200BAA8DA /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5134A9C01D15957200BAA8DA /* SearchResult.swift */; };
+		5134A9C31D15AD8100BAA8DA /* AppDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516AEE581ACAD61D0065B567 /* AppDB.swift */; };
+		5134A9C51D15B15400BAA8DA /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5134A9C41D15B15400BAA8DA /* Artwork.swift */; };
+		5134A9C61D15B23700BAA8DA /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5134A9C41D15B15400BAA8DA /* Artwork.swift */; };
 		51386CCD1C80C63D006F7E60 /* AddSubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */; };
 		514BCA771AED68CE00A1A18C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 514BCA761AED68CE00A1A18C /* Settings.bundle */; };
 		51557C5A1B9E073C00D980F9 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51557C591B9E073C00D980F9 /* Artist.swift */; };
@@ -109,6 +112,9 @@
 		5119F7311D08AF8A000C1333 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		512B69231BE6FCB3003752A8 /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		5134A9C01D15957200BAA8DA /* SearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
+		5134A9C41D15B15400BAA8DA /* Artwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artwork.swift; sourceTree = "<group>"; };
+		5134A9C71D15C90200BAA8DA /* Widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Widget.entitlements; sourceTree = "<group>"; };
+		5134A9C81D15C90800BAA8DA /* Releasify.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Releasify.entitlements; sourceTree = "<group>"; };
 		51386CCC1C80C63D006F7E60 /* AddSubscriptionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSubscriptionController.swift; sourceTree = "<group>"; };
 		514BCA761AED68CE00A1A18C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		51557C591B9E073C00D980F9 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
@@ -194,6 +200,7 @@
 		510502B71D10A6700079C5DA /* Widget */ = {
 			isa = PBXGroup;
 			children = (
+				5134A9C71D15C90200BAA8DA /* Widget.entitlements */,
 				510502B81D10A6700079C5DA /* TodayViewController.swift */,
 				510502BA1D10A6700079C5DA /* MainInterface.storyboard */,
 				510502BD1D10A6700079C5DA /* Info.plist */,
@@ -323,6 +330,7 @@
 		51F84DC71AB750A000D51E0C /* Releasify */ = {
 			isa = PBXGroup;
 			children = (
+				5134A9C81D15C90800BAA8DA /* Releasify.entitlements */,
 				51F84DCE1AB750A100D51E0C /* Main.storyboard */,
 				51F84DD31AB750A100D51E0C /* LaunchScreen.xib */,
 				513E09B41BD877EA00E6062C /* Intro */,
@@ -337,6 +345,7 @@
 				51D776A91B29FC9300D252A5 /* API.swift */,
 				51582E181D04549F00E10969 /* MD5.swift */,
 				516AEE581ACAD61D0065B567 /* AppDB.swift */,
+				5134A9C41D15B15400BAA8DA /* Artwork.swift */,
 				51F84DCA1AB750A000D51E0C /* AppDelegate.swift */,
 				51557C591B9E073C00D980F9 /* Artist.swift */,
 				51F84DEC1AB7A91B00D51E0C /* ArtistPicker.swift */,
@@ -416,11 +425,19 @@
 					510502B41D10A6700079C5DA = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = M48DDM3P94;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					51F84DC41AB750A000D51E0C = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = M48DDM3P94;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 0;
 							};
@@ -498,7 +515,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5134A9C61D15B23700BAA8DA /* Artwork.swift in Sources */,
 				510502B91D10A6700079C5DA /* TodayViewController.swift in Sources */,
+				5134A9C31D15AD8100BAA8DA /* AppDB.swift in Sources */,
 				510355031D1355D7007481A2 /* Artist.swift in Sources */,
 				510355021D1355D1007481A2 /* Album.swift in Sources */,
 			);
@@ -528,6 +547,7 @@
 				51CB15891C14D776006AEFFF /* SubscriptionCell.swift in Sources */,
 				51F84DCB1AB750A000D51E0C /* AppDelegate.swift in Sources */,
 				518FAEEF1C665A5000499A17 /* Theme.swift in Sources */,
+				5134A9C51D15B15400BAA8DA /* Artwork.swift in Sources */,
 				51B988C41AF1674C00E1A796 /* AlbumDetailController.swift in Sources */,
 				51F80F0F1C9DB10100BB4624 /* SearchResultArtistCell.swift in Sources */,
 				5134A9C11D15957200BAA8DA /* SearchResult.swift in Sources */,
@@ -614,6 +634,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
+				CODE_SIGN_ENTITLEMENTS = Widget/Widget.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos8.2]" = "iPhone Developer";
@@ -626,6 +647,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "Releasify.Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -633,6 +655,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
+				CODE_SIGN_ENTITLEMENTS = Widget/Widget.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos8.2]" = "iPhone Developer: Maurice Achtenhagen (T7V8V4DYJN)";
@@ -645,6 +668,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Releasify.Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -736,6 +760,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Releasify/Releasify.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos8.2]" = "iPhone Developer";
@@ -757,6 +782,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Releasify/Releasify.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos8.2]" = "iPhone Distribution";

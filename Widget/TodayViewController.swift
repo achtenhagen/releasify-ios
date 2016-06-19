@@ -9,26 +9,49 @@
 import UIKit
 import NotificationCenter
 
-class TodayViewController: UIViewController, NCWidgetProviding {
-        
-    override func viewDidLoad() {
+class TodayViewController: UIViewController {
+
+	@IBOutlet var upcomingTitle: UILabel!
+
+	override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view from its nib.
+		self.preferredContentSize = CGSize(width: 0, height: 60)
+		updateTitle()
+		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(openInApp))
+		upcomingTitle.addGestureRecognizer(tapGesture)
     }
+
+	override func viewWillAppear(animated: Bool) {
+		updateTitle()
+	}
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-    
-    func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)) {
-        // Perform any setup necessary in order to update the view.
 
-        // If an error is encountered, use NCUpdateResult.Failed
-        // If there's no update required, use NCUpdateResult.NoData
-        // If there's an update, use NCUpdateResult.NewData
+	func openInApp() {
+		self.extensionContext?.openURL(NSURL(string: "releasify://upcoming")!, completionHandler: nil)
+	}
 
-        completionHandler(NCUpdateResult.NewData)
-    }
-    
+	func updateTitle() {
+		let sharedDefaults = NSUserDefaults(suiteName: "group.fioware.TodayExtensionSharingDefaults")
+		if let title = sharedDefaults?.stringForKey("upcomingAlbum")  {
+			upcomingTitle.text = title
+		} else {
+			upcomingTitle.text = "No Upcoming Albums"
+		}
+	}
+}
+
+// MARK: - NCWidgetProviding
+
+extension TodayViewController: NCWidgetProviding {
+	func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)) {
+		updateTitle()
+		completionHandler(NCUpdateResult.NewData)
+	}
+
+	func widgetMarginInsetsForProposedMarginInsets(defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
+		return UIEdgeInsetsZero
+	}
 }

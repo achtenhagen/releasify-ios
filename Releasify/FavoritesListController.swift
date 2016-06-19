@@ -126,7 +126,7 @@ extension FavoritesListController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("favoritesCell", forIndexPath: indexPath) as! FavoritesListCell
 		let favorites = Favorites.sharedInstance.list
-		cell.artwork.image = AppDB.sharedInstance.getArtwork(favorites[indexPath.row].artwork)		
+		cell.artwork.image = getArtwork(favorites[indexPath.row].artwork)		
 		cell.albumTitle.text = favorites[indexPath.row].title
 		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(favorites[indexPath.row].ID)!
 		cell.backgroundColor = theme.cellBackgroundColor
