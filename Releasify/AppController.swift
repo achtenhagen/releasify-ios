@@ -234,7 +234,7 @@ extension AppController: AppControllerDelegate {
 	}
 }
 
-// MARK: - UIView fade in/out extension
+// MARK: - UIView extension
 extension UIView {
 	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0, completion: (Bool) -> Void = { (finished) in } ) {
 		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 1 }, completion: completion)

@@ -14,23 +14,23 @@
                         <viewControllerLayoutGuide type="bottom" id="FKl-LY-JtV"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" simulatedAppContext="notificationCenter" id="S3S-Oj-5AN">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="60"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Upcoming Albums" lineBreakMode="middleTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Sa-UT-Xu4">
-                                <rect key="frame" x="20" y="0.0" width="300" height="60"/>
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Upcoming Albums" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Sa-UT-Xu4">
+                                <rect key="frame" x="20" y="2" width="300" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="300" id="31K-hZ-JZO"/>
                                     <constraint firstAttribute="height" constant="60" id="5HT-8J-H2c"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <constraints>
                             <constraint firstItem="7Sa-UT-Xu4" firstAttribute="centerX" secondItem="S3S-Oj-5AN" secondAttribute="centerX" constant="10" id="4zS-dM-mIl"/>
-                            <constraint firstItem="7Sa-UT-Xu4" firstAttribute="centerY" secondItem="S3S-Oj-5AN" secondAttribute="centerY" id="SdB-Xg-AYr"/>
+                            <constraint firstItem="7Sa-UT-Xu4" firstAttribute="centerY" secondItem="S3S-Oj-5AN" secondAttribute="centerY" constant="-0.5" id="SdB-Xg-AYr"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
@@ -38,7 +38,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="320" height="60"/>
+                    <size key="freeformSize" width="320" height="65"/>
                     <connections>
                         <outlet property="upcomingTitle" destination="7Sa-UT-Xu4" id="Vcq-rm-QBA"/>
                     </connections>
