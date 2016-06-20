@@ -44,10 +44,7 @@ class TodayViewController: UIViewController {
 	// Update the label for the widget
 	func updateTitle() {
 		let sharedDefaults = NSUserDefaults(suiteName: "group.fioware.TodayExtensionSharingDefaults")
-		guard let title = sharedDefaults?.stringForKey("upcomingAlbum") else {
-			upcomingTitle.text = "-"
-			return
-		}
+		guard let title = sharedDefaults?.stringForKey("upcomingAlbum") else { return }
 		if title != upcomingTitle.text {
 			upcomingTitle.fadeOut(0.2, delay: 1, completion: { (complete) in
 				self.upcomingTitle.text = title

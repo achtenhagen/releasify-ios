@@ -53,17 +53,6 @@ final class AppController: UINavigationController {
 			NSUserDefaults.standardUserDefaults().setBool(false, forKey: "requireDBUpgradeV2")
 		}
 
-		// Set album for widget
-		let sharedDefaults = NSUserDefaults(suiteName: "group.fioware.TodayExtensionSharingDefaults")
-		if let album = AppDB.sharedInstance.getWidgetAlbum(),
-			let artist = AppDB.sharedInstance.getAlbumArtist(album.ID) {
-			let releaseDate = album.formatReleaseDateForWidget()
-			let message = "\(artist): \(album.title) is set to be released on \(releaseDate)"
-			sharedDefaults?.setObject(message, forKey: "upcomingAlbum")
-		} else {
-			sharedDefaults?.setObject("No Upcoming Albums", forKey: "upcomingAlbum")
-		}
-
 		UnreadItems.sharedInstance.load()
 
 		// Get pending artists waiting to be removed
