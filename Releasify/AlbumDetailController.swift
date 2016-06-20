@@ -82,7 +82,7 @@ class AlbumDetailController: UIViewController {
 		
 		// Check if remote artwork present, else load local file, else use placeholder
 		if artwork == nil {
-			if let dbArtwork = AppDB.sharedInstance.getArtwork(album!.artwork) {
+			if let dbArtwork = getArtwork(album!.artwork) {
 				artwork = dbArtwork
 			} else {
 				let filename = theme.style == .Dark ? "icon_artwork_dark" : "icon_artwork"
@@ -172,10 +172,10 @@ class AlbumDetailController: UIViewController {
 		albumArtwork.addGestureRecognizer(tripleTapGesture)
 
 		// Fetch artwork if not available
-		if AppDB.sharedInstance.getArtwork(album!.artwork) == nil {
+		if getArtwork(album!.artwork) == nil {
 			downloadArtwork()
 		} else {
-			albumArtwork.image = AppDB.sharedInstance.getArtwork(album!.artwork)
+			albumArtwork.image = getArtwork(album!.artwork)
 			albumArtwork.contentMode = .ScaleToFill
 		}
 		
@@ -206,7 +206,7 @@ class AlbumDetailController: UIViewController {
 		API.sharedInstance.fetchArtwork(url, successHandler: { (artwork) in
 				self.albumArtwork.contentMode = .ScaleToFill
 				self.albumArtwork.image = artwork
-				AppDB.sharedInstance.addArtwork(self.album!.artwork, artwork: artwork!)				
+				addArtwork(self.album!.artwork, artwork: artwork!)
 			}, errorHandler: {
 				let title =  NSLocalizedString("Error", comment: "")
 				let message = NSLocalizedString("Failed to download album artwork.", comment: "")
@@ -217,9 +217,9 @@ class AlbumDetailController: UIViewController {
 		})
 	}
 
-	// MARK: - Add album to favorites list
+	// Add album to favorites list
 	func addFavorite() {
-		Favorites.sharedInstance.addFavorite(album!)
+		Favorites.sharedInstance.add(album!)
 		Favorites.sharedInstance.save()
 		isFavorite = true
 		let favImage = theme.style == .Dark ? "icon_favorite_dark_filled" : "icon_favorite_filled"
@@ -227,7 +227,7 @@ class AlbumDetailController: UIViewController {
 		NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
 	}
 
-	// MARK: - Remove album from favorites list
+	// Remove album from favorites list
 	func removeFavorite() {
 		Favorites.sharedInstance.removeFavoriteIfExists(album!.ID)
 		Favorites.sharedInstance.save()
@@ -237,6 +237,7 @@ class AlbumDetailController: UIViewController {
 		NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
 	}
 	
+	// MARK: - UIPreview Actions
 	@available(iOS 9.0, *)
 	override func previewActionItems() -> [UIPreviewActionItem] {
 		var buyTitle = NSLocalizedString("Pre-Order", comment: "")
@@ -263,7 +264,7 @@ class AlbumDetailController: UIViewController {
 		return [purchaseAction, favoriteAction]
 	}
 	
-	// MARK: - Handle album share sheet
+	// Handle album share sheet
 	func shareAlbum() {
 		let message = NSLocalizedString("Buy this album on iTunes", comment: "")
 		let shareActivityItem = "\(message):\n\(album!.iTunesUrl)"
@@ -271,12 +272,12 @@ class AlbumDetailController: UIViewController {
 		self.presentViewController(activityViewController, animated: true, completion: nil)
 	}
 	
-	// MARK: - Selector action for timer to update progress
+	// Selector action for timer to update progress
 	func update() {
 		timeLeft(album!.releaseDate - NSDate().timeIntervalSince1970)
 	}
 	
-	// MARK: - Compute remaining time
+	// Compute remaining time
 	func timeLeft(timeDiff: Double) {
 		let weeks   = component(Double(timeDiff), v: 7 * 24 * 60 * 60)
 		let days    = component(Double(timeDiff), v: 24 * 60 * 60) % 7
@@ -323,19 +324,19 @@ class AlbumDetailController: UIViewController {
 		progressBar.progress = progress
 	}
 	
-	// MARK: - Compute the floor of 2 numbers
+	// Compute the floor of 2 numbers
 	func component (x: Double, v: Double) -> Double {
 		return floor(x / v)
 	}
 	
-	// MARK: - Format number to string type
+	// Format number to string type
 	func formatNumber (n: Double) -> String {
 		let stringNumber = String(Int(n))
 		return n < 10 ? ("0\(stringNumber)") : stringNumber
 	}
 }
 
-// MARK: - Theme Extension
+// Theme Subclass
 private class AlbumDetailControllerTheme: Theme {
 	var progressBarBackTintColor: UIColor!
 	var albumTitleColor: UIColor!

@@ -14,20 +14,20 @@ final class UnreadItems {
 	private let rootKey = "unreadList"
 	var list: [Int]!
 
-	// MARK: - Add new item to list
+	// Add new item to list
 	func addItem(ID: Int) {
 		if !list.contains(ID) {
 			list.append(ID)
 		}
 	}
 
-	// MARK: - Clear the list
-	func clearList() {
+	// Clear the list
+	func clear() {
 		list = [Int]()
 		save()
 	}
 
-	// MARK: - Remove item from list
+	// Remove item from list
 	func removeItem(itemID: Int) -> Bool {
 		for (index, item) in list.enumerate() {
 			if item == itemID {
@@ -38,7 +38,7 @@ final class UnreadItems {
 		return false
 	}
 
-	// MARK: - Load list
+	// Load list
 	func load() {
 		list = [Int]()
 		if let data = NSData(contentsOfFile: objectFile) {
@@ -48,7 +48,7 @@ final class UnreadItems {
 		}
 	}
 
-	// MARK: - Save list
+	// Save list
 	func save() {
 		let data = NSMutableData()
 		let archiver = NSKeyedArchiver(forWritingWithMutableData: data)

@@ -93,7 +93,7 @@ final class API {
 		}
 	}
 
-	// MARK: - Get iTunes feed
+	// Get iTunes feed
 	func getiTunesFeed(successHandler: ([Album] -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
 		sendRequest(Endpoint.feed.url(), postString: postString, successHandler: { (statusCode, data) in
@@ -107,7 +107,7 @@ final class API {
 				return
 			}
 
-			if let handler: Void = successHandler(self.processAlbumsFrom(json!)) {
+			if let handler: Void = successHandler(self.parseAlbumsFrom(json!)) {
 				handler
 				return
 			}
@@ -117,7 +117,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Refresh Content
+	// Refresh Content
 	func refreshContent(successHandler: ((processedAlbums: [Album], contentHash: String) -> Void)?, errorHandler: ((error: ErrorType) -> Void)) {
 		var processedAlbums = [Album]()
 		var postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&explicit=\(appDelegate.allowExplicitContent ? 1 : 0)"
@@ -159,10 +159,8 @@ final class API {
 				return
 			}
 
-			processedAlbums = self.processAlbumsFrom(content)
+			processedAlbums = self.parseAlbumsFrom(content)
 			self.processSubscriptions(subscriptions)
-			
-			// Pass new content back thru closure
 			if let handler: Void = successHandler?(processedAlbums: processedAlbums, contentHash: contentHash) { handler }
 			},
 			errorHandler: { (error) in
@@ -170,11 +168,12 @@ final class API {
 		})
 	}
 
-	// MARK: - Process downloaded JSON data
-	func processAlbumsFrom(json: [NSDictionary]) -> [Album] {
+	// Parse downloaded JSON data
+	func parseAlbumsFrom(json: [NSDictionary]) -> [Album] {
 		var albums = [Album]()
 		for item in json {
-			guard let ID = item["ID"] as? Int,
+			guard
+				let ID = item["ID"] as? Int,
 				let title = item["title"] as? String,
 				let artistID = item["artistID"] as? Int,
 				let releaseDate = item["releaseDate"] as? Double,
@@ -191,7 +190,7 @@ final class API {
 		return albums
 	}
 	
-	// MARK: - Process downloaded JSON data
+	// Process downloaded JSON data
 	func processSubscriptions(json: [NSDictionary]) {
 		for item in json {
 			let artistID = item["artistID"] as! Int
@@ -201,7 +200,7 @@ final class API {
 		}
 	}
 
-	// MARK: - Get artist albums for `AddSubscriptionDetailView`
+	// Get artist albums for `AddSubscriptionDetailView`
 	func getAlbumsByArtist(artistUniqueID: Int, successHandler: ((albums: [Album]) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&artistUniqueID=\(artistUniqueID)"
 		sendRequest(Endpoint.getAlbumsByArtist.url(), postString: postString, successHandler: { (statusCode, data) in
@@ -214,14 +213,14 @@ final class API {
 				return
 			}
 			// Process serialized JSON data
-			let albums = self.processAlbumsFrom(json!)
+			let albums = self.parseAlbumsFrom(json!)
 			successHandler(albums: albums)
 		}, errorHandler: { (error) in
 				errorHandler(error: error)
 		})
 	}
 	
-	// MARK: - Album lookup
+	// Album lookup
 	func lookupAlbum(albumID: Int, successHandler: ((album: Album) -> Void), errorHandler: ((error: ErrorType) -> Void)) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&itemID=\(albumID)"
 		sendRequest(Endpoint.itemLookup.url(), postString: postString, successHandler: { (statusCode, data) in
@@ -255,7 +254,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Fetch Artwork
+	// Fetch Artwork
 	func fetchArtwork(url: String, successHandler: ((image: UIImage?) -> Void), errorHandler: (() -> Void)) {		
 		if url.isEmpty { errorHandler(); return }
 		let albumUrl = url.stringByReplacingOccurrencesOfString("100x100", withString: "600x600", options: .LiteralSearch, range: nil)
@@ -270,7 +269,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Unsubscribe album
+	// Unsubscribe from album
 	func unsubscribeAlbum(iTunesUniqueID: Int, successHandler: (() -> Void)?, errorHandler: (error: ErrorType) -> Void) {
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)&iTunesUniqueID=\(iTunesUniqueID)"
 		API.sharedInstance.sendRequest(API.Endpoint.removeAlbum.url(), postString: postString, successHandler: { (statusCode, data) in
@@ -285,7 +284,7 @@ final class API {
 		})
 	}
 	
-	// MARK: - Device Registration
+	// Device Registration
 	func register(allowExplicitContent: Bool = true, deviceToken: String? = nil, successHandler: ((userID: Int?, userUUID: String) -> Void),
 	              errorHandler: ((error: ErrorType) -> Void)) {
 		let UUID = NSUUID().UUIDString
@@ -316,7 +315,7 @@ final class API {
 		})
 	}
 
-	// MARK: - Handle network requests
+	// Handle network requests
 	func sendRequest(url: NSURL, postString: String, successHandler: ((statusCode: Int!, data: NSData!) -> Void), errorHandler: (error: ErrorType) -> Void) {
 		var appVersion = "Unknown"
 		if let version = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String {

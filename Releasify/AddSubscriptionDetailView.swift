@@ -83,7 +83,7 @@ class AddSubscriptionDetailView: UICollectionViewController {
 		})
     }
 
-	// MARK: - Show App empty state
+	// Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
 			let title = NSLocalizedString("No Albums", comment: "")
@@ -115,7 +115,7 @@ class AddSubscriptionDetailView: UICollectionViewController {
 		}
     }
 
-	// MARK: - Return artwork for each collection view cell
+	// Return artwork for each collection view cell
 	func getArtworkForCell(url: String, hash: String, completion: ((artwork: UIImage) -> Void)) {
 		if tmpArtwork![hash] != nil {
 			completion(artwork: tmpArtwork![hash]!)

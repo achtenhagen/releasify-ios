@@ -67,7 +67,7 @@ class FavoritesListController: UIViewController {
 		}
 	}
 
-	// MARK: - Show App empty state
+	// Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
 			let title = NSLocalizedString("No Favorites", comment: "")
@@ -81,7 +81,7 @@ class FavoritesListController: UIViewController {
 		}
 	}
 
-	// MARK: - Hide App empty state
+	// Hide App empty state
 	func hideAppEmptyState() {
 		if appEmptyStateView != nil {
 			appEmptyStateView.removeFromSuperview()
@@ -103,7 +103,7 @@ class FavoritesListController: UIViewController {
 		}
 	}
 	
-    // MARK: - Navigation
+    // Navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "FavoritesListAlbumSegue" {
 			let detailController = segue.destinationViewController as! AlbumDetailController
@@ -126,7 +126,7 @@ extension FavoritesListController: UITableViewDataSource {
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("favoritesCell", forIndexPath: indexPath) as! FavoritesListCell
 		let favorites = Favorites.sharedInstance.list
-		cell.artwork.image = AppDB.sharedInstance.getArtwork(favorites[indexPath.row].artwork)		
+		cell.artwork.image = getArtwork(favorites[indexPath.row].artwork)		
 		cell.albumTitle.text = favorites[indexPath.row].title
 		cell.artistTitle.text = AppDB.sharedInstance.getAlbumArtist(favorites[indexPath.row].ID)!
 		cell.backgroundColor = theme.cellBackgroundColor
@@ -150,7 +150,7 @@ extension FavoritesListController: UITableViewDelegate {
 	
 	func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
 		let removeAction = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "         ", handler: { (action, indexPath) -> Void in
-			Favorites.sharedInstance.removeFavorite(indexPath.row)
+			Favorites.sharedInstance.remove(indexPath.row)
 			tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)			
 			if Favorites.sharedInstance.list.count == 0 {
 				self.showAppEmptyState()
@@ -162,7 +162,7 @@ extension FavoritesListController: UITableViewDelegate {
 	}
 }
 
-// MARK: - Theme Extension
+// Theme Extension
 private class FavoritesListControllerTheme: Theme {
 	var viewBackgroundColor: UIColor!
 	var cellBackgroundColor: UIColor!

@@ -58,7 +58,7 @@ final class AppController: UINavigationController {
 		// Get pending artists waiting to be removed
 		AppDB.sharedInstance.getPendingArtists()
 		
-		// Housekeeping
+		// Remove expired albums
 		if appDelegate.removeExpiredAlbums {
 			AppDB.sharedInstance.removeExpiredAlbums()
 		}
@@ -94,17 +94,17 @@ final class AppController: UINavigationController {
 		tabController.view.addGestureRecognizer(leftEdgePan)
 	}
 
-	// MARK: - Tap gesture handler
+	// Tap gesture handler
 	func handleTap(recognizer: UITapGestureRecognizer) {
 		closeMenu()
 	}
 
-	// MARK: - Swipe gesture handler
+	// Swipe gesture handler
 	func handleSwipe(recognizer: UISwipeGestureRecognizer) {
 		closeMenu()
 	}
 
-	// MARK: - Edge pan gesture handler
+	// Edge pan gesture handler
 	func handleEdgePan(recognizer: UIScreenEdgePanGestureRecognizer) {
 		let translation: CGPoint = recognizer.translationInView(window)
 		let velocity: CGPoint = recognizer.velocityInView(window)
@@ -148,7 +148,7 @@ final class AppController: UINavigationController {
 		}
 	}
 
-	// MARK: - Toggle menu state
+	// Toggle menu state
 	func openAndCloseMenu() {
 		var finalOrigin = CGPoint()
 		var f = window.frame
@@ -170,7 +170,7 @@ final class AppController: UINavigationController {
 		})
 	}
 
-	// MARK: - Close the menu
+	// Close the menu
 	func closeMenu() {
 		var finalOrigin = CGPointZero
 		var f = window.frame
@@ -186,7 +186,7 @@ final class AppController: UINavigationController {
 		})
 	}
 
-	// MARK: - Set the view's user interaction ability
+	// Set the view's user interaction ability
 	func setViewInteraction(point: CGPoint) {
 		if point == CGPointZero {
 			self.tabController.streamController.view.userInteractionEnabled = true
@@ -223,7 +223,7 @@ extension AppController: AppControllerDelegate {
 	}
 }
 
-// MARK: - UIView fade in/out extension
+// MARK: - UIView extension
 extension UIView {
 	func fadeIn(duration: NSTimeInterval = 0.2, delay: NSTimeInterval = 0, completion: (Bool) -> Void = { (finished) in } ) {
 		UIView.animateWithDuration(duration, delay: delay, options: UIViewAnimationOptions.CurveEaseIn, animations: { self.alpha = 1 }, completion: completion)

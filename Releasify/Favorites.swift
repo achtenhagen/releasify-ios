@@ -14,20 +14,20 @@ final class Favorites {
 	private let rootKey = "favList"
 	var list: [Album]!
 	
-	// MARK: - Add new item to list
-	func addFavorite(album: Album) {
+	// Add new item to list
+	func add(album: Album) {
 		if !isFavorite(album) {
 			list.append(album)
 		}
 	}
 
-	// MARK: - Clear the list
-	func clearList() {
+	// Clear the list
+	func clear() {
 		list = [Album]()
 		save()
 	}
 
-	// MARK: - Check if album is present in list
+	// Check if album is present in list
 	func isFavorite(album: Album) -> Bool {
 		for favorite in list {
 			if favorite.ID == album.ID {
@@ -37,24 +37,24 @@ final class Favorites {
 		return false
 	}
 	
-	// MARK: - Remove item from list with known index
-	func removeFavorite(index: Int) {
+	// Remove item from list with known index
+	func remove(index: Int) {
 		list.removeAtIndex(index)
 		save()
 	}
 
-	// MARK: - Remove item from list with unknown index
+	// Remove item from list with unknown index
 	func removeFavoriteIfExists(albumID: Int) -> Bool {
 		for (key, value) in list.enumerate() {
 			if value.ID == albumID {
-				removeFavorite(key)
+				remove(key)
 				return true
 			}
 		}
 		return false
 	}
 	
-	// MARK: - Load favorites list
+	// Load favorites list
 	func load() {
 		list = [Album]()
 		if let data = NSData(contentsOfFile: objectFile) {
@@ -64,7 +64,7 @@ final class Favorites {
 		}
 	}
 	
-	// MARK: - Save favorites list
+	// Save favorites list
 	func save() {
 		let data = NSMutableData()
 		let archiver = NSKeyedArchiver(forWritingWithMutableData: data)

@@ -10,11 +10,10 @@ import UIKit
 
 class SearchResultsNavController: UINavigationController {
 
-	var artists: [NSDictionary]!
+	var searchResults: [NSDictionary]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
     }
 
     override func didReceiveMemoryWarning() {

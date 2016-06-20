@@ -91,7 +91,7 @@ class SubscriptionController: UITableViewController {
 		subscriptionsTable.reloadData()
 	}
 
-	// MARK: - Show App empty state
+	// Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
 			let title = NSLocalizedString("No Subscriptions", comment: "")
@@ -105,7 +105,7 @@ class SubscriptionController: UITableViewController {
 		}
 	}
 
-	// MARK: - Hide App empty state
+	// Hide App empty state
 	func hideAppEmptyState() {
 		if appEmptyStateView != nil {
 			appEmptyStateView.removeFromSuperview()
@@ -114,7 +114,7 @@ class SubscriptionController: UITableViewController {
 		}
 	}
 	
-	// MARK: - Handle error messages
+	// Handle error messages
 	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
@@ -137,7 +137,7 @@ class SubscriptionController: UITableViewController {
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
-	// MARK: - Search function for UISearchResultsUpdating
+	// Search function for UISearchResultsUpdating
 	func filterContentForSearchText(searchText: String) {
 		filteredArtists.removeAll(keepCapacity: true)
 		if !searchText.isEmpty {
@@ -219,7 +219,7 @@ extension SubscriptionController: UISearchResultsUpdating {
 	}
 }
 
-// MARK: - Theme Extension
+// Theme Subclass
 private class SubscriptionControllerTheme: Theme {
 	var subscriptionTitleColor: UIColor!
 	var cellBorderColor: UIColor!

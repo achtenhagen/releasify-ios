@@ -49,7 +49,7 @@ class StreamCell: UITableViewCell {
 		super.setSelected(selected, animated: animated)
 	}
 
-	// MARK: - Add shadow overlay to cell
+	// Add shadow overlay to cell
 	func addOverlay(frame: CGRect) {
 		if gradientLayerView != nil { gradientLayerView.removeFromSuperview() }
 		gradientLayerView = UIView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: frame.height))
@@ -65,7 +65,7 @@ class StreamCell: UITableViewCell {
 		artworkContainer.addSubview(gradientLayerView)		
 	}
 
-	// MARK: - Add new item label
+	// Add new item label
 	func addNewItemLabel() {
 		if label == nil {
 			label = UILabel(frame: CGRect(x: gradientLayerView.bounds.width - 65, y: gradientLayerView.bounds.height - 40, width: 50, height: 26))
@@ -79,7 +79,7 @@ class StreamCell: UITableViewCell {
 		}
 	}
 	
-	// MARK: - Remove new item label
+	// Remove new item label
 	func removeNewItemLabel() {
 		if label != nil {
 			self.label.removeFromSuperview()
@@ -87,7 +87,7 @@ class StreamCell: UITableViewCell {
 		}
 	}
 	
-	// MARK: - Calculate offset for image parallax effect
+	// Calculate offset for image parallax effect
 	func setBackgroundOffset(offset:CGFloat) {
 		let boundOffset = max(0, min(1, offset))
 		let pixelOffset = (1 - boundOffset) * 2 * imageParallaxFactor

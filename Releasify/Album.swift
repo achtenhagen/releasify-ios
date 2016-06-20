@@ -84,12 +84,12 @@ class Album: NSObject, NSCoding {
 		coder.encodeObject(created, forKey: "created")
 	}
 
-	// MARK: - Return the decimal progress relative to the date added
+	// Return the decimal progress relative to the date added
 	func getProgressSinceDate(dateAdded: Double) -> Float {
 		return Float((Double(NSDate().timeIntervalSince1970) - Double(dateAdded)) / (Double(releaseDate) - Double(dateAdded)))
 	}
 
-	// MARK: - Return the formatted date posted
+	// Return the formatted date posted
 	func getFormattedDatePosted(dateAdded: Int) -> String {
 		var timeDiff = Int(NSDate().timeIntervalSince1970) - dateAdded
 		let currentLangID = (NSLocale.preferredLanguages() as [String])[0]
@@ -183,7 +183,7 @@ class Album: NSObject, NSCoding {
 		return t2
 	}
 
-	// MARK: - Return the formatted release date
+	// Return the formatted release date
 	func getFormattedReleaseDate() -> String {
 		let timeDiff = releaseDate - NSDate().timeIntervalSince1970
 		if timeDiff > 0 {
@@ -208,18 +208,8 @@ class Album: NSObject, NSCoding {
 				return "\(Int(seconds)) \(t3)"
 			}
 		}
-
-		// Check user locale and determine date format
-		let currentLangID = (NSLocale.preferredLanguages() as [String])[0]
-		let displayLang = locale.displayNameForKey(NSLocaleLanguageCode, value: currentLangID)
 		let dateFormat = NSDateFormatter()
-		switch displayLang! {
-		case "Deutsch":
-			dateFormat.dateFormat = "dd. MMM"
-		default:
-			dateFormat.dateFormat = "MMM dd"
-		}
-
+		dateFormat.dateFormat = getDateFormatForDisplayLanguage()
 		return dateFormat.stringFromDate(NSDate(timeIntervalSince1970: releaseDate))
 	}
 
@@ -230,12 +220,38 @@ class Album: NSObject, NSCoding {
 		return dateFormat.stringFromDate(NSDate(timeIntervalSince1970: timestamp))
 	}
 
-	// MARK: - Compute the floor of 2 numbers
+	// Format the release date for the today widget
+	func formatReleaseDateForWidget() -> String {
+		let currentLangID = (NSLocale.preferredLanguages() as [String])[0]
+		let displayLang = locale.displayNameForKey(NSLocaleLanguageCode, value: currentLangID)
+		let dateFormat = NSDateFormatter()
+		switch displayLang! {
+		case "Deutsch":
+			dateFormat.dateFormat = "d.MM.yy"
+		default:
+			dateFormat.dateFormat = "MM/d/yy"
+		}
+		return dateFormat.stringFromDate(NSDate(timeIntervalSince1970: releaseDate))
+	}
+
+	// Return date format based on display language
+	func getDateFormatForDisplayLanguage() -> String {
+		let currentLangID = (NSLocale.preferredLanguages() as [String])[0]
+		let displayLang = locale.displayNameForKey(NSLocaleLanguageCode, value: currentLangID)
+		switch displayLang! {
+		case "Deutsch":
+			return "dd. MMM"
+		default:
+			return "MMM dd"
+		}
+	}
+
+	// Compute the floor of 2 numbers
 	func component(x: Double, v: Double) -> Double {
 		return floor(x / v)
 	}
 
-	// MARK: - Return the boolean value whether the album has been released
+	// Return the boolean value whether the album has been released
 	func isReleased() -> Bool {
 		return releaseDate - NSDate().timeIntervalSince1970 > 0 ? false : true
 	}

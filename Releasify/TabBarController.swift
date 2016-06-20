@@ -136,12 +136,12 @@ class TabBarController: UITabBarController {
 		navController.openAndCloseMenu()
 	}
 
-	// MARK: - Handle 3D Touch quick action
+	// Handle 3D Touch quick action
 	func addSubscriptionFromShortcutItem() {
 		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
 	}
 	
-	// MARK: - Handle failed subscription
+	// Handle failed subscription
 	func handleAddSubscriptionError(error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
@@ -164,7 +164,7 @@ class TabBarController: UITabBarController {
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
-	// MARK: - Error Message Handler
+	// Error Message Handler
 	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
@@ -185,7 +185,7 @@ class TabBarController: UITabBarController {
 	}
 
 	// Create 1px image from color component
-	func onePixelImageFromColor(color: UIColor) -> UIImage {
+	func onePixelImageFrom(color: UIColor) -> UIImage {
 		let colorSpace = CGColorSpaceCreateDeviceRGB()
 		let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedLast.rawValue)
 		let context = CGBitmapContextCreate(nil, 1, 1, 8, 0, colorSpace, bitmapInfo.rawValue)

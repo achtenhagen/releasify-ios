@@ -46,7 +46,7 @@ class Intro02Controller: UIViewController {
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
 	
-	// MARK: - Notification settings
+	// Notification settings
 	@IBAction func permissionBtn(sender: UIButton) {
 		if UIApplication.sharedApplication().respondsToSelector(#selector(UIApplication.registerUserNotificationSettings(_:))) {
 			permissionBtn.enabled = false

@@ -68,6 +68,9 @@
 "No Subscriptions" = "Keine Abonnements";
 
 /* No comment provided by engineer. */
+"No Upcoming Albums" = "Keine Bevorstehenden Alben";
+
+/* No comment provided by engineer. */
 "No albums here yet!" = "Noch keine Alben verfügbar!";
 
 /* No comment provided by engineer. */
@@ -216,6 +219,9 @@
 
 /* No comment provided by engineer. */
 "is now available." = "ist nun erhältlich.";
+
+/* No comment provided by engineer. */
+"is set to be released on" = "erscheint am";
 
 /* No comment provided by engineer. */
 "just a moment ago" = "gerade eben";

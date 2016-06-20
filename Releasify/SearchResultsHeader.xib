@@ -17,7 +17,7 @@
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZCx-Z0-Gey">
                     <rect key="frame" x="55" y="16" width="220" height="18"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="220" id="RKc-Nd-9YA"/>
+                        <constraint firstAttribute="width" constant="220" id="9et-nn-EiJ"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <nil key="highlightedColor"/>
@@ -31,10 +31,10 @@
             </subviews>
             <color key="tintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="10" id="6nA-ke-rEv"/>
                 <constraint firstItem="cmI-bs-sbQ" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="GnK-GZ-sAK"/>
                 <constraint firstItem="Dxt-7U-urn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="IW3-U2-bBk"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="LrP-CC-Sl6"/>
-                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="leading" secondItem="Dxt-7U-urn" secondAttribute="trailing" constant="10" id="fD1-aW-BuI"/>
+                <constraint firstItem="ZCx-Z0-Gey" firstAttribute="centerY" secondItem="Dxt-7U-urn" secondAttribute="centerY" id="Ja6-6p-uYN"/>
                 <constraint firstItem="Dxt-7U-urn" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="svA-qp-5iM"/>
                 <constraint firstAttribute="trailing" secondItem="cmI-bs-sbQ" secondAttribute="trailing" constant="12" id="t0I-bZ-Ejy"/>
             </constraints>

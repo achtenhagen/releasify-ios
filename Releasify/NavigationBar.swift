@@ -34,7 +34,7 @@ class NavigationBar: UINavigationBar {
 	}
 }
 
-// MARK: - Theme Subclass
+// Theme Subclass
 private class NavigationBarTheme: Theme {
 	var navBarStyle: UIBarStyle!
 	var navBarTintColor: UIColor!
