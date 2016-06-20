@@ -10,7 +10,8 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-	let debug = true
+	// SET TO FALSE FOR PRODUCTION
+	let debug = false
 	let storyboard = UIStoryboard(name: "Main", bundle: nil)
 	var window: UIWindow?
 	var backWindow: UIWindow?
