@@ -40,8 +40,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let reset = NSUserDefaults.standardUserDefaults().boolForKey("reset")
 		if reset {
 			AppDB.sharedInstance.reset()
-			Favorites.sharedInstance.clearList()
-			UnreadItems.sharedInstance.clearList()
+			Favorites.sharedInstance.clear()
+			UnreadItems.sharedInstance.clear()
 			application.cancelAllLocalNotifications()
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "ID")
 			NSUserDefaults.standardUserDefaults().setInteger(0, forKey: "lastUpdated")
@@ -124,7 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		return true
 	}
 
-	// MARK: - Callback when user allows push notifications
+	// Callback when user allows push notifications
 	func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
 		var deviceTokenString = deviceToken.description
 		deviceTokenString = deviceTokenString.stringByReplacingOccurrencesOfString(" ", withString: "", options: .LiteralSearch, range: nil)
@@ -146,7 +146,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	// MARK: - Callback when user does not give permission to use push notifications
+	// Callback when user does not give permission to use push notifications
 	func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
 		if userID == 0 {
 			API.sharedInstance.register(allowExplicitContent, successHandler: { (userID, userUUID) in
@@ -160,7 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	// MARK: - Local Notification - Receiver | App is in the foreground or the notification itself is tapped
+	// Local Notification - Receiver | App is in the foreground or the notification itself is tapped
 	func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
 		if let userInfo = notification.userInfo {
 			notificationAlbumID = userInfo["albumID"] as? Int
@@ -172,7 +172,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	// MARK: - Local Notification - Handler
+	// Local Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
 			NSNotificationCenter.defaultCenter().postNotificationName("showAlbum", object: nil, userInfo: notification.userInfo)
@@ -189,7 +189,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		completionHandler()
 	}
 	
-	// MARK: - Remote Notification - Receiver
+	// Remote Notification - Receiver
 	func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
 		if application.applicationState == .Inactive {
 			NSNotificationCenter.defaultCenter().postNotificationName("appActionPressed", object: nil, userInfo: userInfo)
@@ -198,7 +198,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 	}
 	
-	// MARK: - Remote Notification - Handler
+	// Remote Notification - Handler
 	func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
 		if identifier == "APP_ACTION" {
 			dispatch_async(dispatch_get_main_queue(), {
@@ -215,6 +215,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		completionHandler()
 	}
+
+	// Reset application badge count to 0
+	func applicationDidBecomeActive(application: UIApplication) {
+		UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+	}
 	
 	// MARK: - 3D Touch Home Screen Quick Actions
 	@available(iOS 9.0, *)
@@ -225,10 +230,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		} else {
 			completionHandler(false)
 		}
-	}
-
-	// MARK: - Reset application badge count to 0
-	func applicationDidBecomeActive(application: UIApplication) {
-		UIApplication.sharedApplication().applicationIconBadgeNumber = 0
 	}
 }

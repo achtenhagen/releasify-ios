@@ -31,13 +31,13 @@ func deleteArtwork(hash: String) {
 	}
 }
 
-// MARK: - Check album artwork file path
+// Check album artwork file path
 func checkArtwork(hash: String) -> Bool {
 	let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
 	return NSFileManager.defaultManager().fileExistsAtPath(artworkPath)
 }
 
-// MARK: - Check album artwork file path and return image
+// Check album artwork file path and return image
 func getArtwork(hash: String) -> UIImage? {
 	let artworkPath = artworkDirectoryPath + "/\(hash).jpg"
 	if NSFileManager.defaultManager().fileExistsAtPath(artworkPath) { return UIImage(contentsOfFile: artworkPath)! }

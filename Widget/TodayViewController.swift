@@ -19,8 +19,6 @@ class TodayViewController: UIViewController {
 		updateTitle()
 		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(openInApp))
 		self.view.addGestureRecognizer(tapGesture)
-
-		// Add vibrancy effect
 		let effectView = UIVisualEffectView(effect: UIVibrancyEffect.notificationCenterVibrancyEffect())
 		effectView.frame = self.view.bounds
 		effectView.autoresizingMask = self.view.autoresizingMask
@@ -38,14 +36,16 @@ class TodayViewController: UIViewController {
         super.didReceiveMemoryWarning()
     }
 
+	// Open the app from widget
 	func openInApp() {
 		self.extensionContext?.openURL(NSURL(string: "releasify://upcoming")!, completionHandler: nil)
 	}
 
+	// Update the label for the widget
 	func updateTitle() {
 		let sharedDefaults = NSUserDefaults(suiteName: "group.fioware.TodayExtensionSharingDefaults")
 		guard let title = sharedDefaults?.stringForKey("upcomingAlbum") else {
-			upcomingTitle.text = "No Upcoming Albums"
+			upcomingTitle.text = "-"
 			return
 		}
 		if title != upcomingTitle.text {

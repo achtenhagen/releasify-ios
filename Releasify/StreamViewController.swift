@@ -133,13 +133,13 @@ class StreamViewController: UITableViewController {
 		} else {
 			hideAppEmptyState()
 		}
-		self.streamTable.reloadData()
+		streamTable.reloadData()
 	}
 
 	// Mark all items in stream as read
 	func markAllRead(sender: AnyObject) {
 		if UnreadItems.sharedInstance.list.count > 0 {
-			UnreadItems.sharedInstance.clearList()
+			UnreadItems.sharedInstance.clear()
 			updateTabBarItemBadgeCount()
 			streamTable.reloadData()
 			streamTable.tableHeaderView?.fadeOut(0.2, delay: 0, completion: { (complete) in
@@ -148,7 +148,7 @@ class StreamViewController: UITableViewController {
 		}
 	}
 
-	// MARK: - Update tab bar item badge count
+	// Update tab bar item badge count
 	func updateTabBarItemBadge(albumID: Int) {
 		if UnreadItems.sharedInstance.removeItem(albumID) {
 			updateTabBarItemBadgeCount()
@@ -156,13 +156,13 @@ class StreamViewController: UITableViewController {
 		}
 	}
 
-	// MARK: - Update tab bar item badge count
+	// Update tab bar item badge count
 	func updateTabBarItemBadgeCount() {
 		let count = UnreadItems.sharedInstance.list.count
 		self.tabBarItem.badgeValue = count == 0 ? nil : String(count)
 	}
 
-	// MARK: - Show App empty state
+	// Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
 			let title = NSLocalizedString("No Content", comment: "")
@@ -177,7 +177,7 @@ class StreamViewController: UITableViewController {
 		}
 	}
 
-	// MARK: - Hide App empty state
+	// Hide App empty state
 	func hideAppEmptyState() {
 		if appEmptyStateView != nil {
 			appEmptyStateView.removeFromSuperview()
@@ -205,6 +205,7 @@ class StreamViewController: UITableViewController {
 							let title = NSLocalizedString("New Album Released", comment: "")
 							notification.alertTitle = title
 						}
+						// Schedule local notification
 						notification.category = "DEFAULT_CATEGORY"
 						notification.timeZone = NSTimeZone.localTimeZone()
 						let body = NSLocalizedString("is now available.", comment: "")
@@ -214,50 +215,30 @@ class StreamViewController: UITableViewController {
 						notification.soundName = UILocalNotificationDefaultSoundName
 						notification.userInfo = ["albumID": newAlbumID, "iTunesUrl": album.iTunesUrl]
 						UIApplication.sharedApplication().scheduleLocalNotification(notification)
-						// Set album for widget
-						let sharedDefaults = NSUserDefaults(suiteName: "group.fioware.TodayExtensionSharingDefaults")
-						if let album = AppDB.sharedInstance.getWidgetAlbum(),
-							let artist = AppDB.sharedInstance.getAlbumArtist(album.ID) {
-							let releaseDate = album.formatReleaseDateForWidget()
-							let message = "\(artist): \(album.title) is set to be released on \(releaseDate)"
-							sharedDefaults?.setObject(message, forKey: "upcomingAlbum")
-						} else {
-							sharedDefaults?.setObject("No Upcoming Albums", forKey: "upcomingAlbum")
-						}
+						self.updateWidget()
 					}
 				}
 			}
-
 			// Reload data if new content is available
 			if newContentAvailable {
 				AppDB.sharedInstance.getAlbums()
 				self.streamTable.reloadData()
 				UnreadItems.sharedInstance.save()
 			}
-
 			// Required in case of new artist, but no new content
 			AppDB.sharedInstance.getArtists()
-
-			// Show / hide empty state placeholder
 			if AppDB.sharedInstance.albums.count == 0 {
 				self.showAppEmptyState()
 			} else {
 				self.hideAppEmptyState()
 			}
-
 			// Update content hash
 			NSUserDefaults.standardUserDefaults().setValue(contentHash, forKey: "contentHash")
 			self.appDelegate.contentHash = contentHash
-
-			// Set last updated
 			self.appDelegate.completedRefresh = true
 			NSUserDefaults.standardUserDefaults().setInteger(Int(NSDate().timeIntervalSince1970), forKey: "lastUpdated")
-
-			// Update tab bar item badge value
 			self.updateTabBarItemBadgeCount()
 			UnreadItems.sharedInstance.save()
-
-			// Complete refresh
 			self.refreshControl!.endRefreshing()
 			},
 			errorHandler: { (error) in
@@ -268,35 +249,48 @@ class StreamViewController: UITableViewController {
 		})
 	}
 
-	// MARK: - Gesture recognizer to scroll list to top
+	// Update today widget
+	func updateWidget() {
+		let sharedDefaults = NSUserDefaults(suiteName: "group.fioware.TodayExtensionSharingDefaults")
+		if let album = AppDB.sharedInstance.getWidgetAlbum(),
+			let artist = AppDB.sharedInstance.getAlbumArtist(album.ID) {
+			let releaseDate = album.formatReleaseDateForWidget()
+			let widgetTitle = NSLocalizedString("is set to be released on", comment: "")
+			let message = "\(artist): \(album.title) \(widgetTitle) \(releaseDate)"
+			sharedDefaults?.setObject(message, forKey: "upcomingAlbum")
+		} else {
+			let widgetTitle = NSLocalizedString("No Upcoming Albums", comment: "")
+			sharedDefaults?.setObject(widgetTitle, forKey: "upcomingAlbum")
+		}
+	}
+
+	// Gesture recognizer to scroll list to top
 	func scrollListToTop() {
 		if self.tabBarController?.tabBar.selectedItem?.tag == 0 {
 			self.streamTable.setContentOffset(CGPointZero, animated: true)
 		}
 	}
 
-	// MARK: - Fallback if 3D Touch is unavailable
+	// Fallback if 3D Touch is unavailable
 	func registerLongPressGesture() {
-		let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(StreamViewController.longPressGestureRecognized(_:)))
+		let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(_:)))
 		longPressGesture.minimumPressDuration = 1
-		self.streamTable.addGestureRecognizer(longPressGesture)
+		streamTable.addGestureRecognizer(longPressGesture)
 	}
 
-	// MARK: - Handle long press gesture
+	// Handle long press gesture
 	func longPressGestureRecognized(gesture: UIGestureRecognizer) {
 		let cellLocation = gesture.locationInView(streamTable)
-		let indexPath = streamTable.indexPathForRowAtPoint(cellLocation)
-		if indexPath == nil { return }
-		if indexPath?.row == nil { return }
+		guard let indexPath = streamTable.indexPathForRowAtPoint(cellLocation) else { return }
 		if gesture.state == UIGestureRecognizerState.Began {
 			let message = NSLocalizedString("Buy this album on iTunes", comment: "")
-			let shareActivityItem = "\(message):\n\(AppDB.sharedInstance.albums[indexPath!.row].iTunesUrl)"
+			let shareActivityItem = "\(message):\n\(AppDB.sharedInstance.albums[indexPath.row].iTunesUrl)"
 			let activityViewController = UIActivityViewController(activityItems: [shareActivityItem], applicationActivities: nil)
 			self.presentViewController(activityViewController, animated: true, completion: nil)
 		}
 	}
 
-	// MARK: - Open album from a local notification
+	// Open album from a local notification
 	func showAlbumFromNotification(notification: NSNotification) {
 		if let notificationAlbumID = notification.userInfo!["albumID"] as? Int {
 			if let album = AppDB.sharedInstance.getAlbumBy(notificationAlbumID) {
@@ -306,16 +300,16 @@ class StreamViewController: UITableViewController {
 		}
 	}
 
-	// MARK: - Open album from a remote notification
+	// Open album from a remote notification
 	func showAlbumFromRemoteNotification(notification: NSNotification) {
 		processRemoteNotificationPayload(notification.userInfo!)
 	}
 
-	// MARK: - Process remote notification payload
+	// Process remote notification payload
 	func processRemoteNotificationPayload(userInfo: NSDictionary) {
 		UIApplication.sharedApplication().applicationIconBadgeNumber -= 1
 		if let albumID = userInfo["aps"]?["albumID"] as? Int {
-			API.sharedInstance.lookupAlbum(albumID, successHandler: { album in
+			API.sharedInstance.lookupAlbum(albumID, successHandler: { (album) in
 				AppDB.sharedInstance.addAlbum(album)
 				self.selectedAlbum = album
 				self.performSegueWithIdentifier("AlbumViewSegue", sender: self)
@@ -327,7 +321,7 @@ class StreamViewController: UITableViewController {
 		}
 	}
 
-	// MARK: - Return artwork image for each collection view cell
+	// Return artwork image for each table view cell
 	func getArtworkForCell(url: String, hash: String, completion: ((artwork: UIImage) -> Void)) {
 		// Artwork is cached in dictionary, return it
 		if tmpArtwork![hash] != nil {
@@ -351,16 +345,16 @@ class StreamViewController: UITableViewController {
 		})
 	}
 
-	// MARK: - Unsubscribe from an album
-	func unsubscribeFromAlbum(album: Album, indexPath: NSIndexPath) {
-		AppDB.sharedInstance.removeAlbum(album.ID, index: indexPath.row)
+	// Unsubscribe from an album
+	func unsubscribeFrom(album: Album, atIndex: NSIndexPath) {
+		AppDB.sharedInstance.removeAlbum(album.ID, index: atIndex.row)
 		deleteArtwork(album.artwork)
 		self.tmpArtwork?.removeValueForKey(album.artwork)
 		self.tmpUrl?.removeValueForKey(album.ID)
 		if Favorites.sharedInstance.removeFavoriteIfExists(album.ID) {
 			NSNotificationCenter.defaultCenter().postNotificationName("reloadFavList", object: nil, userInfo: nil)
 		}
-		self.streamTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+		streamTable.deleteRowsAtIndexPaths([atIndex], withRowAnimation: .Automatic)
 		API.sharedInstance.unsubscribeAlbum(album.iTunesUniqueID, successHandler: nil, errorHandler: { (error) in
 			let title = NSLocalizedString("Unable to remove album!", comment: "")
 			let message = NSLocalizedString("Please try again later.", comment: "")
@@ -368,29 +362,30 @@ class StreamViewController: UITableViewController {
 		})
 	}
 
+	// Handle scroll event for table view
 	override func scrollViewDidScroll(scrollView: UIScrollView) {
-		if scrollView == self.streamTable {
-			if let visibleCells = self.streamTable.indexPathsForVisibleRows {
+		if scrollView == streamTable {
+			if let visibleCells = streamTable.indexPathsForVisibleRows {
 				for indexPath in visibleCells {
-					if let cell = self.streamTable.cellForRowAtIndexPath(indexPath) as? StreamCell {
+					if let cell = streamTable.cellForRowAtIndexPath(indexPath) as? StreamCell {
 						self.setCellImageOffset(cell, indexPath: indexPath)
 					}
 				}
 			}
 		}
-		if footerLabel != nil && self.streamTable.contentOffset.y >= (self.streamTable.contentSize.height - self.streamTable.bounds.size.height) {
+		if footerLabel != nil && streamTable.contentOffset.y >= (streamTable.contentSize.height - streamTable.bounds.size.height) {
 			footerLabel.fadeIn()
 		} else if footerLabel != nil && footerLabel.alpha == 1 {
 			footerLabel.fadeOut()
 		}
 	}
 
-	// MARK: - Parallax scrolling effect
+	// Parallax scrolling effect
 	func setCellImageOffset(cell: StreamCell, indexPath: NSIndexPath) {
-		let cellFrame = self.streamTable.rectForRowAtIndexPath(indexPath)
-		let cellFrameInTable = self.streamTable.convertRect(cellFrame, toView:self.streamTable.superview)
+		let cellFrame = streamTable.rectForRowAtIndexPath(indexPath)
+		let cellFrameInTable = streamTable.convertRect(cellFrame, toView:streamTable.superview)
 		let cellOffset = cellFrameInTable.origin.y + cellFrameInTable.size.height
-		let tableHeight = self.streamTable.bounds.size.height + cellFrameInTable.size.height
+		let tableHeight = streamTable.bounds.size.height + cellFrameInTable.size.height
 		let cellOffsetFactor = cellOffset / tableHeight
 		cell.setBackgroundOffset(cellOffsetFactor)
 	}
@@ -403,7 +398,7 @@ class StreamViewController: UITableViewController {
 		}
 	}
 
-	// MARK: - Add new subscription from empty state
+	// Add new subscription from empty state
 	func addSubscriptionFromPlaceholder() {
 		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
 	}
@@ -485,7 +480,7 @@ class StreamViewController: UITableViewController {
 						}
 					}
 				}
-				self.unsubscribeFromAlbum(album, indexPath: indexPath)
+				self.unsubscribeFrom(album, atIndex: indexPath)
 				self.updateTabBarItemBadge(album.ID)
 				if AppDB.sharedInstance.albums.count == 0 {
 					self.showAppEmptyState()
@@ -523,7 +518,7 @@ class StreamViewController: UITableViewController {
 		return footerView
 	}
 
-	// MARK: - Error Message Handler
+	// Error Message Handler
 	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
@@ -550,7 +545,7 @@ class StreamViewController: UITableViewController {
 // MARK: - StreamViewControllerDelegate
 extension StreamViewController: StreamViewControllerDelegate {
 	func removeAlbum(album: Album, indexPath: NSIndexPath) {
-		self.unsubscribeFromAlbum(album, indexPath: indexPath)
+		self.unsubscribeFrom(album, atIndex: indexPath)
 	}
 }
 
@@ -575,7 +570,7 @@ extension StreamViewController: UIViewControllerPreviewingDelegate {
 	}
 }
 
-// MARK: - Theme Subclass
+// Theme Subclass
 private class StreamViewControllerTheme: Theme {
 	var streamCellBackgroundColor: UIColor!
 	var streamCellAlbumTitleColor: UIColor!

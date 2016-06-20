@@ -123,8 +123,9 @@ class ArtistPicker: UIViewController {
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 	}
+
+	// MARK: - Batch Processing
 	
-	// MARK: - Handle artist batch processing
 	func handleBatchProcessing () {
 		let batchSize = 10
 		let postString = "id=\(appDelegate.userID)&uuid=\(appDelegate.userUUID)"
@@ -248,7 +249,7 @@ class ArtistPicker: UIViewController {
 		}
 	}
 	
-	// MARK: - Initialize activity view
+	// Initialize activity view
 	func setupActivityView () {
 		activityView = UIView(frame: CGRectMake(0, 0, 90, 90))
 		activityView.center = view.center
@@ -262,7 +263,7 @@ class ArtistPicker: UIViewController {
 		self.view.addSubview(indicatorView)
 	}
 	
-	// MARK: - Get section containing a given artist
+	// Return section containing a given artist
 	func getSectionForArtistName (artistName: String) -> (index: Int, section: String) {
 		for (index, value) in keys.enumerate() {
 			if artistName.uppercaseString.hasPrefix(value) || index == keys.count - 1 {
@@ -272,7 +273,7 @@ class ArtistPicker: UIViewController {
 		return (0, keys[0])
 	}
 	
-	// MARK: - Set the state of all elements in given section
+	// Set the state of all elements in given section
 	func tableViewCellComponent (filteredCell: String, set: Bool) -> Bool {
 		let currentSection = getSectionForArtistName(filteredCell)
 		for (key, _) in (artists[currentSection.section]!).enumerate() {
@@ -287,7 +288,7 @@ class ArtistPicker: UIViewController {
 		return false
 	}
 	
-	// MARK: - Search function for table view
+	// Search function for table view
 	func filterContentForSearchText(searchText: String) {
 		filteredArtists.removeAll(keepCapacity: true)
 		filteredCheckedStates.removeAll(keepCapacity: true)
@@ -316,7 +317,7 @@ class ArtistPicker: UIViewController {
 		}
 	}
 	
-	// MARK: - Initialize search controller
+	// Initialize search controller
 	func setupSearchController () {
 		searchController = UISearchController(searchResultsController: nil)
 		searchController.searchResultsUpdater = self	
@@ -419,7 +420,7 @@ extension ArtistPicker: UISearchResultsUpdating {
 	}
 }
 
-// MARK: - Theme Extension
+// Theme Subclass
 private class ArtistPickerTheme: Theme {
 	var artistsTableViewBackgroundColor: UIColor!
 	var tableViewSectionIndexColor: UIColor!

@@ -157,7 +157,7 @@ class AddSubscriptionController: UIViewController {
 		})
 	}
 
-	// MARK: - Show App empty state
+	// Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
 			let title = NSLocalizedString("No Results", comment: "")
@@ -171,7 +171,7 @@ class AddSubscriptionController: UIViewController {
 		}
 	}
 
-	// MARK: - Hide App empty state
+	// Hide App empty state
 	func hideAppEmptyState() {
 		if appEmptyStateView != nil {
 			appEmptyStateView.removeFromSuperview()
@@ -180,7 +180,7 @@ class AddSubscriptionController: UIViewController {
 		}
 	}
 
-	// MARK: - Error Message Handler
+	// Error Message Handler
 	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
@@ -275,7 +275,7 @@ extension AddSubscriptionController: UISearchBarDelegate {
 	}
 }
 
-// MARK: - AddSubscriptionControllerTheme
+// Theme Subclass
 private class AddSubscriptionControllerTheme: Theme {
 	var cellBackgroundColor: UIColor!
 	var artistTitleColor: UIColor!

@@ -68,13 +68,13 @@ final class AppEmptyState {
 		}
 	}
 
-	// MARK: - Return placeholder view
+	// Return placeholder view
 	func view() -> UIView {
 		return containerView
 	}
 }
 
-// MARK: - Theme Subclass
+// Theme Subclass
 private class AppEmptyStateTheme: Theme {
 	var titleColor: UIColor!
 	var subtitleColor: UIColor!

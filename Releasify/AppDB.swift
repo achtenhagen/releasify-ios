@@ -29,7 +29,7 @@ final class AppDB {
 	}
 
 	// MARK: - Initialization
-	
+
 	init() {
 		if !connected() { fatalError("Unable to connect to database") }
 		artists = [Artist]()

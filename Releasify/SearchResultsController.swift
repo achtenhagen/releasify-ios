@@ -29,7 +29,7 @@ class SearchResultsController: UIViewController {
 		closeView()
 	}
 	
-	// MARK: - Post notification if the user has added a new subscription
+	// Post notification if the user has added a new subscription
 	func closeView() {
 		self.dismissViewControllerAnimated(true, completion: { (completed) in
 			if self.needsRefresh {
@@ -77,7 +77,7 @@ class SearchResultsController: UIViewController {
 		super.didReceiveMemoryWarning()
 	}
 
-	// MARK: - Parse response data
+	// Parse response data
 	func parseSearchResults() {
 		guard let data = JSONPayload else {
 			if appDelegate.debug { print("Failed to parse search result") }
@@ -102,7 +102,7 @@ class SearchResultsController: UIViewController {
 		}
 	}
 	
-	// MARK: - Handle artist confirmation
+	// Handle artist confirmation
 	func confirmArtist(sender: UIButton) {
 		let artistID = searchResults[sender.tag].artist.ID
 		let artistTitle = searchResults[sender.tag].artist.title
@@ -238,7 +238,7 @@ extension SearchResultsController: UITableViewDelegate {
 	}
 }
 
-// MARK: - Theme Subclass
+// Theme Subclass
 private class SearchResultsControllerTheme: Theme {
 	var viewBackgroundColor: UIColor!
 	var infoLabelColor: UIColor!

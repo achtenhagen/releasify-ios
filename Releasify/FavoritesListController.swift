@@ -67,7 +67,7 @@ class FavoritesListController: UIViewController {
 		}
 	}
 
-	// MARK: - Show App empty state
+	// Show App empty state
 	func showAppEmptyState() {
 		if appEmptyStateView == nil {
 			let title = NSLocalizedString("No Favorites", comment: "")
@@ -81,7 +81,7 @@ class FavoritesListController: UIViewController {
 		}
 	}
 
-	// MARK: - Hide App empty state
+	// Hide App empty state
 	func hideAppEmptyState() {
 		if appEmptyStateView != nil {
 			appEmptyStateView.removeFromSuperview()
@@ -103,7 +103,7 @@ class FavoritesListController: UIViewController {
 		}
 	}
 	
-    // MARK: - Navigation
+    // Navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "FavoritesListAlbumSegue" {
 			let detailController = segue.destinationViewController as! AlbumDetailController
@@ -162,7 +162,7 @@ extension FavoritesListController: UITableViewDelegate {
 	}
 }
 
-// MARK: - Theme Extension
+// Theme Extension
 private class FavoritesListControllerTheme: Theme {
 	var viewBackgroundColor: UIColor!
 	var cellBackgroundColor: UIColor!

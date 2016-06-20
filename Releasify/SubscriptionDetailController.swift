@@ -105,7 +105,7 @@ class SubscriptionDetailController: UIViewController {
         super.didReceiveMemoryWarning()
     }
 	
-	// MARK: - Error message handler
+	// Error message handler
 	func handleError(title: String, message: String, error: ErrorType) {
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
 		switch (error) {
@@ -176,6 +176,7 @@ extension SubscriptionDetailController: UICollectionViewDelegate {
 	}
 }
 
+// Theme Subclass
 private class SubscriptionDetailControllerTheme: Theme {
 	var viewBackgroundColor: UIColor!
 	var albumTitleColor: UIColor!

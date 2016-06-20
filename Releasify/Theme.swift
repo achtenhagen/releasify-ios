@@ -58,7 +58,7 @@ public class Theme {
 		set()
 	}
 	
-	// MARK: - Set theme
+	// Set theme
 	func set() {
 		switch style {
 		case .Dark:
@@ -126,7 +126,7 @@ public class Theme {
 		}
 	}
 	
-	// MARK: - View gradient for dark theme
+	// Return view gradient for dark theme
 	func gradient() -> CAGradientLayer {
 		let gradient = CAGradientLayer()
 		gradient.colors = [
