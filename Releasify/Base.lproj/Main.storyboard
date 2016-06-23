@@ -2775,7 +2775,7 @@ Swipe to get started.</string>
                         <color key="selectedImageTintColor" red="0.0" green="0.84705882349999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </tabBar>
                     <connections>
-                        <outlet property="tabBar" destination="6hG-pB-WFW" id="Ahv-UZ-g2W"/>
+                        <outlet property="tabBar" destination="6hG-pB-WFW" id="Kl9-rI-TSo"/>
                         <segue destination="5Wn-lw-nVy" kind="presentation" identifier="ArtistPickerSegue" id="cZg-RQ-l62"/>
                         <segue destination="equ-hM-XdW" kind="relationship" relationship="viewControllers" id="sUk-dh-Kio"/>
                         <segue destination="4Mu-kG-8iL" kind="relationship" relationship="viewControllers" id="Wrv-fo-Kcu"/>
@@ -2862,9 +2862,9 @@ Swipe to get started.</string>
         <image name="icon_twitter" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="9ie-8H-2no"/>
+        <segue reference="DYx-ci-f0A"/>
         <segue reference="cZg-RQ-l62"/>
-        <segue reference="mRq-0I-L1t"/>
+        <segue reference="6ln-2C-qu7"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.0" green="0.13333333333333333" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

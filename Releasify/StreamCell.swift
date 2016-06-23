@@ -41,7 +41,7 @@ class StreamCell: UITableViewCell {
 		
 		artistImg.layer.masksToBounds = true
 		artistImg.layer.cornerRadius = 17.5
-		artistImg.layer.borderColor = UIColor.clearColor().CGColor
+		artistImg.layer.borderColor = UIColor.whiteColor().CGColor
 		artistImg.layer.borderWidth = 2
     }
 
@@ -82,8 +82,8 @@ class StreamCell: UITableViewCell {
 	// Remove new item label
 	func removeNewItemLabel() {
 		if label != nil {
-			self.label.removeFromSuperview()
-			self.label = nil
+			label.removeFromSuperview()
+			label = nil
 		}
 	}
 	
@@ -91,7 +91,7 @@ class StreamCell: UITableViewCell {
 	func setBackgroundOffset(offset:CGFloat) {
 		let boundOffset = max(0, min(1, offset))
 		let pixelOffset = (1 - boundOffset) * 2 * imageParallaxFactor
-		self.artworkTopConstraint.constant = self.imgBackTopInitial - pixelOffset
-		self.artworkBottomConstraint.constant = self.imgBackBottomInitial + pixelOffset
+		artworkTopConstraint.constant = imgBackTopInitial - pixelOffset
+		artworkBottomConstraint.constant = imgBackBottomInitial + pixelOffset
 	}
 }

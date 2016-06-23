@@ -58,7 +58,7 @@ class StreamViewController: UITableViewController {
 
 		// Theme customization
 		streamTable.backgroundColor = theme.tableViewBackgroundColor
-		streamTable.backgroundView = UIView(frame: self.streamTable.bounds)
+		streamTable.backgroundView = UIView(frame: streamTable.bounds)
 		streamTable.backgroundView?.userInteractionEnabled = false
 		streamTable.separatorStyle = theme.style == .Dark ? .None : .SingleLine
 		streamTable.separatorColor = theme.cellSeparatorColor
@@ -86,6 +86,26 @@ class StreamViewController: UITableViewController {
 		let quadrupleTapGesture = UITapGestureRecognizer(target: self, action: #selector(markAllRead))
 		quadrupleTapGesture.numberOfTapsRequired = 4
 		self.tabBarController?.tabBar.addGestureRecognizer(quadrupleTapGesture)
+
+		// Table view header
+		let headerView = UIView(frame: CGRect(origin: CGPointZero, size: CGSize(width: tableView.bounds.size.width, height: 60)))
+		let borderLayer = CALayer()
+		borderLayer.frame = CGRectMake(0, 0, streamTable.bounds.size.width, 1)
+		borderLayer.backgroundColor = theme.globalTintColor.CGColor
+		headerView.layer.addSublayer(borderLayer)
+		let label = UILabel(frame: CGRect(origin: CGPoint(x: 15, y: 15), size: CGSizeZero))
+		label.textColor = theme.globalTintColor
+		label.font = UIFont(name: label.font.fontName, size: 18)
+		label.text = "Recently Added"
+		label.sizeToFit()
+		headerView.addSubview(label)
+		let dateLabel = UILabel(frame: CGRect(origin: CGPoint(x: 15, y: 38), size: CGSizeZero))
+		dateLabel.text = "Updated just now"
+		dateLabel.font = UIFont(name: dateLabel.font.fontName, size: 11)
+		dateLabel.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+		dateLabel.sizeToFit()
+		headerView.addSubview(dateLabel)
+		streamTable.tableHeaderView = headerView
 
 		// Handle first run
 		if appDelegate.firstRun {
@@ -383,7 +403,7 @@ class StreamViewController: UITableViewController {
 	// Parallax scrolling effect
 	func setCellImageOffset(cell: StreamCell, indexPath: NSIndexPath) {
 		let cellFrame = streamTable.rectForRowAtIndexPath(indexPath)
-		let cellFrameInTable = streamTable.convertRect(cellFrame, toView:streamTable.superview)
+		let cellFrameInTable = streamTable.convertRect(cellFrame, toView: streamTable.superview)
 		let cellOffset = cellFrameInTable.origin.y + cellFrameInTable.size.height
 		let tableHeight = streamTable.bounds.size.height + cellFrameInTable.size.height
 		let cellOffsetFactor = cellOffset / tableHeight
@@ -403,7 +423,12 @@ class StreamViewController: UITableViewController {
 		self.performSegueWithIdentifier("AddSubscriptionSegue", sender: self)
 	}
 
+//	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+//		return UnreadItems.sharedInstance.list.count == 0 ? 1 : 2
+//	}
+
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		// return UnreadItems.sharedInstance.list.count == 0 ? AppDB.sharedInstance.albums.count : UnreadItems.sharedInstance.list.count
 		return AppDB.sharedInstance.albums.count
 	}
 
@@ -440,6 +465,7 @@ class StreamViewController: UITableViewController {
 			cell.label.textColor = theme.orangeColor
 			cell.label.layer.borderColor = theme.orangeColor.CGColor
 		}
+		cell.layoutIfNeeded()
 		return cell
 	}
 
@@ -499,8 +525,20 @@ class StreamViewController: UITableViewController {
 		cell.layoutIfNeeded()
 	}
 
+	override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		if section == 0 { return 0 }
+		return 1
+	}
+
+	override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		if section == 0 { return nil }
+		let headerView = UIView(frame: CGRect(origin: CGPointZero, size: CGSize(width: streamTable.bounds.width, height: 1)))
+		headerView.backgroundColor = theme.globalTintColor
+		return headerView
+	}
+
 	override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-		if AppDB.sharedInstance.albums.count == 0 { return UIView() }
+		if AppDB.sharedInstance.albums.count == 0 { return nil }
 		let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 40))
 		footerView.backgroundColor = UIColor.clearColor()
 		footerLabel = UILabel()
@@ -545,7 +583,7 @@ class StreamViewController: UITableViewController {
 // MARK: - StreamViewControllerDelegate
 extension StreamViewController: StreamViewControllerDelegate {
 	func removeAlbum(album: Album, indexPath: NSIndexPath) {
-		self.unsubscribeFrom(album, atIndex: indexPath)
+		unsubscribeFrom(album, atIndex: indexPath)
 	}
 }
 

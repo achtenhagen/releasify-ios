@@ -133,9 +133,9 @@ public class Theme {
 			UIColor(red: 0, green: 34/255, blue: 48/255, alpha: 1).CGColor,
 			UIColor(red: 0, green: 0, blue: 6/255, alpha: 1).CGColor
 		]
-		gradient.locations = [0.0 , 1.0]
-		gradient.startPoint = CGPoint(x: 1.0, y: 0.0)
-		gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
+		gradient.locations = [0 , 1]
+		gradient.startPoint = CGPoint(x: 1, y: 0)
+		gradient.endPoint = CGPoint(x: 1, y: 1)
 		return gradient
 	}
 }

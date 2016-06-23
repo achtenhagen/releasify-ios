@@ -122,19 +122,9 @@ final class AppDB {
 			let copyright = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 6)))
 			let iTunesUniqueID = Int(sqlite3_column_int(statement, 7))
 			let iTunesURL = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 8)))
-			album = Album(
-				ID: ID,
-				title: albumTitle!,
-				artistID: getAlbumArtistID(ID),
-				releaseDate: releaseDate,
-				artwork: artwork!,
-				artworkUrl: artworkUrl!,
-				explicit: explicit,
-				copyright: copyright!,
-				iTunesUniqueID: iTunesUniqueID,
-				iTunesUrl: iTunesURL!,
-				created: created
-			)
+			album = Album(ID: ID, title: albumTitle!, artistID: getAlbumArtistID(ID), releaseDate: releaseDate,
+			              artwork: artwork!, artworkUrl: artworkUrl!, explicit: explicit, copyright: copyright!,
+			              iTunesUniqueID: iTunesUniqueID, iTunesUrl: iTunesURL!, created: created)
 			sqlite3_finalize(statement)
 		}
 		disconnect()
@@ -181,20 +171,9 @@ final class AppDB {
 			let copyright = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 6)))
 			let iTunesUniqueID = Int(sqlite3_column_int(statement, 7))
 			let iTunesURL = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 8)))
-			tmpAlbums.append(Album(
-				ID: ID,
-				title: albumTitle!,
-				artistID: getAlbumArtistID(ID),
-				releaseDate: releaseDate,
-				artwork: artwork!,
-				artworkUrl: artworkUrl,
-				explicit: explicit,
-				copyright: copyright!,
-				iTunesUniqueID: iTunesUniqueID,
-				iTunesUrl: iTunesURL!,
-				created: created
-				)
-			)
+			tmpAlbums.append(Album(ID: ID, title: albumTitle!, artistID: getAlbumArtistID(ID), releaseDate: releaseDate,
+				artwork: artwork!, artworkUrl: artworkUrl, explicit: explicit, copyright: copyright!, iTunesUniqueID: iTunesUniqueID,
+				iTunesUrl: iTunesURL!, created: created))
 		}
 		sqlite3_finalize(statement)
 		disconnect()
@@ -241,19 +220,9 @@ final class AppDB {
 			let copyright = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 6)))
 			let iTunesUniqueID = Int(sqlite3_column_int(statement, 7))
 			let iTunesURL = String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(statement, 8)))
-			album = Album(
-				ID: ID,
-				title: albumTitle!,
-				artistID: getAlbumArtistID(ID),
-				releaseDate: releaseDate,
-				artwork: artwork!,
-				artworkUrl: artworkUrl!,
-				explicit: explicit,
-				copyright: copyright!,
-				iTunesUniqueID: iTunesUniqueID,
-				iTunesUrl: iTunesURL!,
-				created: created
-			)
+			album = Album(ID: ID, title: albumTitle!, artistID: getAlbumArtistID(ID), releaseDate: releaseDate,
+				artwork: artwork!, artworkUrl: artworkUrl!, explicit: explicit, copyright: copyright!, iTunesUniqueID: iTunesUniqueID,
+				iTunesUrl: iTunesURL!, created: created)
 			sqlite3_finalize(statement)
 		}
 		disconnect()
@@ -598,7 +567,6 @@ final class AppDB {
 		var errMsg: UnsafeMutablePointer<Int8> = nil
 		var query = "DROP TABLE albums"
 		sqlite3_exec(database, query, nil, nil, &errMsg)
-
 		// Create albums table with updated schema
 		query = "CREATE TABLE IF NOT EXISTS albums (id INTEGER PRIMARY KEY, title varchar(100) NOT NULL, release_date int(11) DEFAULT NULL, artwork varchar(250) DEFAULT NULL, artwork_url varchar(250) DEFAULT NULL, explicit tinyint(1) NOT NULL DEFAULT '0', copyright varchar(250) DEFAULT NULL, iTunes_unique_id int(11) DEFAULT NULL, iTunes_url varchar(250) DEFAULT NULL, created int(11) NOT NULL)"
 		sqlite3_exec(database, query, nil, nil, &errMsg)
@@ -618,7 +586,6 @@ final class AppDB {
 				}
 			}
 		}
-
 		if debug { print("Upgrade complete") }
 	}
 }

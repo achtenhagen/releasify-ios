@@ -23,7 +23,7 @@ class TabBarController: UITabBarController {
 	var keyword: String!
 	var favListBarBtn: UIBarButtonItem!
 	var addBarBtn: UIBarButtonItem!
-	
+
 	@IBAction func showFavoritesList(sender: UIBarButtonItem) {
 		Favorites.sharedInstance.load()
 		menuPressed()
@@ -106,9 +106,10 @@ class TabBarController: UITabBarController {
 		}
 
 		// Add 1px border to top of tab bar
-		let topBorder = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.size.width, height: 1))
-		topBorder.backgroundColor = theme.tabBarTopBorderColor
-		self.tabBar.addSubview(topBorder)
+		let borderLayer = CALayer()
+		borderLayer.frame = CGRectMake(0, 0, self.tabBar.frame.size.width, 1)
+		borderLayer.backgroundColor = theme.tabBarTopBorderColor.CGColor
+		self.tabBar.layer.addSublayer(borderLayer)
 
 		// Initialize view controllers
 		if streamController == nil {

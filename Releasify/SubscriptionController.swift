@@ -168,7 +168,6 @@ class SubscriptionController: UITableViewController {
 			cell.subscriptionTitle.text = artists[indexPath.row].title
 		}
 		cell.subscriptionTitle.textColor = theme.subscriptionTitleColor
-		cell.borderColor = theme.cellBorderColor
 		let bgColorView = UIView()
 		bgColorView.backgroundColor = theme.cellHighlightColor
 		cell.selectedBackgroundView = bgColorView
@@ -222,17 +221,14 @@ extension SubscriptionController: UISearchResultsUpdating {
 // Theme Subclass
 private class SubscriptionControllerTheme: Theme {
 	var subscriptionTitleColor: UIColor!
-	var cellBorderColor: UIColor!
 	
 	override init (style: Styles) {
 		super.init(style: style)
 		switch style {
 		case .Dark:
 			subscriptionTitleColor = UIColor.whiteColor()
-			cellBorderColor = UIColor.whiteColor()
 		case .Light:
-			subscriptionTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)
-			cellBorderColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.05)
+			subscriptionTitleColor = UIColor(red: 64/255, green: 64/255, blue: 64/255, alpha: 1)			
 		}
 	}
 }
